@@ -1,0 +1,8 @@
+bin
+obj
+*.bak
+*.suo
+*.user
+*.~*
+
+*.snk
