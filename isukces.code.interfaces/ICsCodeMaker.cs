@@ -9,5 +9,7 @@
     {
         void AppendText(string text);
         int Indent { get; set; }
+
+        string Code { get; }
     }
 }

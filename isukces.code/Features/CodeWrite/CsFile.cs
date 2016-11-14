@@ -5,86 +5,118 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using isukces.code.AutoCode;
 using isukces.code.interfaces;
 
 #endregion
 
 namespace isukces.code.CodeWrite
 {
-    public class CsFile : ICsCodeMaker
+    public class CsFile : ICsCodeMaker, IClassOwner, INamespaceCollection, INamespaceOwner
     {
         #region Instance Methods
 
-        public void Append(CsFile x)
+        public void AddImportNamespace(string nameSpace)
         {
-            _classes.AddRange(x._classes);
-            _importNamespaces = _importNamespaces.Union(x._importNamespaces).Distinct().ToList();
+            _importNamespaces.Add(nameSpace);
         }
 
-
-        // Public Methods 
-
-        public string GetCode()
+        /*
+        public void Append(CsFile x)
         {
-            var w = new CodeWriter();
-            MakeCode(w);
-            return w.ToString();
+            Classes.AddRange(x.Classes);
+            _importNamespaces = GeneratorsHelper.MakeCopy(_importNamespaces, x._importNamespaces);
+        }
+        */
+
+        public ISet<string> GetNamespaces(bool withParent)
+        {
+            var s = new HashSet<string>();
+            foreach (var i in _importNamespaces)
+                s.Add(i);
+            foreach (var i in Namespaces)
+                s.Add(i.Name);
+            return s;
+        }
+
+        public CsNamespace GetOrCreateNamespace(string name)
+        {
+            var result = Namespaces.FirstOrDefault(ns => ns.Name == name);
+            if (result != null)
+                return result;
+            result = new CsNamespace(this, name);
+            ((List<CsNamespace>)Namespaces).Add(result);
+            return result;
         }
 
         public void MakeCode(ICodeWriter writer)
         {
-            foreach (var i in _importNamespaces.Distinct().OrderBy(i => i))
+            const string emptyNamespace = "";
+            foreach (var i in _importNamespaces.OrderBy(i => i))
                 writer.WriteLine("using {0};", i);
             if (_importNamespaces.Any())
                 writer.EmptyLine();
-            writer.Open("namespace {0}", _nameSpace);
+            var classByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
+            var enumByNamespace = (_enums ?? new List<CsEnum>())
+                .GroupBy(c => c.DotNetType == null ? emptyNamespace : c.DotNetType.Namespace)
+                .ToDictionary(a => a.Key, a => a.ToList());
+            var fileNamespaces = classByNamespace.Keys.Union(enumByNamespace.Keys)
+                .OrderBy(a => a).ToList();
+
+            foreach (var ns in fileNamespaces)
             {
                 var addEmptyLine = false;
-                foreach (var i in _classes)
+                if (!string.IsNullOrEmpty(ns))
                 {
-                    if (addEmptyLine)
-                        writer.EmptyLine();
-                    addEmptyLine = true;
-                    i.MakeCode(writer);
-                }
-                if (_enums != null)
-                    foreach (var i in _enums)
+                    writer.WriteLine("// ReSharper disable once CheckNamespace");
+                    writer.Open("namespace {0}", ns);
+                    var ns1 = Namespaces.FirstOrDefault(a => a.Name == ns)?.ImportNamespaces;
+                    if (ns1 != null && ns1.Any())
                     {
-                        if (addEmptyLine)
-                            writer.EmptyLine();
+                        foreach (var i in ns1.OrderBy(a => a))
+                            writer.WriteLine($"using {i};");
                         addEmptyLine = true;
-                        i.MakeCode(writer);
                     }
+
+                }
+                {
+
+                    IReadOnlyList<CsClass> classList;
+                    if (classByNamespace.TryGetValue(ns, out classList))
+                        foreach (var i in classList)
+                        {
+                            if (addEmptyLine)
+                                writer.EmptyLine();
+                            addEmptyLine = true;
+                            writer.DoWithKeepingIndent(() => i.MakeCode(writer));
+                        }
+                    List<CsEnum> enumList;
+                    if (enumByNamespace.TryGetValue(ns, out enumList))
+                        foreach (var i in enumList)
+                        {
+                            if (addEmptyLine)
+                                writer.EmptyLine();
+                            addEmptyLine = true;
+                            writer.DoWithKeepingIndent(() => i.MakeCode(writer));
+                        }
+                }
+                if (!string.IsNullOrEmpty(ns))
+                    writer.Close();
             }
-            writer.Close();
         }
 
-        public void Save(string filename)
+        public bool SaveIfDifferent(string filename)
         {
-            var fi = new FileInfo(filename);
-            if (fi.Directory == null)
-                throw new NullReferenceException("fi.Directory");
-            fi.Directory.Create();
-            var x = Encoding.UTF8.GetBytes(GetCode());
-            using(var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
-            {
-                fs.Write(x, 0, x.Length);
-                fs.Close();
-            }
-        }
+            byte[] existing = null;
+            if (File.Exists(filename))
+                existing = File.ReadAllBytes(filename);
 
-        public void SaveIfDifferent(string filename)
-        {
-            if (!File.Exists(filename))
-            {
-                Save(filename);
-                return;
-            }
             var text = GetCode();
-            var existing = File.ReadAllBytes(filename);
-            var newa = Encoding.UTF8.GetBytes(text);
-            if (newa.SequenceEqual(existing)) return;
-            File.WriteAllBytes(filename, newa);
+            var newCodeBytes = Encoding.UTF8.GetBytes(text);
+            if (existing != null && newCodeBytes.SequenceEqual(existing))
+                return false;
+            File.WriteAllBytes(filename, newCodeBytes);
+            return true;
         }
 
         public override string ToString()
@@ -92,48 +124,42 @@ namespace isukces.code.CodeWrite
             return GetCode();
         }
 
+        public string TypeName(Type type)
+        {
+            return GeneratorsHelper.TypeName(type, this);
+        }
+
+
+        // Public Methods 
+
+        private string GetCode()
+        {
+            var writer = new CodeWriter();
+            MakeCode(writer);
+            return writer.Code;
+        }
+
+        private void Save(string filename)
+        {
+            var fi = new FileInfo(filename);
+            if (fi.Directory == null)
+                throw new NullReferenceException("fi.Directory");
+            fi.Directory.Create();
+            var x = Encoding.UTF8.GetBytes(GetCode());
+            using (var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
+            {
+                fs.Write(x, 0, x.Length);
+                fs.Close();
+            }
+        }
+
         #endregion
 
         #region Properties
-
-        /// <summary>
-        ///     przestrzeń nazw pliku
-        /// </summary>
-        public string NameSpace
-        {
-            get { return _nameSpace; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _nameSpace = value;
-            }
-        }
-
         /// <summary>
         ///     Przestrzenie nazw
         /// </summary>
-        public List<string> ImportNamespaces
-        {
-            get { return _importNamespaces; }
-            set
-            {
-                if (value == null) value = new List<string>();
-                _importNamespaces = value;
-            }
-        }
-
-        /// <summary>
-        ///     Przestrzenie nazw
-        /// </summary>
-        public List<CsClass> Classes
-        {
-            get { return _classes; }
-            set
-            {
-                if (value == null) value = new List<CsClass>();
-                _classes = value;
-            }
-        }
+        public IReadOnlyList<CsNamespace> Namespaces { get; } = new List<CsNamespace>();
 
         /// <summary>
         ///     Przestrzenie nazw
@@ -141,11 +167,7 @@ namespace isukces.code.CodeWrite
         public List<CsEnum> Enums
         {
             get { return _enums; }
-            set
-            {
-                if (value == null) value = new List<CsEnum>();
-                _enums = value;
-            }
+            set { _enums = value ?? new List<CsEnum>(); }
         }
 
         /// <summary>
@@ -164,9 +186,11 @@ namespace isukces.code.CodeWrite
 
         #region Fields
 
-        private string _nameSpace = "isukces.nonamespace";
-        private List<string> _importNamespaces = new List<string>();
-        private List<CsClass> _classes = new List<CsClass>();
+        /// <summary>
+        ///     Przestrzenie nazw
+        /// </summary>
+        private readonly ISet<string> _importNamespaces = new HashSet<string>();
+
         private List<CsEnum> _enums = new List<CsEnum>();
         private string _suggestedFileName = string.Empty;
 

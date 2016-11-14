@@ -1,0 +1,197 @@
+﻿#region using
+
+using System;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
+using isukces.code.CodeWrite;
+using isukces.code.interfaces;
+
+#endregion
+
+namespace isukces.code.AutoCode
+{
+    internal partial class Generators
+    {
+        #region Nested
+
+        internal class DependencyPropertyGenerator : SingleClassGenerator
+        {
+            #region Constructors
+
+            private DependencyPropertyGenerator(Type type, Func<Type, CsClass> classFactory) 
+                : base(type, classFactory)
+            {
+            }
+
+            #endregion
+
+            #region Static Methods
+
+            public static void Generate(Type type, Func<Type, CsClass> classFactory)
+            {
+                var generator = new DependencyPropertyGenerator(type, classFactory);
+                generator.GenerateInternal();
+            }
+
+            private static void Single(CsClass csClass, Auto.DependencyPropertyAttribute attribute)
+            {
+                var propertyTypeName = csClass.TypeName(attribute.PropertyType);
+                var dpmi = new DependencyPropertyMetadata
+                {
+                    PropertyChanged = attribute.PropertyChanged,
+                    DefaultValue = attribute.DefaultValue,
+                    PropetyType = attribute.PropertyType,
+                    Coerce = attribute.Coerce
+                };
+                var fn = attribute.Name + "Property";
+
+                var meta = dpmi.Resolve(attribute.Name, propertyTypeName);
+                {
+                    var staticField = csClass.AddField(fn, typeof(DependencyProperty));
+                    staticField.IsStatic = true;
+                    staticField.IsReadOnly = true;
+                    staticField.Visibility = Visibilities.Public;
+                    {
+                        ICodeWriter writer = new CodeWriter();
+                        // writer.WriteLine("public static readonly System.Windows.DependencyProperty {0}Property = ",i.Name);
+                        writer.Indent++;
+                        writer.WriteLine("System.Windows.DependencyProperty.Register(");
+                        writer.Indent++;
+                        writer.WriteLine("nameof({0}),", attribute.Name);
+                        writer.WriteLine("typeof({0}), ", propertyTypeName);
+                        if (string.IsNullOrEmpty(meta))
+                            writer.WriteLine("typeof({0}))", csClass.Name);
+                        else
+                        {
+                            writer.WriteLine("typeof({0}),", csClass.Name);
+                            writer.WriteLine("{0})", meta);
+                        }
+                        staticField.ConstValue = writer.Code;
+                    }
+                }
+
+                {
+                    var f = csClass.AddProperty(attribute.Name, attribute.PropertyType);
+                    f.Visibility = Visibilities.Public;
+                    f.OwnGetter = string.Format("return ({0})GetValue({1});", propertyTypeName, fn);
+                    f.OwnSetter = string.Format("SetValue({0}Property, value);", attribute.Name);
+                    f.EmitField = false;
+                    f.IsPropertyReadOnly = false;
+                }
+            }
+
+            #endregion
+
+            #region Instance Methods
+
+            internal void GenerateInternal()
+            {
+                var attributes = Type.GetCustomAttributes<Auto.DependencyPropertyAttribute>(false).ToArray();
+                if ((attributes == null) || (attributes.Length < 1)) return;
+                var csClass = Class;
+                foreach (var attribute in attributes)
+                {
+                    Single(csClass, attribute);
+                }
+            }
+
+            #endregion
+
+            #region Nested
+
+            private class DependencyPropertyMetadata
+            {
+                #region Instance Methods
+
+                public string Resolve(string propertyName, string propertyTypeName)
+                {
+                    /*
+                        new FrameworkPropertyMetadata(
+            Double.NaN,
+            FrameworkPropertyMetadataOptions.AffectsMeasure,
+            new PropertyChangedCallback(OnCurrentReadingChanged),
+            new CoerceValueCallback(CoerceCurrentReading)
+
+                        {
+            public PropertyMetadata();
+            public PropertyMetadata(object defaultValue);
+            public PropertyMetadata(PropertyChangedCallback propertyChangedCallback);
+            public PropertyMetadata(object defaultValue, PropertyChangedCallback propertyChangedCallback);
+            public PropertyMetadata(object defaultValue, PropertyChangedCallback propertyChangedCallback, CoerceValueCallback coerceValueCallback);
+
+            ),
+
+                     */
+                    var propertyChangedStr = GetPropertyChangedStr(propertyName);
+                    var coerceStr = GetCoerceStr(propertyName);
+                    var initStr = GetDefaultValueAsString(propertyTypeName);
+
+                    if (!string.IsNullOrEmpty(coerceStr))
+                    {
+                        if (string.IsNullOrEmpty(initStr))
+                            initStr = "default(" + propertyTypeName + ")";
+                        if (string.IsNullOrEmpty(propertyChangedStr))
+                            propertyChangedStr = "null";
+                        return $"new System.Windows.PropertyMetadata({initStr}, {propertyChangedStr}, {coerceStr})";
+                    }
+                    if (string.IsNullOrEmpty(initStr))
+                        return string.IsNullOrEmpty(propertyChangedStr)
+                            ? null
+                            : $"new System.Windows.PropertyMetadata({propertyChangedStr})";
+                    return string.IsNullOrEmpty(propertyChangedStr)
+                        ? $"new System.Windows.PropertyMetadata({initStr})"
+                        : $"new System.Windows.PropertyMetadata({initStr}, {propertyChangedStr})";
+                }
+
+                private string GetCoerceStr(string propertyName)
+                {
+                    var coerceStr = Coerce?.Trim();
+                    if (string.IsNullOrEmpty(coerceStr))
+                        return null;
+                    return coerceStr == "*"
+                        ? $"{propertyName}CoerceCallback"
+                        : coerceStr;
+                }
+
+                private string GetDefaultValueAsString(string propertyTypeName)
+                {
+                    if (DefaultValue == null) return null;
+                    if (DefaultValue is bool && (PropetyType == typeof(bool)))
+                        return (bool)DefaultValue ? "true" : "false";
+                    var initStr = DefaultValue.ToString().Trim();
+                    initStr = initStr == "*"
+                        ? $"new {propertyTypeName}()"
+                        : initStr.Replace("*", propertyTypeName);
+                    return initStr;
+                }
+
+                private string GetPropertyChangedStr(string propertyName)
+                {
+                    var propertyChangedStr = PropertyChanged?.Trim();
+                    if (string.IsNullOrEmpty(propertyChangedStr))
+                        return null;
+                    return propertyChangedStr == "*"
+                        ? $"On{propertyName}PropertyChanged"
+                        : propertyChangedStr;
+                }
+
+                #endregion
+
+                #region Properties
+
+                public string PropertyChanged { get; set; }
+                public object DefaultValue { get; set; }
+
+                public Type PropetyType { get; set; }
+                public string Coerce { get; set; }
+
+                #endregion
+            }
+
+            #endregion
+        }
+
+        #endregion
+    }
+}

@@ -63,6 +63,7 @@
     <Compile Include="ICsCodeMaker.cs" />
     <Compile Include="IDescriptable.cs" />
     <Compile Include="ILangInfo.cs" />
+    <Compile Include="INamespaceContainer.cs" />
     <Compile Include="ParameterCallTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyInfoAttribute.cs" />

@@ -1,0 +1,299 @@
+﻿#region using
+
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using isukces.code.CodeWrite;
+using isukces.code.interfaces;
+
+#endregion
+
+namespace isukces.code.AutoCode
+{
+    internal partial class Generators
+    {
+        #region Nested
+
+        public class CopyFromGenerator : SingleClassGenerator
+        {
+            private readonly AutoCodeGeneratorContext _context;
+
+            #region Constructors
+
+            private CopyFromGenerator(Type type, Func<Type, CsClass> classFactory, AutoCodeGeneratorContext context) : base(type, classFactory)
+            {
+                _context = context;
+                _copyFromAttribute = type.GetCustomAttribute<Auto.CopyFromAttribute>();
+                _doCloneable = type.GetCustomAttribute<Auto.Cloneable>(false) != null;
+            }
+
+            #endregion
+
+            #region Static Methods
+
+            public static void Generate(Type type, Func<Type, CsClass> classFactory, AutoCodeGeneratorContext context)
+            {
+                var gen = new CopyFromGenerator(type, classFactory, context);
+                gen.GenerateInternal();
+            }
+
+            private void CloneWithValuesProcessor(PropertyInfo pi, ICodeWriter writer, ITypeNameResolver resolver)
+            {
+                var isCloneable = (pi.PropertyType == typeof(ICloneable))
+                                  || pi.PropertyType.GetInterfaces().Any(a => a == typeof(ICloneable));
+                var wm = GeneratorsHelper.GetWriteMemeberName(pi);
+                if (isCloneable)
+                {
+                    writer.WriteLine("if (source.{0} != null)", pi.Name);
+                    writer.WriteLine("    {0} = ({1})(source.{2} as {3}).Clone();",
+                        wm,
+                        resolver.TypeName(pi.PropertyType),
+                        pi.Name,
+                        resolver.TypeName(typeof(ICloneable)));
+                    writer.WriteLine("else");
+                    writer.WriteLine("    {0} = null;", wm);
+                    return;
+                }
+
+                if (_context.CustomCloneMethod == null)
+                    throw new Exception("Unable to clone value of type " + pi.PropertyType);
+                writer.WriteLine("{0} = {1}.{2}(source.{3}); // {4}",
+                    wm,
+                    resolver.TypeName(_context.CustomCloneMethod.DeclaringType),
+                    _context.CustomCloneMethod.Name,
+                    pi.Name,
+                    pi.PropertyType);
+            }
+
+            private static void CopyArray(PropertyInfo pi, string type, ICodeWriter writer)
+            {
+                var wm = GeneratorsHelper.GetWriteMemeberName(pi);
+                writer.WriteLine("if (source.{0} == null)", pi.Name);
+                writer.WriteLine("    {0} = null;", wm);
+                writer.WriteLine("else {");
+                writer.WriteLine("    {0} = new {2}[source.{1}.Length];", wm, pi.Name, type);
+                writer.WriteLine(
+                    "    for (var index = 0; index < source.{0}.Length; index++) {1}[index] = source.{0}[index];",
+                    pi.Name, wm);
+                writer.WriteLine("}");
+            }
+
+
+            private static void GenerateMethodClone(Type type, CsClass csClass)
+            {
+                csClass.ImplementedInterfaces.Add("ICloneable");
+                var cm = csClass.AddMethod("Clone", "object", "Makes clone of object");
+                ICodeWriter writer = new CodeWriter();
+                writer.WriteLine("var a = new {0}();", type);
+                writer.WriteLine("a.CopyFrom(this);");
+                writer.WriteLine("return a;");
+                cm.Body = writer.Code;
+            }
+
+            #endregion
+
+            #region Instance Methods
+
+            private void GenerateInternal()
+            {
+                if (!_doCloneable && (_copyFromAttribute == null))
+                    return;
+                {
+                    var cm = Class.AddMethod("CopyFrom", "void", null);
+                    cm.AddParam("source", Class.TypeName(Type)); // reduce type
+                    ICodeWriter writer = new CodeWriter();
+                    writer.WriteLine("if (ReferenceEquals(source, null))");
+                    writer.WriteLine("    throw new ArgumentNullException(nameof(source));");
+                    foreach (var i in Class.DotNetType.GetProperties())
+                        ProcessProperty(i, _copyFromAttribute, writer);
+                    cm.Body = writer.Code;
+                }
+                if (_doCloneable)
+                    GenerateMethodClone(Type, Class);
+            }
+
+
+            private void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICodeWriter writer)
+            {
+                ITypeNameResolver resolver = Class;
+                if (pi.PropertyType.IsValueType || (pi.PropertyType == typeof(string)))
+                {
+                    if (!pi.CanWrite || !pi.CanRead)
+                        return;
+
+                    writer.WriteLine("{0} = source.{0}; // {1}", pi.Name, resolver.TypeName(pi.PropertyType));
+                    return;
+                }
+                if (pi.PropertyType.IsArray)
+                {
+                    var eltype = pi.PropertyType.GetElementType();
+                    CopyArray(pi, eltype.FullName, writer);
+                    return;
+                }
+                {
+                    var tmp = pi.GetCustomAttribute<Auto.CopyBy.CloneableAttribute>();
+                    if (tmp != null)
+                    {
+                        writer.WriteLine("{0} = ({1})((ICloneable)source.{0})?.Clone(); // BY Icloneable {1}", pi.Name,
+                            pi.PropertyType);
+                        return;
+                    }
+                }
+                {
+                    if ((attr != null) && attr.HasSkip(pi.Name))
+                        return;
+                    var tmp = pi.GetCustomAttribute<Auto.CopyBy.ReferenceAttribute>();
+                    if ((tmp != null) || ((attr != null) && attr.HasCopyByReference(pi.Name)))
+                    {
+                        writer.WriteLine("{0} = source.{0}; // BY REF {1}", pi.Name, pi.PropertyType);
+                        return;
+                    }
+                }
+                {
+                    var tmp = pi.GetCustomAttribute<Auto.CopyBy.ValuesProcessorAttribute>();
+                    if (tmp != null)
+                    {
+                        CloneWithValuesProcessor(pi, writer, resolver);
+                        return;
+                    }
+                }
+                if (pi.PropertyType.IsInterface)
+                {
+                    CloneWithValuesProcessor(pi, writer, resolver);
+                    return;
+                }
+                var ptg = pi.PropertyType;
+                if (pi.PropertyType.IsGenericType)
+                    ptg = pi.PropertyType.GetGenericTypeDefinition();
+
+                if (ptg == typeof(ObservableCollection<>))
+                {
+                    var writeMemeber = GeneratorsHelper.GetWriteMemeberName(pi);
+                    writer.WriteLine("{0}.Clear();", writeMemeber);
+                    AddRange(writer, writeMemeber, "source." + pi.Name);
+                    return;
+                }
+                if (ptg == typeof(Tuple<,>))
+                {
+                    var writeMemeber = GeneratorsHelper.GetWriteMemeberName(pi);
+                    var other = string.Format("Tuple.Create(source.{0}.Item1, source.{0}.Item2)", writeMemeber);
+                    writer.WriteLine("{0} = source.{0} == null ? null : {0};", writeMemeber, other);
+                    return;
+                }
+                if (ptg == typeof(List<>))
+                {
+                    var wm = GeneratorsHelper.GetWriteMemeberName(pi);
+                    if (pi.CanWrite)
+                    {
+                        writer.WriteLine("if (source.{0} == null)", wm);
+                        writer.WriteLine("\t{0} = null;", wm);
+                        writer.WriteLine("else");
+                        writer.WriteLine("{");
+                        writer.WriteLine("\t{0} = new System.Collections.Generic.List<{1}>();", wm,
+                            pi.PropertyType.GetGenericArguments()[0]);
+                        writer.Indent++;
+                        AddRange(writer, wm, "source." + pi.Name);
+                        writer.Indent--;
+                        writer.WriteLine("}");
+                    }
+                    else
+                    {
+                        writer.WriteLine("{0}.Clear();", wm);
+                        AddRange(writer, wm, "source." + pi.Name);
+                    }
+                    return;
+                }
+                if (ptg == typeof(double[]))
+                {
+                    CopyArray(pi, "double", writer);
+                    return;
+                }
+                if (ptg == typeof(Point[]))
+                {
+                    CopyArray(pi, "System.Windows.Point", writer); // todo: external copy
+                    return;
+                }
+                {
+                    var interf = pi.PropertyType.GetInterfaces();
+                    if (interf.Any(a => a == typeof(ICloneable)))
+                    {
+                        writer.WriteLine("{0} = ({1})((ICloneable)source.{0})?.Clone();", pi.Name, pi.PropertyType);
+                        return;
+                    }
+                }
+                if (pi.PropertyType == typeof(Dictionary<string, string>))
+                {
+                    var wm = GeneratorsHelper.GetWriteMemeberName(pi);
+                    writer.WriteLine("if (source.{0} == null)", pi.Name);
+                    writer.WriteLine("    {0} = null;", wm);
+                    writer.WriteLine("else {");
+                    writer.WriteLine("    if ({0} == null)", wm);
+                    writer.WriteLine("        {0} = new System.Collections.Generic.Dictionary<string, string>();", wm);
+                    writer.WriteLine("    else");
+                    writer.WriteLine("        {0}.Clear();", wm);
+                    writer.WriteLine("    foreach(var tmp in source.{0}) {1}[tmp.Key] = tmp.Value;",
+                        pi.Name, wm);
+                    writer.WriteLine("}");
+                    return;
+                }
+                throw new NotSupportedException(string.Format("{0}.{1}", pi.DeclaringType, pi.Name));
+                // writer.WriteLine("// {0} {1}", pi.Name, pi.PropertyType);
+            }
+
+            private void AddRange(ICodeWriter writer, string target, string source)
+            {
+                if (_context.ListExtension == null)
+                    throw new NotImplementedException("AddRange");
+                var m = _context.ListExtension.GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
+                if (m == null)
+                    throw new Exception("Unable to find AddRange method");
+                var isExtension = m.IsDefined(typeof(ExtensionAttribute), true);
+                if (isExtension)
+                {
+                    var t = m.DeclaringType;
+                    if (t != null)
+                    {
+                        while (t.DeclaringType != null)
+                            t = t.DeclaringType;
+                        object o = Class.ClassOwner;
+                        var nsCollection = o as INamespaceCollection;
+                        while (nsCollection == null && o != null)
+                        {
+                            if (o is CsClass)
+                                o = ((CsClass)o).ClassOwner;
+                            else if (o is CsNamespace) // can probably be removed
+                                o = ((CsNamespace)o).Owner;
+                            else
+                                break;
+                            nsCollection = o as INamespaceCollection;
+                        }
+                        if (nsCollection != null)
+                        {
+                            nsCollection.AddImportNamespace(t.Namespace);
+                            writer.WriteLine("{0}.AddRange({1});", target, source);
+                            return;
+                        }
+
+                    }
+                }
+                var typeName = Class.TypeName(_context.ListExtension);
+                writer.WriteLine("{0}.AddRange({1}, {2});", typeName, target, source);
+            }
+
+            #endregion
+
+            #region Fields
+
+            private readonly Auto.CopyFromAttribute _copyFromAttribute;
+            private readonly bool _doCloneable;
+
+            #endregion
+        }
+
+        #endregion
+    }
+}

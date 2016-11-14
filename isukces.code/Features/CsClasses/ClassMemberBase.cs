@@ -18,5 +18,8 @@ namespace isukces.code
                 _attributes = value;
             }
         }
+
+        public Visibilities Visibility { get; set; }
+
     }
 }

@@ -1,4 +1,6 @@
-﻿using isukces.code.interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using isukces.code.interfaces;
 
 namespace isukces.code
 {
@@ -55,7 +57,7 @@ namespace isukces.code
 
         /// <summary>
         /// </summary>
-        public bool IsPropertyReadOnly { get; set; } = true;
+        public bool IsPropertyReadOnly { get; set; }
 
         /// <summary>
         /// </summary>
@@ -102,5 +104,19 @@ namespace isukces.code
         private string _ownSetter = string.Empty;
 
         #endregion
+
+        public string[] GetSetterLines()
+        {
+            return string.IsNullOrEmpty(OwnSetter)
+                ? new[] { string.Format("{0} = value;", PropertyFieldName) }
+                : OwnSetter.Split('\r', '\n').Where(ii => ii.Trim() != "").ToArray();
+        }
+
+        public string[] GetGetterLines()
+        {
+            return string.IsNullOrEmpty(OwnGetter)
+                ? new[] { string.Format("return {0};", PropertyFieldName) }
+                : OwnGetter.Split('\r', '\n').Where(ii => ii.Trim() != "").ToArray();
+        }
     }
 }

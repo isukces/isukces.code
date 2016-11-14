@@ -163,6 +163,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeFormatter.cs" />
@@ -171,7 +172,21 @@
     <Compile Include="CSLangInfo.cs" />
     <Compile Include="DataObjectMaker.cs" />
     <Compile Include="DictionaryList.cs" />
-    <Compile Include="Features\CodeWrite\CsCodeWriterExtension.cs" />
+    <Compile Include="Features\AutoCode\AutoCodeGenerator.cs" />
+    <Compile Include="Features\AutoCode\AutoCodeGeneratorContext.cs" />
+    <Compile Include="Features\AutoCode\Generators.CopyFromGenerator.cs" />
+    <Compile Include="Features\AutoCode\Generators.cs" />
+    <Compile Include="Features\AutoCode\Generators.DependencyPropertyGenerator.cs" />
+    <Compile Include="Features\AutoCode\Generators.LazyGenerator.cs" />
+    <Compile Include="Features\AutoCode\Generators.ShouldSerializeGenerator.cs" />
+    <Compile Include="Features\AutoCode\Generators.SingleClassGenerator.cs" />
+    <Compile Include="Features\AutoCode\GeneratorsHelper.cs" />
+    <Compile Include="Features\AutoCode\IAutoCodeGeneratorContext.cs" />
+    <Compile Include="Features\AutoCode\IDirectCodeWriter.cs" />
+    <Compile Include="Features\AutoCode\JustForCreatingIsukcesCodeAutoCodeNamespace.cs" />
+    <Compile Include="Features\AutoCode\WriterExtension.cs" />
+    <Compile Include="Features\CodeWrite\CSharpCodeWriterExtension.cs" />
+    <Compile Include="Features\CodeWrite\CsNamespace.cs" />
     <Compile Include="Features\CsClasses\ClassMemberBase.cs" />
     <Compile Include="Features\CsClasses\CsEnumItem.cs" />
     <Compile Include="ILangInfo.cs" />

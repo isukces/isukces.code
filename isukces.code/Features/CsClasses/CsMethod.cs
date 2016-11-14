@@ -1,5 +1,6 @@
 ﻿#region using
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using isukces.code.CodeWrite;
@@ -51,6 +52,7 @@ namespace isukces.code
             return parameter;
         }
 
+
         /// <summary>
         ///     Tworzy kod
         /// </summary>
@@ -74,7 +76,7 @@ namespace isukces.code
                 writer.WriteLine("[ {0} ]", i);
 
             var query = from i in _parameters
-                select string.Format("{2}{0} {1}", i.Type, i.Name, i.UseThis ? "this " : "");
+                        select string.Format("{2}{0} {1}", i.Type, i.Name, i.UseThis ? "this " : "");
             var mDefinition = string.Format("{0}({1})",
                 string.Join(" ", GetMethodAttributes()),
                 string.Join(", ", query));
@@ -91,8 +93,8 @@ namespace isukces.code
             #region Properties
 
             query = from i in _body.Split('\r', '\n')
-                where !string.IsNullOrEmpty(i)
-                select i.TrimEnd();
+                    where !string.IsNullOrEmpty(i)
+                    select i.TrimEnd();
             foreach (var i in query)
                 writer.WriteLine(i);
 
@@ -137,13 +139,8 @@ namespace isukces.code
                 _name = value;
             }
         }
- 
 
-        /// <summary>
-        /// </summary>
-        public Visibilities Visibility { get; set; }
 
-        
 
         /// <summary>
         /// </summary>

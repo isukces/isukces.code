@@ -147,9 +147,9 @@ namespace isukces.code
         public override string ToString()
         {
             if (IsConst)
-                return string.Format("{0} const {1} {2} = {3}", PropertyVisibility.ToString().ToLower(), Type, Name,
+                return string.Format("{0} const {1} {2} = {3}", Visibility.ToString().ToLower(), Type, Name,
                     _constValue);
-            return string.Format("{0} {1} {2}", PropertyVisibility.ToString().ToLower(), Type, Name);
+            return string.Format("{0} {1} {2}", Visibility.ToString().ToLower(), Type, Name);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace isukces.code
 
         /// <summary>
         /// </summary>
-        public Visibilities PropertyVisibility { get; set; } = Visibilities.Public;
+        public Visibilities Visibility { get; set; } = Visibilities.Public;
 
         /// <summary>
         /// </summary>
@@ -236,6 +236,8 @@ namespace isukces.code
         /// <summary>
         /// </summary>
         public bool IsStatic { get; set; }
+
+        public bool IsVolatile { get; set; }
 
         #endregion
 

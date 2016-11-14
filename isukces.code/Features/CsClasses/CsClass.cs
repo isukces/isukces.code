@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using isukces.code.AutoCode;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
@@ -10,7 +11,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsClass : ClassMemberBase, IAttributable, ICsClassMember
+    public class CsClass : ClassMemberBase, IClassOwner
     {
         #region Constructors
 
@@ -45,7 +46,8 @@ namespace isukces.code
 
         // Private Methods 
 
-        private static bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m, string region)
+        private static bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
+            string region)
         {
             var csMethods = m as CsMethod[] ?? m.ToArray();
             if (!csMethods.Any()) return addEmptyLineBeforeRegion;
@@ -77,7 +79,7 @@ namespace isukces.code
 
         private static void WriteAttributes(ICodeWriter writer, ICollection<ICsAttribute> attributes)
         {
-            if (attributes == null || attributes.Count == 0)
+            if ((attributes == null) || (attributes.Count == 0))
                 return;
             foreach (var j in attributes)
                 writer.WriteLine("[{0}]", j.Code);
@@ -99,6 +101,13 @@ namespace isukces.code
             Fields.Add(constValue);
         }
 
+        public CsMethodParameter AddField(string fieldName, Type type)
+        {
+            var field = new CsMethodParameter(fieldName, TypeName(type));
+            Fields.Add(field);
+            return field;
+        }
+
         public CsMethod AddMethod(string name, string type, string description)
         {
             var m = new CsMethod(name, type)
@@ -108,6 +117,22 @@ namespace isukces.code
             _methods.Add(m);
             m.IsConstructor = name == _name;
             return m;
+        }
+
+        public CsProperty AddProperty(string propertyName, Type type)
+        {
+            var property = new CsProperty(propertyName, TypeName(type));
+            Properties.Add(property);
+            return property;
+        }
+
+        public ISet<string> GetNamespaces(bool withParent)
+        {
+            var parentNamespaces = ClassOwner?.GetNamespaces(true);
+            var appendNamespace = DotNetType?.Namespace;
+            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] { appendNamespace };
+            var copy = GeneratorsHelper.MakeCopy(parentNamespaces, append2);
+            return copy;
         }
 
         public void MakeCode(ICodeWriter writer)
@@ -135,18 +160,21 @@ namespace isukces.code
             writer.Close();
         }
 
+        public string TypeName(Type type)
+        {
+            return GeneratorsHelper.TypeName(type, this);
+        }
+
         // Private Methods 
 
         private void _EmitProperty(CsProperty prop, ICodeWriter writer)
         {
             var fieldName = prop.PropertyFieldName;
-            var reader = !string.IsNullOrEmpty(prop.OwnGetter)
-                ? prop.OwnGetter
-                : string.Format("return {0};", fieldName);
 
-            var visibility = IsInterface || (prop.PropertyVisibility == Visibilities.InterfaceDefault)
+            var getterLines = prop.GetGetterLines();
+            var visibility = IsInterface || (prop.Visibility == Visibilities.InterfaceDefault)
                 ? ""
-                : prop.PropertyVisibility.ToString().ToLower() + " ";
+                : prop.Visibility.ToString().ToLower() + " ";
             if (!string.IsNullOrEmpty(prop.Description))
             {
                 writer.WriteLine("/// <summary>");
@@ -168,22 +196,9 @@ namespace isukces.code
             {
                 writer.Open("{0}{1} {2}", visibility, prop.Type, prop.Name);
                 {
-                    writer.Open("get");
-                    foreach (var iii in reader.Split('\r', '\n').Where(ii => ii.Trim() != ""))
-                        writer.WriteLine(iii);
-                    writer.Close();
+                    WriteGetterOrSetter(writer, getterLines, "get");
                     if (!prop.IsPropertyReadOnly)
-                    {
-                        writer.Open("set");
-                        if (!string.IsNullOrEmpty(prop.OwnSetter))
-                        {
-                            foreach (var iii in prop.OwnSetter.Split('\r', '\n').Where(ii => ii.Trim() != ""))
-                                writer.WriteLine(iii);
-                        }
-                        else
-                            writer.WriteLine("{0} = value;", fieldName);
-                        writer.Close();
-                    }
+                        WriteGetterOrSetter(writer, prop.GetSetterLines(), "set");
                 }
                 writer.Close().EmptyLine();
             }
@@ -195,9 +210,39 @@ namespace isukces.code
                     .EmptyLine();
         }
 
+        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord)
+        {
+            if (lines == null || lines.Count <= 0) return;
+            if (lines.Count == 1)
+                writer.WriteLine("{0} {{ {1} }}", keyWord, lines[0]);
+            else
+            {
+                writer.Open(keyWord);
+                foreach (var iii in lines)
+                    writer.WriteLine(iii);
+                writer.Close();
+            }
+        }
+
         private string[] DefAttributes()
         {
-            var x = new List<string>(4) { "public" };
+            var x = new List<string>(4);
+            switch (Visibility)
+            {
+                case Visibilities.Public:
+                    x.Add("public");
+                    break;
+                case Visibilities.Protected:
+                    x.Add("protected");
+                    break;
+                case Visibilities.Private:
+                    x.Add("private");
+                    break;
+                case Visibilities.InterfaceDefault:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
 
             if (IsInterface)
                 x.Add("interface");
@@ -241,18 +286,32 @@ namespace isukces.code
                             .EmptyLine();
                     else
                     {
-                        var att = new List<string>
+                        var att = new List<string>(8)
                         {
-                            i.PropertyVisibility.ToString().ToLower()
+                            i.Visibility.ToString().ToLower()
                         };
                         if (i.IsStatic) att.Add("static");
+                        if (i.IsVolatile) att.Add("volatile");
                         if (i.IsReadOnly) att.Add("readonly");
                         att.Add(i.Type);
                         att.Add(i.Name);
                         if (!string.IsNullOrEmpty(i.ConstValue))
                             att.Add("= " + i.ConstValue);
                         var line = string.Join(" ", att) + ";";
-                        writer.WriteLine(line).EmptyLine();
+                        var lines =
+                            line.Split('\r', '\n')
+                            .Select(a => a.Trim())
+                            .Where(a => !string.IsNullOrEmpty(a))
+                            .ToArray();
+                        for (var ii = 0; ii < lines.Length; ii++)
+                        {
+                            if (ii == 1)
+                                writer.Indent++;
+                            writer.WriteLine(lines[ii]);
+                        }
+                        if (lines.Length > 1)
+                            writer.Indent--;
+                        writer.EmptyLine();
                     }
                 }
             );
@@ -303,6 +362,8 @@ namespace isukces.code
 
         #region Properties
 
+        public IClassOwner ClassOwner { get; set; }
+
         /// <summary>
         ///     Nazwa klasy
         /// </summary>
@@ -317,7 +378,7 @@ namespace isukces.code
         }
 
         /// <summary>
-        ///     klasa Bazowa
+        ///     base class
         /// </summary>
         public string BaseClass
         {
@@ -330,10 +391,13 @@ namespace isukces.code
         }
 
         /// <summary>
+        ///     Optional, real type related to code class
+        /// </summary>
+        public Type DotNetType { get; set; }
+
+        /// <summary>
         ///     atrybuty
         /// </summary>
-      
-
         /// <summary>
         /// </summary>
         public List<CsProperty> Properties
@@ -415,11 +479,6 @@ namespace isukces.code
 
 
         /// <summary>
-        /// Przestrzenie nazw zadeklarowane wewnątrz klasy
-        /// </summary>
-        public ISet<string> Namespaces { get; set; } = new HashSet<string>();
-
-        /// <summary>
         ///     obiekt, na podstawie którego wygenerowano klasę, przydatne przy dalszej obróbce
         /// </summary>
         public object GeneratorSource { get; set; }
@@ -430,17 +489,12 @@ namespace isukces.code
 
         private string _name = string.Empty;
         private string _baseClass = string.Empty;
-        
+
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
         private List<CsMethod> _methods = new List<CsMethod>();
         private List<CsClass> _nestedClasses = new List<CsClass>();
 
         #endregion
-
-        #region Nested
-
-        #endregion
-
     }
 }

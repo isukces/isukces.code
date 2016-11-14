@@ -1,5 +1,6 @@
 ﻿#region using
 
+using System;
 using System.Collections.Generic;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
@@ -39,6 +40,7 @@ namespace isukces.code
 
         public string Name { get; set; }
         public IList<CsEnumItem> Items { get; set; }
+        public Type DotNetType { get; set; }
 
         #endregion
  

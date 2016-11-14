@@ -1,8 +1,9 @@
-﻿using isukces.code.interfaces;
+﻿using System;
+using isukces.code.interfaces;
 
 namespace isukces.code.CodeWrite
 {
-    public static class CsCodeWriterExtension
+    public static class CSharpCodeWriterExtension
     {
         public static string GetIndent(this ICodeWriter _this)
         {
@@ -24,9 +25,26 @@ namespace isukces.code.CodeWrite
             return _this;
         }
 
+        public static ICodeWriter OpenBrackets(this ICodeWriter _this)
+        {
+            _this.WriteLine("{");
+            _this.Indent++;
+            return _this;
+        }
+        public static ICodeWriter CloseBrackets(this ICodeWriter _this)
+        {
+            _this.Indent--;
+            _this.WriteLine("}");
+            return _this;
+        }
+
+
+
         public static ICodeWriter WriteLine(this ICodeWriter _this, string format, params object[] parameters)
         {
-            _this.Indent++;
+            // _this.Indent++;
+            if (_this.Indent > 0)
+                _this.AppendText(GetIndent(_this));
             _this.AppendText(string.Format(format + "\r\n", parameters));
             return _this;
         }
@@ -76,5 +94,13 @@ namespace isukces.code.CodeWrite
         }
 
 
+        public static void DoWithKeepingIndent(this ICodeWriter _this, Action action)
+        {
+            var indentBefore = _this.Indent;
+            action();
+            if (_this.Indent == indentBefore) return;
+            // some warning should be created here
+            _this.Indent = indentBefore;
+        }
     }
 }

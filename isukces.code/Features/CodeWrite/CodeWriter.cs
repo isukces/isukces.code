@@ -22,6 +22,7 @@ namespace isukces.code.CodeWrite
         #region Properties
 
         public int Indent { get; set; }
+        public string Code => _sb.ToString();
 
         #endregion
 
