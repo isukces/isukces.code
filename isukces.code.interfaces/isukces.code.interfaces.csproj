@@ -52,7 +52,7 @@
     <Compile Include="Features\AutoCode\Auto.Cloneable.cs" />
     <Compile Include="Features\AutoCode\Auto.CopyBy.cs" />
     <Compile Include="Features\AutoCode\Auto.CopyFromAttribute.cs" />
-    <Compile Include="Features\AutoCode\Auto.DependencyProperty.cs" />
+    <Compile Include="Features\AutoCode\Auto.DependencyPropertyAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.LazyAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.LazyMemberType.cs" />
     <Compile Include="Features\AutoCode\Auto.ShouldSerializeAttribute.cs" />

@@ -5,11 +5,11 @@ namespace isukces.code.interfaces
     public partial class Auto
     {
         [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-        public class DependencyProperty : Attribute
+        public class DependencyPropertyAttribute : Attribute
         {
             #region Constructors
 
-            public DependencyProperty(string name, Type propertyType)
+            public DependencyPropertyAttribute(string name, Type propertyType)
             {
                 Name = name;
                 PropertyType = propertyType;
