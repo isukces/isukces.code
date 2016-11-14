@@ -62,12 +62,7 @@ namespace isukces.code.AutoCode
                 return a;
             }
             var parent = GetOrCreateClass(type.DeclaringType);
-            var existing = parent.NestedClasses.FirstOrDefault(a => a.Name == type.Name);
-            if (existing == null)
-            {
-                existing = new CsClass(type.Name);
-                parent.NestedClasses.Add(existing);
-            }
+            var existing = parent.GetOrCreateNested(type.Name);
             existing.IsPartial = true;
             existing.DotNetType = type;
             existing.Visibility = Visibilities.InterfaceDefault;

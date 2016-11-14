@@ -85,6 +85,20 @@ namespace isukces.code
                 writer.WriteLine("[{0}]", j.Code);
         }
 
+        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord)
+        {
+            if ((lines == null) || (lines.Count <= 0)) return;
+            if (lines.Count == 1)
+                writer.WriteLine("{0} {{ {1} }}", keyWord, lines[0]);
+            else
+            {
+                writer.Open(keyWord);
+                foreach (var iii in lines)
+                    writer.WriteLine(iii);
+                writer.Close();
+            }
+        }
+
         #endregion
 
         #region Instance Methods
@@ -210,20 +224,6 @@ namespace isukces.code
                     .EmptyLine();
         }
 
-        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord)
-        {
-            if (lines == null || lines.Count <= 0) return;
-            if (lines.Count == 1)
-                writer.WriteLine("{0} {{ {1} }}", keyWord, lines[0]);
-            else
-            {
-                writer.Open(keyWord);
-                foreach (var iii in lines)
-                    writer.WriteLine(iii);
-                writer.Close();
-            }
-        }
-
         private string[] DefAttributes()
         {
             var x = new List<string>(4);
@@ -300,9 +300,9 @@ namespace isukces.code
                         var line = string.Join(" ", att) + ";";
                         var lines =
                             line.Split('\r', '\n')
-                            .Select(a => a.Trim())
-                            .Where(a => !string.IsNullOrEmpty(a))
-                            .ToArray();
+                                .Select(a => a.Trim())
+                                .Where(a => !string.IsNullOrEmpty(a))
+                                .ToArray();
                         for (var ii = 0; ii < lines.Length; ii++)
                         {
                             if (ii == 1)
@@ -423,54 +423,33 @@ namespace isukces.code
         }
 
         /// <summary>
-        ///     czy klasa abstrakcyjna
+        ///     is class abstract
         /// </summary>
         public bool IsAbstract { get; set; }
 
         /// <summary>
-        ///     czy partial
+        ///     is class partial
         /// </summary>
         public bool IsPartial { get; set; }
 
         /// <summary>
-        ///     czy static
+        ///     is class static
         /// </summary>
         public bool IsStatic { get; set; }
 
         /// <summary>
-        ///     czy sealed
+        ///     is class sealed
         /// </summary>
         public bool IsSealed { get; set; }
 
         /// <summary>
-        ///     Czy zamiast klasy emitować interfejs
+        ///     emit as interface
         /// </summary>
         public bool IsInterface { get; set; }
 
         /// <summary>
-        ///     metody
         /// </summary>
-        public List<CsMethod> Methods
-        {
-            get { return _methods; }
-            set
-            {
-                if (value == null) value = new List<CsMethod>();
-                _methods = value;
-            }
-        }
-
-        /// <summary>
-        /// </summary>
-        public List<CsClass> NestedClasses
-        {
-            get { return _nestedClasses; }
-            set
-            {
-                if (value == null) value = new List<CsClass>();
-                _nestedClasses = value;
-            }
-        }
+        readonly List<CsClass> _nestedClasses = new List<CsClass>();
 
         /// <summary>
         ///     Własność jest tylko do odczytu.
@@ -487,14 +466,30 @@ namespace isukces.code
 
         #region Fields
 
+        /// <summary>
+        ///     methods
+        /// </summary>
+        private readonly List<CsMethod> _methods = new List<CsMethod>();
+
         private string _name = string.Empty;
         private string _baseClass = string.Empty;
 
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
-        private List<CsMethod> _methods = new List<CsMethod>();
-        private List<CsClass> _nestedClasses = new List<CsClass>();
 
         #endregion
+
+        public CsClass GetOrCreateNested(string typeName)
+        {
+            var existing = _nestedClasses
+                .FirstOrDefault(csClass => csClass.Name == typeName);
+            if (existing != null) return existing;
+            existing = new CsClass(typeName)
+            {
+                ClassOwner = this
+            };
+            _nestedClasses.Add(existing);
+            return existing;
+        }
     }
 }
