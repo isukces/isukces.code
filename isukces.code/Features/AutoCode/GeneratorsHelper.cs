@@ -35,7 +35,14 @@ namespace isukces.code.AutoCode
             //todo: Generic types
             if (type == null)
                 return null;
-
+            if (type.IsArray)
+            {
+                var arrayRank = type.GetArrayRank();
+                var st = TypeName(type.GetElementType(), container);
+                if (arrayRank < 2)
+                    return st + "[]";
+                return string.Format("{0}[{1}]", st, new string(',', arrayRank - 1));
+            }
             var simple = SimpleTypeName(type);
             if (!String.IsNullOrEmpty(simple))
                 return simple;
