@@ -55,6 +55,8 @@
     <Compile Include="Features\AutoCode\Auto.DependencyPropertyAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.LazyAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.LazyMemberType.cs" />
+    <Compile Include="Features\AutoCode\Auto.ReactiveCommandAttribute.cs" />
+    <Compile Include="Features\AutoCode\Auto.ReactivePropertyAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.ShouldSerializeAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.WriteMemberAttribute.cs" />
     <Compile Include="IAttributable.cs" />
