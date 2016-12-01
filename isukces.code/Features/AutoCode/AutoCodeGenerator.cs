@@ -30,6 +30,8 @@ namespace isukces.code.AutoCode
                 Generators.DependencyPropertyGenerator.Generate(type, GetOrCreateClass);
                 Generators.CopyFromGenerator.Generate(type, GetOrCreateClass, Context);
                 Generators.ShouldSerializeGenerator.Generate(type, GetOrCreateClass);
+                Generators.ReactivePropertyGenerator.Generate(type, GetOrCreateClass, ns => _csFile.AddImportNamespace(ns));
+                Generators.ReactiveCommandGenerator.Generate(type, GetOrCreateClass, ns => _csFile.AddImportNamespace(ns));
             }
 
             // _csFile.Classes.AddRange(_classes.Values);

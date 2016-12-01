@@ -1,28 +1,36 @@
-﻿using System;
+﻿#region using
+
+using System;
+
+#endregion
 
 namespace isukces.code.interfaces
 {
     public partial class Auto
     {
+        #region Nested
+
         [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-        public class ReactivePropertyAttribute : Attribute
+        public class ReactivePropertyAttribute : PropertyAttributeBase
         {
             #region Constructors
 
-            public ReactivePropertyAttribute(string name, Type propertyType)
+            public ReactivePropertyAttribute(string name, Type propertyType, string description = null)
             {
                 Name = name;
                 PropertyType = propertyType;
+                Description = description;
             }
 
             #endregion
 
             #region Properties
 
-            public string Name { get; set; }
-            public Type PropertyType { get; set; }
+            public Visibilities FieldVisibility { get; set; } = Visibilities.Private;
 
             #endregion
         }
+
+        #endregion
     }
 }

@@ -96,6 +96,12 @@ namespace isukces.code
         /// </summary>
         public bool MakeAutoImplementIfPossible { get; set; }
 
+        public Visibilities? SetterVisibility { get; set; }
+        public Visibilities? GetterVisibility { get; set; }
+        public Visibilities FieldVisibility { get; set; } = Visibilities.Private;
+
+
+
         #endregion
 
         #region Fields

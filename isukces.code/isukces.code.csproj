@@ -178,6 +178,8 @@
     <Compile Include="Features\AutoCode\Generators.cs" />
     <Compile Include="Features\AutoCode\Generators.DependencyPropertyGenerator.cs" />
     <Compile Include="Features\AutoCode\Generators.LazyGenerator.cs" />
+    <Compile Include="Features\AutoCode\Generators.ReactiveCommandGenerator.cs" />
+    <Compile Include="Features\AutoCode\Generators.ReactivePropertyGenerator.cs" />
     <Compile Include="Features\AutoCode\Generators.ShouldSerializeGenerator.cs" />
     <Compile Include="Features\AutoCode\Generators.SingleClassGenerator.cs" />
     <Compile Include="Features\AutoCode\GeneratorsHelper.cs" />

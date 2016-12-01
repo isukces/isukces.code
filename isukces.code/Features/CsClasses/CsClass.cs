@@ -85,11 +85,11 @@ namespace isukces.code
                 writer.WriteLine("[{0}]", j.Code);
         }
 
-        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord)
+        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord, Visibilities? memberVisibility)
         {
             if ((lines == null) || (lines.Count <= 0)) return;
             if (lines.Count == 1)
-                writer.WriteLine("{0} {{ {1} }}", keyWord, lines[0]);
+                writer.WriteLine("{0}{1} {{ {2} }}", OptionalVisibility(memberVisibility), keyWord, lines[0]);
             else
             {
                 writer.Open(keyWord);
@@ -97,6 +97,12 @@ namespace isukces.code
                     writer.WriteLine(iii);
                 writer.Close();
             }
+        }
+
+        private static string OptionalVisibility(Visibilities? memberVisibility)
+        {
+            var v = memberVisibility == null ? "" : (memberVisibility.Value.ToString().ToLower() + " ");
+            return v;
         }
 
         #endregion
@@ -135,7 +141,12 @@ namespace isukces.code
 
         public CsProperty AddProperty(string propertyName, Type type)
         {
-            var property = new CsProperty(propertyName, TypeName(type));
+            return AddProperty(propertyName, TypeName(type));
+        }
+
+        public CsProperty AddProperty(string propertyName, string type)
+        {
+            var property = new CsProperty(propertyName, type);
             Properties.Add(property);
             return property;
         }
@@ -202,7 +213,8 @@ namespace isukces.code
                 (prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
                  string.IsNullOrEmpty(prop.OwnGetter)))
             {
-                writer.WriteLine("{0}{1} {2} {{ get; set; }}", visibility, prop.Type, prop.Name)
+                writer.WriteLine("{0}{1} {2} {{ {3}get; {4}set; }}",
+                    visibility, prop.Type, prop.Name, OptionalVisibility(prop.GetterVisibility), OptionalVisibility(prop.SetterVisibility))
                     .EmptyLine();
                 emitField = false;
             }
@@ -210,9 +222,9 @@ namespace isukces.code
             {
                 writer.Open("{0}{1} {2}", visibility, prop.Type, prop.Name);
                 {
-                    WriteGetterOrSetter(writer, getterLines, "get");
+                    WriteGetterOrSetter(writer, getterLines, "get", prop.GetterVisibility);
                     if (!prop.IsPropertyReadOnly)
-                        WriteGetterOrSetter(writer, prop.GetSetterLines(), "set");
+                        WriteGetterOrSetter(writer, prop.GetSetterLines(), "set", prop.SetterVisibility);
                 }
                 writer.Close().EmptyLine();
             }
@@ -220,7 +232,7 @@ namespace isukces.code
             if (emitField)
                 writer
                     .WriteLine("// ReSharper disable once InconsistentNaming")
-                    .WriteLine("protected {0} {1};", prop.Type, fieldName)
+                    .WriteLine("{2} {0} {1};", prop.Type, fieldName, prop.FieldVisibility.ToString().ToLower())
                     .EmptyLine();
         }
 

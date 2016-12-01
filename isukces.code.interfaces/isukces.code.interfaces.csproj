@@ -59,6 +59,8 @@
     <Compile Include="Features\AutoCode\Auto.ReactivePropertyAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.ShouldSerializeAttribute.cs" />
     <Compile Include="Features\AutoCode\Auto.WriteMemberAttribute.cs" />
+    <Compile Include="Features\AutoCode\ClassMemberAttributeBase.cs" />
+    <Compile Include="Features\AutoCode\PropertyAttributeBase.cs" />
     <Compile Include="IAttributable.cs" />
     <Compile Include="ICsClassMember.cs" />
     <Compile Include="ICsAttribute.cs" />
