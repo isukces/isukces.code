@@ -23,8 +23,8 @@ namespace isukces.code.AutoCode
             foreach (var i in FileNamespaces)
                 _csFile.AddImportNamespace(i);
             _classes = new Dictionary<Type, CsClass>();
-
-            foreach (var type in assembly.GetTypes().OrderBy(aa => aa.Namespace))
+            var types = assembly.GetTypes();
+            foreach (var type in types.OrderBy(aa => aa.Namespace ?? ""))
             {
                 Generators.LazyGenerator.Generate(type, GetOrCreateClass);
                 Generators.DependencyPropertyGenerator.Generate(type, GetOrCreateClass);
