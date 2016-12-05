@@ -14,11 +14,28 @@ namespace isukces.code.AutoCode
 {
     public class AutoCodeGenerator
     {
-        public AutoCodeGeneratorContext Context { get; set; } = new AutoCodeGeneratorContext();
+        #region Static Methods
+
+        private static string GetNamespace(Type aa)
+        {
+            try
+            {
+                return aa?.Namespace ?? "";
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        #endregion
+
         #region Instance Methods
 
         public void Make(Assembly assembly, string outFileName, ref bool saved)
         {
+            if (BaseDir == null)
+                throw new NullReferenceException(nameof(BaseDir));
             _csFile = new CsFile();
             foreach (var i in FileNamespaces)
                 _csFile.AddImportNamespace(i);
@@ -69,26 +86,6 @@ namespace isukces.code.AutoCode
                 saved = true;
         }
 
-        public Action<Exception, object> OnException { get; set; }
-        public Action<string> OnLog { get; set; }
-
-        void Log(string x)
-        {
-            OnLog?.Invoke(x);
-        }
-
-        private static string GetNamespace(Type aa)
-        {
-            try
-            {
-                return aa?.Namespace ?? "";
-            }
-            catch
-            {
-                return "";
-            }
-        }
-
 
         private CsClass GetOrCreateClass(Type type)
         {
@@ -105,7 +102,6 @@ namespace isukces.code.AutoCode
                     DotNetType = type,
                     ClassOwner = _csFile,
                     Visibility = Visibilities.InterfaceDefault
-
                 };
                 var ns = _csFile.GetOrCreateNamespace(type.Namespace);
                 ns.AddClass(a);
@@ -119,9 +115,19 @@ namespace isukces.code.AutoCode
             return existing;
         }
 
+        private void Log(string x)
+        {
+            OnLog?.Invoke(x);
+        }
+
         #endregion
 
         #region Properties
+
+        public AutoCodeGeneratorContext Context { get; set; } = new AutoCodeGeneratorContext();
+
+        public Action<Exception, object> OnException { get; set; }
+        public Action<string> OnLog { get; set; }
 
         public DirectoryInfo BaseDir { get; set; }
 
