@@ -24,14 +24,42 @@ namespace isukces.code.AutoCode
                 _csFile.AddImportNamespace(i);
             _classes = new Dictionary<Type, CsClass>();
             var types = assembly.GetTypes();
-            foreach (var type in types.OrderBy(aa => aa.Namespace ?? ""))
+            try
             {
-                Generators.LazyGenerator.Generate(type, GetOrCreateClass);
-                Generators.DependencyPropertyGenerator.Generate(type, GetOrCreateClass);
-                Generators.CopyFromGenerator.Generate(type, GetOrCreateClass, Context);
-                Generators.ShouldSerializeGenerator.Generate(type, GetOrCreateClass);
-                Generators.ReactivePropertyGenerator.Generate(type, GetOrCreateClass, ns => _csFile.AddImportNamespace(ns));
-                Generators.ReactiveCommandGenerator.Generate(type, GetOrCreateClass, ns => _csFile.AddImportNamespace(ns));
+                types = types.OrderBy(GetNamespace).ToArray();
+                var l = types.Length;
+                Log(l + " types to parse");
+                for (var index = 0; index < l; index++)
+                {
+                    try
+                    {
+                        var type = types[index];
+                        Log(index + ":" + type);
+
+                        Generators.LazyGenerator.Generate(type, GetOrCreateClass);
+                        Generators.DependencyPropertyGenerator.Generate(type, GetOrCreateClass);
+                        Generators.CopyFromGenerator.Generate(type, GetOrCreateClass, Context);
+                        Generators.ShouldSerializeGenerator.Generate(type, GetOrCreateClass);
+                        Generators.ReactivePropertyGenerator.Generate(type, GetOrCreateClass,
+                            ns => _csFile.AddImportNamespace(ns));
+                        Generators.ReactiveCommandGenerator.Generate(type, GetOrCreateClass,
+                            ns => _csFile.AddImportNamespace(ns));
+                    }
+                    catch (Exception e)
+                    {
+                        if (OnException != null)
+                            OnException(e, index);
+                        else
+                            throw;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                if (OnException != null)
+                    OnException(e, null);
+                else
+                    throw;
             }
 
             // _csFile.Classes.AddRange(_classes.Values);
@@ -39,6 +67,26 @@ namespace isukces.code.AutoCode
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
             if (_csFile.SaveIfDifferent(fileName))
                 saved = true;
+        }
+
+        public Action<Exception, object> OnException { get; set; }
+        public Action<string> OnLog { get; set; }
+
+        void Log(string x)
+        {
+            OnLog?.Invoke(x);
+        }
+
+        private static string GetNamespace(Type aa)
+        {
+            try
+            {
+                return aa?.Namespace ?? "";
+            }
+            catch
+            {
+                return "";
+            }
         }
 
 
