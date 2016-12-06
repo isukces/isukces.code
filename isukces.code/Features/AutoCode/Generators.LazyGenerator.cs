@@ -15,24 +15,10 @@ namespace isukces.code.AutoCode
     {
         #region Nested
 
-        internal class LazyGenerator: SingleClassGenerator
+        internal class LazyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Constructors
 
-            private LazyGenerator(Type type, Func<Type, CsClass> classFactory) 
-                : base(type,classFactory)
-            {
-            }
-
-            #endregion
-
-            #region Static Methods
-
-            public static void Generate(Type type, Func<Type, CsClass> classFactory)
-            {
-                new LazyGenerator(type, classFactory).ProcessLazy();
-            }
-
+            #region Static Methods            
 
             private static string CoalesceNotEmpty(ISet<string> accept, params string[] items)
             {
@@ -132,18 +118,18 @@ namespace isukces.code.AutoCode
 
             #region Instance Methods
 
-            public void ProcessLazy()
+            private void ProcessLazy()
             {
                 // todo: obsługa metod i własności z parametrami
                 var pm = ScanMethods(Type);
-                var pp = ScanProperties(Type);
-                if ((pm.Count == 0) && (pp.Count == 0)) return;
+                var properties = ScanProperties(Type);
+                if ((pm.Count == 0) && (properties.Count == 0)) return;
                 if (pm.Any())
                     foreach (var i in pm)
                         WriteSingle(i.Item1, i.Item2);
 
-                if (pp.Any())
-                    foreach (var i in pp)
+                if (properties.Any())
+                    foreach (var i in properties)
                         WriteSingle(i.Item1, i.Item2);
             }
 
@@ -199,7 +185,7 @@ namespace isukces.code.AutoCode
                     prop.IsStatic = GeneratorsHelper.IsMemberStatic(mi);
                     prop.IsPropertyReadOnly = true;
                     prop.EmitField = false;
-                    var writer = new CodeWriter();                   
+                    var writer = new CodeWriter();
                     {
                         writer.WriteLine("var result = {0};", fieldName);
                         writer.WriteLine("// ReSharper disable once InvertIf");
@@ -226,7 +212,7 @@ namespace isukces.code.AutoCode
             }
 
             #endregion
- 
+
 
             #region Nested
 
@@ -256,6 +242,14 @@ namespace isukces.code.AutoCode
             }
 
             #endregion
+
+            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            {
+                Setup(type, context);
+                ProcessLazy();
+            }
+
+
         }
 
         #endregion

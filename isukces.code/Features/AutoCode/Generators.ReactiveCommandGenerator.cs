@@ -8,25 +8,11 @@ namespace isukces.code.AutoCode
 {
     internal partial class Generators
     {
-        internal class ReactiveCommandGenerator : SingleClassGenerator
+        internal class ReactiveCommandGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Constructors
-
-            private ReactiveCommandGenerator(Type type, Func<Type, CsClass> classFactory)
-                : base(type, classFactory)
-            {
-            }
-
-            #endregion
 
             #region Static Methods
-
-            public static void Generate(Type type, Func<Type, CsClass> classFactory, Action<string> addNamespace)
-            {
-                var generator = new ReactiveCommandGenerator(type, classFactory);
-                generator.GenerateInternal(addNamespace);
-            }
-
+ 
             private static void Single(CsClass csClass, Auto.ReactiveCommandAttribute attribute)
             {
                 // public ReactiveCommand<object> FullViewCommand { get; protected set; }
@@ -41,12 +27,12 @@ namespace isukces.code.AutoCode
 
             #region Instance Methods
 
-            internal void GenerateInternal(Action<string> addNamespace)
+            internal void GenerateInternal()
             {
                 var attributes = Type.GetCustomAttributes<Auto.ReactiveCommandAttribute>(false).ToArray();
                 if (attributes == null || attributes.Length < 1) return;
                 var csClass = Class;
-                addNamespace("ReactiveUI");
+                Context.AddNamespace("ReactiveUI");
                 foreach (var attribute in attributes)
                     Single(csClass, attribute);
                 {
@@ -152,6 +138,12 @@ namespace isukces.code.AutoCode
             }
 
             #endregion
+
+            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            {
+                Setup(type, context);
+                GenerateInternal();
+            }
         }
     }
 }

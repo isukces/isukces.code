@@ -18,28 +18,12 @@ namespace isukces.code.AutoCode
     {
         #region Nested
 
-        public class CopyFromGenerator : SingleClassGenerator
+        public class CopyFromGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            private readonly AutoCodeGeneratorContext _context;
-
-            #region Constructors
-
-            private CopyFromGenerator(Type type, Func<Type, CsClass> classFactory, AutoCodeGeneratorContext context) : base(type, classFactory)
-            {
-                _context = context;
-                _copyFromAttribute = type.GetCustomAttribute<Auto.CopyFromAttribute>();
-                _doCloneable = type.GetCustomAttribute<Auto.Cloneable>(false) != null;
-            }
-
-            #endregion
+            // private readonly AutoCodeGeneratorConfiguration _configuration;
+   
 
             #region Static Methods
-
-            public static void Generate(Type type, Func<Type, CsClass> classFactory, AutoCodeGeneratorContext context)
-            {
-                var gen = new CopyFromGenerator(type, classFactory, context);
-                gen.GenerateInternal();
-            }
 
             private void CloneWithValuesProcessor(PropertyInfo pi, ICodeWriter writer, ITypeNameResolver resolver)
             {
@@ -59,12 +43,12 @@ namespace isukces.code.AutoCode
                     return;
                 }
 
-                if (_context.CustomCloneMethod == null)
+                if (_configuration.CustomCloneMethod == null)
                     throw new Exception("Unable to clone value of type " + pi.PropertyType);
                 writer.WriteLine("{0} = {1}.{2}(source.{3}); // {4}",
                     wm,
-                    resolver.TypeName(_context.CustomCloneMethod.DeclaringType),
-                    _context.CustomCloneMethod.Name,
+                    resolver.TypeName(_configuration.CustomCloneMethod.DeclaringType),
+                    _configuration.CustomCloneMethod.Name,
                     pi.Name,
                     pi.PropertyType);
             }
@@ -246,9 +230,9 @@ namespace isukces.code.AutoCode
 
             private void AddRange(ICodeWriter writer, string target, string source)
             {
-                if (_context.ListExtension == null)
+                if (_configuration.ListExtension == null)
                     throw new NotImplementedException("AddRange");
-                var m = _context.ListExtension.GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
+                var m = _configuration.ListExtension.GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
                 if (m == null)
                     throw new Exception("Unable to find AddRange method");
                 var isExtension = m.IsDefined(typeof(ExtensionAttribute), true);
@@ -280,7 +264,7 @@ namespace isukces.code.AutoCode
 
                     }
                 }
-                var typeName = Class.TypeName(_context.ListExtension);
+                var typeName = Class.TypeName(_configuration.ListExtension);
                 writer.WriteLine("{0}.AddRange({1}, {2});", typeName, target, source);
             }
 
@@ -288,10 +272,21 @@ namespace isukces.code.AutoCode
 
             #region Fields
 
-            private readonly Auto.CopyFromAttribute _copyFromAttribute;
-            private readonly bool _doCloneable;
+            private Auto.CopyFromAttribute _copyFromAttribute;
+            private bool _doCloneable;
+            private CopyFromGeneratorConfiguration _configuration;
 
             #endregion
+
+            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            {
+                Setup(type, context);
+
+                _copyFromAttribute = type.GetCustomAttribute<Auto.CopyFromAttribute>();
+                _doCloneable = type.GetCustomAttribute<Auto.Cloneable>(false) != null;
+                _configuration = context.ResolveConfig<CopyFromGeneratorConfiguration>();
+                GenerateInternal();
+            }
         }
 
         #endregion

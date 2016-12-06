@@ -14,10 +14,15 @@ namespace isukces.code.AutoCode
         {
             #region Constructors
 
-            protected SingleClassGenerator(Type type, Func<Type, CsClass> classFactory)
+            #endregion
+
+            #region Instance Methods
+
+            protected void Setup(Type type, IAutoCodeGeneratorContext context)
             {
-                _type = type;
-                _classFactory = classFactory;
+                Type = type;
+                _class = null;
+                Context = context;
             }
 
             #endregion
@@ -30,19 +35,18 @@ namespace isukces.code.AutoCode
                 {
                     if (_class != null)
                         return _class;
-                    return _class = _classFactory(_type);
+                    return _class = Context.GetOrCreateClass(Type);
                 }
             }
 
-            protected Type Type => _type;
+            protected Type Type { get; private set; }
 
             #endregion
 
             #region Fields
 
-            private readonly Type _type;
-            private readonly Func<Type, CsClass> _classFactory;
             private CsClass _class;
+            protected IAutoCodeGeneratorContext Context { get; private set; }
 
             #endregion
         }

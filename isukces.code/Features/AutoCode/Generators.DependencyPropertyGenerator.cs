@@ -15,24 +15,9 @@ namespace isukces.code.AutoCode
     {
         #region Nested
 
-        internal class DependencyPropertyGenerator : SingleClassGenerator
+        internal class DependencyPropertyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Constructors
-
-            private DependencyPropertyGenerator(Type type, Func<Type, CsClass> classFactory) 
-                : base(type, classFactory)
-            {
-            }
-
-            #endregion
-
             #region Static Methods
-
-            public static void Generate(Type type, Func<Type, CsClass> classFactory)
-            {
-                var generator = new DependencyPropertyGenerator(type, classFactory);
-                generator.GenerateInternal();
-            }
 
             private static void Single(CsClass csClass, Auto.DependencyPropertyAttribute attribute)
             {
@@ -85,7 +70,13 @@ namespace isukces.code.AutoCode
 
             #region Instance Methods
 
-            internal void GenerateInternal()
+            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            {
+                Setup(type, context);
+                GenerateInternal();
+            }
+
+            private void GenerateInternal()
             {
                 var attributes = Type.GetCustomAttributes<Auto.DependencyPropertyAttribute>(false).ToArray();
                 if ((attributes == null) || (attributes.Length < 1)) return;

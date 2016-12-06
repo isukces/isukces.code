@@ -62,6 +62,7 @@
     <Compile Include="Features\AutoCode\ClassMemberAttributeBase.cs" />
     <Compile Include="Features\AutoCode\PropertyAttributeBase.cs" />
     <Compile Include="IAttributable.cs" />
+    <Compile Include="IAutoCodeConfiguration.cs" />
     <Compile Include="ICsClassMember.cs" />
     <Compile Include="ICsAttribute.cs" />
     <Compile Include="ICsCodeMaker.cs" />

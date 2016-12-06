@@ -14,23 +14,9 @@ namespace isukces.code.AutoCode
     {
         #region Nested
 
-        internal class ShouldSerializeGenerator : SingleClassGenerator
+        internal class ShouldSerializeGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Constructors
-
-            private ShouldSerializeGenerator(Type type, Func<Type, CsClass> classFactory) : base(type, classFactory)
-            {
-            }
-
-            #endregion
-
             #region Static Methods
-
-            internal static void Generate(Type type, Func<Type, CsClass> classFactory)
-            {
-                var generator = new ShouldSerializeGenerator(type, classFactory);
-                generator.GenerateInternal();
-            }
 
             private static string MakeShouldSerializeCondition(PropertyInfo pi)
             {
@@ -48,6 +34,12 @@ namespace isukces.code.AutoCode
             #endregion
 
             #region Instance Methods
+
+            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            {
+                Setup(type, context);
+                GenerateInternal();
+            }
 
             private void GenerateInternal()
             {

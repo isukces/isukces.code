@@ -9,24 +9,10 @@ namespace isukces.code.AutoCode
 {
     internal partial class Generators
     {
-        internal class ReactivePropertyGenerator : SingleClassGenerator
+        internal class ReactivePropertyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Constructors
-
-            private ReactivePropertyGenerator(Type type, Func<Type, CsClass> classFactory)
-                : base(type, classFactory)
-            {
-            }
-
-            #endregion
 
             #region Static Methods
-
-            public static void Generate(Type type, Func<Type, CsClass> classFactory, Action<string> addNamespace)
-            {
-                var generator = new ReactivePropertyGenerator(type, classFactory);
-                generator.GenerateInternal(addNamespace);
-            }
 
             private static void Single(CsClass csClass, Auto.ReactivePropertyAttribute attribute)
             {
@@ -45,12 +31,12 @@ namespace isukces.code.AutoCode
 
             #region Instance Methods
 
-            internal void GenerateInternal(Action<string> addNamespace)
+            internal void GenerateInternal()
             {
                 var attributes = Type.GetCustomAttributes<Auto.ReactivePropertyAttribute>(false).ToArray();
                 if (attributes == null || attributes.Length < 1) return;
                 var csClass = Class;
-                addNamespace("ReactiveUI");
+                Context.AddNamespace("ReactiveUI");
                 foreach (var attribute in attributes)
                 {
                     Single(csClass, attribute);
@@ -151,6 +137,12 @@ namespace isukces.code.AutoCode
             }
 
             #endregion
+
+            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            {
+                Setup(type, context);
+                GenerateInternal();
+            }
         }
     }
 }

@@ -12,20 +12,41 @@ using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
 {
-    public class AutoCodeGenerator
+    public partial class AutoCodeGenerator : IConfigResolver
     {
+        #region Constructors
+
+        public AutoCodeGenerator()
+        {
+            CodeGenerators.AddRange(GetStandardGenerators());
+        }
+
+        #endregion
+
         #region Static Methods
 
-        private static string GetNamespace(Type aa)
+        private static string GetNamespace(Type type)
         {
             try
             {
-                return aa?.Namespace ?? "";
+                return type?.Namespace ?? "";
             }
             catch
             {
                 return "";
             }
+        }
+
+        private static IEnumerable<IAutoCodeGenerator> GetStandardGenerators()
+        {
+            yield return new Generators.LazyGenerator();
+            yield return new Generators.DependencyPropertyGenerator();
+            yield return new Generators.CopyFromGenerator();
+
+            yield return new Generators.ShouldSerializeGenerator();
+
+            yield return new Generators.ReactivePropertyGenerator();
+            yield return new Generators.ReactiveCommandGenerator();
         }
 
         #endregion
@@ -41,49 +62,26 @@ namespace isukces.code.AutoCode
                 _csFile.AddImportNamespace(i);
             _classes = new Dictionary<Type, CsClass>();
             var types = assembly.GetTypes();
-            try
+            types = types.OrderBy(GetNamespace).ToArray();
+            for (int index = 0, length = types.Length; index < length; index++)
             {
-                types = types.OrderBy(GetNamespace).ToArray();
-                var l = types.Length;
-                Log(l + " types to parse");
-                for (var index = 0; index < l; index++)
-                {
-                    try
-                    {
-                        var type = types[index];
-                        Log(index + ":" + type);
-
-                        Generators.LazyGenerator.Generate(type, GetOrCreateClass);
-                        Generators.DependencyPropertyGenerator.Generate(type, GetOrCreateClass);
-                        Generators.CopyFromGenerator.Generate(type, GetOrCreateClass, Context);
-                        Generators.ShouldSerializeGenerator.Generate(type, GetOrCreateClass);
-                        Generators.ReactivePropertyGenerator.Generate(type, GetOrCreateClass,
-                            ns => _csFile.AddImportNamespace(ns));
-                        Generators.ReactiveCommandGenerator.Generate(type, GetOrCreateClass,
-                            ns => _csFile.AddImportNamespace(ns));
-                    }
-                    catch (Exception e)
-                    {
-                        if (OnException != null)
-                            OnException(e, index);
-                        else
-                            throw;
-                    }
-                }
+                var type = types[index];
+                IAutoCodeGeneratorContext context = new SimpleAutoCodeGeneratorContext(
+                    GetOrCreateClass,
+                    ns => _csFile.AddImportNamespace(ns),
+                    ResolveConfigInternal
+                );
+                foreach (var i in CodeGenerators)
+                    i.Generate(type, context);
             }
-            catch (Exception e)
-            {
-                if (OnException != null)
-                    OnException(e, null);
-                else
-                    throw;
-            }
-
-            // _csFile.Classes.AddRange(_classes.Values);
-
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
             if (_csFile.SaveIfDifferent(fileName))
                 saved = true;
+        }
+
+        public TConfig ResolveConfig<TConfig>() where TConfig : class, IAutoCodeConfiguration, new()
+        {
+            return (TConfig)ResolveConfigInternal(typeof(TConfig));
         }
 
 
@@ -115,30 +113,32 @@ namespace isukces.code.AutoCode
             return existing;
         }
 
-        private void Log(string x)
+        private object ResolveConfigInternal(Type type)
         {
-            OnLog?.Invoke(x);
+            object value;
+            if (_configs.TryGetValue(type, out value))
+                return value;
+            value = Activator.CreateInstance(type);
+            _configs[type] = value;
+            return value;
         }
 
         #endregion
 
         #region Properties
 
-        public AutoCodeGeneratorContext Context { get; set; } = new AutoCodeGeneratorContext();
-
-        public Action<Exception, object> OnException { get; set; }
-        public Action<string> OnLog { get; set; }
+        public List<IAutoCodeGenerator> CodeGenerators { get; } = new List<IAutoCodeGenerator>();
 
         public DirectoryInfo BaseDir { get; set; }
 
-
-        // Public Methods 
 
         public ISet<string> FileNamespaces { get; } = new HashSet<string>();
 
         #endregion
 
         #region Fields
+
+        private readonly Dictionary<Type, object> _configs = new Dictionary<Type, object>();
 
         private Dictionary<Type, CsClass> _classes;
         private CsFile _csFile;
