@@ -20,14 +20,21 @@ namespace isukces.code.AutoCode
 
             private static string MakeShouldSerializeCondition(PropertyInfo pi)
             {
-                if (pi.PropertyType == typeof(int))
+                var type = pi.PropertyType;
+                if (type == typeof(int))
                     return string.Format("{0} != 0", pi.Name);
-                if (pi.PropertyType == typeof(Guid?))
+                if (type == typeof(Guid?))
                     return string.Format("{0} != null && !Guid.Empty.Equals({0}.Value)", pi.Name);
-                if (pi.PropertyType == typeof(Guid))
+                if (type == typeof(Guid))
                     return string.Format("!Guid.Empty.Equals({0})", pi.Name);
-                if (pi.PropertyType == typeof(string))
+                if (type == typeof(string))
                     return string.Format("!string.IsNullOrEmpty({0})", pi.Name);
+                if (type.IsGenericType)
+                {
+                    var type2 = type.GetGenericTypeDefinition();
+                    if (type2 == typeof(Nullable<>))
+                        return string.Format("{0} != null", pi.Name);
+                }
                 throw new Exception("Unable to get condition for " + pi.PropertyType);
             }
 
@@ -46,9 +53,9 @@ namespace isukces.code.AutoCode
                 var properties = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
                 if (properties.Length == 0) return;
                 var list = (from i in properties
-                    let at = i.GetCustomAttribute<Auto.ShouldSerializeAttribute>(false)
-                    where at != null
-                    select Tuple.Create(i, at)).ToList();
+                            let at = i.GetCustomAttribute<Auto.ShouldSerializeAttribute>(false)
+                            where at != null
+                            select Tuple.Create(i, at)).ToList();
                 if (list.Count == 0)
                     return;
 
