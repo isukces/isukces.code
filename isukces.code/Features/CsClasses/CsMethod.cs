@@ -60,19 +60,9 @@ namespace isukces.code
         /// <returns></returns>
         public void MakeCode(ICodeWriter writer)
         {
-            if (_description != "")
-            {
-                writer.WriteLine("/// <summary>");
-                writer.WriteLine("/// " + _description.XmlEncode());
-                writer.WriteLine("/// </summary>");
-                foreach (var i in _parameters)
-                {
-                    writer.WriteLine("/// <param name=\"{0}\">{1}</param>", i.Name.XmlEncode(),
-                        i.Description.XmlEncode());
-                }
-            }
+            WriteMethodDescription(writer);
 
-            foreach (var i in _attributes)
+            foreach (var i in Attributes)
                 writer.WriteLine("[ {0} ]", i);
 
             var query = from i in _parameters
@@ -101,6 +91,22 @@ namespace isukces.code
             #endregion
 
             writer.Close();
+        }
+
+        private void WriteMethodDescription(ICodeWriter writer)
+        {
+            var anyParameterHasDescription = _parameters.Any(a => !string.IsNullOrEmpty(a.Description));
+            var hasMethodDescription = !string.IsNullOrEmpty(Description);
+            if (!hasMethodDescription && !anyParameterHasDescription) return;
+            if (hasMethodDescription)
+            {
+                writer.WriteLine("/// <summary>");
+                writer.WriteLine("/// " + Description.XmlEncode());
+                writer.WriteLine("/// </summary>");
+            }
+            foreach (var i in _parameters)
+                writer.WriteLine("/// <param name=\"{0}\">{1}</param>", i.Name.XmlEncode(),
+                    i.Description.XmlEncode());
         }
 
         private string[] GetMethodAttributes()
@@ -213,8 +219,6 @@ namespace isukces.code
         #region Fields
 
         private string _name = string.Empty;
-        private string _description = string.Empty;
-        private List<string> _attributes = new List<string>();
         private string _resultType = "void";
         private List<CsMethodParameter> _parameters = new List<CsMethodParameter>();
         private string _body = string.Empty;
