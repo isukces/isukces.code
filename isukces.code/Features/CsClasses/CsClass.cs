@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using isukces.code.AutoCode;
 using isukces.code.CodeWrite;
@@ -41,7 +42,7 @@ namespace isukces.code
 
         public static CsAttribute MkAttribute(string attributeName)
         {
-            return new CsAttribute { Name = attributeName };
+            return new CsAttribute {Name = attributeName};
         }
 
         // Private Methods 
@@ -77,6 +78,29 @@ namespace isukces.code
             return true;
         }
 
+        private static string OptionalVisibility(Visibilities? memberVisibility)
+        {
+            var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
+            return v;
+        }
+
+        private static string VisibilityToString(Visibilities visibility)
+        {
+            switch (visibility)
+            {
+                case Visibilities.Public:
+                    return "public";
+                case Visibilities.Protected:
+                    return "protected";
+                case Visibilities.Private:
+                    return "private";
+                case Visibilities.InterfaceDefault:
+                    return null;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         private static void WriteAttributes(ICodeWriter writer, ICollection<ICsAttribute> attributes)
         {
             if ((attributes == null) || (attributes.Count == 0))
@@ -85,7 +109,8 @@ namespace isukces.code
                 writer.WriteLine("[{0}]", j.Code);
         }
 
-        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord, Visibilities? memberVisibility)
+        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord,
+            Visibilities? memberVisibility)
         {
             if ((lines == null) || (lines.Count <= 0)) return;
             if (lines.Count == 1)
@@ -99,10 +124,13 @@ namespace isukces.code
             }
         }
 
-        private static string OptionalVisibility(Visibilities? memberVisibility)
+        private static void WriteSummary(ICodeWriter writer, string description)
         {
-            var v = memberVisibility == null ? "" : (memberVisibility.Value.ToString().ToLower() + " ");
-            return v;
+            description = description?.Trim();
+            if (string.IsNullOrEmpty(description)) return;
+            writer.WriteLine("/// <summary>");
+            writer.WriteLine("/// " + description.XmlEncode());
+            writer.WriteLine("/// </summary>");
         }
 
         #endregion
@@ -111,7 +139,7 @@ namespace isukces.code
 
         // Public Methods 
 
-        public void AddConst(string name, string type, string encodedValue)
+        public CsMethodParameter AddConst(string name, string type, string encodedValue)
         {
             var constValue = new CsMethodParameter(name, type)
             {
@@ -119,6 +147,18 @@ namespace isukces.code
                 IsConst = true
             };
             Fields.Add(constValue);
+            return constValue;
+        }
+
+        public CsMethodParameter AddConstInt(string name, int encodedValue)
+        {
+            return AddConst(name, "int", encodedValue.ToString(CultureInfo.InvariantCulture));
+        }
+
+        public CsMethodParameter AddConstString(string name, string encodedValue)
+        {
+            encodedValue = encodedValue == null ? "null" : encodedValue.CsCite();
+            return AddConst(name, "string", encodedValue);
         }
 
         public CsMethodParameter AddField(string fieldName, Type type)
@@ -155,13 +195,27 @@ namespace isukces.code
         {
             var parentNamespaces = ClassOwner?.GetNamespaces(true);
             var appendNamespace = DotNetType?.Namespace;
-            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] { appendNamespace };
+            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] {appendNamespace};
             var copy = GeneratorsHelper.MakeCopy(parentNamespaces, append2);
             return copy;
         }
 
+        public CsClass GetOrCreateNested(string typeName)
+        {
+            var existing = _nestedClasses
+                .FirstOrDefault(csClass => csClass.Name == typeName);
+            if (existing != null) return existing;
+            existing = new CsClass(typeName)
+            {
+                ClassOwner = this
+            };
+            _nestedClasses.Add(existing);
+            return existing;
+        }
+
         public void MakeCode(ICodeWriter writer)
         {
+            WriteSummary(writer, Description);
             WriteAttributes(writer, Attributes);
             var def = string.Join(" ", DefAttributes());
             {
@@ -200,12 +254,7 @@ namespace isukces.code
             var visibility = IsInterface || (prop.Visibility == Visibilities.InterfaceDefault)
                 ? ""
                 : prop.Visibility.ToString().ToLower() + " ";
-            if (!string.IsNullOrEmpty(prop.Description))
-            {
-                writer.WriteLine("/// <summary>");
-                writer.WriteLine("/// " + prop.Description.XmlEncode());
-                writer.WriteLine("/// </summary>");
-            }
+            WriteSummary(writer, prop.Description);
             WriteAttributes(writer, prop.Attributes);
             var emitField = prop.EmitField && !IsInterface;
 
@@ -214,7 +263,8 @@ namespace isukces.code
                  string.IsNullOrEmpty(prop.OwnGetter)))
             {
                 writer.WriteLine("{0}{1} {2} {{ {3}get; {4}set; }}",
-                    visibility, prop.Type, prop.Name, OptionalVisibility(prop.GetterVisibility), OptionalVisibility(prop.SetterVisibility))
+                        visibility, prop.Type, prop.Name, OptionalVisibility(prop.GetterVisibility),
+                        OptionalVisibility(prop.SetterVisibility))
                     .EmptyLine();
                 emitField = false;
             }
@@ -239,23 +289,8 @@ namespace isukces.code
         private string[] DefAttributes()
         {
             var x = new List<string>(4);
-            switch (Visibility)
-            {
-                case Visibilities.Public:
-                    x.Add("public");
-                    break;
-                case Visibilities.Protected:
-                    x.Add("protected");
-                    break;
-                case Visibilities.Private:
-                    x.Add("private");
-                    break;
-                case Visibilities.InterfaceDefault:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
+            var visibilityAsString = VisibilityToString(Visibility);
+            if (visibilityAsString != null) x.Add(visibilityAsString);
             if (IsInterface)
                 x.Add("interface");
             else
@@ -292,6 +327,7 @@ namespace isukces.code
                 i =>
                 {
                     WriteAttributes(writer, i.Attributes);
+                    WriteSummary(writer, i.Description);
                     if (i.IsConst)
                         writer
                             .WriteLine("public const {0} {1} = {2};", i.Type, i.Name, i.ConstValue)
@@ -460,10 +496,6 @@ namespace isukces.code
         public bool IsInterface { get; set; }
 
         /// <summary>
-        /// </summary>
-        readonly List<CsClass> _nestedClasses = new List<CsClass>();
-
-        /// <summary>
         ///     Własność jest tylko do odczytu.
         /// </summary>
         public IList<string> ImplementedInterfaces { get; } = new List<string>();
@@ -479,6 +511,10 @@ namespace isukces.code
         #region Fields
 
         /// <summary>
+        /// </summary>
+        private readonly List<CsClass> _nestedClasses = new List<CsClass>();
+
+        /// <summary>
         ///     methods
         /// </summary>
         private readonly List<CsMethod> _methods = new List<CsMethod>();
@@ -490,18 +526,5 @@ namespace isukces.code
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
 
         #endregion
-
-        public CsClass GetOrCreateNested(string typeName)
-        {
-            var existing = _nestedClasses
-                .FirstOrDefault(csClass => csClass.Name == typeName);
-            if (existing != null) return existing;
-            existing = new CsClass(typeName)
-            {
-                ClassOwner = this
-            };
-            _nestedClasses.Add(existing);
-            return existing;
-        }
     }
 }
