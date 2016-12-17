@@ -42,7 +42,7 @@ namespace isukces.code
 
         public static CsAttribute MkAttribute(string attributeName)
         {
-            return new CsAttribute {Name = attributeName};
+            return new CsAttribute { Name = attributeName };
         }
 
         // Private Methods 
@@ -129,7 +129,9 @@ namespace isukces.code
             description = description?.Trim();
             if (string.IsNullOrEmpty(description)) return;
             writer.WriteLine("/// <summary>");
-            writer.WriteLine("/// " + description.XmlEncode());
+            var lines = description.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()));
+            foreach (var line in lines)
+                writer.WriteLine("/// " + line.XmlEncode());
             writer.WriteLine("/// </summary>");
         }
 
@@ -195,7 +197,7 @@ namespace isukces.code
         {
             var parentNamespaces = ClassOwner?.GetNamespaces(true);
             var appendNamespace = DotNetType?.Namespace;
-            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] {appendNamespace};
+            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] { appendNamespace };
             var copy = GeneratorsHelper.MakeCopy(parentNamespaces, append2);
             return copy;
         }

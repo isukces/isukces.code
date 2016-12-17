@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace isukces.code
 {
-    public class CSCodeFormatter:CodeFormatter
+    public class CSCodeFormatter : CodeFormatter
     {
         #region Constructors
         public CSCodeFormatter()
@@ -12,12 +13,13 @@ namespace isukces.code
         #endregion
 
         #region Methods
-        public void AddNamespaces(string namespaceName) {
+        public void AddNamespaces(string namespaceName)
+        {
             Writeln("using {0};", namespaceName);
         }
         public void AddNamespaces(IEnumerable<string> namespaceName)
         {
-            foreach(var x in namespaceName)
+            foreach (var x in namespaceName)
                 AddNamespaces(x);
         }
         public string Cite(string x)
@@ -26,17 +28,19 @@ namespace isukces.code
         }
 
 
-        
+
         public void WriteSummary(string x)
         {
-            ///                 System.Xml.Linq.XObject el = new XElement("param", new XAttribute("name", p.Name), p.Description);
+            // System.Xml.Linq.XObject el = new XElement("param", new XAttribute("name", p.Name), p.Description);
             // cs.Writeln("/// {0}", el);
             Writeln("/// {0}", x);
         }
         public void WriteSingleLineSummary(string x)
         {
+            var lines = x.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()));
             Writeln("/// <summary>");
-            WriteSummary(x);
+            foreach (var line in lines)
+                WriteSummary(line);
             Writeln("/// </summary>");
         }
         #endregion
