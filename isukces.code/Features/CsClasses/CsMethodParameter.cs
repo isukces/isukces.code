@@ -105,9 +105,8 @@ namespace isukces.code
             // Fail-safe check return
             // see Albahari, Joseph; Ben Albahari (2010-01-20). C# 4.0 in a Nutshell: The Definitive Reference (p. 258).
             if (Equals(other)) return 0;
-            var _tmp_ = Name.CompareTo(other.Name);
-            if (_tmp_ != 0) return _tmp_;
-            return Type.CompareTo(other.Type);
+            var tmp = Name.CompareTo(other.Name);
+            return tmp != 0 ? tmp : Type.CompareTo(other.Type);
         }
 
 
@@ -138,10 +137,10 @@ namespace isukces.code
         public override int GetHashCode()
         {
             // Good implementation suggested by Josh Bloch
-            var _hash_ = 17;
-            _hash_ = _hash_ * 31 + Name.GetHashCode();
-            _hash_ = _hash_ * 31 + Type.GetHashCode();
-            return _hash_;
+            var hash = 17;
+            hash = hash * 31 + Name.GetHashCode();
+            hash = hash * 31 + Type.GetHashCode();
+            return hash;
         }
 
         public override string ToString()
@@ -150,6 +149,12 @@ namespace isukces.code
                 return string.Format("{0} const {1} {2} = {3}", Visibility.ToString().ToLower(), Type, Name,
                     _constValue);
             return string.Format("{0} {1} {2}", Visibility.ToString().ToLower(), Type, Name);
+        }
+
+        public CsMethodParameter WithDescription(string description)
+        {
+            Description = description;
+            return this;
         }
 
         /// <summary>
@@ -171,12 +176,7 @@ namespace isukces.code
         public string ConstValue
         {
             get { return _constValue; }
-            set
-            {
-                if (value != null)
-                    value = value.Trim();
-                _constValue = value;
-            }
+            set { _constValue = value?.Trim(); }
         }
 
         public bool IsConst { get; set; }
@@ -184,7 +184,7 @@ namespace isukces.code
         /// <summary>
         ///     nazwa parametru; własność jest tylko do odczytu.
         /// </summary>
-        public string Name { get; } = string.Empty;
+        public string Name { get; }
 
         /// <summary>
         ///     typ parametru; własność jest tylko do odczytu.
@@ -214,11 +214,7 @@ namespace isukces.code
         public IList<ICsAttribute> Attributes
         {
             get { return _attributes; }
-            set
-            {
-                if (value == null) value = new List<ICsAttribute>();
-                _attributes = value;
-            }
+            set { _attributes = value ?? new List<ICsAttribute>(); }
         }
 
         /// <summary>
