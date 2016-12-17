@@ -78,13 +78,23 @@ namespace isukces.code.AutoCode
             if (t == typeof(ushort)) return "ushort";
             if (t == typeof(object)) return "object";
             if (t == typeof(bool)) return "bool";
+            if (t == typeof(decimal)) return "decimal";
+
             Type[] args = null;
             if (t.IsGenericType)
             {
                 var gt = t.GetGenericTypeDefinition();
                 args = t.GetGenericArguments();
                 if (gt == typeof(Nullable<>))
-                    return SimpleTypeName(args[0]) + "?";
+                {
+                    var simple = SimpleTypeName(args[0]);
+                    if (string.IsNullOrEmpty(simple))
+                    {
+                        throw new NotSupportedException(args[0].ToString());
+                    }
+                    return simple + "?";
+                }
+
             }
 
             return null;
