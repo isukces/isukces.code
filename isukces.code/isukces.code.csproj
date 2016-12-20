@@ -177,6 +177,7 @@
     <Compile Include="Features\AutoCode\AutoCodeGenerator.cs" />
     <Compile Include="Features\AutoCode\AutoCodeGenerator.SimpleAutoCodeGeneratorContext.cs" />
     <Compile Include="Features\AutoCode\CopyFromGeneratorConfiguration.cs" />
+    <Compile Include="Features\AutoCode\Generators.BuilderGenerator.cs" />
     <Compile Include="Features\AutoCode\Generators.CopyFromGenerator.cs" />
     <Compile Include="Features\AutoCode\Generators.DependencyPropertyGenerator.cs" />
     <Compile Include="Features\AutoCode\Generators.LazyGenerator.cs" />
