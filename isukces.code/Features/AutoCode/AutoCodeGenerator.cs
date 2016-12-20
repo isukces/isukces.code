@@ -44,6 +44,7 @@ namespace isukces.code.AutoCode
             yield return new Generators.CopyFromGenerator();
 
             yield return new Generators.ShouldSerializeGenerator();
+            yield return new Generators.BuilderGenerator();
 
             yield return new Generators.ReactivePropertyGenerator();
             yield return new Generators.ReactiveCommandGenerator();

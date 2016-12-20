@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddInterfaceAttribute.cs" />
+    <Compile Include="Features\AutoCode\Auto.Builder.cs" />
     <Compile Include="Features\AutoCode\Auto.Cloneable.cs" />
     <Compile Include="Features\AutoCode\Auto.CopyBy.cs" />
     <Compile Include="Features\AutoCode\Auto.CopyFromAttribute.cs" />
