@@ -23,6 +23,8 @@ namespace isukces.code.AutoCode
                 var type = pi.PropertyType;
                 if (type == typeof(int))
                     return string.Format("{0} != 0", pi.Name);
+                if (type == typeof(bool))
+                    return string.Format("{0}", pi.Name);
                 if (type == typeof(Guid?))
                     return string.Format("{0} != null && !Guid.Empty.Equals({0}.Value)", pi.Name);
                 if (type == typeof(Guid))
@@ -61,6 +63,8 @@ namespace isukces.code.AutoCode
 
                 foreach (var i in list)
                 {
+                    if (!i.Item1.DeclaringType.Equals(Type))
+                        continue;
                     var m = Class.AddMethod("ShouldSerialize" + i.Item1.Name, "bool", null);
                     var writer = new CodeWriter();
                     var condition = i.Item2.Condition;
