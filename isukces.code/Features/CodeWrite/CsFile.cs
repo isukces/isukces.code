@@ -21,21 +21,11 @@ namespace isukces.code.CodeWrite
             _importNamespaces.Add(nameSpace);
         }
 
-        /*
-        public void Append(CsFile x)
-        {
-            Classes.AddRange(x.Classes);
-            _importNamespaces = GeneratorsHelper.MakeCopy(_importNamespaces, x._importNamespaces);
-        }
-        */
-
         public ISet<string> GetNamespaces(bool withParent)
         {
             var s = new HashSet<string>();
             foreach (var i in _importNamespaces)
                 s.Add(i);
-            foreach (var i in Namespaces)
-                s.Add(i.Name);
             return s;
         }
 
