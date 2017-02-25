@@ -194,6 +194,7 @@
     <Compile Include="Features\CsClasses\ClassMemberBase.cs" />
     <Compile Include="Features\CsClasses\CsEnumItem.cs" />
     <Compile Include="Features\AutoCode\+Interfaces\ICsClassFactory.cs" />
+    <Compile Include="Features\CsClasses\CsMethodExtensions.cs" />
     <Compile Include="ILangInfo.cs" />
     <Compile Include="Features\CsClasses\CsAttribute.cs" />
     <Compile Include="Features\CsClasses\CsClass.cs" />
