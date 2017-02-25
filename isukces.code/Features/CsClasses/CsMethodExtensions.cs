@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region using
+
+using System;
+
+#endregion
 
 namespace isukces.code
 {
@@ -27,6 +31,12 @@ namespace isukces.code
         public static CsMethod WithBody(this CsMethod method, CodeFormatter code)
         {
             return WithBody(method, code?.Text);
+        }
+
+        public static CsMethod WithStatic(this CsMethod method, bool isStatic = true)
+        {
+            method.IsStatic = isStatic;
+            return method;
         }
 
         private static string CutAttributeSuffix(string name)
