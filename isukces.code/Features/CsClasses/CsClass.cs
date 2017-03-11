@@ -42,7 +42,7 @@ namespace isukces.code
 
         public static CsAttribute MkAttribute(string attributeName)
         {
-            return new CsAttribute { Name = attributeName };
+            return new CsAttribute(attributeName);
         }
 
         // Private Methods 

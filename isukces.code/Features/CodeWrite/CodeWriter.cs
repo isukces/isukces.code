@@ -10,32 +10,10 @@ namespace isukces.code.CodeWrite
 {
     public class CodeWriter : ICodeWriter
     {
-        #region Instance Methods
-
         public void AppendText(string text)
         {
             _sb.Append(text);
         }
-
-        #endregion
-
-        #region Properties
-
-        public int Indent { get; set; }
-        public string Code => _sb.ToString();
-
-        #endregion
-
-        #region Fields
-
-        private readonly StringBuilder _sb = new StringBuilder();
-
-        #endregion
-
-        #region Methods
-
-        // Public Methods 
-
 
         public void Save(string filename)
         {
@@ -54,14 +32,16 @@ namespace isukces.code.CodeWrite
         }
 
 
-        // Private Methods 
-
         private void AddIndent()
         {
             if (Indent > 0)
                 _sb.Append(new string(' ', Indent * 4));
         }
 
-        #endregion Methods
+        public int Indent { get; set; }
+        public string Code => _sb.ToString();
+
+
+        private readonly StringBuilder _sb = new StringBuilder();
     }
 }

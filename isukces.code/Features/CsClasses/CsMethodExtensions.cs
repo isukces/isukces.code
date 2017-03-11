@@ -8,8 +8,6 @@ namespace isukces.code
 {
     public static class CsMethodExtensions
     {
-        #region Static Methods
-
         public static CsMethod WithAttribute(this CsMethod method, CsClass csClass, Type type)
         {
             return method.WithAttribute(csClass.TypeName(type));
@@ -18,7 +16,14 @@ namespace isukces.code
         public static CsMethod WithAttribute(this CsMethod method, string name)
         {
             name = CutAttributeSuffix(name);
-            method.Attributes.Add(new CsAttribute {Name = name});
+            method.Attributes.Add(new CsAttribute(name));
+            return method;
+        }
+
+        public static CsProperty WithAttribute(this CsProperty method, string name)
+        {
+            name = CutAttributeSuffix(name);
+            method.Attributes.Add(new CsAttribute(name));
             return method;
         }
 
@@ -46,18 +51,8 @@ namespace isukces.code
             return name;
         }
 
-        #endregion
-
-        #region Static Fields
-
         private static readonly int AttributeSuffixLength = AttributeSuffix.Length;
 
-        #endregion
-
-        #region Other
-
         private const string AttributeSuffix = "Attribute";
-
-        #endregion
     }
 }

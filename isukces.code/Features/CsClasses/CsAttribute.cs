@@ -1,21 +1,25 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using isukces.code.interfaces;
-
-#endregion
 
 namespace isukces.code
 {
     public class CsAttribute : ClassMemberBase, ICsAttribute
     {
-        #region Static Methods
+        public CsAttribute(string name)
+        {
+            Name = name;
+        }
 
         public static implicit operator string(CsAttribute a)
         {
             return a.ToString();
+        }
+
+        public static implicit operator CsAttribute(string name)
+        {
+            return new CsAttribute(name);
         }
 
         private static string KeyValuePairToString(KeyValuePair<string, string> x)
@@ -23,9 +27,6 @@ namespace isukces.code
             return string.IsNullOrEmpty(x.Key) ? x.Value : string.Format("{0} = {1}", x.Key, x.Value);
         }
 
-        #endregion
-
-        #region Instance Methods
 
         public override string ToString()
         {
@@ -55,9 +56,6 @@ namespace isukces.code
             return this;
         }
 
-        #endregion
-
-        #region Properties
 
         public string Name { get; set; }
 
@@ -66,7 +64,7 @@ namespace isukces.code
         {
             get
             {
-                if ((_list == null) || (_list.Count == 0))
+                if (_list == null || _list.Count == 0)
                     return Name;
                 return string.Format("{0}({1})",
                     Name,
@@ -74,12 +72,7 @@ namespace isukces.code
             }
         }
 
-        #endregion
-
-        #region Fields
 
         private readonly List<KeyValuePair<string, string>> _list = new List<KeyValuePair<string, string>>();
-
-        #endregion
     }
 }
