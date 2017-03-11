@@ -92,6 +92,8 @@ namespace isukces.code
         /// </summary>
         public bool EmitField { get; set; } = true;
 
+        public bool IsVirtual { get; set; }
+
         /// <summary>
         /// </summary>
         public bool MakeAutoImplementIfPossible { get; set; }

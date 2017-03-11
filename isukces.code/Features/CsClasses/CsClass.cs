@@ -256,6 +256,7 @@ namespace isukces.code
             var visibility = IsInterface || (prop.Visibility == Visibilities.InterfaceDefault)
                 ? ""
                 : prop.Visibility.ToString().ToLower() + " ";
+            var virtual1 = IsInterface || !prop.IsVirtual ? "" : "virtual ";
             WriteSummary(writer, prop.Description);
             WriteAttributes(writer, prop.Attributes);
             var emitField = prop.EmitField && !IsInterface;
@@ -264,15 +265,19 @@ namespace isukces.code
                 (prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
                  string.IsNullOrEmpty(prop.OwnGetter)))
             {
-                writer.WriteLine("{0}{1} {2} {{ {3}get; {4}set; }}",
-                        visibility, prop.Type, prop.Name, OptionalVisibility(prop.GetterVisibility),
-                        OptionalVisibility(prop.SetterVisibility))
+                writer.WriteLine(
+                    "{0}{1}{2} {3} {{ {4}get; {5}set; }}", 
+                    visibility, 
+                    virtual1, 
+                    prop.Type, 
+                    prop.Name,
+                    OptionalVisibility(prop.GetterVisibility), OptionalVisibility(prop.SetterVisibility))
                     .EmptyLine();
                 emitField = false;
             }
             else
             {
-                writer.Open("{0}{1} {2}", visibility, prop.Type, prop.Name);
+                writer.Open($"{visibility}{virtual1}{prop.Type} {prop.Name}");
                 {
                     WriteGetterOrSetter(writer, getterLines, "get", prop.GetterVisibility);
                     if (!prop.IsPropertyReadOnly)
