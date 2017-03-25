@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using isukces.code.AutoCode;
 using isukces.code.interfaces;
 
@@ -13,7 +14,17 @@ namespace isukces.code.CodeWrite
             Name = name;
         }
 
-        public ISet<string> ImportNamespaces { get; } = new HashSet<string>();
+        public CsClass AddClass(CsClass csClass)
+        {
+            ((List<CsClass>)Classes).Add(csClass);
+            csClass.ClassOwner = this;
+            return csClass;
+        }
+
+        public void AddImportNamespace(string nameSpace)
+        {
+            ImportNamespaces.Add(nameSpace);
+        }
 
         public ISet<string> GetNamespaces(bool withParent)
         {
@@ -25,24 +36,21 @@ namespace isukces.code.CodeWrite
                 withParent ? null : pNs);
         }
 
+        public CsClass GetOrCreateClass(string csClassName)
+        {
+            var existing = Classes.FirstOrDefault(a => a.Name == csClassName);
+            return existing ?? AddClass(new CsClass(csClassName));
+        }
+
         public string TypeName(Type type)
         {
             return GeneratorsHelper.TypeName(type, this);
         }
 
-        public void AddImportNamespace(string nameSpace)
-        {
-            ImportNamespaces.Add(nameSpace);
-        }
+        public ISet<string> ImportNamespaces { get; } = new HashSet<string>();
 
         public INamespaceOwner Owner { get; set; }
         public string Name { get; private set; }
         public IReadOnlyList<CsClass> Classes { get; private set; } = new List<CsClass>();
-
-        public void AddClass(CsClass csClass)
-        {
-            ((List<CsClass>)Classes).Add(csClass);
-            csClass.ClassOwner = this;
-        }
     }
 }
