@@ -50,6 +50,8 @@ namespace isukces.code
                 sValue = (bool)value ? "true" : "false";
             else if (value is string)
                 sValue = ((string)value).CsharpCite();
+            else if (value is IDirectCode)
+                sValue = ((IDirectCode)value).Code;
             else
                 throw new NotSupportedException(value.GetType().ToString());
             _list.Add(new KeyValuePair<string, string>(name, sValue));
