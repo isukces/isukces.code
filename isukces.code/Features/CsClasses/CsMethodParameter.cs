@@ -175,8 +175,8 @@ namespace isukces.code
         /// </summary>
         public string ConstValue
         {
-            get { return _constValue; }
-            set { _constValue = value?.Trim(); }
+            get => _constValue;
+            set => _constValue = value?.Trim();
         }
 
         public bool IsConst { get; set; }
@@ -200,7 +200,7 @@ namespace isukces.code
         /// </summary>
         public string Description
         {
-            get { return _description; }
+            get => _description;
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -213,8 +213,8 @@ namespace isukces.code
         /// </summary>
         public IList<ICsAttribute> Attributes
         {
-            get { return _attributes; }
-            set { _attributes = value ?? new List<ICsAttribute>(); }
+            get => _attributes;
+            set => _attributes = value ?? new List<ICsAttribute>();
         }
 
         /// <summary>

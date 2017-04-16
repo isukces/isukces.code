@@ -15,7 +15,7 @@ namespace isukces.code
 
         public IList<ICsAttribute> Attributes
         {
-            get { return _attributes; }
+            get => _attributes;
             set
             {
                 if (value == null) value = new List<ICsAttribute>();

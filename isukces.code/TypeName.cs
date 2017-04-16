@@ -35,9 +35,7 @@ namespace isukces.code
                     return Reductor[d];
                 return d;
             }
-            set {
-                domain = value;
-            }
+            set => domain = value;
         }
         private string domain;
 
@@ -78,9 +76,7 @@ namespace isukces.code
                 }
                 return n;
             }
-            set {
-                name = value;
-            }
+            set => name = value;
         }
         private string name;
 

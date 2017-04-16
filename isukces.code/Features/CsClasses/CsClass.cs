@@ -424,7 +424,7 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get { return _name; }
+            get => _name;
             private set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -437,7 +437,7 @@ namespace isukces.code
         /// </summary>
         public string BaseClass
         {
-            get { return _baseClass; }
+            get => _baseClass;
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -457,7 +457,7 @@ namespace isukces.code
         /// </summary>
         public List<CsProperty> Properties
         {
-            get { return _properties; }
+            get => _properties;
             set
             {
                 if (value == null) value = new List<CsProperty>();
@@ -469,7 +469,7 @@ namespace isukces.code
         /// </summary>
         public List<CsMethodParameter> Fields
         {
-            get { return _fields; }
+            get => _fields;
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();

@@ -63,7 +63,7 @@ namespace isukces.code
         /// </summary>
         public string OwnGetter
         {
-            get { return _ownGetter; }
+            get => _ownGetter;
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -75,7 +75,7 @@ namespace isukces.code
         /// </summary>
         public string OwnSetter
         {
-            get { return _ownSetter; }
+            get => _ownSetter;
             set
             {
                 value = value?.Trim() ?? string.Empty;
