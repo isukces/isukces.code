@@ -156,15 +156,15 @@ namespace isukces.code.CodeWrite
         /// </summary>
         public List<CsEnum> Enums
         {
-            get => _enums;
-            set => _enums = value ?? new List<CsEnum>();
+            get { return _enums; }
+            set { _enums = value ?? new List<CsEnum>(); }
         }
 
         /// <summary>
         /// </summary>
         public string SuggestedFileName
         {
-            get => _suggestedFileName;
+            get { return _suggestedFileName; }
             set
             {
                 value = value?.Trim() ?? string.Empty;

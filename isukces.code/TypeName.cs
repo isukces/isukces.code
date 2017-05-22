@@ -22,7 +22,8 @@ namespace isukces.code
         /// </summary>
         public Type BaseType { get; set; }
 
-        public string Domain {
+        public string Domain
+        {
             get
             {
                 if (BaseType == (object)null)
@@ -35,8 +36,9 @@ namespace isukces.code
                     return Reductor[d];
                 return d;
             }
-            set => domain = value;
+            set { domain = value; }
         }
+
         private string domain;
 
         /// <summary>
@@ -54,7 +56,8 @@ namespace isukces.code
             }
         }
 
-        public string Name {
+        public string Name
+        {
             get
             {
                 if (BaseType == (object)null)
@@ -76,8 +79,9 @@ namespace isukces.code
                 }
                 return n;
             }
-            set => name = value;
+            set { name = value; }
         }
+
         private string name;
 
         /// <summary>

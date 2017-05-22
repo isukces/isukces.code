@@ -138,7 +138,7 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get => _name;
+            get { return _name; }
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -147,12 +147,11 @@ namespace isukces.code
         }
 
 
-
         /// <summary>
         /// </summary>
         public string ResultType
         {
-            get => _resultType;
+            get { return _resultType; }
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -164,7 +163,7 @@ namespace isukces.code
         /// </summary>
         public List<CsMethodParameter> Parameters
         {
-            get => _parameters;
+            get { return _parameters; }
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
@@ -193,7 +192,7 @@ namespace isukces.code
         /// </summary>
         public string Body
         {
-            get => _body;
+            get { return _body; }
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -206,7 +205,7 @@ namespace isukces.code
         /// </summary>
         public string BaseConstructorCall
         {
-            get => _baseConstructorCall;
+            get { return _baseConstructorCall; }
             set
             {
                 value = value?.Trim() ?? string.Empty;

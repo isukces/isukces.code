@@ -63,7 +63,7 @@ namespace isukces.code
         /// </summary>
         public string OwnGetter
         {
-            get => _ownGetter;
+            get { return _ownGetter; }
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -75,7 +75,7 @@ namespace isukces.code
         /// </summary>
         public string OwnSetter
         {
-            get => _ownSetter;
+            get { return _ownSetter; }
             set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -86,7 +86,10 @@ namespace isukces.code
         /// <summary>
         ///     nazwa zmiennej dla własności; własność jest tylko do odczytu.
         /// </summary>
-        public string PropertyFieldName => Name.PropertyBackingFieldName();
+        public string PropertyFieldName
+        {
+            get { return Name.PropertyBackingFieldName(); }
+        }
 
         /// <summary>
         /// </summary>

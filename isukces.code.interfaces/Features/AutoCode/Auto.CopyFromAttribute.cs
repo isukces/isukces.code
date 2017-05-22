@@ -13,7 +13,7 @@ namespace isukces.code.interfaces
 
             public string CopyByReference
             {
-                get => _copyByReference;
+                get { return _copyByReference; }
                 set
                 {
                     _copyByReference = value;
@@ -27,7 +27,7 @@ namespace isukces.code.interfaces
 
             public string Skip
             {
-                get => _skip;
+                get { return _skip; }
                 set
                 {
                     _skip = value;

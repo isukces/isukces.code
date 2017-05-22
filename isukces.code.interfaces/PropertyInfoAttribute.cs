@@ -27,7 +27,7 @@ namespace isukces.code.interfaces
         /// </summary>
         public string Description
         {
-            get => description;
+            get { return description; }
             set { if (value == (object)null) value = string.Empty; description = value; }
         }
 
