@@ -101,7 +101,7 @@ namespace isukces.code.AutoCode
                     DotNetType = type,
                     ClassOwner = _csFile,
                     Visibility = Visibilities.InterfaceDefault,
-                    Features = LanguageFeatures.ExpressionBodied
+                    Features = LanguageFeatures.None
                 };
                 var ns = _csFile.GetOrCreateNamespace(type.Namespace);
                 ns.AddClass(a);

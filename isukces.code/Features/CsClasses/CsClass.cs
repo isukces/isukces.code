@@ -68,7 +68,7 @@ namespace isukces.code
                 action(i);
             if (hasRegions)
                 writer.WriteLine("#endregion");
-            return true;
+            return hasRegions;
         }
 
         private static string OptionalVisibility(Visibilities? memberVisibility)
@@ -214,7 +214,7 @@ namespace isukces.code
             existing = new CsClass(typeName)
             {
                 ClassOwner = this,
-                Features = LanguageFeatures.ExpressionBodied
+                Features = LanguageFeatures.None
             };
             _nestedClasses.Add(existing);
             return existing;
@@ -257,7 +257,7 @@ namespace isukces.code
         {
             var fieldName = prop.PropertyFieldName;
 
-            var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBodied));
+            var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
             var visibility = IsInterface || (prop.Visibility == Visibilities.InterfaceDefault)
                 ? ""
                 : prop.Visibility.ToString().ToLower() + " ";
@@ -286,7 +286,7 @@ namespace isukces.code
                 {
                     WriteGetterOrSetter(writer, getterLines2, "get", prop.GetterVisibility);
                     if (!prop.IsPropertyReadOnly)
-                        WriteGetterOrSetter(writer, prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBodied)), "set", prop.SetterVisibility);
+                        WriteGetterOrSetter(writer, prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody)), "set", prop.SetterVisibility);
                 }
                 writer.Close().EmptyLine();
             }
@@ -535,7 +535,8 @@ namespace isukces.code
     [Flags]
     public enum LanguageFeatures
     {
-        ExpressionBodied = 1,
+        None =0,
+        ExpressionBody = 1,
         Regions = 2
     }
 }
