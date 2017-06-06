@@ -100,7 +100,8 @@ namespace isukces.code.AutoCode
                     IsPartial = true,
                     DotNetType = type,
                     ClassOwner = _csFile,
-                    Visibility = Visibilities.InterfaceDefault
+                    Visibility = Visibilities.InterfaceDefault,
+                    Features = LanguageFeatures.ExpressionBodied
                 };
                 var ns = _csFile.GetOrCreateNamespace(type.Namespace);
                 ns.AddClass(a);

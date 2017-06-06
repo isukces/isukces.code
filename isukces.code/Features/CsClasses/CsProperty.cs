@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using isukces.code.interfaces;
 
 namespace isukces.code
 {
     public class CsProperty : CsMethodParameter, ICsClassMember
     {
-        #region Constructors
-
         /// <summary>
         ///     Tworzy instancję obiektu
         ///     <param name="name">nazwa parametru</param>
@@ -38,9 +35,22 @@ namespace isukces.code
         {
         }
 
-        #endregion
+        public CodeLines GetGetterLines(bool allowExpressionBodies)
+        {
+            var tmp = string.IsNullOrEmpty(OwnGetter)
+                ? new CodeLines(new[] { string.Format("{0};", PropertyFieldName) }, true)
+                : new CodeLines(OwnGetter.Split('\r', '\n'), OwnGetterIsExpression);
+            if (allowExpressionBodies)
+                return tmp;
+            return tmp.MakeReturnNoExpressionBody();
+        }
 
-        #region Instance Methods
+        public CodeLines GetSetterLines(bool allowExpressionBodied)
+        {
+            return string.IsNullOrEmpty(OwnSetter)
+                ? new CodeLines(new[] { string.Format("{0} = value;", PropertyFieldName) })
+                : new CodeLines(OwnSetter.Split('\r', '\n'), OwnSetterIsExpression);
+        }
 
         /// <summary>
         ///     Zwraca tekstową reprezentację obiektu
@@ -51,10 +61,6 @@ namespace isukces.code
             return string.Format("property {0} {1}", Name, Type);
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         /// </summary>
         public bool IsPropertyReadOnly { get; set; }
@@ -63,33 +69,25 @@ namespace isukces.code
         /// </summary>
         public string OwnGetter
         {
-            get { return _ownGetter; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _ownGetter = value;
-            }
+            get => _ownGetter;
+            set => _ownGetter = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
         /// </summary>
         public string OwnSetter
         {
-            get { return _ownSetter; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _ownSetter = value;
-            }
+            get => _ownSetter;
+            set => _ownSetter = value?.Trim() ?? string.Empty;
         }
+
+        public bool OwnGetterIsExpression { get; set; }
+        public bool OwnSetterIsExpression { get; set; }
 
         /// <summary>
         ///     nazwa zmiennej dla własności; własność jest tylko do odczytu.
         /// </summary>
-        public string PropertyFieldName
-        {
-            get { return Name.PropertyBackingFieldName(); }
-        }
+        public string PropertyFieldName => Name.PropertyBackingFieldName();
 
         /// <summary>
         /// </summary>
@@ -106,28 +104,29 @@ namespace isukces.code
         public Visibilities FieldVisibility { get; set; } = Visibilities.Private;
 
 
-
-        #endregion
-
-        #region Fields
-
         private string _ownGetter = string.Empty;
         private string _ownSetter = string.Empty;
+    }
 
-        #endregion
-
-        public string[] GetSetterLines()
+    public class CodeLines
+    {
+        public CodeLines(string[] lines, bool isExpressionBody = false)
         {
-            return string.IsNullOrEmpty(OwnSetter)
-                ? new[] { string.Format("{0} = value;", PropertyFieldName) }
-                : OwnSetter.Split('\r', '\n').Where(ii => ii.Trim() != "").ToArray();
+            Lines = lines?.Where(a => a != null && a.Trim() != "").ToArray();
+            IsExpressionBody = isExpressionBody;
         }
 
-        public string[] GetGetterLines()
+        public string[] Lines { get; set; }
+        public bool IsExpressionBody { get; set; }
+
+        public CodeLines MakeReturnNoExpressionBody()
         {
-            return string.IsNullOrEmpty(OwnGetter)
-                ? new[] { string.Format("return {0};", PropertyFieldName) }
-                : OwnGetter.Split('\r', '\n').Where(ii => ii.Trim() != "").ToArray();
+            if (!IsExpressionBody || Lines == null || Lines.Length == 0)
+                return this;
+            Lines[0] = "return " + Lines[0];
+            IsExpressionBody = false;
+            return this;
+
         }
     }
 }
