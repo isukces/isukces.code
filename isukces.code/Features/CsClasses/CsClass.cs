@@ -213,8 +213,7 @@ namespace isukces.code
             if (existing != null) return existing;
             existing = new CsClass(typeName)
             {
-                ClassOwner = this,
-                Features = LanguageFeatures.None
+                ClassOwner = this
             };
             _nestedClasses.Add(existing);
             return existing;
@@ -503,7 +502,7 @@ namespace isukces.code
         /// </summary>
         public bool IsInterface { get; set; }
 
-        public LanguageFeatures Features { get; set; } = LanguageFeatures.Regions;
+        public LanguageFeatures Features { get; set; } = DefaultLanguageFeatures;
 
         /// <summary>
         ///     Własność jest tylko do odczytu.
@@ -530,6 +529,8 @@ namespace isukces.code
 
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
+
+        public static LanguageFeatures DefaultLanguageFeatures { get; set; } = LanguageFeatures.None;
     }
 
     [Flags]

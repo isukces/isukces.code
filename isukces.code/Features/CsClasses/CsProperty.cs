@@ -45,11 +45,12 @@ namespace isukces.code
             return tmp.MakeReturnNoExpressionBody();
         }
 
-        public CodeLines GetSetterLines(bool allowExpressionBodied)
+        public CodeLines GetSetterLines(bool allowExpressionBodies)
         {
-            return string.IsNullOrEmpty(OwnSetter)
-                ? new CodeLines(new[] { string.Format("{0} = value;", PropertyFieldName) })
-                : new CodeLines(OwnSetter.Split('\r', '\n'), OwnSetterIsExpression);
+            var tmp = string.IsNullOrEmpty(OwnSetter)
+                ? new CodeLines(new[] { string.Format("{0} = value;", PropertyFieldName) }, allowExpressionBodies)
+                : new CodeLines(OwnSetter.Split('\r', '\n'), OwnSetterIsExpression && allowExpressionBodies);
+            return tmp;
         }
 
         /// <summary>
@@ -126,7 +127,15 @@ namespace isukces.code
             Lines[0] = "return " + Lines[0];
             IsExpressionBody = false;
             return this;
-
         }
+
+
+        public override string ToString()
+        {
+            if (IsExpressionBody)
+                return "=>" + string.Join("\r\n", Lines);
+            return string.Join("\r\n", Lines);
+        }
+
     }
 }
