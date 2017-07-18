@@ -165,12 +165,17 @@ namespace isukces.code
 
         public CsMethodParameter AddField(string fieldName, Type type)
         {
-            var field = new CsMethodParameter(fieldName, TypeName(type));
+            return AddField(fieldName, TypeName(type));
+        }
+
+        public CsMethodParameter AddField(string fieldName, string type)
+        {
+            var field = new CsMethodParameter(fieldName, type);
             Fields.Add(field);
             return field;
         }
 
-        public CsMethod AddMethod(string name, string type, string description)
+        public CsMethod AddMethod(string name, string type, string description = null)
         {
             var m = new CsMethod(name, type)
             {
@@ -266,10 +271,10 @@ namespace isukces.code
                  string.IsNullOrEmpty(prop.OwnGetter)))
             {
                 writer.WriteLine(
-                    "{0}{1}{2} {3} {{ {4}get; {5}set; }}", 
-                    visibility, 
-                    virtual1, 
-                    prop.Type, 
+                    "{0}{1}{2} {3} {{ {4}get; {5}set; }}",
+                    visibility,
+                    virtual1,
+                    prop.Type,
                     prop.Name,
                     OptionalVisibility(prop.GetterVisibility), OptionalVisibility(prop.SetterVisibility))
                     .EmptyLine();
