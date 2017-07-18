@@ -147,7 +147,6 @@ namespace isukces.code
         }
 
 
-
         /// <summary>
         /// </summary>
         public string ResultType

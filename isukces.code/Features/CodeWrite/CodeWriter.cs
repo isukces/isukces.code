@@ -39,7 +39,10 @@ namespace isukces.code.CodeWrite
         }
 
         public int Indent { get; set; }
-        public string Code => _sb.ToString();
+        public string Code
+        {
+            get { return _sb.ToString(); }
+        }
 
 
         private readonly StringBuilder _sb = new StringBuilder();

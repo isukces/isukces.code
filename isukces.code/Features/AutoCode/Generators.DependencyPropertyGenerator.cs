@@ -59,8 +59,10 @@ namespace isukces.code.AutoCode
                 {
                     var f = csClass.AddProperty(attribute.Name, attribute.PropertyType);
                     f.Visibility = Visibilities.Public;
-                    f.OwnGetter = string.Format("return ({0})GetValue({1});", propertyTypeName, fn);
+                    f.OwnGetter = string.Format("({0})GetValue({1});", propertyTypeName, fn);
+                    f.OwnGetterIsExpression = true;
                     f.OwnSetter = string.Format("SetValue({0}Property, value);", attribute.Name);
+                    f.OwnSetterIsExpression = true;
                     f.EmitField = false;
                     f.IsPropertyReadOnly = false;
                 }

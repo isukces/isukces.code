@@ -1,6 +1,4 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -8,14 +6,11 @@ using isukces.code.AutoCode;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
-#endregion
-
+// ReSharper disable once CheckNamespace
 namespace isukces.code
 {
     public class CsClass : ClassMemberBase, IClassOwner
     {
-        #region Constructors
-
         /// <summary>
         ///     Tworzy instancję obiektu
         ///     <param name="name">Nazwa klasy</param>
@@ -36,10 +31,6 @@ namespace isukces.code
             BaseClass = baseClass;
         }
 
-        #endregion
-
-        #region Static Methods
-
         public static CsAttribute MkAttribute(string attributeName)
         {
             return new CsAttribute(attributeName);
@@ -47,7 +38,7 @@ namespace isukces.code
 
         // Private Methods 
 
-        private static bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
+        private bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
             string region)
         {
             var csMethods = m as CsMethod[] ?? m.ToArray();
@@ -63,19 +54,21 @@ namespace isukces.code
             return addEmptyLineBeforeRegion;
         }
 
-        private static bool Action<T>(ICodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
+        private bool Action<T>(ICodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
         {
             var enumerable = list as IList<T> ?? list.ToList();
             if (!enumerable.Any()) return false;
-            writer.WriteLine("#region " + region);
+            var hasRegions = Features.HasFlag(LanguageFeatures.Regions);
+            if (hasRegions)
             {
+                writer.WriteLine("#region " + region);
                 writer.EmptyLine();
-                foreach (var i in enumerable)
-                    action(i);
             }
-            writer.WriteLine("#endregion");
-
-            return true;
+            foreach (var i in enumerable)
+                action(i);
+            if (hasRegions)
+                writer.WriteLine("#endregion");
+            return hasRegions;
         }
 
         private static string OptionalVisibility(Visibilities? memberVisibility)
@@ -109,18 +102,33 @@ namespace isukces.code
                 writer.WriteLine("[{0}]", j.Code);
         }
 
-        private static void WriteGetterOrSetter(ICodeWriter writer, IReadOnlyList<string> lines, string keyWord,
+        private static void WriteGetterOrSetter(ICodeWriter writer, CodeLines code, string keyWord,
             Visibilities? memberVisibility)
         {
-            if ((lines == null) || (lines.Count <= 0)) return;
-            if (lines.Count == 1)
-                writer.WriteLine("{0}{1} {{ {2} }}", OptionalVisibility(memberVisibility), keyWord, lines[0]);
+            if (code?.Lines == null || code.Lines.Length == 0) return;
+            if (code.IsExpressionBody)
+            {
+                if (code.Lines.Length == 1)
+                    writer.WriteLine("{0}{1} => {2}", OptionalVisibility(memberVisibility), keyWord, code.Lines[0]);
+                else
+                {
+                    writer.Indent++;
+                    foreach (var iii in code.Lines)
+                        writer.WriteLine(iii);
+                    writer.Indent--;
+                }
+            }
             else
             {
-                writer.Open(keyWord);
-                foreach (var iii in lines)
-                    writer.WriteLine(iii);
-                writer.Close();
+                if (code.Lines.Length == 1)
+                    writer.WriteLine("{0}{1} {{ {2} }}", OptionalVisibility(memberVisibility), keyWord, code.Lines[0]?.Trim());
+                else
+                {
+                    writer.Open(keyWord);
+                    foreach (var iii in code.Lines)
+                        writer.WriteLine(iii);
+                    writer.Close();
+                }
             }
         }
 
@@ -134,10 +142,6 @@ namespace isukces.code
                 writer.WriteLine("/// " + line.XmlEncode());
             writer.WriteLine("/// </summary>");
         }
-
-        #endregion
-
-        #region Instance Methods
 
         // Public Methods 
 
@@ -257,7 +261,7 @@ namespace isukces.code
         {
             var fieldName = prop.PropertyFieldName;
 
-            var getterLines = prop.GetGetterLines();
+            var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
             var visibility = IsInterface || (prop.Visibility == Visibilities.InterfaceDefault)
                 ? ""
                 : prop.Visibility.ToString().ToLower() + " ";
@@ -284,9 +288,9 @@ namespace isukces.code
             {
                 writer.Open($"{visibility}{virtual1}{prop.Type} {prop.Name}");
                 {
-                    WriteGetterOrSetter(writer, getterLines, "get", prop.GetterVisibility);
+                    WriteGetterOrSetter(writer, getterLines2, "get", prop.GetterVisibility);
                     if (!prop.IsPropertyReadOnly)
-                        WriteGetterOrSetter(writer, prop.GetSetterLines(), "set", prop.SetterVisibility);
+                        WriteGetterOrSetter(writer, prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody)), "set", prop.SetterVisibility);
                 }
                 writer.Close().EmptyLine();
             }
@@ -418,10 +422,6 @@ namespace isukces.code
             return IsAbstract || _methods.Any(i => i.IsAbstract);
         }
 
-        #endregion
-
-        #region Properties
-
         public IClassOwner ClassOwner { get; set; }
 
         /// <summary>
@@ -507,6 +507,8 @@ namespace isukces.code
         /// </summary>
         public bool IsInterface { get; set; }
 
+        public LanguageFeatures Features { get; set; } = DefaultLanguageFeatures;
+
         /// <summary>
         ///     Własność jest tylko do odczytu.
         /// </summary>
@@ -517,10 +519,6 @@ namespace isukces.code
         ///     obiekt, na podstawie którego wygenerowano klasę, przydatne przy dalszej obróbce
         /// </summary>
         public object GeneratorSource { get; set; }
-
-        #endregion
-
-        #region Fields
 
         /// <summary>
         /// </summary>
@@ -537,6 +535,14 @@ namespace isukces.code
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
 
-        #endregion
+        public static LanguageFeatures DefaultLanguageFeatures { get; set; } = LanguageFeatures.None;
+    }
+
+    [Flags]
+    public enum LanguageFeatures
+    {
+        None =0,
+        ExpressionBody = 1,
+        Regions = 2
     }
 }

@@ -5,22 +5,34 @@
         /// <summary>
         /// Dodaj BOM dla UTF-8
         /// </summary>
-        public bool AddBOM => true;
+        public bool AddBOM
+        {
+            get { return true; }
+        }
 
         /// <summary>
         /// tekst zamykający
         /// </summary>
-        public string CloseText => "}";
+        public string CloseText
+        {
+            get { return "}"; }
+        }
 
         /// <summary>
         /// Komentarz jednolinijkowy
         /// </summary>
-        public string OneLineComment => "//";
+        public string OneLineComment
+        {
+            get { return "//"; }
+        }
 
         /// <summary>
         /// tekst otwierający
         /// </summary>
-        public string OpenText => "{";
+        public string OpenText
+        {
+            get { return "{"; }
+        }
 
         #endregion
 

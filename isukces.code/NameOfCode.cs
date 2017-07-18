@@ -10,6 +10,9 @@ namespace isukces.code
         }
 
         public string Argument { get; }
-        public string Code => "nameof(" + Argument + ")";
+        public string Code
+        {
+            get { return "nameof(" + Argument + ")"; }
+        }
     }
 }
