@@ -194,5 +194,23 @@ export namespace Namespace
             var expected = "var i = 1;";
             Assert.Equal(expected.Trim(), code);
         }
+
+        [Fact]
+        public void T09_Should_create_interface_with_optional_field()
+        {
+            var c = new TsInterface("SampleInterface");
+
+            var f = c.AddField("value");
+            f.Type = "number";
+            f.Initializer = "7";
+            f.IsOptional = true;
+            var code = GetCode(c);
+            var expected = @"
+interface SampleInterface
+{
+    value?: number;
+}";
+            Assert.Equal(expected.Trim(), code);
+        }
     }
 }

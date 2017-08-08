@@ -27,6 +27,8 @@ namespace isukces.code.Typescript
             if (IsStatic)
                 sb.Append(" static");
             sb.Append(" " + Name);
+            if (headerOnly && IsOptional)
+                sb.Append("?");
             if (!string.IsNullOrEmpty(Type))
                 sb.Append(": " + Type);
             if (!string.IsNullOrEmpty(Initializer) && !headerOnly)
@@ -39,5 +41,6 @@ namespace isukces.code.Typescript
         public bool IsStatic { get; set; }
         public TsVisibility Visibility { get; set; }
         public string Initializer { get; set; }
+        public bool IsOptional { get; set; }
     }
 }
