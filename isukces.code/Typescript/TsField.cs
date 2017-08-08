@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Text;
 
 namespace isukces.code.Typescript
 {
@@ -15,22 +15,25 @@ namespace isukces.code.Typescript
 
         public void WriteCodeTo(TsWriteContext cf)
         {
-            var line = string.Join(" ", GetHeaderItems());
+            var line = GetHeaderItems(cf.Flags.HasFlag(TsWriteContextFlags.HeadersOnly));
             cf.Formatter.Writeln(line + ";");
         }
 
-        private IEnumerable<string> GetHeaderItems()
+        private string GetHeaderItems(bool headerOnly)
         {
+            var sb = new StringBuilder();
             if (Visibility != TsVisibility.Default)
-                yield return Visibility.ToString().ToLower();
+                sb.Append(Visibility.ToString().ToLower());
             if (IsStatic)
-                yield return "static";
-            yield return Name;
-            if (!string.IsNullOrEmpty(Initializer))
+                sb.Append(" static");
+            sb.Append(" " + Name);
+            if (!string.IsNullOrEmpty(Type))
+                sb.Append(": " + Type);
+            if (!string.IsNullOrEmpty(Initializer) && !headerOnly)
             {
-                yield return "=";
-                yield return Initializer;
+                sb.Append(" = " + Initializer);
             }
+            return sb.ToString().Trim();
         }
 
         public bool IsStatic { get; set; }

@@ -2,7 +2,7 @@
 
 namespace isukces.code.Typescript
 {
-    public abstract class TsClassOrEnum
+    public abstract class TsNamespaceMember : ITsCodeProvider
     {
         public TsDecorator AddDecorator(string name)
         {
@@ -14,6 +14,9 @@ namespace isukces.code.Typescript
             return dec;
         }
 
+        public abstract void WriteCodeTo(TsWriteContext cf);
+
+
         public string Name { get; set; }
         public bool IsExported { get; set; }
         public List<TsDecorator> Decorators { get; set; } = new List<TsDecorator>();
@@ -21,7 +24,7 @@ namespace isukces.code.Typescript
 
     public static class TsClassOrEnumExtensions
     {
-        public static T WithIsExported<T>(this T self, bool isExported = true) where T : TsClassOrEnum
+        public static T WithIsExported<T>(this T self, bool isExported = true) where T : TsNamespaceMember
         {
             self.IsExported = isExported;
             return self;

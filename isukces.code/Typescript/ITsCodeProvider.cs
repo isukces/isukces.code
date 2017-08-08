@@ -1,4 +1,6 @@
-﻿namespace isukces.code.Typescript
+﻿using System;
+
+namespace isukces.code.Typescript
 {
     public interface ITsCodeProvider
     {
@@ -13,5 +15,21 @@
         }
 
         public CodeFormatter Formatter { get; }
+
+        public TsWriteContext CopyWithFlag(TsWriteContextFlags f)
+        {
+            return new TsWriteContext(Formatter)
+            {
+                Flags = Flags | f
+            };
+        }
+        public TsWriteContextFlags Flags { get; set; }
+    }
+
+    [Flags]
+    public enum TsWriteContextFlags
+    {
+        None = 0,
+        HeadersOnly = 1
     }
 }

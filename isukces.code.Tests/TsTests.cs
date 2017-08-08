@@ -138,5 +138,49 @@ class Something
 
         }
 
+
+        [Fact]
+        public void T06_Should_create_interface_with_method()
+        {
+            var c = new TsInterface("SampleInterface");
+            var m = c.AddMethod("getValue");
+            m.IsStatic = true;
+            m.ResultType = "number";
+            m.WithArgument("id", "string");
+            m.Body = "return 1;";
+
+            var code = GetCode(c);
+            var expected = @"
+interface SampleInterface
+{
+    static getValue(id: string) : number;
+}";
+            Assert.Equal(expected.Trim(), code);
+
+
+            m.Body = "return id + 1;";
+            code = GetCode(c);
+            expected = @"
+interface SampleInterface
+{
+    static getValue(id: string) : number;
+}";
+            Assert.Equal(expected.Trim(), code);
+
+
+            var f = c.AddField("value");
+            f.Type = "number";
+            f.Initializer = "7";
+            code = GetCode(c);
+            expected = @"
+interface SampleInterface
+{
+    static getValue(id: string) : number;
+    value: number;
+}";
+            Assert.Equal(expected.Trim(), code);
+        }
+
+
     }
 }

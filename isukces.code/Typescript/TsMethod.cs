@@ -36,7 +36,13 @@ namespace isukces.code.Typescript
         public void WriteCodeTo(TsWriteContext ctx)
         {
             var cf = ctx.Formatter;
-            cf.Open(string.Join(" ", GetHeaderItems()));
+            var header = string.Join(" ", GetHeaderItems());
+            if (ctx.Flags.HasFlag(TsWriteContextFlags.HeadersOnly))
+            {
+                cf.Writeln(header + ";");
+                return;
+            }
+            cf.Open(header);
             if (!string.IsNullOrEmpty(Body))
             {
                 var b = Body.Replace("\r\n", "\n").Split('\n');

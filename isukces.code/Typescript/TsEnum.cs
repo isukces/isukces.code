@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace isukces.code.Typescript
 {
-    public class TsEnum : TsClassOrEnum, ITsCodeProvider
+    public class TsEnum : TsNamespaceMember
     {
-        public void WriteCodeTo(TsWriteContext cf)
+        public override void WriteCodeTo(TsWriteContext cf)
         {
             if (Decorators != null && Decorators.Any())
                 foreach (var i in Decorators)
