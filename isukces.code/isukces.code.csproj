@@ -208,6 +208,14 @@
     <Compile Include="NameOfCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeName.cs" />
+    <Compile Include="Typescript\TsClass.cs" />
+    <Compile Include="Typescript\TsDecorator.cs" />
+    <Compile Include="Typescript\TsField.cs" />
+    <Compile Include="Typescript\TsFile.cs" />
+    <Compile Include="Typescript\TsMethodArgument.cs" />
+    <Compile Include="Typescript\TsNamespace.cs" />
+    <Compile Include="Typescript\TsReference.cs" />
+    <Compile Include="Typescript\TsVisibility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
