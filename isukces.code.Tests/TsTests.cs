@@ -183,5 +183,16 @@ export namespace Namespace
 }";
             Assert.Equal(expected.Trim(), code);
         }
+
+
+        [Fact]
+        public void T08_Should_write_direct_code()
+        {
+            var f = new TsFile();
+            f.Members.Add(new TsDirectCode("var i = 1;"));
+            var code = GetCode(f);
+            var expected = "var i = 1;";
+            Assert.Equal(expected.Trim(), code);
+        }
     }
 }

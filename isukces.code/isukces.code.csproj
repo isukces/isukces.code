@@ -209,6 +209,7 @@
     <Compile Include="NameOfCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeName.cs" />
+    <Compile Include="Typescript\TsDirectCode.cs" />
     <Compile Include="Typescript\ITsClassMember.cs" />
     <Compile Include="Typescript\ITsCodeProvider.cs" />
     <Compile Include="Typescript\ITsExportable.cs" />
