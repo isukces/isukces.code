@@ -195,6 +195,7 @@
     <Compile Include="Features\CsClasses\CsEnumItem.cs" />
     <Compile Include="Features\AutoCode\+Interfaces\ICsClassFactory.cs" />
     <Compile Include="Features\CsClasses\CsMethodExtensions.cs" />
+    <Compile Include="Features\IO\CodeFileUtils.cs" />
     <Compile Include="ILangInfo.cs" />
     <Compile Include="Features\CsClasses\CsAttribute.cs" />
     <Compile Include="Features\CsClasses\CsClass.cs" />
@@ -208,10 +209,15 @@
     <Compile Include="NameOfCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeName.cs" />
+    <Compile Include="Typescript\ITsClassMember.cs" />
+    <Compile Include="Typescript\ITsCodeProvider.cs" />
     <Compile Include="Typescript\TsClass.cs" />
+    <Compile Include="Typescript\TsClassOrEnum.cs" />
     <Compile Include="Typescript\TsDecorator.cs" />
+    <Compile Include="Typescript\TsEnum.cs" />
     <Compile Include="Typescript\TsField.cs" />
     <Compile Include="Typescript\TsFile.cs" />
+    <Compile Include="Typescript\TsMethod.cs" />
     <Compile Include="Typescript\TsMethodArgument.cs" />
     <Compile Include="Typescript\TsNamespace.cs" />
     <Compile Include="Typescript\TsReference.cs" />

@@ -76,7 +76,7 @@ namespace isukces.code.AutoCode
                     i.Generate(type, context);
             }
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
-            if (_csFile.SaveIfDifferent(fileName))
+            if (_csFile.SaveIfDifferent(fileName, false))
                 saved = true;
         }
 

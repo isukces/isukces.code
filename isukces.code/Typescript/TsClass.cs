@@ -1,23 +1,47 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace isukces.code.Typescript
 {
-    public class TsClass
+    public class TsClass : TsClassOrEnum, ITsCodeProvider
     {
-        public string Name { get; set; }
-        public bool IsExported { get; set; }
-        public List<TsDecorator> TsDecorators { get; set; } = new List<TsDecorator>();
-        public List<TsMethod> Methods { get; set; }=new List<TsMethod>();
-    }
+        public TsMethod AddMethod(string name)
+        {
+            var m = new TsMethod {Name = name};
+            Members.Add(m);
+            return m;
+        }
 
-    public class TsMethod
-    {
-        public string Name { get; set; }
-        public bool IsStatic { get; set; }
+        public void WriteCodeTo(TsWriteContext cf)
+        {
+            if (Decorators != null && Decorators.Any())
+                foreach (var i in Decorators)
+                    i.WriteCodeTo(cf);
+            cf.Formatter.Open(string.Join(" ", GetClassHeader()));
+            foreach (var i in Members)
+                i.WriteCodeTo(cf);
+            cf.Formatter.Close();
+            /*
+             @Serenity.Decorators.registerClass()
+    @Serenity.Decorators.responsive()
+    export class MyTasksDialog extends Serenity.EntityDialog<MyTasksRow, any> {
+             */
+        }
+
+        private IEnumerable<string> GetClassHeader()
+        {
+            if (IsExported)
+                yield return "export";
+            yield return "class";
+            yield return Name;
+            if (string.IsNullOrEmpty(Extends)) yield break;
+            yield return "extends";
+            yield return Extends;
+        }
+
+        public List<ITsClassMember> Members { get; set; } = new List<ITsClassMember>();
+
         public string Extends { get; set; }
-        public TsVisibility Visibility { get; set; }
-        public List<TsMethodArgument> Arguments { get; set; } = new List<TsMethodArgument>();
-        public List<TsField> Fields { get; set; } = new List<TsField>();
     }
 }
 /*

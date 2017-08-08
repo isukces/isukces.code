@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using isukces.code.AutoCode;
 using isukces.code.interfaces;
+using isukces.code.IO;
 
 #endregion
 
@@ -95,18 +96,9 @@ namespace isukces.code.CodeWrite
             }
         }
 
-        public bool SaveIfDifferent(string filename)
+        public bool SaveIfDifferent(string filename, bool addBom = false)
         {
-            byte[] existing = null;
-            if (File.Exists(filename))
-                existing = File.ReadAllBytes(filename);
-
-            var text = GetCode();
-            var newCodeBytes = Encoding.UTF8.GetBytes(text);
-            if (existing != null && newCodeBytes.SequenceEqual(existing))
-                return false;
-            File.WriteAllBytes(filename, newCodeBytes);
-            return true;
+            return CodeFileUtils.SaveIfDifferent(GetCode(), filename, addBom);
         }
 
         public override string ToString()

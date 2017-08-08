@@ -1,20 +1,15 @@
-﻿#region using
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
-#endregion
+using isukces.code.Typescript;
 
 namespace isukces.code
 {
     public delegate void CodeFormatterDelegate();
 
-    public class CodeFormatter : object
+    public class CodeFormatter
     {
-        #region Instance Methods
-
         public void Block(string open, string close, CodeFormatterDelegate method)
         {
             Writeln(open);
@@ -100,10 +95,10 @@ namespace isukces.code
             var fi = new FileInfo(filename);
             fi.Directory.Create();
             var x = Encoding.UTF8.GetBytes(Text);
-            using(var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
+            using (var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
             {
                 if (LangInfo.AddBOM)
-                    fs.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
+                    fs.Write(new byte[] { 0xEF, 0xBB, 0xBF }, 0, 3);
                 fs.Write(x, 0, x.Length);
                 fs.Close();
             }
@@ -118,11 +113,11 @@ namespace isukces.code
             }
             byte[] existing, newa;
             existing = File.ReadAllBytes(filename);
-            using(var fs = new MemoryStream())
+            using (var fs = new MemoryStream())
             {
                 {
                     if (LangInfo.AddBOM)
-                        fs.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
+                        fs.Write(new byte[] { 0xEF, 0xBB, 0xBF }, 0, 3);
                     var x = Encoding.UTF8.GetBytes(Text);
                     fs.Write(x, 0, x.Length);
                 }
@@ -132,12 +127,12 @@ namespace isukces.code
             File.WriteAllBytes(filename, newa);
         }
 
-        public void Writeln()
+        public void Writeln(TsEnumItem format)
         {
             _sb.AppendLine();
         }
 
-        public virtual void Writeln(string x)
+        public virtual void Writeln(string x = null)
         {
             if (x == (object)null)
             {
@@ -155,10 +150,6 @@ namespace isukces.code
         {
             Writeln(string.Format(format, args));
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     opis języka
@@ -198,21 +189,11 @@ namespace isukces.code
 
         public bool AutoCloseComment { get; set; }
 
-        #endregion
-
-        #region Fields
-
         private int _indent;
         private string _indentStr = "";
         private Dictionary<int, string> opening = new Dictionary<int, string>();
         private StringBuilder _sb = new StringBuilder();
 
-        #endregion
-
-        #region Other
-
         private const string INDENT = "    ";
-
-        #endregion
     }
 }

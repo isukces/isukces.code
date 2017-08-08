@@ -5,14 +5,11 @@ namespace isukces.code
 {
     public class CSCodeFormatter : CodeFormatter
     {
-        #region Constructors
         public CSCodeFormatter()
         {
             this.LangInfo = new CSLangInfo();
         }
-        #endregion
 
-        #region Methods
         public void AddNamespaces(string namespaceName)
         {
             Writeln("using {0};", namespaceName);
@@ -43,6 +40,5 @@ namespace isukces.code
                 WriteSummary(line);
             Writeln("/// </summary>");
         }
-        #endregion
     }
 }

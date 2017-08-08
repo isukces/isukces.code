@@ -1,12 +1,31 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace isukces.code.Typescript
 {
-    public class TsNamespace
+    public class TsNamespace : ITsCodeProvider
     {
+        public TsClass AddClass(string name)
+        {
+            var c = new TsClass
+            {
+                Name = name
+            };
+            Members.Add(c);
+            return c;
+        }
+
+        public void WriteCodeTo(TsWriteContext cf)
+        {
+            // namespace Cloud.Common {
+            cf.Formatter.Open("namespace " + Name);
+            if (Members != null)
+                foreach (var i in Members)
+                    i.WriteCodeTo(cf);
+            cf.Formatter.Close();
+        }
+
         public string Name { get; set; }
+
+        public List<ITsCodeProvider> Members { get; set; } = new List<ITsCodeProvider>();
     }
 }
