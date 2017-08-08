@@ -5,6 +5,22 @@ namespace isukces.code.Typescript
 {
     public class TsMethod : ITsClassMember
     {
+        public TsMethod(string name = null)
+        {
+            Name = name;
+        }
+
+        public TsMethod WithArgument(string name, string type = null)
+        {
+            var arg = new TsMethodArgument
+            {
+                Name = name,
+                Type = type
+            };
+            Arguments.Add(arg);
+            return this;
+        }
+
         public TsMethod WithIsStatic(bool isStatic)
         {
             IsStatic = isStatic;
@@ -21,9 +37,12 @@ namespace isukces.code.Typescript
         {
             var cf = ctx.Formatter;
             cf.Open(string.Join(" ", GetHeaderItems()));
-            var b = Body.Replace("\r\n", "\n").Split('\n');
-            foreach (var line in b)
-                cf.Writeln(line);
+            if (!string.IsNullOrEmpty(Body))
+            {
+                var b = Body.Replace("\r\n", "\n").Split('\n');
+                foreach (var line in b)
+                    cf.Writeln(line);
+            }
             cf.Close();
         }
 

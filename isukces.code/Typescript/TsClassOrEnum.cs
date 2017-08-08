@@ -4,7 +4,7 @@ namespace isukces.code.Typescript
 {
     public abstract class TsClassOrEnum
     {
-        public TsDecorator AddDecorator<T>(string name)
+        public TsDecorator AddDecorator(string name)
         {
             var dec = new TsDecorator
             {

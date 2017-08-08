@@ -5,6 +5,22 @@ namespace isukces.code.Typescript
 {
     public class TsClass : TsClassOrEnum, ITsCodeProvider
     {
+        public TsClass()
+        {
+        }
+
+        public TsClass(string name)
+        {
+            Name = name;
+        }
+
+        public TsField AddField(string name)
+        {
+            var f = new TsField(name);
+            Members.Add(f);
+            return f;
+        }
+
         public TsMethod AddMethod(string name)
         {
             var m = new TsMethod {Name = name};

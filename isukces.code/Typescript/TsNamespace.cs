@@ -4,6 +4,15 @@ namespace isukces.code.Typescript
 {
     public class TsNamespace : ITsCodeProvider
     {
+        public TsNamespace()
+        {
+        }
+
+        public TsNamespace(string name)
+        {
+            Name = name;
+        }
+
         public TsClass AddClass(string name)
         {
             var c = new TsClass
