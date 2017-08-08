@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using isukces.code.Typescript;
+﻿using isukces.code.Typescript;
 using Xunit;
 
 namespace isukces.code.Tests
 {
     public class TsTests
     {
+        private static string GetCode(ITsCodeProvider ns)
+        {
+            var cf = new CSCodeFormatter();
+            ns.WriteCodeTo(new TsWriteContext(cf));
+            return cf.Text.Trim();
+        }
+
         [Fact]
         public void T01_Should_create_empty_class()
         {
@@ -21,7 +23,6 @@ class SampleClass
 }";
             Assert.Equal(expected.Trim(), code);
 
-
             c.Extends = "MyBaseClass";
             code = GetCode(c);
             expected = @"
@@ -29,7 +30,6 @@ class SampleClass extends MyBaseClass
 {
 }";
             Assert.Equal(expected.Trim(), code);
-
 
             c.IsExported = true;
             code = GetCode(c);
@@ -54,13 +54,6 @@ namespace Sample.Tests
     }
 }";
             Assert.Equal(expected.Trim(), code);
-        }
-
-        private static string GetCode(ITsCodeProvider ns)
-        {
-            var cf = new CSCodeFormatter();
-            ns.WriteCodeTo(new TsWriteContext(cf));
-            return cf.Text.Trim();
         }
 
 
@@ -135,7 +128,6 @@ class Something
     static myValue = 7;
 }";
             Assert.Equal(expected.Trim(), code);
-
         }
 
 
@@ -157,7 +149,6 @@ interface SampleInterface
 }";
             Assert.Equal(expected.Trim(), code);
 
-
             m.Body = "return id + 1;";
             code = GetCode(c);
             expected = @"
@@ -166,7 +157,6 @@ interface SampleInterface
     static getValue(id: string) : number;
 }";
             Assert.Equal(expected.Trim(), code);
-
 
             var f = c.AddField("value");
             f.Type = "number";
@@ -182,5 +172,16 @@ interface SampleInterface
         }
 
 
+        [Fact]
+        public void T07_Should_create_exported_namespace()
+        {
+            var ns = new TsNamespace("Namespace") {IsExport = true};
+            var code = GetCode(ns);
+            var expected = @"
+export namespace Namespace
+{
+}";
+            Assert.Equal(expected.Trim(), code);
+        }
     }
 }

@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace isukces.code.Typescript
 {
-    public class TsNamespace : ITsCodeProvider
+    public class TsNamespace : ITsCodeProvider, ITsExportable
     {
         public TsNamespace()
         {
@@ -25,8 +26,7 @@ namespace isukces.code.Typescript
 
         public void WriteCodeTo(TsWriteContext cf)
         {
-            // namespace Cloud.Common {
-            cf.Formatter.Open("namespace " + Name);
+            cf.Formatter.Open($"{(IsExport ? "export " : "")}namespace {Name}");
             if (Members != null)
                 foreach (var i in Members)
                     i.WriteCodeTo(cf);
@@ -34,6 +34,8 @@ namespace isukces.code.Typescript
         }
 
         public string Name { get; set; }
+
+        public bool IsExport { get; set; }
 
         public List<ITsCodeProvider> Members { get; set; } = new List<ITsCodeProvider>();
     }

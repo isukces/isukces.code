@@ -14,8 +14,6 @@ namespace isukces.code.Typescript
             Formatter = formatter;
         }
 
-        public CodeFormatter Formatter { get; }
-
         public TsWriteContext CopyWithFlag(TsWriteContextFlags f)
         {
             return new TsWriteContext(Formatter)
@@ -23,6 +21,8 @@ namespace isukces.code.Typescript
                 Flags = Flags | f
             };
         }
+
+        public CodeFormatter Formatter { get; }
         public TsWriteContextFlags Flags { get; set; }
     }
 

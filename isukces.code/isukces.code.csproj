@@ -211,6 +211,7 @@
     <Compile Include="TypeName.cs" />
     <Compile Include="Typescript\ITsClassMember.cs" />
     <Compile Include="Typescript\ITsCodeProvider.cs" />
+    <Compile Include="Typescript\ITsExportable.cs" />
     <Compile Include="Typescript\TsClass.cs" />
     <Compile Include="Typescript\TsClassOrInterface.cs" />
     <Compile Include="Typescript\TsInterface.cs" />
