@@ -31,7 +31,7 @@ namespace isukces.code.Typescript
             var left = Members.Count;
             foreach (var i in Members)
             {
-                var line = --left == 0 ? i.GetCode() + "," : i.GetCode();
+                var line = --left != 0 ? i.GetCode() + "," : i.GetCode();
                 context.Formatter.Writeln(line);
             }
             context.Formatter.Close();

@@ -302,8 +302,6 @@ class MyClass
             
         }
 
-
-
         [Fact]
         public void T14_Should_create_enum()
         {
@@ -318,9 +316,9 @@ class MyClass
 /* Sample enum */
 enum MyEnum
 {
-    None = 0
-    Left = 2
-    Right = 17,
+    None = 0,
+    Left = 2,
+    Right = 17
 }";
             Assert.Equal(expected.Trim(), code);
 
@@ -331,9 +329,9 @@ enum MyEnum
 /* Sample enum */
 export enum MyEnum
 {
-    None = 0
-    Left = 2
-    Right = 17,
+    None = 0,
+    Left = 2,
+    Right = 17
 }";
             Assert.Equal(expected.Trim(), code);
 
