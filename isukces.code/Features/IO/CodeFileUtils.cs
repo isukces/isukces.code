@@ -44,6 +44,7 @@ namespace isukces.code.IO
             var newCodeBytes = Encode(content, addBom);
             if (AreEqual(existing, newCodeBytes))
                 return false;
+            new FileInfo(filename).Directory?.Create();
             File.WriteAllBytes(filename, newCodeBytes);
             return true;
         }
