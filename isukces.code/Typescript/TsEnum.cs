@@ -5,8 +5,25 @@ namespace isukces.code.Typescript
 {
     public class TsEnum : TsNamespaceMember
     {
+        public TsEnum(string name = null)
+        {
+            Name = name;
+        }
+
+        public TsEnum WithItem(string name, int value)
+        {
+            var item = new TsEnumItem
+            {
+                Name = name,
+                Value = value
+            };
+            Members.Add(item);
+            return this;
+        }
+
         public override void WriteCodeTo(TsWriteContext context)
         {
+            Introduction?.WriteCodeTo(context);
             if (Decorators != null && Decorators.Any())
                 foreach (var i in Decorators)
                     i.WriteCodeTo(context);
@@ -24,7 +41,7 @@ namespace isukces.code.Typescript
         {
             if (IsExported)
                 yield return "export";
-            yield return "class";
+            yield return "enum";
             yield return Name;
         }
 

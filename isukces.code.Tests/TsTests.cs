@@ -301,5 +301,42 @@ class MyClass
             Assert.Equal(expected.Trim(), code);
             
         }
+
+
+
+        [Fact]
+        public void T14_Should_create_enum()
+        {
+            var c = new TsEnum("MyEnum");
+            c.WithItem("None", 0);
+            c.WithItem("Left", 2);
+            c.WithItem("Right", 17);
+            
+            c.Introduction = new TsMultiLineComment("Sample enum");
+            var code = GetCode(c);
+            var expected = @"
+/* Sample enum */
+enum MyEnum
+{
+    None = 0
+    Left = 2
+    Right = 17,
+}";
+            Assert.Equal(expected.Trim(), code);
+
+
+            c.IsExported = true;
+            code = GetCode(c);
+            expected = @"
+/* Sample enum */
+export enum MyEnum
+{
+    None = 0
+    Left = 2
+    Right = 17,
+}";
+            Assert.Equal(expected.Trim(), code);
+
+        }
     }
 }
