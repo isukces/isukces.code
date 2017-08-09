@@ -2,7 +2,7 @@
 
 namespace isukces.code.Typescript
 {
-    public abstract class TsNamespaceMember : ITsCodeProvider
+    public abstract class TsNamespaceMember : ITsCodeProvider, ITsIntroducedItem
     {
         public TsDecorator AddDecorator(string name)
         {
@@ -14,12 +14,13 @@ namespace isukces.code.Typescript
             return dec;
         }
 
-        public abstract void WriteCodeTo(TsWriteContext cf);
+        public abstract void WriteCodeTo(TsWriteContext context);
 
 
         public string Name { get; set; }
         public bool IsExported { get; set; }
         public List<TsDecorator> Decorators { get; set; } = new List<TsDecorator>();
+        public ITsCodeProvider Introduction { get; set; }
     }
 
     public static class TsClassOrEnumExtensions

@@ -215,7 +215,9 @@
     <Compile Include="Typescript\ITsExportable.cs" />
     <Compile Include="Typescript\TsClass.cs" />
     <Compile Include="Typescript\TsClassOrInterface.cs" />
+    <Compile Include="Typescript\TsExtensions.cs" />
     <Compile Include="Typescript\TsInterface.cs" />
+    <Compile Include="Typescript\TsMultiLineComment.cs" />
     <Compile Include="Typescript\TsNamespaceMember.cs" />
     <Compile Include="Typescript\TsDecorator.cs" />
     <Compile Include="Typescript\TsEnum.cs" />
@@ -225,6 +227,7 @@
     <Compile Include="Typescript\TsMethodArgument.cs" />
     <Compile Include="Typescript\TsNamespace.cs" />
     <Compile Include="Typescript\TsReference.cs" />
+    <Compile Include="Typescript\TsSingleLineComment.cs" />
     <Compile Include="Typescript\TsVisibility.cs" />
   </ItemGroup>
   <ItemGroup>

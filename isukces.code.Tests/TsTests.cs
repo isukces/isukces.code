@@ -175,7 +175,7 @@ interface SampleInterface
         [Fact]
         public void T07_Should_create_exported_namespace()
         {
-            var ns = new TsNamespace("Namespace") {IsExport = true};
+            var ns = new TsNamespace("Namespace") { IsExport = true };
             var code = GetCode(ns);
             var expected = @"
 export namespace Namespace
@@ -211,6 +211,95 @@ interface SampleInterface
     value?: number;
 }";
             Assert.Equal(expected.Trim(), code);
+        }
+
+
+        [Fact]
+        public void T10_Should_create_field_with_inline_comment()
+        {
+            var f = new TsField("value")
+            {
+                Type = "number",
+                Initializer = "7",
+                InlineComment = "converted from int"
+            };
+            var code = GetCode(f);
+            var expected = "value: number = 7; // converted from int";
+            Assert.Equal(expected.Trim(), code);
+        }
+
+        [Fact]
+        public void T11_Should_create_single_line_comment()
+        {
+            var c = new TsClass("MyClass");
+            var f = c.AddField("value", "number");
+            f.Introduction = new TsSingleLineComment("some text");
+
+            var code = GetCode(c);
+            var expected = @"
+class MyClass
+{
+    // some text
+    value: number;
+}";
+            Assert.Equal(expected.Trim(), code);
+        }
+
+
+        [Fact]
+        public void T12_Should_create_multi_line_comment()
+        {
+            var c = new TsClass("MyClass");
+            var f = c.AddField("value", "number");
+            f.Introduction = new TsMultiLineComment("line 1\r\nline 2\nline 3", false);
+            var code = GetCode(c);
+            var expected = @"
+class MyClass
+{
+    /*
+    line 1
+    line 2
+    line 3
+    */
+    value: number;
+}";
+            Assert.Equal(expected.Trim(), code);
+            // compact
+            f.Introduction = new TsMultiLineComment("line 1\r\nline 2\nline 3");
+            code = GetCode(c);
+            expected = @"
+class MyClass
+{
+    /* line 1
+       line 2
+       line 3 */
+    value: number;
+}";
+            Assert.Equal(expected.Trim(), code);
+        }
+
+
+        [Fact]
+        public void T13_Should_create_class_with_introduction()
+        {
+            var c = new TsClass("MyClass");
+            var f = c.AddField("value", "number");
+            f.Introduction = new TsMultiLineComment("line 1\r\nline 2\nline 3");
+            c.Introduction = new TsMultiLineComment("line 4\r\nline 5\nline 6");
+            var code = GetCode(c);
+            var expected = @"
+/* line 4
+   line 5
+   line 6 */
+class MyClass
+{
+    /* line 1
+       line 2
+       line 3 */
+    value: number;
+}";
+            Assert.Equal(expected.Trim(), code);
+            
         }
     }
 }

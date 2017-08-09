@@ -6,4 +6,9 @@
         bool IsStatic { get; }
         TsVisibility Visibility { get; }
     }
+
+    public interface ITsIntroducedItem
+    {
+        ITsCodeProvider Introduction { get; }
+    }
 }

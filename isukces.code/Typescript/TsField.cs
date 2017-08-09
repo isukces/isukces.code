@@ -13,11 +13,18 @@ namespace isukces.code.Typescript
             Name = name;
         }
 
-        public void WriteCodeTo(TsWriteContext cf)
+        public override string ToString()
         {
-            var line = GetHeaderItems(cf.Flags.HasFlag(TsWriteContextFlags.HeadersOnly));
-            cf.Formatter.Writeln(line + ";");
+            return "TsField: " + GetHeaderItems(false);
         }
+
+        public void WriteCodeTo(TsWriteContext context)
+        {
+            Introduction?.WriteCodeTo(context);
+            var code = GetHeaderItems(context.Flags.HasFlag(TsWriteContextFlags.HeadersOnly));
+            context.Formatter.Writeln(code);
+        }
+
 
         private string GetHeaderItems(bool headerOnly)
         {
@@ -32,9 +39,10 @@ namespace isukces.code.Typescript
             if (!string.IsNullOrEmpty(Type))
                 sb.Append(": " + Type);
             if (!string.IsNullOrEmpty(Initializer) && !headerOnly)
-            {
                 sb.Append(" = " + Initializer);
-            }
+            sb.Append(";");
+            if (!string.IsNullOrWhiteSpace(InlineComment))
+                sb.Append(" // " + InlineComment);
             return sb.ToString().Trim();
         }
 
@@ -42,5 +50,8 @@ namespace isukces.code.Typescript
         public TsVisibility Visibility { get; set; }
         public string Initializer { get; set; }
         public bool IsOptional { get; set; }
+
+        public string InlineComment { get; set; }
+        public ITsCodeProvider Introduction { get; set; }
     }
 }

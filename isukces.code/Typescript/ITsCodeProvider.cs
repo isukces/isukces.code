@@ -4,7 +4,7 @@ namespace isukces.code.Typescript
 {
     public interface ITsCodeProvider
     {
-        void WriteCodeTo(TsWriteContext cf);
+        void WriteCodeTo(TsWriteContext context);
     }
 
     public class TsWriteContext

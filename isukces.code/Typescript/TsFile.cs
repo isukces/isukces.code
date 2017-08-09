@@ -15,12 +15,12 @@ namespace isukces.code.Typescript
             return GetCode();
         }
 
-        public void WriteCodeTo(TsWriteContext ctx)
+        public void WriteCodeTo(TsWriteContext context)
         {
             foreach (var i in References)
-                i.WriteCodeTo(ctx);
+                i.WriteCodeTo(context);
             foreach (var i in Members)
-                i.WriteCodeTo(ctx);
+                i.WriteCodeTo(context);
         }
 
         private string GetCode()

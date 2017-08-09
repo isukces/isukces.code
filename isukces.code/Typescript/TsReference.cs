@@ -2,9 +2,9 @@
 {
     public class TsReference : ITsCodeProvider
     {
-        public void WriteCodeTo(TsWriteContext cf)
+        public void WriteCodeTo(TsWriteContext context)
         {
-            cf.Formatter.Writeln($"/// <reference path=\"{Path}\"/>");
+            context.Formatter.Writeln($"/// <reference path=\"{Path}\"/>");
         }
 
         public string Path { get; set; }

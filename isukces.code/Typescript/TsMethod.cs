@@ -33,11 +33,11 @@ namespace isukces.code.Typescript
             return this;
         }
 
-        public void WriteCodeTo(TsWriteContext ctx)
+        public void WriteCodeTo(TsWriteContext context)
         {
-            var cf = ctx.Formatter;
+            var cf = context.Formatter;
             var header = string.Join(" ", GetHeaderItems());
-            if (ctx.Flags.HasFlag(TsWriteContextFlags.HeadersOnly))
+            if (context.Flags.HasFlag(TsWriteContextFlags.HeadersOnly))
             {
                 cf.Writeln(header + ";");
                 return;

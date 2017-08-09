@@ -2,9 +2,9 @@
 {
     public class TsDecorator : ITsCodeProvider
     {
-        public void WriteCodeTo(TsWriteContext cf)
+        public void WriteCodeTo(TsWriteContext context)
         {
-            cf.Formatter.Writeln("@" + Name + "()");
+            context.Formatter.Writeln("@" + Name + "()");
         }
 
         public string Name { get; set; }

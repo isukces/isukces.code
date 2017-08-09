@@ -11,32 +11,33 @@ namespace isukces.code.Typescript
             Name = name;
         }
 
-        public TsField AddField(string name)
+        public TsField AddField(string name, string type = null)
         {
-            var f = new TsField(name);
+            var f = new TsField(name) {Type = type};
             Members.Add(f);
             return f;
         }
 
         public TsMethod AddMethod(string name)
         {
-            var m = new TsMethod { Name = name };
+            var m = new TsMethod {Name = name};
             Members.Add(m);
             return m;
         }
 
 
-        public override void WriteCodeTo(TsWriteContext cf)
+        public override void WriteCodeTo(TsWriteContext context)
         {
             if (IsInterface)
-                cf = cf.CopyWithFlag(TsWriteContextFlags.HeadersOnly);
+                context = context.CopyWithFlag(TsWriteContextFlags.HeadersOnly);
+            Introduction?.WriteCodeTo(context);
             if (Decorators != null && Decorators.Any())
                 foreach (var i in Decorators)
-                    i.WriteCodeTo(cf);
-            cf.Formatter.Open(string.Join(" ", GetClassHeader()));
+                    i.WriteCodeTo(context);
+            context.Formatter.Open(string.Join(" ", GetClassHeader()));
             foreach (var i in Members)
-                i.WriteCodeTo(cf);
-            cf.Formatter.Close();
+                i.WriteCodeTo(context);
+            context.Formatter.Close();
             /*
              @Serenity.Decorators.registerClass()
     @Serenity.Decorators.responsive()
