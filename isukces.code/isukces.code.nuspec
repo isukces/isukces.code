@@ -16,6 +16,6 @@
     <tags>C# codes</tags>
   </metadata>
   <files>
-    <file src="bin\$configuration$\*.pdb" target="lib\net461" />
+    <file src="bin\$configuration$\*.pdb" target="lib\net451" />
   </files>
 </package>
