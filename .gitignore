@@ -8,3 +8,4 @@ obj
 *.snk
 /compile.log
 /isukces.code/*.DotSettings
+/.vs

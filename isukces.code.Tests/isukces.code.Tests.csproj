@@ -59,6 +59,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\isukces.code.interfaces\isukces.code.interfaces.csproj">
+      <Project>{4B6B98F5-93E9-4E5D-8719-7253A478E0F3}</Project>
+      <Name>isukces.code.interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\isukces.code\isukces.code.csproj">
       <Project>{CC04E3F2-AD7A-4991-8BB3-CAB745F162C2}</Project>
       <Name>isukces.code</Name>

@@ -1,4 +1,6 @@
-﻿using isukces.code.Typescript;
+﻿using isukces.code.CodeWrite;
+using isukces.code.interfaces;
+using isukces.code.Typescript;
 using Xunit;
 
 namespace isukces.code.Tests
@@ -299,7 +301,7 @@ class MyClass
     value: number;
 }";
             Assert.Equal(expected.Trim(), code);
-            
+
         }
 
         [Fact]
@@ -309,7 +311,7 @@ class MyClass
             c.WithItem("None", 0);
             c.WithItem("Left", 2);
             c.WithItem("Right", 17);
-            
+
             c.Introduction = new TsMultiLineComment("Sample enum");
             var code = GetCode(c);
             var expected = @"
@@ -336,5 +338,19 @@ export enum MyEnum
             Assert.Equal(expected.Trim(), code);
 
         }
+
+
+
+        [Fact]
+        public void T15_ShouldProduceEmptyFile()
+        {
+            var file = new CsFile();
+            file.AddImportNamespace("blabla");
+            ICodeWriter writer = new CodeWriter();
+            file.MakeCode(writer);
+            Assert.Equal("", writer.Code);
+        }
+
+
     }
 }

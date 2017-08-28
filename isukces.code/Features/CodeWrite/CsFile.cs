@@ -42,6 +42,8 @@ namespace isukces.code.CodeWrite
 
         public void MakeCode(ICodeWriter writer)
         {
+            if (Namespaces == null || Namespaces.Count == 0)
+                return;
             const string emptyNamespace = "";
             foreach (var i in _importNamespaces.OrderBy(i => i))
                 writer.WriteLine("using {0};", i);
