@@ -262,31 +262,27 @@ namespace isukces.code
             var fieldName = prop.PropertyFieldName;
 
             var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
-            var visibility = IsInterface || (prop.Visibility == Visibilities.InterfaceDefault)
-                ? ""
-                : prop.Visibility.ToString().ToLower() + " ";
-            var virtual1 = IsInterface || !prop.IsVirtual ? "" : "virtual ";
+            var header = GetPropertyHeader(prop);
+
             WriteSummary(writer, prop.Description);
             WriteAttributes(writer, prop.Attributes);
             var emitField = prop.EmitField && !IsInterface;
-
             if (IsInterface ||
                 (prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
                  string.IsNullOrEmpty(prop.OwnGetter)))
             {
                 writer.WriteLine(
-                    "{0}{1}{2} {3} {{ {4}get; {5}set; }}",
-                    visibility,
-                    virtual1,
-                    prop.Type,
-                    prop.Name,
-                    OptionalVisibility(prop.GetterVisibility), OptionalVisibility(prop.SetterVisibility))
+                    "{0} {{ {1}get; {2}set; }}",
+                    header,
+                    OptionalVisibility(prop.GetterVisibility),
+                    OptionalVisibility(prop.SetterVisibility)
+                    )
                     .EmptyLine();
                 emitField = false;
             }
             else
             {
-                writer.Open($"{visibility}{virtual1}{prop.Type} {prop.Name}");
+                writer.Open(header);
                 {
                     WriteGetterOrSetter(writer, getterLines2, "get", prop.GetterVisibility);
                     if (!prop.IsPropertyReadOnly)
@@ -298,8 +294,23 @@ namespace isukces.code
             if (emitField)
                 writer
                     .WriteLine("// ReSharper disable once InconsistentNaming")
-                    .WriteLine("{2} {0} {1};", prop.Type, fieldName, prop.FieldVisibility.ToString().ToLower())
+                    .WriteLine($"{prop.FieldVisibility.ToString().ToLower()} {prop.Type} {fieldName};")
                     .EmptyLine();
+        }
+
+        private string GetPropertyHeader(CsProperty prop)
+        {
+            var list = new List<string>();
+            if (!IsInterface && prop.Visibility != Visibilities.InterfaceDefault)
+                list.Add(prop.Visibility.ToString().ToLower());
+            if (prop.IsStatic)
+                list.Add("static");
+            if (!IsInterface && prop.IsVirtual)
+                list.Add("virtual");
+            list.Add(prop.Type);
+            list.Add(prop.Name);
+            var header = string.Join(" ", list);
+            return header;
         }
 
         private string[] DefAttributes()
@@ -541,7 +552,7 @@ namespace isukces.code
     [Flags]
     public enum LanguageFeatures
     {
-        None =0,
+        None = 0,
         ExpressionBody = 1,
         Regions = 2
     }
