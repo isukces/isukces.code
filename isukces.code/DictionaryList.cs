@@ -4,16 +4,10 @@ namespace isukces.code
 {
     public class DictionaryList<TKey, TValue> 
     {
-
-        #region Properties
-
         /// <summary>
         /// słownik przechowujący
         /// </summary>
         public Dictionary<TKey, List<TValue>> Dictionary { get; set; } = new Dictionary<TKey, List<TValue>>();
-
-        #endregion
-
 
 
         public void AddItem(TKey key, TValue value)  {

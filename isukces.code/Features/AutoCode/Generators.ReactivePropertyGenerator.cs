@@ -11,9 +11,6 @@ namespace isukces.code.AutoCode
     {
         internal class ReactivePropertyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-
-            #region Static Methods
-
             private static void Single(CsClass csClass, Auto.ReactivePropertyAttribute attribute)
             {
                 var p = csClass.AddProperty(attribute.Name, attribute.PropertyType);
@@ -27,13 +24,14 @@ namespace isukces.code.AutoCode
                 p.FieldVisibility = attribute.FieldVisibility;
             }
 
-            #endregion
-
-            #region Instance Methods
-
             internal void GenerateInternal()
             {
-                var attributes = Type.GetCustomAttributes<Auto.ReactivePropertyAttribute>(false).ToArray();
+                var attributes = Type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .GetCustomAttributes<Auto.ReactivePropertyAttribute>(false).ToArray();
                 if (attributes == null || attributes.Length < 1) return;
                 var csClass = Class;
                 Context.AddNamespace("ReactiveUI");
@@ -43,14 +41,8 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            #endregion
-
-            #region Nested
-
             private class DependencyPropertyMetadata
             {
-                #region Instance Methods
-
                 public string Resolve(string propertyName, string propertyTypeName)
                 {
                     /*
@@ -123,20 +115,12 @@ namespace isukces.code.AutoCode
                         : propertyChangedStr;
                 }
 
-                #endregion
-
-                #region Properties
-
                 public string PropertyChanged { get; set; }
                 public object DefaultValue { get; set; }
 
                 public Type PropetyType { get; set; }
                 public string Coerce { get; set; }
-
-                #endregion
             }
-
-            #endregion
 
             public void Generate(Type type, IAutoCodeGeneratorContext context)
             {

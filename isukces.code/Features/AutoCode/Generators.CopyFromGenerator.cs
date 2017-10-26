@@ -1,6 +1,4 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -10,26 +8,22 @@ using System.Windows;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
-#endregion
-
 namespace isukces.code.AutoCode
 {
     internal partial class Generators
     {
-        #region Nested
-
         public class CopyFromGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
             // private readonly AutoCodeGeneratorConfiguration _configuration;
-   
 
-            #region Static Methods
 
             private void CloneWithValuesProcessor(PropertyInfo pi, ICodeWriter writer, ITypeNameResolver resolver)
             {
+                var wm = GeneratorsHelper.GetWriteMemeberName(pi);
+#if !COREFX
+
                 var isCloneable = (pi.PropertyType == typeof(ICloneable))
                                   || pi.PropertyType.GetInterfaces().Any(a => a == typeof(ICloneable));
-                var wm = GeneratorsHelper.GetWriteMemeberName(pi);
                 if (isCloneable)
                 {
                     writer.WriteLine("if (source.{0} != null)", pi.Name);
@@ -42,6 +36,7 @@ namespace isukces.code.AutoCode
                     writer.WriteLine("    {0} = null;", wm);
                     return;
                 }
+#endif
 
                 if (_configuration.CustomCloneMethod == null)
                     throw new Exception("Unable to clone value of type " + pi.PropertyType);
@@ -78,10 +73,6 @@ namespace isukces.code.AutoCode
                 cm.Body = writer.Code;
             }
 
-            #endregion
-
-            #region Instance Methods
-
             private void GenerateInternal()
             {
                 if (!_doCloneable && (_copyFromAttribute == null))
@@ -92,7 +83,12 @@ namespace isukces.code.AutoCode
                     ICodeWriter writer = new CodeWriter();
                     writer.WriteLine("if (ReferenceEquals(source, null))");
                     writer.WriteLine("    throw new ArgumentNullException(nameof(source));");
-                    foreach (var i in Class.DotNetType.GetProperties())
+                    var properties = Class.DotNetType
+#if COREFX
+                        .GetTypeInfo()
+#endif
+                        .GetProperties();
+                    foreach (var i in properties)
                         ProcessProperty(i, _copyFromAttribute, writer);
                     cm.Body = writer.Code;
                 }
@@ -104,7 +100,11 @@ namespace isukces.code.AutoCode
             private void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICodeWriter writer)
             {
                 ITypeNameResolver resolver = Class;
-                if (pi.PropertyType.IsValueType || (pi.PropertyType == typeof(string)))
+                if (pi.PropertyType
+#if COREFX
+                        .GetTypeInfo()
+#endif
+                        .IsValueType || (pi.PropertyType == typeof(string)))
                 {
                     if (!pi.CanWrite || !pi.CanRead)
                         return;
@@ -145,13 +145,21 @@ namespace isukces.code.AutoCode
                         return;
                     }
                 }
-                if (pi.PropertyType.IsInterface)
+                if (pi.PropertyType
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    .IsInterface)
                 {
                     CloneWithValuesProcessor(pi, writer, resolver);
                     return;
                 }
                 var ptg = pi.PropertyType;
-                if (pi.PropertyType.IsGenericType)
+                if (pi.PropertyType
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    .IsGenericType)
                     ptg = pi.PropertyType.GetGenericTypeDefinition();
 
                 if (ptg == typeof(ObservableCollection<>))
@@ -178,7 +186,11 @@ namespace isukces.code.AutoCode
                         writer.WriteLine("else");
                         writer.WriteLine("{");
                         writer.WriteLine("\t{0} = new System.Collections.Generic.List<{1}>();", wm,
-                            pi.PropertyType.GetGenericArguments()[0]);
+                            pi.PropertyType
+#if COREFX
+                                .GetTypeInfo()
+#endif
+                                .GetGenericArguments()[0]);
                         writer.Indent++;
                         AddRange(writer, wm, "source." + pi.Name);
                         writer.Indent--;
@@ -196,6 +208,7 @@ namespace isukces.code.AutoCode
                     CopyArray(pi, "double", writer);
                     return;
                 }
+#if !COREFX
                 if (ptg == typeof(Point[]))
                 {
                     CopyArray(pi, "System.Windows.Point", writer); // todo: external copy
@@ -209,6 +222,7 @@ namespace isukces.code.AutoCode
                         return;
                     }
                 }
+#endif
                 if (pi.PropertyType == typeof(Dictionary<string, string>))
                 {
                     var wm = GeneratorsHelper.GetWriteMemeberName(pi);
@@ -232,7 +246,11 @@ namespace isukces.code.AutoCode
             {
                 if (_configuration.ListExtension == null)
                     throw new NotImplementedException("AddRange");
-                var m = _configuration.ListExtension.GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
+                var m = _configuration.ListExtension
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    .GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
                 if (m == null)
                     throw new Exception("Unable to find AddRange method");
                 var isExtension = m.IsDefined(typeof(ExtensionAttribute), true);
@@ -268,27 +286,27 @@ namespace isukces.code.AutoCode
                 writer.WriteLine("{0}.AddRange({1}, {2});", typeName, target, source);
             }
 
-            #endregion
-
-            #region Fields
-
             private Auto.CopyFromAttribute _copyFromAttribute;
             private bool _doCloneable;
             private CopyFromGeneratorConfiguration _configuration;
-
-            #endregion
 
             public void Generate(Type type, IAutoCodeGeneratorContext context)
             {
                 Setup(type, context);
 
-                _copyFromAttribute = type.GetCustomAttribute<Auto.CopyFromAttribute>();
-                _doCloneable = type.GetCustomAttribute<Auto.Cloneable>(false) != null;
+                _copyFromAttribute = type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    .GetCustomAttribute<Auto.CopyFromAttribute>();
+                _doCloneable = type
+#if COREFX
+                                   .GetTypeInfo()
+#endif                                   
+                                   .GetCustomAttribute<Auto.Cloneable>(false) != null;
                 _configuration = context.ResolveConfig<CopyFromGeneratorConfiguration>();
                 GenerateInternal();
             }
         }
-
-        #endregion
     }
 }

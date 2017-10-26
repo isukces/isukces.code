@@ -100,7 +100,7 @@ namespace isukces.code
                 if (LangInfo.AddBOM)
                     fs.Write(new byte[] { 0xEF, 0xBB, 0xBF }, 0, 3);
                 fs.Write(x, 0, x.Length);
-                fs.Close();
+                // fs.Close();
             }
         }
 

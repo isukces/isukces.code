@@ -1,23 +1,15 @@
-#region using
-
 using System;
 using System.Linq;
 using System.Reflection;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
-#endregion
-
 namespace isukces.code.AutoCode
 {
     internal partial class Generators
     {
-        #region Nested
-
         internal class ShouldSerializeGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Static Methods
-
             private static string MakeShouldSerializeCondition(PropertyInfo pi)
             {
                 var type = pi.PropertyType;
@@ -31,7 +23,12 @@ namespace isukces.code.AutoCode
                     return string.Format("!Guid.Empty.Equals({0})", pi.Name);
                 if (type == typeof(string))
                     return string.Format("!string.IsNullOrEmpty({0})", pi.Name);
-                if (type.IsGenericType)
+                if (type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .IsGenericType)
                 {
                     var type2 = type.GetGenericTypeDefinition();
                     if (type2 == typeof(Nullable<>))
@@ -39,10 +36,6 @@ namespace isukces.code.AutoCode
                 }
                 throw new Exception("Unable to get condition for " + pi.PropertyType);
             }
-
-            #endregion
-
-            #region Instance Methods
 
             public void Generate(Type type, IAutoCodeGeneratorContext context)
             {
@@ -52,7 +45,12 @@ namespace isukces.code.AutoCode
 
             private void GenerateInternal()
             {
-                var properties = Type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+                var properties = Type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public);
                 if (properties.Length == 0) return;
                 var list = (from i in properties
                             let at = i.GetCustomAttribute<Auto.ShouldSerializeAttribute>(false)
@@ -74,10 +72,6 @@ namespace isukces.code.AutoCode
                     m.Body = writer.Code;
                 }
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

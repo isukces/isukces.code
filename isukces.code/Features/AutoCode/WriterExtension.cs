@@ -2,8 +2,6 @@
 {
     public static class WriterExtension
     {
-        #region Static Methods
-
         public static void CloseBrackets(this IDirectCodeWriter src)
         {
             src.DecIndent();
@@ -30,7 +28,5 @@
         {
             src.WriteLn(string.Format(f, p));
         }
-
-        #endregion
     }
 }

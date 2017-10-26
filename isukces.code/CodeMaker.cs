@@ -105,7 +105,11 @@ namespace isukces.code
 
         private static bool IsValueOrString(PropertyInfo pi)
         {
+            #if COREFX
+            return pi.PropertyType.GetTypeInfo().IsValueType || pi.PropertyType == typeof(string);
+            #else
             return pi.PropertyType.IsValueType || pi.PropertyType.Equals(typeof(string));
+            #endif
         }
 
         private void _Clone(PropertyInfo[] pis)
@@ -248,7 +252,11 @@ namespace isukces.code
         /// <returns>kod c#</returns>
         public string StandardMethods()
         {
+            #if COREFX
+            var pis = SourceType.GetTypeInfo().GetProperties();
+            #else
             var pis = SourceType.GetProperties();
+            #endif
             Code.Writeln("#region Operators");
             _Operator(pis, true);
             _Operator(pis, false);

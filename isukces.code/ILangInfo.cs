@@ -1,7 +1,6 @@
 ﻿namespace isukces.code
 {
     public interface ILangInfo {
-        #region Properties
         /// <summary>
         /// Dodaj BOM dla UTF-8
         /// </summary>
@@ -21,7 +20,5 @@
         /// tekst otwierający
         /// </summary>
         string OpenText { get; }
-        #endregion
-
     }
 }

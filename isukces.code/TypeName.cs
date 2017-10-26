@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace isukces.code
 {
     public class TypeName: object {
-
-
-
-        #region Methods
         private static string TypeNameNoGeneric(Type t)
         {
             var tn = t.FullName;
@@ -15,8 +12,7 @@ namespace isukces.code
                 tn = tn.Substring(0, tn.IndexOf('`'));
             return tn;
         }
-        #endregion
-        #region Properties
+
         /// <summary>
         /// typ, dla którego jest budowana nazwa
         /// </summary>
@@ -65,10 +61,18 @@ namespace isukces.code
                 var tn = TypeNameNoGeneric(BaseType);
                 var d = tn.Substring(0, tn.LastIndexOf('.'));
                 var n = tn.Substring(tn.LastIndexOf('.') + 1);
-                if (BaseType.IsGenericType)
+                if (BaseType
+#if COREFX
+                    .GetTypeInfo()
+#endif                    
+                    .IsGenericType)
                 {
                     var i = 0;
-                    foreach (var t in BaseType.GetGenericArguments())
+                    foreach (var t in BaseType
+#if COREFX
+                        .GetTypeInfo()
+#endif                        
+                        .GetGenericArguments())
                     {
                         n += i == 0 ? "<" : ",";
                         var tn1 = new TypeName() { BaseType = t, Reductor = this.Reductor };
@@ -89,17 +93,10 @@ namespace isukces.code
         /// </summary>
         public Dictionary<string, string> Reductor { get; set; }
 
-        #endregion
-
-        #region Methods
         public override string ToString() {
             return FullName;
         }
-        #endregion
 
-        #region Static Methods
-
-        
 
         public static TypeName FromString(string x) {
             return new TypeName() { FullName = x };
@@ -128,7 +125,11 @@ namespace isukces.code
         }
 
         public static string TypeToString(Type type, Dictionary<string, string> reductor) {
-            if (!type.IsGenericType)
+            if (!type
+#if COREFX
+                .GetTypeInfo()
+#endif                
+                .IsGenericType)
             {
                 var tn1 = type.FullName;
                 if (reductor == (object)null) return tn1;
@@ -145,7 +146,11 @@ namespace isukces.code
             tn = tn.Substring(0, tn.IndexOf("`"));
 
             var i = 0;
-            foreach (var tt in type.GetGenericArguments())
+            foreach (var tt in type
+#if COREFX
+                .GetTypeInfo()
+#endif                
+                .GetGenericArguments())
             {
                 tn += i == 0 ? "<" : ",";
                 tn += TypeToString(tt, reductor);
@@ -154,7 +159,5 @@ namespace isukces.code
             tn += ">";
             return tn;
         }
-        #endregion
-
     }
 }

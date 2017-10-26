@@ -10,9 +10,6 @@ namespace isukces.code.AutoCode
     {
         internal class ReactiveCommandGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-
-            #region Static Methods
- 
             private static void Single(CsClass csClass, Auto.ReactiveCommandAttribute attribute)
             {
                 // public ReactiveCommand<object> FullViewCommand { get; protected set; }
@@ -23,13 +20,13 @@ namespace isukces.code.AutoCode
                 p.GetterVisibility = attribute.GetterVisibility;
             }
 
-            #endregion
-
-            #region Instance Methods
-
             internal void GenerateInternal()
             {
-                var attributes = Type.GetCustomAttributes<Auto.ReactiveCommandAttribute>(false).ToArray();
+                var attributes = Type
+#if COREFX
+                    .GetTypeInfo()
+#endif                    
+                    .GetCustomAttributes<Auto.ReactiveCommandAttribute>(false).ToArray();
                 if (attributes == null || attributes.Length < 1) return;
                 var csClass = Class;
                 Context.AddNamespace("ReactiveUI");
@@ -44,14 +41,8 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            #endregion
-
-            #region Nested
-
             private class DependencyPropertyMetadata
             {
-                #region Instance Methods
-
                 public string Resolve(string propertyName, string propertyTypeName)
                 {
                     /*
@@ -124,20 +115,12 @@ namespace isukces.code.AutoCode
                         : propertyChangedStr;
                 }
 
-                #endregion
-
-                #region Properties
-
                 public string PropertyChanged { get; set; }
                 public object DefaultValue { get; set; }
 
                 public Type PropetyType { get; set; }
                 public string Coerce { get; set; }
-
-                #endregion
             }
-
-            #endregion
 
             public void Generate(Type type, IAutoCodeGeneratorContext context)
             {

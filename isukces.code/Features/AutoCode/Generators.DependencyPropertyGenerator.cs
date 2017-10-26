@@ -1,24 +1,15 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
-
-#endregion
 
 namespace isukces.code.AutoCode
 {
     internal partial class Generators
     {
-        #region Nested
-
         internal class DependencyPropertyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Static Methods
-
             private static void Single(CsClass csClass, Auto.DependencyPropertyAttribute attribute)
             {
                 var propertyTypeName = csClass.TypeName(attribute.PropertyType);
@@ -33,7 +24,11 @@ namespace isukces.code.AutoCode
 
                 var meta = dpmi.Resolve(attribute.Name, propertyTypeName);
                 {
-                    var staticField = csClass.AddField(fn, typeof(DependencyProperty));
+#if COREFX
+                    var staticField = csClass.AddField(fn, "System.Windows.DependencyProperty");
+#else
+                    var staticField = csClass.AddField(fn, typeof(System.Windows.DependencyProperty));
+#endif
                     staticField.IsStatic = true;
                     staticField.IsReadOnly = true;
                     staticField.Visibility = Visibilities.Public;
@@ -68,10 +63,6 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            #endregion
-
-            #region Instance Methods
-
             public void Generate(Type type, IAutoCodeGeneratorContext context)
             {
                 Setup(type, context);
@@ -80,7 +71,11 @@ namespace isukces.code.AutoCode
 
             private void GenerateInternal()
             {
-                var attributes = Type.GetCustomAttributes<Auto.DependencyPropertyAttribute>(false).ToArray();
+                var attributes = Type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    .GetCustomAttributes<Auto.DependencyPropertyAttribute>(false).ToArray();
                 if ((attributes == null) || (attributes.Length < 1)) return;
                 var csClass = Class;
                 foreach (var attribute in attributes)
@@ -89,14 +84,8 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            #endregion
-
-            #region Nested
-
             private class DependencyPropertyMetadata
             {
-                #region Instance Methods
-
                 public string Resolve(string propertyName, string propertyTypeName)
                 {
                     /*
@@ -169,22 +158,12 @@ namespace isukces.code.AutoCode
                         : propertyChangedStr;
                 }
 
-                #endregion
-
-                #region Properties
-
                 public string PropertyChanged { get; set; }
                 public object DefaultValue { get; set; }
 
                 public Type PropetyType { get; set; }
                 public string Coerce { get; set; }
-
-                #endregion
             }
-
-            #endregion
         }
-
-        #endregion
     }
 }

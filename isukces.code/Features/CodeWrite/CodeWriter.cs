@@ -1,10 +1,6 @@
-﻿#region using
-
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using isukces.code.interfaces;
-
-#endregion
 
 namespace isukces.code.CodeWrite
 {

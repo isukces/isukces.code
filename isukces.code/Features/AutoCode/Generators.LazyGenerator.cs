@@ -1,25 +1,16 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
-#endregion
-
 namespace isukces.code.AutoCode
 {
     internal partial class Generators
     {
-        #region Nested
-
         internal class LazyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-
-            #region Static Methods            
-
             private static string CoalesceNotEmpty(ISet<string> accept, params string[] items)
             {
                 if ((items == null) || (items.Length == 0)) return null;
@@ -91,7 +82,12 @@ namespace isukces.code.AutoCode
             private static List<Tuple<MethodInfo, Auto.LazyAttribute>> ScanMethods(Type type)
             {
                 var list = new List<Tuple<MethodInfo, Auto.LazyAttribute>>();
-                foreach (var methodInfo in type.GetMethods(GeneratorsHelper.All))
+                foreach (var methodInfo in type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .GetMethods(GeneratorsHelper.All))
                 {
                     if (methodInfo.DeclaringType != type) continue;
                     var attribute = methodInfo.GetCustomAttribute<Auto.LazyAttribute>();
@@ -104,7 +100,12 @@ namespace isukces.code.AutoCode
             private static List<Tuple<PropertyInfo, Auto.LazyAttribute>> ScanProperties(Type type)
             {
                 var list = new List<Tuple<PropertyInfo, Auto.LazyAttribute>>();
-                foreach (var propertyInfo in type.GetProperties(GeneratorsHelper.All))
+                foreach (var propertyInfo in type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .GetProperties(GeneratorsHelper.All))
                 {
                     if (propertyInfo.DeclaringType != type) continue;
                     var attribute = propertyInfo.GetCustomAttribute<Auto.LazyAttribute>();
@@ -113,10 +114,6 @@ namespace isukces.code.AutoCode
                 }
                 return list;
             }
-
-            #endregion
-
-            #region Instance Methods
 
             private void ProcessLazy()
             {
@@ -135,7 +132,12 @@ namespace isukces.code.AutoCode
 
             private AssignStrategy GetAssignStrategy(Type t)
             {
-                if (t.IsValueType)
+                if (t
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .IsValueType)
                 {
                     var ft = typeof(Tuple<>).MakeGenericType(t);
                     var ftn = Class.TypeName(ft);
@@ -211,15 +213,9 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            #endregion
-
-
-            #region Nested
 
             private class AssignStrategy
             {
-                #region Instance Methods
-
                 public string Assign1(string x)
                 {
                     return string.Format(Format1, x);
@@ -230,18 +226,10 @@ namespace isukces.code.AutoCode
                     return string.Format(Format2, x);
                 }
 
-                #endregion
-
-                #region Properties
-
                 public Type FieldType { get; set; }
                 public string Format1 { get; set; } = "{0}";
                 public string Format2 { get; set; } = "{0}";
-
-                #endregion
             }
-
-            #endregion
 
             public void Generate(Type type, IAutoCodeGeneratorContext context)
             {
@@ -251,7 +239,5 @@ namespace isukces.code.AutoCode
 
 
         }
-
-        #endregion
     }
 }

@@ -1,7 +1,6 @@
 ﻿namespace isukces.code
 {
     public class CSLangInfo: object, ILangInfo {
-        #region Properties
         /// <summary>
         /// Dodaj BOM dla UTF-8
         /// </summary>
@@ -33,8 +32,5 @@
         {
             get { return "{"; }
         }
-
-        #endregion
-
     }
 }

@@ -1,23 +1,15 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using isukces.code.interfaces;
 
-#endregion
-
 namespace isukces.code.AutoCode
 {
     internal partial class Generators
     {
-        #region Nested
-
         public class BuilderGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            #region Static Methods
-
             private static List<string> GetConstructorArgs(ConstructorInfo constructor,
                 IReadOnlyList<PropertyInfo> properties)
             {
@@ -43,14 +35,14 @@ namespace isukces.code.AutoCode
                 return r;
             }
 
-            #endregion
-
-            #region Instance Methods
-
             public void Generate(Type type, IAutoCodeGeneratorContext context)
             {
                 Setup(type, context);
+                #if COREFX
+                _attribute = type.GetTypeInfo().GetCustomAttribute<Auto.BuilderAttribute>();
+                #else
                 _attribute = type.GetCustomAttribute<Auto.BuilderAttribute>();
+                #endif
                 GenerateInternal();
             }
 
@@ -96,6 +88,9 @@ namespace isukces.code.AutoCode
             private List<string> GetConstructorArgs(IReadOnlyList<PropertyInfo> properties)
             {
                 var constructors = Type
+                    #if COREFX
+                    .GetTypeInfo()
+                    #endif
                     .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                     .OrderByDescending(q => q.GetParameters().Length)
                     .ToArray();
@@ -114,20 +109,16 @@ namespace isukces.code.AutoCode
                     BindingFlags.Instance
                     | BindingFlags.Public
                     | BindingFlags.NonPublic;
-                return Type.GetProperties(allInstanceProperties);
+                return Type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    .GetProperties(allInstanceProperties);
             }
-
-            #endregion
-
-            #region Fields
 
             private Auto.BuilderAttribute _attribute;
 
-            #endregion
-
             // private readonly AutoCodeGeneratorConfiguration _configuration;
         }
-
-        #endregion
     }
 }

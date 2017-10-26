@@ -1,6 +1,4 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,14 +7,10 @@ using isukces.code.AutoCode;
 using isukces.code.interfaces;
 using isukces.code.IO;
 
-#endregion
-
 namespace isukces.code.CodeWrite
 {
     public class CsFile : ICsCodeMaker, IClassOwner, INamespaceCollection, INamespaceOwner
     {
-        #region Instance Methods
-
         public void AddImportNamespace(string nameSpace)
         {
             _importNamespaces.Add(nameSpace);
@@ -133,13 +127,12 @@ namespace isukces.code.CodeWrite
             using (var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
             {
                 fs.Write(x, 0, x.Length);
+#if !COREFX
                 fs.Close();
+#endif
             }
         }
 
-        #endregion
-
-        #region Properties
         /// <summary>
         ///     Przestrzenie nazw
         /// </summary>
@@ -166,10 +159,6 @@ namespace isukces.code.CodeWrite
             }
         }
 
-        #endregion
-
-        #region Fields
-
         /// <summary>
         ///     Przestrzenie nazw
         /// </summary>
@@ -177,7 +166,5 @@ namespace isukces.code.CodeWrite
 
         private List<CsEnum> _enums = new List<CsEnum>();
         private string _suggestedFileName = string.Empty;
-
-        #endregion
     }
 }

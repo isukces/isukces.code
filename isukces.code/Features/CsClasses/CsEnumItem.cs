@@ -1,20 +1,12 @@
-﻿#region using
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
-
-#endregion
 
 namespace isukces.code
 {
     public class CsEnumItem : IDescriptable
     {
-        #region Instance Methods
-
-        #region Instance methods
-
         public void MakeCode(ICodeWriter writer, bool addComma)
         {
             var commentLines = new List<string>();
@@ -32,18 +24,10 @@ namespace isukces.code
             writer.WriteLine("{0}{1}", EnumName, addComma ? "," : "");
         }
 
-        #endregion
-
-        #endregion
-
-        #region Properties
-
         public string EnumName { get; set; }
         public string Label { get; set; }
         public string SerializeAs { get; set; }
 
         public string Description { get; set; }
-
-        #endregion
     }
 }

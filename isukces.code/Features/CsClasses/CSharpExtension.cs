@@ -1,15 +1,9 @@
-﻿#region using
-
-using System.Xml.Linq;
-
-#endregion
+﻿using System.Xml.Linq;
 
 namespace isukces.code
 {
     public static class CSharpExtension
     {
-        #region Static Methods
-
         public static string CsharpCite(this string text)
         {
             return "\"" + text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
@@ -39,7 +33,5 @@ namespace isukces.code
             x = x.Substring(3, x.Length - 7);
             return x;
         }
-
-        #endregion
     }
 }

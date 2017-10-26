@@ -1,17 +1,11 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using isukces.code.interfaces;
-
-#endregion
 
 namespace isukces.code
 {
     public class CsMethodParameter : IComparable, IAttributable
     {
-        #region Constructors
-
         /// <summary>
         ///     Tworzy instancję obiektu
         ///     <param name="name">nazwa parametru</param>
@@ -44,10 +38,6 @@ namespace isukces.code
             Type = type;
             Description = description;
         }
-
-        #endregion
-
-        #region Static Methods
 
         /// <summary>
         ///     Realizuje operator ==
@@ -92,10 +82,6 @@ namespace isukces.code
         {
             return left.CompareTo(right) <= 0;
         }
-
-        #endregion
-
-        #region Instance Methods
 
         /// <summary>
         ///     Realizuje interfejs IComparable
@@ -167,10 +153,6 @@ namespace isukces.code
             return CompareTo((CsMethodParameter)other);
         }
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         /// </summary>
         public string ConstValue
@@ -235,14 +217,8 @@ namespace isukces.code
 
         public bool IsVolatile { get; set; }
 
-        #endregion
-
-        #region Fields
-
         private string _constValue = string.Empty;
         private string _description = string.Empty;
         private IList<ICsAttribute> _attributes = new List<ICsAttribute>();
-
-        #endregion
     }
 }

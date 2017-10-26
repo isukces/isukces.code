@@ -7,8 +7,6 @@ namespace isukces.code.AutoCode
     {
         private class SimpleAutoCodeGeneratorContext : IAutoCodeGeneratorContext
         {
-            #region Constructors
-
             public SimpleAutoCodeGeneratorContext(Func<Type, CsClass> getOrCreateClassFunc,
                 Action<string> addNamespaceAction, Func<Type, object> resolveConfigFunc)
             {
@@ -16,10 +14,6 @@ namespace isukces.code.AutoCode
                 AddNamespaceAction = addNamespaceAction;
                 ResolveConfigFunc = resolveConfigFunc;
             }
-
-            #endregion
-
-            #region Instance Methods
 
             public void AddNamespace(string namepace)
             {
@@ -36,15 +30,9 @@ namespace isukces.code.AutoCode
                 return (T)ResolveConfigFunc(typeof(T));
             }
 
-            #endregion
-
-            #region Properties
-
             public Func<Type, object> ResolveConfigFunc { get; set; }
             public Func<Type, CsClass> GetOrCreateClassFunc { get; set; }
             public Action<string> AddNamespaceAction { get; set; }
-
-            #endregion
         }
     }
 }

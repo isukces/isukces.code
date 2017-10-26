@@ -1,19 +1,13 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using isukces.code.interfaces;
 
-#endregion
-
 namespace isukces.code.AutoCode
 {
     internal class GeneratorsHelper
     {
-        #region Static Methods
-
         public static string FieldName(string x)
         {
             return "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
@@ -42,6 +36,9 @@ namespace isukces.code.AutoCode
                     if (tmp == null)
                     {
                         var pi = mi.GetType()
+#if COREFX
+                            .GetTypeInfo()
+#endif                                                        
                             .GetField("m_bindingFlags", BindingFlags.Instance | BindingFlags.NonPublic);
                         if (pi != null)
                         {
@@ -94,7 +91,12 @@ namespace isukces.code.AutoCode
 
             string fullName;
             {
-                if (type.IsGenericType)
+                if (type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .IsGenericType)
                 {
                     {
                         var nullable = GetNullableType(type);
@@ -102,7 +104,12 @@ namespace isukces.code.AutoCode
                             return TypeName(nullable, container) + "?";
                     }
                     var gt = type.GetGenericTypeDefinition();
-                    var args = type.GetGenericArguments();
+                    var args = type
+#if COREFX
+                        .GetTypeInfo()
+#endif
+                        
+                        .GetGenericArguments();
                     var args2 = string.Join(",", args.Select(a => TypeName(a, container)));
                     fullName = gt.FullName.Split('`')[0] + "<" + args2 + ">";
                 }
@@ -118,10 +125,20 @@ namespace isukces.code.AutoCode
 
         private static Type GetNullableType(Type type)
         {
-            if ((type == null) || !type.IsGenericType)
+            if ((type == null) || !type
+#if COREFX
+                    .GetTypeInfo()
+#endif
+                    
+                    .IsGenericType)
                 return null;
             var gt = type.GetGenericTypeDefinition();
-            var args = type.GetGenericArguments();
+            var args = type
+#if COREFX
+                .GetTypeInfo()
+#endif
+
+                .GetGenericArguments();
             return gt == typeof(Nullable<>) ? args[0] : null;
         }
 
@@ -178,13 +195,7 @@ namespace isukces.code.AutoCode
             */
         }
 
-        #endregion
-
-        #region Other
-
         public const BindingFlags All =
             BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
-
-        #endregion
     }
 }

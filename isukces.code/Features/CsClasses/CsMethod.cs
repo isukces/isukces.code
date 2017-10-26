@@ -1,19 +1,13 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
-#endregion
-
 namespace isukces.code
 {
     public class CsMethod : ClassMemberBase, ICsCodeMaker, ICsClassMember
     {
-        #region Constructors
-
         /// <summary>
         ///     Tworzy instancję obiektu
         /// </summary>
@@ -40,10 +34,6 @@ namespace isukces.code
             Name = name;
             ResultType = resultType;
         }
-
-        #endregion
-
-        #region Instance Methods
 
         public CsMethodParameter AddParam(string name, string type, string description = null)
         {
@@ -80,15 +70,11 @@ namespace isukces.code
             else
                 writer.Open(mDefinition);
 
-            #region Properties
-
             query = from i in _body.Split('\r', '\n')
                     where !string.IsNullOrEmpty(i)
                     select i.TrimEnd();
             foreach (var i in query)
                 writer.WriteLine(i);
-
-            #endregion
 
             writer.Close();
         }
@@ -128,10 +114,6 @@ namespace isukces.code
             a.Add(_name);
             return a.ToArray();
         }
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         ///     Nazwa metody
@@ -213,16 +195,10 @@ namespace isukces.code
             }
         }
 
-        #endregion
-
-        #region Fields
-
         private string _name = string.Empty;
         private string _resultType = "void";
         private List<CsMethodParameter> _parameters = new List<CsMethodParameter>();
         private string _body = string.Empty;
         private string _baseConstructorCall = string.Empty;
-
-        #endregion
     }
 }

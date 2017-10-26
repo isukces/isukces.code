@@ -1,6 +1,4 @@
-﻿#region using
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,22 +6,14 @@ using System.Reflection;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
-#endregion
-
 namespace isukces.code.AutoCode
 {
     public partial class AutoCodeGenerator : IConfigResolver
     {
-        #region Constructors
-
         public AutoCodeGenerator()
         {
             CodeGenerators.AddRange(GetStandardGenerators());
         }
-
-        #endregion
-
-        #region Static Methods
 
         private static string GetNamespace(Type type)
         {
@@ -49,10 +39,6 @@ namespace isukces.code.AutoCode
             yield return new Generators.ReactivePropertyGenerator();
             yield return new Generators.ReactiveCommandGenerator();
         }
-
-        #endregion
-
-        #region Instance Methods
 
         public void Make(Assembly assembly, string outFileName, ref bool saved)
         {
@@ -124,10 +110,6 @@ namespace isukces.code.AutoCode
             return value;
         }
 
-        #endregion
-
-        #region Properties
-
         public List<IAutoCodeGenerator> CodeGenerators { get; } = new List<IAutoCodeGenerator>();
 
         public DirectoryInfo BaseDir { get; set; }
@@ -135,15 +117,9 @@ namespace isukces.code.AutoCode
 
         public ISet<string> FileNamespaces { get; } = new HashSet<string>();
 
-        #endregion
-
-        #region Fields
-
         private readonly Dictionary<Type, object> _configs = new Dictionary<Type, object>();
 
         private Dictionary<Type, CsClass> _classes;
         private CsFile _csFile;
-
-        #endregion
     }
 }
