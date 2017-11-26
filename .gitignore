@@ -10,3 +10,4 @@ obj
 /isukces.code/*.DotSettings
 /.vs
 /.idea
+/packages/*.cache

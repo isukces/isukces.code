@@ -54,7 +54,18 @@ namespace isukces.code.AutoCode
                 writer.WriteLine("if (source.{0} == null)", pi.Name);
                 writer.WriteLine("    {0} = null;", wm);
                 writer.WriteLine("else {");
-                writer.WriteLine("    {0} = new {2}[source.{1}.Length];", wm, pi.Name, type);
+                if (type == "System.Windows.Point")
+                {
+                    writer.WriteLine("#if COREFX");
+                    writer.WriteLine($"    {wm} = new Compat.{type}[source.{pi.Name}.Length];");
+                    writer.WriteLine("#else");
+                    writer.WriteLine($"    {wm} = new {type}[source.{pi.Name}.Length];");
+                    writer.WriteLine("#endif");
+                }
+                else
+                {
+                    writer.WriteLine($"    {wm} = new {type}[source.{pi.Name}.Length];");
+                }
                 writer.WriteLine(
                     "    for (var index = 0; index < source.{0}.Length; index++) {1}[index] = source.{0}[index];",
                     pi.Name, wm);
