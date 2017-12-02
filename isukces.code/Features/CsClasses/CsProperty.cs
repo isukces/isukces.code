@@ -38,7 +38,7 @@ namespace isukces.code
         public CodeLines GetGetterLines(bool allowExpressionBodies)
         {
             var tmp = string.IsNullOrEmpty(OwnGetter)
-                ? new CodeLines(new[] { string.Format("{0};", PropertyFieldName) }, true)
+                ? new CodeLines(new[] {string.Format("{0};", PropertyFieldName)}, true)
                 : new CodeLines(OwnGetter.Split('\r', '\n'), OwnGetterIsExpression);
             if (allowExpressionBodies)
                 return tmp;
@@ -48,7 +48,7 @@ namespace isukces.code
         public CodeLines GetSetterLines(bool allowExpressionBodies)
         {
             var tmp = string.IsNullOrEmpty(OwnSetter)
-                ? new CodeLines(new[] { string.Format("{0} = value;", PropertyFieldName) }, allowExpressionBodies)
+                ? new CodeLines(new[] {string.Format("{0} = value;", PropertyFieldName)}, allowExpressionBodies)
                 : new CodeLines(OwnSetter.Split('\r', '\n'), OwnSetterIsExpression && allowExpressionBodies);
             return tmp;
         }
@@ -117,14 +117,11 @@ namespace isukces.code
             IsExpressionBody = isExpressionBody;
         }
 
-        public string[] Lines { get; set; }
-        public bool IsExpressionBody { get; set; }
-
         public CodeLines MakeReturnNoExpressionBody()
         {
             if (!IsExpressionBody || Lines == null || Lines.Length == 0)
                 return this;
-            Lines[0] = "return " + Lines[0];
+            Lines[0] = "return " + Lines[0].TrimEnd(' ',';') + ";";
             IsExpressionBody = false;
             return this;
         }
@@ -137,5 +134,7 @@ namespace isukces.code
             return string.Join("\r\n", Lines);
         }
 
+        public string[] Lines { get; set; }
+        public bool IsExpressionBody { get; set; }
     }
 }
