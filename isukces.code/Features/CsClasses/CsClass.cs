@@ -267,17 +267,24 @@ namespace isukces.code
             WriteSummary(writer, prop.Description);
             WriteAttributes(writer, prop.Attributes);
             var emitField = prop.EmitField && !IsInterface;
-            if (IsInterface ||
-                (prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
+            if (IsInterface || (prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
                  string.IsNullOrEmpty(prop.OwnGetter)))
             {
-                writer.WriteLine(
-                    "{0} {{ {1}get; {2}set; }}",
-                    header,
-                    OptionalVisibility(prop.GetterVisibility),
-                    OptionalVisibility(prop.SetterVisibility)
-                    )
-                    .EmptyLine();
+                if (prop.IsPropertyReadOnly)
+                    writer.WriteLine(
+                            "{0} {{ {1}get; }}",
+                            header,
+                            OptionalVisibility(prop.GetterVisibility)
+                        )
+                        .EmptyLine();
+                else
+                    writer.WriteLine(
+                        "{0} {{ {1}get; {2}set; }}",
+                        header,
+                        OptionalVisibility(prop.GetterVisibility),
+                        OptionalVisibility(prop.SetterVisibility)
+                        )
+                        .EmptyLine();
                 emitField = false;
             }
             else
@@ -531,6 +538,8 @@ namespace isukces.code
         /// </summary>
         public object GeneratorSource { get; set; }
 
+        public static LanguageFeatures DefaultLanguageFeatures { get; set; }
+
         /// <summary>
         /// </summary>
         private readonly List<CsClass> _nestedClasses = new List<CsClass>();
@@ -545,8 +554,6 @@ namespace isukces.code
 
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
-
-        public static LanguageFeatures DefaultLanguageFeatures { get; set; } = LanguageFeatures.None;
     }
 
     [Flags]
