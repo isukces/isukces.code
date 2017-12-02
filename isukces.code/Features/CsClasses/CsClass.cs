@@ -326,7 +326,11 @@ namespace isukces.code
             var visibilityAsString = VisibilityToString(Visibility);
             if (visibilityAsString != null) x.Add(visibilityAsString);
             if (IsInterface)
+            {
+                if (IsPartial)
+                    x.Add("partial");
                 x.Add("interface");
+            }
             else
             {
                 if (GetIsAbstract())
@@ -337,6 +341,7 @@ namespace isukces.code
                     x.Add("static");
                 x.Add("class");
             }
+
             x.Add(_name);
             return x.ToArray();
         }
