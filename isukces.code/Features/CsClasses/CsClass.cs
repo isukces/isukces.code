@@ -36,41 +36,6 @@ namespace isukces.code
             return new CsAttribute(attributeName);
         }
 
-        // Private Methods 
-
-        private bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
-            string region)
-        {
-            var csMethods = m as CsMethod[] ?? m.ToArray();
-            if (!csMethods.Any()) return addEmptyLineBeforeRegion;
-            writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = Action(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
-                i =>
-                {
-                    i.MakeCode(writer);
-                    writer.EmptyLine();
-                }
-            );
-            return addEmptyLineBeforeRegion;
-        }
-
-        private bool Action<T>(ICodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
-        {
-            var enumerable = list as IList<T> ?? list.ToList();
-            if (!enumerable.Any()) return false;
-            var hasRegions = Features.HasFlag(LanguageFeatures.Regions);
-            if (hasRegions)
-            {
-                writer.WriteLine("#region " + region);
-                writer.EmptyLine();
-            }
-            foreach (var i in enumerable)
-                action(i);
-            if (hasRegions)
-                writer.WriteLine("#endregion");
-            return hasRegions;
-        }
-
         private static string OptionalVisibility(Visibilities? memberVisibility)
         {
             var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
@@ -96,7 +61,7 @@ namespace isukces.code
 
         private static void WriteAttributes(ICodeWriter writer, ICollection<ICsAttribute> attributes)
         {
-            if ((attributes == null) || (attributes.Count == 0))
+            if (attributes == null || attributes.Count == 0)
                 return;
             foreach (var j in attributes)
                 writer.WriteLine("[{0}]", j.Code);
@@ -109,7 +74,9 @@ namespace isukces.code
             if (code.IsExpressionBody)
             {
                 if (code.Lines.Length == 1)
+                {
                     writer.WriteLine("{0}{1} => {2}", OptionalVisibility(memberVisibility), keyWord, code.Lines[0]);
+                }
                 else
                 {
                     writer.Indent++;
@@ -121,7 +88,10 @@ namespace isukces.code
             else
             {
                 if (code.Lines.Length == 1)
-                    writer.WriteLine("{0}{1} {{ {2} }}", OptionalVisibility(memberVisibility), keyWord, code.Lines[0]?.Trim());
+                {
+                    writer.WriteLine("{0}{1} {{ {2} }}", OptionalVisibility(memberVisibility), keyWord,
+                        code.Lines[0]?.Trim());
+                }
                 else
                 {
                     writer.Open(keyWord);
@@ -206,7 +176,7 @@ namespace isukces.code
         {
             var parentNamespaces = ClassOwner?.GetNamespaces(true);
             var appendNamespace = DotNetType?.Namespace;
-            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] { appendNamespace };
+            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] {appendNamespace};
             var copy = GeneratorsHelper.MakeCopy(parentNamespaces, append2);
             return copy;
         }
@@ -250,12 +220,16 @@ namespace isukces.code
             writer.Close();
         }
 
+
+        public override string ToString()
+        {
+            return "csClass " + _name;
+        }
+
         public string TypeName(Type type)
         {
             return GeneratorsHelper.TypeName(type, this);
         }
-
-        // Private Methods 
 
         private void _EmitProperty(CsProperty prop, ICodeWriter writer)
         {
@@ -267,8 +241,8 @@ namespace isukces.code
             WriteSummary(writer, prop.Description);
             WriteAttributes(writer, prop.Attributes);
             var emitField = prop.EmitField && !IsInterface;
-            if (IsInterface || (prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
-                 string.IsNullOrEmpty(prop.OwnGetter)))
+            if (IsInterface || prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
+                string.IsNullOrEmpty(prop.OwnGetter))
             {
                 if (prop.IsPropertyReadOnly)
                     writer.WriteLine(
@@ -279,10 +253,10 @@ namespace isukces.code
                         .EmptyLine();
                 else
                     writer.WriteLine(
-                        "{0} {{ {1}get; {2}set; }}",
-                        header,
-                        OptionalVisibility(prop.GetterVisibility),
-                        OptionalVisibility(prop.SetterVisibility)
+                            "{0} {{ {1}get; {2}set; }}",
+                            header,
+                            OptionalVisibility(prop.GetterVisibility),
+                            OptionalVisibility(prop.SetterVisibility)
                         )
                         .EmptyLine();
                 emitField = false;
@@ -293,7 +267,9 @@ namespace isukces.code
                 {
                     WriteGetterOrSetter(writer, getterLines2, "get", prop.GetterVisibility);
                     if (!prop.IsPropertyReadOnly)
-                        WriteGetterOrSetter(writer, prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody)), "set", prop.SetterVisibility);
+                        WriteGetterOrSetter(writer,
+                            prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody)), "set",
+                            prop.SetterVisibility);
                 }
                 writer.Close().EmptyLine();
             }
@@ -305,19 +281,40 @@ namespace isukces.code
                     .EmptyLine();
         }
 
-        private string GetPropertyHeader(CsProperty prop)
+        // Private Methods 
+
+        private bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
+            string region)
         {
-            var list = new List<string>();
-            if (!IsInterface && prop.Visibility != Visibilities.InterfaceDefault)
-                list.Add(prop.Visibility.ToString().ToLower());
-            if (prop.IsStatic)
-                list.Add("static");
-            if (!IsInterface && prop.IsVirtual)
-                list.Add("virtual");
-            list.Add(prop.Type);
-            list.Add(prop.Name);
-            var header = string.Join(" ", list);
-            return header;
+            var csMethods = m as CsMethod[] ?? m.ToArray();
+            if (!csMethods.Any()) return addEmptyLineBeforeRegion;
+            writer.EmptyLine(!addEmptyLineBeforeRegion);
+            addEmptyLineBeforeRegion = Action(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
+                i =>
+                {
+                    i.MakeCode(writer);
+                    writer.EmptyLine();
+                }
+            );
+            return addEmptyLineBeforeRegion;
+        }
+
+        private bool Action<T>(ICodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
+        {
+            var enumerable = list as IList<T> ?? list.ToList();
+            if (!enumerable.Any()) return false;
+            var hasRegions = Features.HasFlag(LanguageFeatures.Regions);
+            if (hasRegions)
+            {
+                writer.WriteLine("#region " + region);
+                writer.EmptyLine();
+            }
+
+            foreach (var i in enumerable)
+                action(i);
+            if (hasRegions)
+                writer.WriteLine("#endregion");
+            return hasRegions;
         }
 
         private string[] DefAttributes()
@@ -335,10 +332,10 @@ namespace isukces.code
             {
                 if (GetIsAbstract())
                     x.Add("abstract");
-                if (IsPartial)
-                    x.Add("partial");
                 if (IsStatic)
                     x.Add("static");
+                if (IsPartial)
+                    x.Add("partial");
                 x.Add("class");
             }
 
@@ -368,9 +365,11 @@ namespace isukces.code
                     WriteAttributes(writer, i.Attributes);
                     WriteSummary(writer, i.Description);
                     if (i.IsConst)
+                    {
                         writer
                             .WriteLine("public const {0} {1} = {2};", i.Type, i.Name, i.ConstValue)
                             .EmptyLine();
+                    }
                     else
                     {
                         var att = new List<string>(8)
@@ -396,6 +395,7 @@ namespace isukces.code
                                 writer.Indent++;
                             writer.WriteLine(lines[ii]);
                         }
+
                         if (lines.Length > 1)
                             writer.Indent--;
                         writer.EmptyLine();
@@ -445,6 +445,23 @@ namespace isukces.code
             return IsAbstract || _methods.Any(i => i.IsAbstract);
         }
 
+        private string GetPropertyHeader(CsProperty prop)
+        {
+            var list = new List<string>();
+            if (!IsInterface && prop.Visibility != Visibilities.InterfaceDefault)
+                list.Add(prop.Visibility.ToString().ToLower());
+            if (prop.IsStatic)
+                list.Add("static");
+            if (!IsInterface && prop.IsVirtual)
+                list.Add("virtual");
+            list.Add(prop.Type);
+            list.Add(prop.Name);
+            var header = string.Join(" ", list);
+            return header;
+        }
+
+        public static LanguageFeatures DefaultLanguageFeatures { get; set; }
+
         public IClassOwner ClassOwner { get; set; }
 
         /// <summary>
@@ -452,7 +469,7 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get { return _name; }
+            get => _name;
             private set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -465,12 +482,8 @@ namespace isukces.code
         /// </summary>
         public string BaseClass
         {
-            get { return _baseClass; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _baseClass = value;
-            }
+            get => _baseClass;
+            set => _baseClass = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -485,7 +498,7 @@ namespace isukces.code
         /// </summary>
         public List<CsProperty> Properties
         {
-            get { return _properties; }
+            get => _properties;
             set
             {
                 if (value == null) value = new List<CsProperty>();
@@ -497,7 +510,7 @@ namespace isukces.code
         /// </summary>
         public List<CsMethodParameter> Fields
         {
-            get { return _fields; }
+            get => _fields;
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
@@ -543,8 +556,6 @@ namespace isukces.code
         /// </summary>
         public object GeneratorSource { get; set; }
 
-        public static LanguageFeatures DefaultLanguageFeatures { get; set; }
-
         /// <summary>
         /// </summary>
         private readonly List<CsClass> _nestedClasses = new List<CsClass>();
@@ -559,13 +570,5 @@ namespace isukces.code
 
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
-    }
-
-    [Flags]
-    public enum LanguageFeatures
-    {
-        None = 0,
-        ExpressionBody = 1,
-        Regions = 2
     }
 }
