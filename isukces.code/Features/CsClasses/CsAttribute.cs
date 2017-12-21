@@ -44,16 +44,23 @@ namespace isukces.code
         {
             name = (name ?? "").Trim();
             string sValue;
-            if (value == null)
-                sValue = "null";
-            else if (value is bool)
-                sValue = (bool)value ? "true" : "false";
-            else if (value is string)
-                sValue = ((string)value).CsharpCite();
-            else if (value is IDirectCode)
-                sValue = ((IDirectCode)value).Code;
-            else
-                throw new NotSupportedException(value.GetType().ToString());
+            switch (value)
+            {
+                case null:
+                    sValue = "null";
+                    break;
+                case bool aBool:
+                    sValue = aBool ? "true" : "false";
+                    break;
+                case string aString:
+                    sValue = aString.CsCite();
+                    break;
+                case IDirectCode aDirectCode:
+                    sValue = aDirectCode.Code;
+                    break;
+                default:
+                    throw new NotSupportedException(value.GetType().ToString());
+            }
             _list.Add(new KeyValuePair<string, string>(name, sValue));
             return this;
         }

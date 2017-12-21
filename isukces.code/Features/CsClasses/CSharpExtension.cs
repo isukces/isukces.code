@@ -1,26 +1,10 @@
 ﻿using System.Xml.Linq;
+using isukces.code.interfaces;
 
 namespace isukces.code
 {
     public static class CSharpExtension
     {
-        public static string CsharpCite(this string text)
-        {
-            return "\"" + text.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
-        }
-
-        public static string FirstLower(this string name) // !!!!!!
-        {
-            return name.Substring(0, 1).ToLower() + name.Substring(1);
-        }
-
-
-        public static string FirstUpper(this string name)
-        {
-            return name.Substring(0, 1).ToUpper() + name.Substring(1);
-        }
-
-
         public static string PropertyBackingFieldName(this string propertyName)
         {
             return "_" + propertyName.FirstLower();
