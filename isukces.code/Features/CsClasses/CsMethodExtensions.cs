@@ -28,6 +28,12 @@ namespace isukces.code
             method.Body = body;
             return method;
         }
+        
+        public static CsMethod WithOverride(this CsMethod method, bool isOverride=true)
+        {
+            method.IsOverride= isOverride;
+            return method;
+        }
 
         public static CsMethod WithBody(this CsMethod method, CodeFormatter code)
         {

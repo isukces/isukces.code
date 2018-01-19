@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
@@ -8,6 +7,14 @@ namespace isukces.code
 {
     public class CsMethod : ClassMemberBase, ICsCodeMaker, ICsClassMember
     {
+        static CsMethod()
+        {
+            operators        = new HashSet<string>();
+            const string tmp = "+, -, !, ~, ++, --, +, -, *, /, %, &, |, ^, <<, >>,==, !=, <, >, <=, >=,&&, ||";
+            foreach (var i in tmp.Split(','))
+                operators.Add(i.Trim());
+        }
+
         /// <summary>
         ///     Tworzy instancję obiektu
         /// </summary>
@@ -31,8 +38,13 @@ namespace isukces.code
         /// </summary>
         public CsMethod(string name, string resultType)
         {
-            Name = name;
+            Name       = name;
             ResultType = resultType;
+        }
+
+        public static bool IsOperator(string name)
+        {
+            return operators.Contains(name);
         }
 
         public CsMethodParameter AddParam(string name, string type, string description = null)
@@ -56,47 +68,32 @@ namespace isukces.code
                 writer.WriteLine("[ {0} ]", i);
 
             var query = from i in _parameters
-                        select string.Format("{2}{0} {1}", i.Type, i.Name, i.UseThis ? "this " : "");           
-            var mDefinition = string.Format("{0}({1})",               
-                string.Join(" ", GetMethodAttributes()),
+                select string.Format("{2}{0} {1}", i.Type, i.Name, i.UseThis ? "this " : "");
+            var mDefinition = string.Format("{0}({1})",
+                string.Join(" ",  GetMethodAttributes()),
                 string.Join(", ", query));
             if (IsAbstract && !IsConstructor)
             {
                 writer.WriteLine(mDefinition + ";");
                 return;
             }
+
             if (IsConstructor)
                 writer.OpenConstructor(mDefinition, _baseConstructorCall);
             else
                 writer.Open(mDefinition);
 
             query = from i in _body.Split('\r', '\n')
-                    where !string.IsNullOrEmpty(i)
-                    select i.TrimEnd();
+                where !string.IsNullOrEmpty(i)
+                select i.TrimEnd();
             foreach (var i in query)
                 writer.WriteLine(i);
 
             writer.Close();
         }
 
-        private void WriteMethodDescription(ICodeWriter writer)
-        {
-            var anyParameterHasDescription = _parameters.Any(a => !string.IsNullOrEmpty(a.Description));
-            var hasMethodDescription = !string.IsNullOrEmpty(Description);
-            if (!hasMethodDescription && !anyParameterHasDescription) return;
-            if (hasMethodDescription)
-            {
-                writer.WriteLine("/// <summary>");
-                writer.WriteLine("/// " + Description.XmlEncode());
-                writer.WriteLine("/// </summary>");
-            }
-            foreach (var i in _parameters)
-                writer.WriteLine("/// <param name=\"{0}\">{1}</param>", i.Name.XmlEncode(),
-                    i.Description.XmlEncode());
-        }
-
         private string[] GetMethodAttributes()
-        {                        
+        {
             var a = new List<string>();
             if (Name == Implicit || Name == Explicit)
             {
@@ -110,7 +107,7 @@ namespace isukces.code
                 return a.ToArray();
             }
 
-            if (Name == "+" || Name == "-" || Name == "*" || Name == "/")
+            if (IsOperator(Name))
             {
                 //  public static Meter operator +(Meter a, Meter b)
                 if (Visibility != Visibilities.InterfaceDefault)
@@ -118,10 +115,10 @@ namespace isukces.code
                 a.Add("static");
                 a.Add(_resultType);
                 a.Add("operator");
-                a.Add(Name);              
+                a.Add(Name);
                 return a.ToArray();
             }
-           
+
             if (!(IsConstructor && IsStatic))
                 if (Visibility != Visibilities.InterfaceDefault)
                     a.Add(Visibility.ToString().ToLower());
@@ -135,8 +132,26 @@ namespace isukces.code
                     a.Add("override");
                 a.Add(_resultType);
             }
+
             a.Add(_name);
             return a.ToArray();
+        }
+
+        private void WriteMethodDescription(ICodeWriter writer)
+        {
+            var anyParameterHasDescription = _parameters.Any(a => !string.IsNullOrEmpty(a.Description));
+            var hasMethodDescription       = !string.IsNullOrEmpty(Description);
+            if (!hasMethodDescription && !anyParameterHasDescription) return;
+            if (hasMethodDescription)
+            {
+                writer.WriteLine("/// <summary>");
+                writer.WriteLine("/// " + Description.XmlEncode());
+                writer.WriteLine("/// </summary>");
+            }
+
+            foreach (var i in _parameters)
+                writer.WriteLine("/// <param name=\"{0}\">{1}</param>", i.Name.XmlEncode(),
+                    i.Description.XmlEncode());
         }
 
         /// <summary>
@@ -165,7 +180,7 @@ namespace isukces.code
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
-                _parameters = value;
+                _parameters              = value;
             }
         }
 
@@ -203,14 +218,16 @@ namespace isukces.code
             set => _baseConstructorCall = value?.Trim() ?? string.Empty;
         }
 
-        private string _name = string.Empty;
-        private string _resultType = "void";
-        private List<CsMethodParameter> _parameters = new List<CsMethodParameter>();
-        private string _body = string.Empty;
-        private string _baseConstructorCall = string.Empty;
+        private static readonly HashSet<string> operators;
 
         public static string Implicit = "implicit";
         public static string Explicit = "explicit";
+
+        private string                  _name                = string.Empty;
+        private string                  _resultType          = "void";
+        private List<CsMethodParameter> _parameters          = new List<CsMethodParameter>();
+        private string                  _body                = string.Empty;
+        private string                  _baseConstructorCall = string.Empty;
     }
 
     /*

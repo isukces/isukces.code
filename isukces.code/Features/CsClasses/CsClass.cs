@@ -149,9 +149,9 @@ namespace isukces.code
             return field;
         }
         
-        public CsMethod AddConstructor(string type, string description = null)
+        public CsMethod AddConstructor(string description = null)
         {            
-            var m    = new CsMethod(_name, type)
+            var m    = new CsMethod(_name, this.Name)
             {
                 Description = description
             };
@@ -162,7 +162,7 @@ namespace isukces.code
 
         public CsMethod AddMethod(string name, string type, string description = null)
         {
-            var isConstructor = string.IsNullOrEmpty(name) || name == _name || name == "*";
+            var isConstructor = string.IsNullOrEmpty(name) || name == _name ;
             if (isConstructor)
                 name = _name;
             var m = new CsMethod(name, type)

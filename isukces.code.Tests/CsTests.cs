@@ -1,4 +1,5 @@
-﻿using isukces.code.interfaces;
+﻿using isukces.code.CodeWrite;
+using isukces.code.interfaces;
 using Xunit;
 
 namespace isukces.code.Tests
@@ -8,18 +9,42 @@ namespace isukces.code.Tests
         [Fact]
         public void ShouldCsCite()
         {
-            const string quote = "\"";
+            const string quote     = "\"";
             const string backslash = "\\";
-            
+
             const string specialR = "\r";
-            Assert.Equal(1, specialR.Length);
+            Assert.Equal(1,                               specialR.Length);
             Assert.Equal(quote + backslash + "r" + quote, specialR.CsCite());
             var specialN = "\n";
-            Assert.Equal(1, specialN.Length);
+            Assert.Equal(1,                               specialN.Length);
             Assert.Equal(quote + backslash + "n" + quote, specialN.CsCite());
             var specialT = "\t";
-            Assert.Equal(1, specialT.Length);
+            Assert.Equal(1,                               specialT.Length);
             Assert.Equal(quote + backslash + "t" + quote, specialT.CsCite());
+        }
+
+        [Fact]
+        public void T02_Should_Create_operator()
+        {
+            var cl = new CsClass("Src1");
+            var m  = cl.AddMethod("*", "Result")
+                .WithBody("return new Result(left.Value * right.Value);");
+            m.AddParam("left",  "Src1");
+            m.AddParam("right", "Src2");
+            // odwrotny
+
+            ICodeWriter w = new CodeWriter();
+            cl.MakeCode(w);
+            var expected = @"public class Src1
+{
+    public static operator * Result(Src1 left, Src2 right)
+    {
+        return new Result(left.Value * right.Value);
+    }
+
+}
+";
+            Assert.Equal(expected.Trim(), w.Code.Trim());
         }
     }
 }
