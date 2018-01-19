@@ -56,8 +56,8 @@ namespace isukces.code
                 writer.WriteLine("[ {0} ]", i);
 
             var query = from i in _parameters
-                        select string.Format("{2}{0} {1}", i.Type, i.Name, i.UseThis ? "this " : "");
-            var mDefinition = string.Format("{0}({1})",
+                        select string.Format("{2}{0} {1}", i.Type, i.Name, i.UseThis ? "this " : "");           
+            var mDefinition = string.Format("{0}({1})",               
                 string.Join(" ", GetMethodAttributes()),
                 string.Join(", ", query));
             if (IsAbstract && !IsConstructor)
@@ -96,8 +96,32 @@ namespace isukces.code
         }
 
         private string[] GetMethodAttributes()
-        {
+        {                        
             var a = new List<string>();
+            if (Name == Implicit || Name == Explicit)
+            {
+                //  public static implicit operator double(Force src)
+                if (Visibility != Visibilities.InterfaceDefault)
+                    a.Add(Visibility.ToString().ToLower());
+                a.Add("static");
+                a.Add(Name);
+                a.Add("operator");
+                a.Add(_resultType);
+                return a.ToArray();
+            }
+
+            if (Name == "+" || Name == "-" || Name == "*" || Name == "/")
+            {
+                //  public static Meter operator +(Meter a, Meter b)
+                if (Visibility != Visibilities.InterfaceDefault)
+                    a.Add(Visibility.ToString().ToLower());
+                a.Add("static");
+                a.Add(_resultType);
+                a.Add("operator");
+                a.Add(Name);              
+                return a.ToArray();
+            }
+           
             if (!(IsConstructor && IsStatic))
                 if (Visibility != Visibilities.InterfaceDefault)
                     a.Add(Visibility.ToString().ToLower());
@@ -120,12 +144,8 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get { return _name; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _name = value;
-            }
+            get => _name;
+            set => _name = value?.Trim() ?? string.Empty;
         }
 
 
@@ -133,19 +153,15 @@ namespace isukces.code
         /// </summary>
         public string ResultType
         {
-            get { return _resultType; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _resultType = value;
-            }
+            get => _resultType;
+            set => _resultType = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
         /// </summary>
         public List<CsMethodParameter> Parameters
         {
-            get { return _parameters; }
+            get => _parameters;
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
@@ -174,12 +190,8 @@ namespace isukces.code
         /// </summary>
         public string Body
         {
-            get { return _body; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _body = value;
-            }
+            get => _body;
+            set => _body = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -187,12 +199,8 @@ namespace isukces.code
         /// </summary>
         public string BaseConstructorCall
         {
-            get { return _baseConstructorCall; }
-            set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _baseConstructorCall = value;
-            }
+            get => _baseConstructorCall;
+            set => _baseConstructorCall = value?.Trim() ?? string.Empty;
         }
 
         private string _name = string.Empty;
@@ -200,5 +208,20 @@ namespace isukces.code
         private List<CsMethodParameter> _parameters = new List<CsMethodParameter>();
         private string _body = string.Empty;
         private string _baseConstructorCall = string.Empty;
+
+        public static string Implicit = "implicit";
+        public static string Explicit = "explicit";
     }
+
+    /*
+    public enum MethodKind
+    {
+        Normal,
+        Constructor,
+        Operator,
+        // np.  public static implicit operator double(Force src)
+        Implicit,
+        Explicit
+    }
+    */
 }

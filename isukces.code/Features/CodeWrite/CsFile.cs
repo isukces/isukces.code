@@ -23,6 +23,12 @@ namespace isukces.code.CodeWrite
                 s.Add(i);
             return s;
         }
+        
+        public CsClass GetOrCreateClass(string namespaceName, string className)
+        {
+            var ns = GetOrCreateNamespace(namespaceName);
+            return ns.GetOrCreateClass(className);            
+        }
 
         public CsNamespace GetOrCreateNamespace(string name)
         {

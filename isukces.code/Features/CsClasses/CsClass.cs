@@ -148,15 +148,29 @@ namespace isukces.code
             Fields.Add(field);
             return field;
         }
+        
+        public CsMethod AddConstructor(string type, string description = null)
+        {            
+            var m    = new CsMethod(_name, type)
+            {
+                Description = description
+            };
+            _methods.Add(m);
+            m.IsConstructor = true;
+            return m;
+        }
 
         public CsMethod AddMethod(string name, string type, string description = null)
         {
+            var isConstructor = string.IsNullOrEmpty(name) || name == _name || name == "*";
+            if (isConstructor)
+                name = _name;
             var m = new CsMethod(name, type)
             {
                 Description = description
             };
             _methods.Add(m);
-            m.IsConstructor = name == _name;
+            m.IsConstructor = isConstructor;
             return m;
         }
 
