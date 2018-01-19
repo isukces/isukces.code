@@ -17,7 +17,7 @@ namespace isukces.code.CodeWrite
         public CsClass AddClass(CsClass csClass)
         {
             ((List<CsClass>)Classes).Add(csClass);
-            csClass.ClassOwner = this;
+            csClass.Owner = this;
             return csClass;
         }
 

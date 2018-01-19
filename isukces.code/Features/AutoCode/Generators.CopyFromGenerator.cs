@@ -272,12 +272,12 @@ namespace isukces.code.AutoCode
                     {
                         while (t.DeclaringType != null)
                             t = t.DeclaringType;
-                        object o = Class.ClassOwner;
+                        object o = Class.Owner;
                         var nsCollection = o as INamespaceCollection;
                         while (nsCollection == null && o != null)
                         {
                             if (o is CsClass)
-                                o = ((CsClass)o).ClassOwner;
+                                o = ((CsClass)o).Owner;
                             else if (o is CsNamespace) // can probably be removed
                                 o = ((CsNamespace)o).Owner;
                             else

@@ -27,7 +27,7 @@ namespace isukces.code
         /// </summary>
         public CsClass(string name, string baseClass)
         {
-            Name = name;
+            Name      = name;
             BaseClass = baseClass;
         }
 
@@ -68,7 +68,7 @@ namespace isukces.code
         }
 
         private static void WriteGetterOrSetter(ICodeWriter writer, CodeLines code, string keyWord,
-            Visibilities? memberVisibility)
+            Visibilities?                                   memberVisibility)
         {
             if (code?.Lines == null || code.Lines.Length == 0) return;
             if (code.IsExpressionBody)
@@ -120,7 +120,7 @@ namespace isukces.code
             var constValue = new CsMethodParameter(name, type)
             {
                 ConstValue = encodedValue,
-                IsConst = true
+                IsConst    = true
             };
             Fields.Add(constValue);
             return constValue;
@@ -174,10 +174,10 @@ namespace isukces.code
 
         public ISet<string> GetNamespaces(bool withParent)
         {
-            var parentNamespaces = ClassOwner?.GetNamespaces(true);
-            var appendNamespace = DotNetType?.Namespace;
-            var append2 = string.IsNullOrEmpty(appendNamespace) ? null : new[] {appendNamespace};
-            var copy = GeneratorsHelper.MakeCopy(parentNamespaces, append2);
+            var parentNamespaces = Owner?.GetNamespaces(true);
+            var appendNamespace  = DotNetType?.Namespace;
+            var append2          = string.IsNullOrEmpty(appendNamespace) ? null : new[] {appendNamespace};
+            var copy             = GeneratorsHelper.MakeCopy(parentNamespaces, append2);
             return copy;
         }
 
@@ -188,7 +188,7 @@ namespace isukces.code
             if (existing != null) return existing;
             existing = new CsClass(typeName)
             {
-                ClassOwner = this
+                Owner = this
             };
             _nestedClasses.Add(existing);
             return existing;
@@ -236,7 +236,7 @@ namespace isukces.code
             var fieldName = prop.PropertyFieldName;
 
             var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
-            var header = GetPropertyHeader(prop);
+            var header       = GetPropertyHeader(prop);
 
             WriteSummary(writer, prop.Description);
             WriteAttributes(writer, prop.Attributes);
@@ -284,7 +284,7 @@ namespace isukces.code
         // Private Methods 
 
         private bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
-            string region)
+            string                   region)
         {
             var csMethods = m as CsMethod[] ?? m.ToArray();
             if (!csMethods.Any()) return addEmptyLineBeforeRegion;
@@ -319,24 +319,32 @@ namespace isukces.code
 
         private string[] DefAttributes()
         {
-            var x = new List<string>(4);
+            var x                  = new List<string>(4);
             var visibilityAsString = VisibilityToString(Visibility);
             if (visibilityAsString != null) x.Add(visibilityAsString);
-            if (IsInterface)
+            switch (Kind)
             {
-                if (IsPartial)
-                    x.Add("partial");
-                x.Add("interface");
-            }
-            else
-            {
-                if (GetIsAbstract())
-                    x.Add("abstract");
-                if (IsStatic)
-                    x.Add("static");
-                if (IsPartial)
-                    x.Add("partial");
-                x.Add("class");
+                case NamespaceMemberKind.Class:
+                    if (GetIsAbstract())
+                        x.Add("abstract");
+                    if (IsStatic)
+                        x.Add("static");
+                    if (IsPartial)
+                        x.Add("partial");
+                    x.Add("class");
+                    break;
+                case NamespaceMemberKind.Interface:
+                    if (IsPartial)
+                        x.Add("partial");
+                    x.Add("interface");
+                    break;
+                case NamespaceMemberKind.Struct:
+                    if (IsPartial)
+                        x.Add("partial");
+                    x.Add("struct");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             x.Add(_name);
@@ -347,10 +355,10 @@ namespace isukces.code
         {
             var c = _methods.Where(i => i.IsConstructor).ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
-            var m = c.Where(i => !i.IsStatic);
+            var m                    = c.Where(i => !i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Constructors");
 
-            m = c.Where(i => i.IsStatic);
+            m                        = c.Where(i => i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static constructors");
             return addEmptyLineBeforeRegion;
         }
@@ -383,7 +391,7 @@ namespace isukces.code
                         att.Add(i.Name);
                         if (!string.IsNullOrEmpty(i.ConstValue))
                             att.Add("= " + i.ConstValue);
-                        var line = string.Join(" ", att) + ";";
+                        var line  = string.Join(" ", att) + ";";
                         var lines =
                             line.Split('\r', '\n')
                                 .Select(a => a.Trim())
@@ -409,10 +417,10 @@ namespace isukces.code
         {
             var c = _methods.Where(i => !i.IsConstructor).ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
-            var m = c.Where(i => !i.IsStatic);
+            var m                    = c.Where(i => !i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Methods");
 
-            m = c.Where(i => i.IsStatic);
+            m                        = c.Where(i => i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static methods");
             return addEmptyLineBeforeRegion;
         }
@@ -462,7 +470,7 @@ namespace isukces.code
 
         public static LanguageFeatures DefaultLanguageFeatures { get; set; }
 
-        public IClassOwner ClassOwner { get; set; }
+        public IClassOwner Owner { get; set; }
 
         /// <summary>
         ///     Nazwa klasy
@@ -502,7 +510,7 @@ namespace isukces.code
             set
             {
                 if (value == null) value = new List<CsProperty>();
-                _properties = value;
+                _properties              = value;
             }
         }
 
@@ -514,7 +522,7 @@ namespace isukces.code
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
-                _fields = value;
+                _fields                  = value;
             }
         }
 
@@ -541,7 +549,9 @@ namespace isukces.code
         /// <summary>
         ///     emit as interface
         /// </summary>
-        public bool IsInterface { get; set; }
+        public bool IsInterface => Kind == NamespaceMemberKind.Interface;
+
+        public NamespaceMemberKind Kind { get; set; }
 
         public LanguageFeatures Features { get; set; } = DefaultLanguageFeatures;
 
@@ -565,10 +575,10 @@ namespace isukces.code
         /// </summary>
         private readonly List<CsMethod> _methods = new List<CsMethod>();
 
-        private string _name = string.Empty;
+        private string _name      = string.Empty;
         private string _baseClass = string.Empty;
 
-        private List<CsProperty> _properties = new List<CsProperty>();
-        private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
+        private List<CsProperty>        _properties = new List<CsProperty>();
+        private List<CsMethodParameter> _fields     = new List<CsMethodParameter>();
     }
 }

@@ -48,6 +48,7 @@ namespace isukces.code.AutoCode
                     }
                     if (tmp == null)
                         throw new NotSupportedException();
+                    // ReSharper disable once TailRecursiveCall
                     return IsMemberStatic(tmp);
                 }
             }
