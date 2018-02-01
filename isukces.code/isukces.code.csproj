@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.18019.31</AssemblyVersion>
-    <Version>1.0.18019.31</Version>
-    <FileVersion>1.0.18019.31</FileVersion>
+    <AssemblyVersion>1.0.18019.32</AssemblyVersion>
+    <Version>1.0.18019.32</Version>
+    <FileVersion>1.0.18019.32</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>

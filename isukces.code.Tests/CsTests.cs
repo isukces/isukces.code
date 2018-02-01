@@ -27,6 +27,7 @@ namespace isukces.code.Tests
         public void T02_Should_Create_operator()
         {
             var cl = new CsClass("Src1");
+            cl.Kind = NamespaceMemberKind.Struct;
             var m  = cl.AddMethod("*", "Result")
                 .WithBody("return new Result(left.Value * right.Value);");
             m.AddParam("left",  "Src1");
@@ -35,9 +36,9 @@ namespace isukces.code.Tests
 
             ICodeWriter w = new CodeWriter();
             cl.MakeCode(w);
-            var expected = @"public class Src1
+            var expected = @"public struct Src1
 {
-    public static operator * Result(Src1 left, Src2 right)
+    public static Result operator *(Src1 left, Src2 right)
     {
         return new Result(left.Value * right.Value);
     }

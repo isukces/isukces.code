@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
@@ -47,13 +48,28 @@ namespace isukces.code
             return operators.Contains(name);
         }
 
+        private static string FormatMethodParameter(CsMethodParameter i)
+        {
+            var sb = new StringBuilder();
+            if (i.Attributes.Any())
+            {
+                var joioned = string.Join(", ", i.Attributes);
+                sb.Append($"[ {joioned} ] ");
+            }
+            if (i.UseThis)
+                sb.Append("this ");
+            sb.AppendFormat("{0} {1}", i.Type, i.Name);
+            if (!string.IsNullOrEmpty(i.ConstValue))
+                sb.Append(" = " + i.ConstValue);
+            return sb.ToString();
+        }
+
         public CsMethodParameter AddParam(string name, string type, string description = null)
         {
             var parameter = new CsMethodParameter(name, type, description);
             _parameters.Add(parameter);
             return parameter;
         }
-
 
         /// <summary>
         ///     Tworzy kod
@@ -63,12 +79,11 @@ namespace isukces.code
         public void MakeCode(ICodeWriter writer)
         {
             WriteMethodDescription(writer);
-
             foreach (var i in Attributes)
                 writer.WriteLine("[ {0} ]", i);
 
             var query = from i in _parameters
-                select string.Format("{2}{0} {1}", i.Type, i.Name, i.UseThis ? "this " : "");
+                select FormatMethodParameter(i);
             var mDefinition = string.Format("{0}({1})",
                 string.Join(" ",  GetMethodAttributes()),
                 string.Join(", ", query));
@@ -92,6 +107,7 @@ namespace isukces.code
             writer.Close();
         }
 
+
         private string[] GetMethodAttributes()
         {
             var a = new List<string>();
@@ -110,6 +126,7 @@ namespace isukces.code
             if (IsOperator(Name))
             {
                 //  public static Meter operator +(Meter a, Meter b)
+                // public static Fraction operator +(Fraction a, Fraction b)
                 if (Visibility != Visibilities.InterfaceDefault)
                     a.Add(Visibility.ToString().ToLower());
                 a.Add("static");
