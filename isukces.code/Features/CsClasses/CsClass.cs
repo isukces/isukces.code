@@ -150,8 +150,9 @@ namespace isukces.code
         }
         
         public CsMethod AddConstructor(string description = null)
-        {            
-            var m    = new CsMethod(_name, this.Name)
+        {
+            var n = _name.Split('<')[0].Trim();            
+            var m    = new CsMethod(n, Name)
             {
                 Description = description
             };
