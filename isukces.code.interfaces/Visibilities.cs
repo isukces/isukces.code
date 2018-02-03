@@ -5,6 +5,7 @@
         Public,
         Protected,
         Private,
-        InterfaceDefault
+        InterfaceDefault,
+        Internal
     }
 }
