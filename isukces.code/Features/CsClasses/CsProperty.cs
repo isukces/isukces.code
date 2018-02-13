@@ -70,16 +70,16 @@ namespace isukces.code
         /// </summary>
         public string OwnGetter
         {
-            get => _ownGetter;
-            set => _ownGetter = value?.Trim() ?? string.Empty;
+            get { return _ownGetter; }
+            set { _ownGetter = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
         /// </summary>
         public string OwnSetter
         {
-            get => _ownSetter;
-            set => _ownSetter = value?.Trim() ?? string.Empty;
+            get { return _ownSetter; }
+            set { _ownSetter = value?.Trim() ?? string.Empty; }
         }
 
         public bool OwnGetterIsExpression { get; set; }
@@ -88,7 +88,10 @@ namespace isukces.code
         /// <summary>
         ///     nazwa zmiennej dla własności; własność jest tylko do odczytu.
         /// </summary>
-        public string PropertyFieldName => Name.PropertyBackingFieldName();
+        public string PropertyFieldName
+        {
+            get { return Name.PropertyBackingFieldName(); }
+        }
 
         /// <summary>
         /// </summary>

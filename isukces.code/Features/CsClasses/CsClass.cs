@@ -492,7 +492,7 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get => _name;
+            get { return _name; }
             private set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -505,8 +505,8 @@ namespace isukces.code
         /// </summary>
         public string BaseClass
         {
-            get => _baseClass;
-            set => _baseClass = value?.Trim() ?? string.Empty;
+            get { return _baseClass; }
+            set { _baseClass = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
@@ -521,7 +521,7 @@ namespace isukces.code
         /// </summary>
         public List<CsProperty> Properties
         {
-            get => _properties;
+            get { return _properties; }
             set
             {
                 if (value == null) value = new List<CsProperty>();
@@ -533,7 +533,7 @@ namespace isukces.code
         /// </summary>
         public List<CsMethodParameter> Fields
         {
-            get => _fields;
+            get { return _fields; }
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
@@ -564,7 +564,10 @@ namespace isukces.code
         /// <summary>
         ///     emit as interface
         /// </summary>
-        public bool IsInterface => Kind == NamespaceMemberKind.Interface;
+        public bool IsInterface
+        {
+            get { return Kind == NamespaceMemberKind.Interface; }
+        }
 
         public NamespaceMemberKind Kind { get; set; }
 

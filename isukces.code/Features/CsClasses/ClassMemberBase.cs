@@ -9,8 +9,8 @@ namespace isukces.code
 
         public IList<ICsAttribute> Attributes
         {
-            get => _attributes;
-            set => _attributes = value ?? new List<ICsAttribute>();
+            get { return _attributes; }
+            set { _attributes = value ?? new List<ICsAttribute>(); }
         }
 
         public Visibilities Visibility { get; set; }

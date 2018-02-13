@@ -176,8 +176,8 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get => _name;
-            set => _name = value?.Trim() ?? string.Empty;
+            get { return _name; }
+            set { _name = value?.Trim() ?? string.Empty; }
         }
 
 
@@ -185,15 +185,15 @@ namespace isukces.code
         /// </summary>
         public string ResultType
         {
-            get => _resultType;
-            set => _resultType = value?.Trim() ?? string.Empty;
+            get { return _resultType; }
+            set { _resultType = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
         /// </summary>
         public List<CsMethodParameter> Parameters
         {
-            get => _parameters;
+            get { return _parameters; }
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
@@ -222,8 +222,8 @@ namespace isukces.code
         /// </summary>
         public string Body
         {
-            get => _body;
-            set => _body = value?.Trim() ?? string.Empty;
+            get { return _body; }
+            set { _body = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
@@ -231,8 +231,8 @@ namespace isukces.code
         /// </summary>
         public string BaseConstructorCall
         {
-            get => _baseConstructorCall;
-            set => _baseConstructorCall = value?.Trim() ?? string.Empty;
+            get { return _baseConstructorCall; }
+            set { _baseConstructorCall = value?.Trim() ?? string.Empty; }
         }
 
         private static readonly HashSet<string> operators;
