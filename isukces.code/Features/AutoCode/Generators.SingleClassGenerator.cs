@@ -2,9 +2,9 @@ using System;
 
 namespace isukces.code.AutoCode
 {
-    internal partial class Generators
+    public partial class Generators
     {
-        internal abstract class SingleClassGenerator
+        public abstract class SingleClassGenerator
         {
             protected void Setup(Type type, IAutoCodeGeneratorContext context)
             {

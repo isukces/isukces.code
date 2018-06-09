@@ -7,7 +7,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
 {
-    internal partial class Generators
+    public partial class Generators
     {
         internal class LazyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {

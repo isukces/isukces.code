@@ -31,7 +31,7 @@ namespace isukces.code.AutoCode
         {
             yield return new Generators.LazyGenerator();
             yield return new Generators.DependencyPropertyGenerator();
-            yield return new Generators.CopyFromGenerator();
+            yield return new CopyFromGenerator();
 
             yield return new Generators.ShouldSerializeGenerator();
             yield return new Generators.BuilderGenerator();
