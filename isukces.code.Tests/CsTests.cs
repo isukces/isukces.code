@@ -47,5 +47,37 @@ namespace isukces.code.Tests
 ";
             Assert.Equal(expected.Trim(), w.Code.Trim());
         }
+
+        
+        [Fact]
+        public void T03_Should_Create_auto_property_with_initialisation()
+        {
+            var cl = new CsClass("Src1");
+            var p = cl.AddProperty("A", "int");
+            p.MakeAutoImplementIfPossible = true;
+            //p.ConstValue = "12";
+            // odwrotny
+
+            ICodeWriter w = new CodeWriter();
+            cl.MakeCode(w);
+            var expected = @"public class Src1
+{
+    public int A { get; set; }
+
+}
+";
+            Assert.Equal(expected.Trim(), w.Code.Trim());
+
+            p.ConstValue = "12";
+            w = new CodeWriter();
+            cl.MakeCode(w);
+              expected = @"public class Src1
+{
+    public int A { get; set; } = 12;
+
+}
+";
+            Assert.Equal(expected.Trim(), w.Code.Trim());
+        }
     }
 }

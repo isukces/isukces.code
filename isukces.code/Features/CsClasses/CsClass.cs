@@ -259,21 +259,13 @@ namespace isukces.code
             if (IsInterface || prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
                 string.IsNullOrEmpty(prop.OwnGetter))
             {
-                if (prop.IsPropertyReadOnly)
-                    writer.WriteLine(
-                            "{0} {{ {1}get; }}",
-                            header,
-                            OptionalVisibility(prop.GetterVisibility)
-                        )
-                        .EmptyLine();
-                else
-                    writer.WriteLine(
-                            "{0} {{ {1}get; {2}set; }}",
-                            header,
-                            OptionalVisibility(prop.GetterVisibility),
-                            OptionalVisibility(prop.SetterVisibility)
-                        )
-                        .EmptyLine();
+                var gs = prop.IsPropertyReadOnly
+                    ? $"{{ {OptionalVisibility(prop.GetterVisibility)}get; }}"
+                    : $"{{ {OptionalVisibility(prop.GetterVisibility)}get; {OptionalVisibility(prop.SetterVisibility)}set; }}";
+                var c = header + " " + gs;
+                if (!string.IsNullOrEmpty(prop.ConstValue))
+                    c += " = " + prop.ConstValue + ";";
+                writer.WriteLine(c).EmptyLine();
                 emitField = false;
             }
             else
