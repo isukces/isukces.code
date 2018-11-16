@@ -50,6 +50,17 @@ namespace isukces.code.AutoCode
             _classes = new Dictionary<Type, CsClass>();
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
+            {
+                IAutoCodeGeneratorContext context = new SimpleAutoCodeGeneratorContext(
+                    GetOrCreateClass,
+                    ns => _csFile.AddImportNamespace(ns),
+                    ResolveConfigInternal);
+                foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
+                {
+                    i.AssemblyStart(assembly, context);
+                }
+            }
+
             for (int index = 0, length = types.Length; index < length; index++)
             {
                 var type = types[index];
@@ -60,6 +71,16 @@ namespace isukces.code.AutoCode
                 );
                 foreach (var i in CodeGenerators)
                     i.Generate(type, context);
+            }
+            {
+                IAutoCodeGeneratorContext context = new SimpleAutoCodeGeneratorContext(
+                    GetOrCreateClass,
+                    ns => _csFile.AddImportNamespace(ns),
+                    ResolveConfigInternal);
+                foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
+                {
+                    i.AssemblyEnd(assembly, context);
+                }
             }
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
             if (_csFile.SaveIfDifferent(fileName, false))
