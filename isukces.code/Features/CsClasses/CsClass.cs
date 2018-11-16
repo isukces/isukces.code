@@ -467,8 +467,13 @@ namespace isukces.code
                 list.Add(prop.Visibility.ToString().ToLower());
             if (prop.IsStatic)
                 list.Add("static");
-            if (!IsInterface && prop.IsVirtual)
-                list.Add("virtual");
+            if (!IsInterface)
+            {
+                if (prop.IsOverride)
+                    list.Add("override");
+                else if (prop.IsVirtual)
+                    list.Add("virtual");
+            }
             list.Add(prop.Type);
             list.Add(prop.Name);
             var header = string.Join(" ", list);

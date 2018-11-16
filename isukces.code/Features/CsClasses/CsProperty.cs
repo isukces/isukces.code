@@ -98,6 +98,8 @@ namespace isukces.code
         public bool EmitField { get; set; } = true;
 
         public bool IsVirtual { get; set; }
+        
+        public bool IsOverride { get; set; }
 
         /// <summary>
         /// </summary>
