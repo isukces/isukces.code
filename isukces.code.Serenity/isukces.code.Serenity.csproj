@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <Authors>Internet Sukces Piotr Stęclik</Authors>
+        <Company>Internet Sukces Piotr Stęclik</Company>
+        <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2018</Copyright>
+        <TargetFrameworks>netstandard1.6;net451</TargetFrameworks>
+        <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+        <SignAssembly>true</SignAssembly>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Product>isukces.code.Serenity</Product>
+        <PackageId>isukces.code.Serenity</PackageId>
+        <Description>isukces.code.Serenity</Description>
+        <IncludeSource>false</IncludeSource>
+        <IncludeSymbols>true</IncludeSymbols>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+        <AssemblyVersion>1.0.18320.39</AssemblyVersion>
+        <Version>1.0.18320.1</Version>
+        <FileVersion>1.0.18320.1</FileVersion>
+        <Description>Serenity extension for iSukces.Code</Description>
+        <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+        <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageTags>C#</PackageTags>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\isukces.code.interfaces\isukces.code.interfaces.csproj" />
+        <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.JScript" />
+        <Reference Include="System.Activities" />
+        <Reference Include="WindowsBase" Condition="'$(TargetFramework)' == 'net451'" />
+    </ItemGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+        <DefineConstants>COREFX</DefineConstants>
+    </PropertyGroup>
+</Project>
