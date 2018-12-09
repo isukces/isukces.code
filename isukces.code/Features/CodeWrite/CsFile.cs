@@ -11,9 +11,9 @@ namespace isukces.code.CodeWrite
 {
     public class CsFile : ICsCodeMaker, IClassOwner, INamespaceCollection, INamespaceOwner
     {
-        public void AddImportNamespace(string nameSpace)
+        public void AddImportNamespace(string aNamespace)
         {
-            _importNamespaces.Add(nameSpace);
+            _importNamespaces.Add(aNamespace);
         }
 
         public ISet<string> GetNamespaces(bool withParent)
@@ -59,7 +59,8 @@ namespace isukces.code.CodeWrite
             foreach (var ns in fileNamespaces)
             {
                 var addEmptyLine = false;
-                if (!string.IsNullOrEmpty(ns))
+                if (string.IsNullOrEmpty(ns))
+                    continue; // should never occurs
                 {
                     writer.WriteLine("// ReSharper disable once CheckNamespace");
                     writer.Open("namespace {0}", ns);
@@ -70,12 +71,10 @@ namespace isukces.code.CodeWrite
                             writer.WriteLine($"using {i};");
                         addEmptyLine = true;
                     }
-
                 }
-                {
 
-                    IReadOnlyList<CsClass> classList;
-                    if (classByNamespace.TryGetValue(ns, out classList))
+                {
+                    if (classByNamespace.TryGetValue(ns, out var classList))
                         foreach (var i in classList)
                         {
                             if (addEmptyLine)
@@ -83,8 +82,8 @@ namespace isukces.code.CodeWrite
                             addEmptyLine = true;
                             writer.DoWithKeepingIndent(() => i.MakeCode(writer));
                         }
-                    List<CsEnum> enumList;
-                    if (enumByNamespace.TryGetValue(ns, out enumList))
+
+                    if (enumByNamespace.TryGetValue(ns, out var enumList))
                         foreach (var i in enumList)
                         {
                             if (addEmptyLine)

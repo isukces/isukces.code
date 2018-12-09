@@ -62,6 +62,24 @@ namespace isukces.code
             return string.Format("property {0} {1}", Name, Type);
         }
 
+        public CsProperty WithIsPropertyReadOnly(bool isPropertyReadOnly = true)
+        {
+            IsPropertyReadOnly = isPropertyReadOnly;
+            return this;
+        }
+
+        public CsProperty WithNoEmitField()
+        {
+            EmitField = false;
+            return this;
+        }
+
+        public CsProperty WithOwnGetter(string ownGetter)
+        {
+            OwnGetter = ownGetter;
+            return this;
+        }
+
         /// <summary>
         /// </summary>
         public bool IsPropertyReadOnly { get; set; }
@@ -98,7 +116,7 @@ namespace isukces.code
         public bool EmitField { get; set; } = true;
 
         public bool IsVirtual { get; set; }
-        
+
         public bool IsOverride { get; set; }
 
         /// <summary>
@@ -107,7 +125,7 @@ namespace isukces.code
 
         public Visibilities? SetterVisibility { get; set; }
         public Visibilities? GetterVisibility { get; set; }
-        public Visibilities FieldVisibility { get; set; } = Visibilities.Private;
+        public Visibilities  FieldVisibility  { get; set; } = Visibilities.Private;
 
 
         private string _ownGetter = string.Empty;
@@ -118,7 +136,7 @@ namespace isukces.code
     {
         public CodeLines(string[] lines, bool isExpressionBody = false)
         {
-            Lines = lines?.Where(a => a != null && a.Trim() != "").ToArray();
+            Lines            = lines?.Where(a => a != null && a.Trim() != "").ToArray();
             IsExpressionBody = isExpressionBody;
         }
 
@@ -126,7 +144,7 @@ namespace isukces.code
         {
             if (!IsExpressionBody || Lines == null || Lines.Length == 0)
                 return this;
-            Lines[0] = "return " + Lines[0].TrimEnd(' ',';') + ";";
+            Lines[0]         = "return " + Lines[0].TrimEnd(' ', ';') + ";";
             IsExpressionBody = false;
             return this;
         }
@@ -139,7 +157,7 @@ namespace isukces.code
             return string.Join("\r\n", Lines);
         }
 
-        public string[] Lines { get; set; }
-        public bool IsExpressionBody { get; set; }
+        public string[] Lines            { get; set; }
+        public bool     IsExpressionBody { get; set; }
     }
 }

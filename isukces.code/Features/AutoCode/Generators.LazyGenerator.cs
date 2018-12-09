@@ -184,7 +184,7 @@ namespace isukces.code.AutoCode
                 if (isProperty)
                 {
                     var prop = Class.AddProperty(baseName, resultType);
-                    prop.IsStatic = GeneratorsHelper.IsMemberStatic(mi);
+                    prop.IsStatic = mi.IsMemberStatic();
                     prop.IsPropertyReadOnly = true;
                     prop.EmitField = false;
                     var writer = new CodeWriter();

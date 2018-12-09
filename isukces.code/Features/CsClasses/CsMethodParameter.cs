@@ -143,6 +143,18 @@ namespace isukces.code
             return this;
         }
 
+        public CsMethodParameter WithIsReadOnly(bool isReadOnly = true)
+        {
+            IsReadOnly = isReadOnly;
+            return this;
+        }
+        
+        public CsMethodParameter WithConstValue(string constValue)
+        {
+            ConstValue=  constValue;
+            return this;
+        }
+
         /// <summary>
         ///     Realizuje interfejs IComparable
         /// </summary>

@@ -68,7 +68,7 @@ namespace isukces.code
         }
 
         private static void WriteGetterOrSetter(ICodeWriter writer, CodeLines code, string keyWord,
-            Visibilities?                                   memberVisibility)
+            Visibilities? memberVisibility)
         {
             if (code?.Lines == null || code.Lines.Length == 0) return;
             if (code.IsExpressionBody)
@@ -131,6 +131,18 @@ namespace isukces.code
             return AddConst(name, "int", encodedValue.ToString(CultureInfo.InvariantCulture));
         }
 
+        public CsMethod AddConstructor(string description = null)
+        {
+            var n = _name.Split('<')[0].Trim();
+            var m = new CsMethod(n, Name)
+            {
+                Description = description
+            };
+            _methods.Add(m);
+            m.IsConstructor = true;
+            return m;
+        }
+
         public CsMethodParameter AddConstString(string name, string encodedValue)
         {
             encodedValue = encodedValue == null ? "null" : encodedValue.CsCite();
@@ -148,22 +160,10 @@ namespace isukces.code
             Fields.Add(field);
             return field;
         }
-        
-        public CsMethod AddConstructor(string description = null)
-        {
-            var n = _name.Split('<')[0].Trim();            
-            var m    = new CsMethod(n, Name)
-            {
-                Description = description
-            };
-            _methods.Add(m);
-            m.IsConstructor = true;
-            return m;
-        }
 
         public CsMethod AddMethod(string name, string type, string description = null)
         {
-            var isConstructor = string.IsNullOrEmpty(name) || name == _name ;
+            var isConstructor = string.IsNullOrEmpty(name) || name == _name;
             if (isConstructor)
                 name = _name;
             var m = new CsMethod(name, type)
@@ -183,6 +183,11 @@ namespace isukces.code
         public CsProperty AddProperty(string propertyName, string type)
         {
             var property = new CsProperty(propertyName, type);
+            if (propertyName.Contains('.'))
+            {
+                property.Visibility = Visibilities.InterfaceDefault;
+                property.EmitField = false;
+            }
             Properties.Add(property);
             return property;
         }
@@ -246,6 +251,12 @@ namespace isukces.code
             return GeneratorsHelper.TypeName(type, this);
         }
 
+        public CsClass WithBaseClass(string baseClass)
+        {
+            BaseClass = baseClass;
+            return this;
+        }
+
         private void _EmitProperty(CsProperty prop, ICodeWriter writer)
         {
             var fieldName = prop.PropertyFieldName;
@@ -291,7 +302,7 @@ namespace isukces.code
         // Private Methods 
 
         private bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
-            string                   region)
+            string region)
         {
             var csMethods = m as CsMethod[] ?? m.ToArray();
             if (!csMethods.Any()) return addEmptyLineBeforeRegion;
@@ -362,7 +373,7 @@ namespace isukces.code
         {
             var c = _methods.Where(i => i.IsConstructor).ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
-            var m                    = c.Where(i => !i.IsStatic);
+            var m = c.Where(i => !i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Constructors");
 
             m                        = c.Where(i => i.IsStatic);
@@ -398,7 +409,7 @@ namespace isukces.code
                         att.Add(i.Name);
                         if (!string.IsNullOrEmpty(i.ConstValue))
                             att.Add("= " + i.ConstValue);
-                        var line  = string.Join(" ", att) + ";";
+                        var line = string.Join(" ", att) + ";";
                         var lines =
                             line.Split('\r', '\n')
                                 .Select(a => a.Trim())
@@ -424,7 +435,7 @@ namespace isukces.code
         {
             var c = _methods.Where(i => !i.IsConstructor).ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
-            var m                    = c.Where(i => !i.IsStatic);
+            var m = c.Where(i => !i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Methods");
 
             m                        = c.Where(i => i.IsStatic);
@@ -474,6 +485,7 @@ namespace isukces.code
                 else if (prop.IsVirtual)
                     list.Add("virtual");
             }
+
             list.Add(prop.Type);
             list.Add(prop.Name);
             var header = string.Join(" ", list);
@@ -522,7 +534,7 @@ namespace isukces.code
             set
             {
                 if (value == null) value = new List<CsProperty>();
-                _properties              = value;
+                _properties = value;
             }
         }
 
@@ -534,7 +546,7 @@ namespace isukces.code
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
-                _fields                  = value;
+                _fields = value;
             }
         }
 
@@ -590,10 +602,10 @@ namespace isukces.code
         /// </summary>
         private readonly List<CsMethod> _methods = new List<CsMethod>();
 
-        private string _name      = string.Empty;
+        private string _name = string.Empty;
         private string _baseClass = string.Empty;
 
-        private List<CsProperty>        _properties = new List<CsProperty>();
-        private List<CsMethodParameter> _fields     = new List<CsMethodParameter>();
+        private List<CsProperty> _properties = new List<CsProperty>();
+        private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
     }
 }

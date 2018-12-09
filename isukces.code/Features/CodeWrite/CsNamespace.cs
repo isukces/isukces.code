@@ -11,7 +11,7 @@ namespace isukces.code.CodeWrite
         public CsNamespace(INamespaceOwner owner, string name)
         {
             Owner = owner;
-            Name = name;
+            Name  = name;
         }
 
         public CsClass AddClass(CsClass csClass)
@@ -21,11 +21,11 @@ namespace isukces.code.CodeWrite
             return csClass;
         }
 
-        public void AddImportNamespace(string nameSpace)
+        public void AddImportNamespace(string aNamespace)
         {
-            ImportNamespaces.Add(nameSpace);
+            ImportNamespaces.Add(aNamespace);
         }
-
+       
         public ISet<string> GetNamespaces(bool withParent)
         {
             var pNs = Owner?.GetNamespaces(true);
@@ -49,8 +49,8 @@ namespace isukces.code.CodeWrite
 
         public ISet<string> ImportNamespaces { get; } = new HashSet<string>();
 
-        public INamespaceOwner Owner { get; set; }
-        public string Name { get; private set; }
+        public INamespaceOwner        Owner   { get; set; }
+        public string                 Name    { get; private set; }
         public IReadOnlyList<CsClass> Classes { get; private set; } = new List<CsClass>();
     }
 }
