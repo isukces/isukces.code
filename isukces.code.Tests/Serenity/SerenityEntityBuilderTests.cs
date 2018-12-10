@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using isukces.code.CodeWrite;
+using isukces.code.interfaces;
 using isukces.code.Serenity;
 using Xunit;
 
@@ -37,15 +38,25 @@ namespace isukces.code.Tests.Serenity
                 .WithQuickFilter()
                 .WithNotNull();
 
+            a.AddProperty<SomeEnum32>("Kind32")
+                .WithQuickFilter()
+                .WithNotNull();
+            a.AddProperty<SomeEnum16>("Kind16")
+                .WithQuickFilter()
+                .WithNotNull();
+
 
 
             var file = new CsFile();
+            file.AddImportNamespace(typeof(SomeEnum32));
             a.Build(file);
 
             var w = new CodeWriter();
             file.MakeCode(w);
-            // var newExpected = Encode(w.Code);
-            const string expected = @"// ReSharper disable once CheckNamespace
+            var newExpected = Encode(w.Code);
+            const string expected = @"using isukces.code.Tests.Serenity;
+
+// ReSharper disable once CheckNamespace
 namespace Cloud.Common
 {
     using Serenity.Data;
@@ -111,6 +122,26 @@ namespace Cloud.Common
             set { Fields.CreationDate[this] = value; }
         }
 
+        [Column(""Kind32"")]
+        [DisplayName(""Kind32"")]
+        [Serenity.ComponentModel.QuickFilter]
+        [NotNull]
+        public SomeEnum32? Kind32
+        {
+            get { return (SomeEnum32?)Fields.Kind32[this]; }
+            set { Fields.Kind32[this] = (int?)value; }
+        }
+
+        [Column(""Kind16"")]
+        [DisplayName(""Kind16"")]
+        [Serenity.ComponentModel.QuickFilter]
+        [NotNull]
+        public SomeEnum16? Kind16
+        {
+            get { return (SomeEnum16?)Fields.Kind16[this]; }
+            set { Fields.Kind16[this] = (short?)value; }
+        }
+
         IIdField IIdRow.IdField
         {
             get { return Fields.Id }
@@ -135,6 +166,10 @@ namespace Cloud.Common
 
             public DateTimeField CreationDate;
 
+            public Int32Field Kind32;
+
+            public Int16Field Kind16;
+
         }
 
     }
@@ -150,4 +185,6 @@ namespace Cloud.Common
             return c;
         }
     }
+    public enum SomeEnum32:int {One, Two, Three}
+    public enum SomeEnum16:short {One, Two, Three}
 }

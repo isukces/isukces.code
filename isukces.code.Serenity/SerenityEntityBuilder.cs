@@ -88,16 +88,18 @@ namespace isukces.code.Serenity
 
                 foreach (var property in Properties)
                 {
-                    var fieldType    = row.TypeName(property.RowPropertyType);
-                    var propertyType = row.TypeName(property.SerenityRowPropertyType);
+                    var types = SerenityTypesTriple.FromType(property.Type.Type);
+                    
+                    var fieldType    = row.TypeName(types.FieldWrapped);
+                    var propertyType = row.TypeName(types.Facade);
                     var p            = row.AddProperty(property.Name, propertyType);
                     p.EmitField = false;
                     p.OwnGetter = $"return {Cast(fieldType, propertyType)}Fields.{property.Name}[this];";
                     p.OwnSetter = $"Fields.{property.Name}[this] = {Cast(propertyType, fieldType)}value;";
                     CopyAttributesAndReduceName(property.Attributes, p, kns);
 
-                    var rowFieldType = property.RowFieldType;
-                    var f            = fields.AddField(property.Name, rowFieldType);
+                    // var rowFieldType = property.RowFieldType;
+                    var f            = fields.AddField(property.Name, types.RowFieldType);
                 }
 
                 if (IdRow != null)
@@ -111,7 +113,7 @@ namespace isukces.code.Serenity
 
                 if (NameRow != null)
                 {
-                    if (NameRow.RowPropertyType != typeof(string))
+                    if (NameRow.Type.Type != typeof(string))
                         throw new Exception("Only string column can be used as NameRow");
                     row.ImplementedInterfaces.Add("INameRow");
                     var p = row.AddProperty("INameRow.IdField", "StringField")

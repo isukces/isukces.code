@@ -12,7 +12,7 @@ namespace isukces.code
 #else
             _typeInfo = type;
 #endif
-            _type = type;
+            Type = type;
         }
 
         public Type[] GetGenericArguments()
@@ -27,19 +27,17 @@ namespace isukces.code
 
         public Type MakeNullableIfPossible()
         {
-            if (IsEnum)
-                return typeof(int?);
             if (IsValueType)
-                return typeof(Nullable<>).MakeGenericType(_type);
-            return _type;
+                return typeof(Nullable<>).MakeGenericType(Type);
+            return Type;
         }
 
         public Type UnwrapNullable(bool nullIfNotNullable = false)
         {
-            if (_type == null) return null;
-            if (!_typeInfo.IsGenericType) return nullIfNotNullable ? null : _type;
+            if (Type == null) return null;
+            if (!_typeInfo.IsGenericType) return nullIfNotNullable ? null : Type;
             var gt = _typeInfo.GetGenericTypeDefinition();
-            if (gt != typeof(Nullable<>)) return nullIfNotNullable ? null : _type;
+            if (gt != typeof(Nullable<>)) return nullIfNotNullable ? null : Type;
             var args = _typeInfo.GetGenericArguments();
             return args[0];
         }
@@ -48,7 +46,7 @@ namespace isukces.code
         public bool IsValueType   => _typeInfo?.IsValueType ?? false;
         public bool IsGenericType => _typeInfo?.IsGenericType ?? false;
 
-        private readonly Type _type;
+        public Type Type { get; }
     }
 
 
