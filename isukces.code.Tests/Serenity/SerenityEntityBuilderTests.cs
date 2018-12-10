@@ -46,6 +46,8 @@ namespace isukces.code.Tests.Serenity
                 .WithNotNull();
 
 
+            a.AddProperty<short>("MyInt16");
+            a.AddProperty<long>("MyInt64");
 
             var file = new CsFile();
             file.AddImportNamespace(typeof(SomeEnum32));
@@ -142,6 +144,22 @@ namespace Cloud.Common
             set { Fields.Kind16[this] = (short?)value; }
         }
 
+        [Column(""MyInt16"")]
+        [DisplayName(""MyInt16"")]
+        public short? MyInt16
+        {
+            get { return Fields.MyInt16[this]; }
+            set { Fields.MyInt16[this] = value; }
+        }
+
+        [Column(""MyInt64"")]
+        [DisplayName(""MyInt64"")]
+        public Int64? MyInt64
+        {
+            get { return Fields.MyInt64[this]; }
+            set { Fields.MyInt64[this] = value; }
+        }
+
         IIdField IIdRow.IdField
         {
             get { return Fields.Id }
@@ -169,6 +187,10 @@ namespace Cloud.Common
             public Int32Field Kind32;
 
             public Int16Field Kind16;
+
+            public Int16Field MyInt16;
+
+            public Int64Field MyInt64;
 
         }
 

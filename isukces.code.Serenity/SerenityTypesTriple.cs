@@ -31,6 +31,7 @@ namespace isukces.code.Serenity
             if (t == typeof(string)) return Make<string>("StringField");
             if (t == typeof(int)) return Make<int?>("Int32Field");
             if (t == typeof(short)) return Make<short?>("Int16Field");
+            if (t == typeof(long)) return Make<long?>("Int64Field");
 
             if (t == typeof(DateTime)) return Make<DateTime?>("DateTimeField");
             if (t == typeof(bool)) return Make<bool?>("BooleanField");
