@@ -43,11 +43,20 @@ namespace isukces.code.Serenity
         }
 
 
-        public SerenityEntityProperty AddProperty<T>(string name)
+        public SerenityEntityProperty AddStringProperty(string name, int maxLength=-1)
         {
-            return AddProperty(name, typeof(T))
+            var a = AddProperty<string>(name);
+            if (maxLength < 1)
+                return a;
+            return a.WithSize(maxLength);
+
+        }
+        public SerenityEntityProperty AddProperty<T>(string name, bool notNull = false)
+        {
+            var property= AddProperty(name, typeof(T))
                 .WithColumn(name)
                 .WithDisplayName(name);
+            return notNull ? property.WithNotNull() : property;
         }
 
 
@@ -134,7 +143,7 @@ namespace isukces.code.Serenity
         {
             _row.WithAttribute("Serenity.Data.Mapping.TableName", tableName);
             return this;
-        }
+        }                
 
         private SerenityEntityProperty AddProperty(string name, Type type)
         {

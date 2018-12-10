@@ -57,23 +57,16 @@ namespace isukces.code.AutoCode
 
             string fullName;
             {
-                if (type
-#if COREFX
-                    .GetTypeInfo()
-#endif
-                    .IsGenericType)
+                var w = new ReflectionTypeWrapper(type);
+                if (w.IsGenericType)
                 {
                     {
-                        var nullable = IsukcesCodeReflectionExtensions.GetNullableType(type);
+                        var nullable = w.UnwrapNullable(true);
                         if (nullable != null)
                             return TypeName(nullable, container) + "?";
                     }
                     var gt = type.GetGenericTypeDefinition();
-                    var args = type
-#if COREFX
-                        .GetTypeInfo()
-#endif
-                        .GetGenericArguments();
+                    var args = w.GetGenericArguments();
                     var args2 = string.Join(",", args.Select(a => TypeName(a, container)));
                     fullName = gt.FullName.Split('`')[0] + "<" + args2 + ">";
                 }

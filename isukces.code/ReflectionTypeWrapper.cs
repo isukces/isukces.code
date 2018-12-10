@@ -34,12 +34,12 @@ namespace isukces.code
             return _type;
         }
 
-        public Type UnwrapNullable()
+        public Type UnwrapNullable(bool nullIfNotNullable = false)
         {
             if (_type == null) return null;
-            if (!_typeInfo.IsGenericType) return _type;
+            if (!_typeInfo.IsGenericType) return nullIfNotNullable ? null : _type;
             var gt = _typeInfo.GetGenericTypeDefinition();
-            if (gt != typeof(Nullable<>)) return _type;
+            if (gt != typeof(Nullable<>)) return nullIfNotNullable ? null : _type;
             var args = _typeInfo.GetGenericArguments();
             return args[0];
         }

@@ -5,10 +5,10 @@ namespace isukces.code
 {
     public static class IsukcesCodeReflectionExtensions
     {
-        [Obsolete("Use ReflectionTypeWrapper.UnwrapNullable")]
+        [Obsolete("Use ReflectionTypeWrapper.UnwrapNullable(true)")]
         public static Type GetNullableType(this Type type)
         {
-            return new ReflectionTypeWrapper(type).UnwrapNullable();
+            return new ReflectionTypeWrapper(type).UnwrapNullable(true);
         }
 
         public static bool IsMemberStatic(this MemberInfo mi)
@@ -62,7 +62,7 @@ namespace isukces.code
 
             {
                 // nullable support 
-                var nullableType = GetNullableType(t);
+                var nullableType = new ReflectionTypeWrapper(t).UnwrapNullable(true);
                 if (nullableType != null)
                 {
                     var simple = SimpleTypeName(nullableType);

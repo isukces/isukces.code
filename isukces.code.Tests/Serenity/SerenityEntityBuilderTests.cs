@@ -1,6 +1,6 @@
 using System;
+using System.Windows;
 using isukces.code.CodeWrite;
-using isukces.code.interfaces;
 using isukces.code.Serenity;
 using Xunit;
 
@@ -14,23 +14,38 @@ namespace isukces.code.Tests.Serenity
             var a = new SerenityEntityBuilder("Sample", "Cloud", "Common");
             a.WithConnectionKey("Piotr")
                 .WithTableName("dbo.Table");
-                //.WithIdRow("Id")  // IIdField IdField { get; }
-                // WithNameRow("Name")
+
 
             a.AddProperty<int>("Id")
                 .WithDisplayName("identifier")
                 .WithColumn("idx")
                 .WithIdRow()
                 .WithPrimaryKey();
-            a.AddProperty<string>("Name")
+            a.AddStringProperty("Name", 32)
                 .WithNameRow();
+            a.AddProperty<Guid>("Uid")
+                .WithQuickFilter()
+                .WithNotNull()
+                .WithQuickSearch();
+
+
+            a.AddProperty<bool>("SomeFlag")
+                .WithQuickFilter()
+                .WithNotNull();
             
+            a.AddProperty<DateTime>("CreationDate")
+                .WithQuickFilter()
+                .WithNotNull();
+
+
+
             var file = new CsFile();
             a.Build(file);
 
-            var w = new CodeWriter(); 
+            var w = new CodeWriter();
             file.MakeCode(w);
-            var expected = @"// ReSharper disable once CheckNamespace
+            // var newExpected = Encode(w.Code);
+            const string expected = @"// ReSharper disable once CheckNamespace
 namespace Cloud.Common
 {
     using Serenity.Data;
@@ -58,10 +73,42 @@ namespace Cloud.Common
 
         [Column(""Name"")]
         [DisplayName(""Name"")]
+        [Size(""32"")]
         public string Name
         {
             get { return Fields.Name[this]; }
             set { Fields.Name[this] = value; }
+        }
+
+        [Column(""Uid"")]
+        [DisplayName(""Uid"")]
+        [Serenity.ComponentModel.QuickFilter]
+        [NotNull]
+        [QuickSearch]
+        public Guid? Uid
+        {
+            get { return Fields.Uid[this]; }
+            set { Fields.Uid[this] = value; }
+        }
+
+        [Column(""SomeFlag"")]
+        [DisplayName(""SomeFlag"")]
+        [Serenity.ComponentModel.QuickFilter]
+        [NotNull]
+        public bool? SomeFlag
+        {
+            get { return Fields.SomeFlag[this]; }
+            set { Fields.SomeFlag[this] = value; }
+        }
+
+        [Column(""CreationDate"")]
+        [DisplayName(""CreationDate"")]
+        [Serenity.ComponentModel.QuickFilter]
+        [NotNull]
+        public DateTime? CreationDate
+        {
+            get { return Fields.CreationDate[this]; }
+            set { Fields.CreationDate[this] = value; }
         }
 
         IIdField IIdRow.IdField
@@ -82,12 +129,25 @@ namespace Cloud.Common
 
             public StringField Name;
 
+            public GuidField Uid;
+
+            public BooleanField SomeFlag;
+
+            public DateTimeField CreationDate;
+
         }
 
     }
 }
 ";
             Assert.Equal(expected, w.Code);
+        }
+
+        private static string Encode(string c)
+        {
+            c = c.Replace("\"", "\"\"");
+            c = "@\"" + c + "\"";
+            return c;
         }
     }
 }
