@@ -17,7 +17,7 @@ DeleteDir(builder.ProjectDir + "\\bin", builder.ProjectDir + "\\obj");
 Execute(builder.NugetExe, "restore " + builder.SolutionName + ".sln");
 
 // task: Update version
-var version = VersionStorage.FromSolutionDir(builder.SolutionDir)["isukces.code.interfaces"];
+var version = VersionStorage.FromSolutionDir(builder.SolutionDir)["isukces.code"];
 {
 	var proj = CsProjectCore.FromFile(builder.CsProjFileName);
 	var newVer = CsProject.UpdateVersion(proj.AssemblyVersion);
@@ -25,7 +25,8 @@ var version = VersionStorage.FromSolutionDir(builder.SolutionDir)["isukces.code.
 	proj.PackageVersion = newVer;
 	proj.FileVersion = newVer;
 	proj.Save();
-	VersionStorage.FromSolutionDir(builder.SolutionDir)[builder.ProjectName] = newVer;                
+	VersionStorage.FromSolutionDir(builder.SolutionDir)[builder.ProjectName] = newVer;         
+	version = newVer;       
 }
 
 // task: Build
