@@ -79,5 +79,41 @@ namespace isukces.code.Tests
 ";
             Assert.Equal(expected.Trim(), w.Code.Trim());
         }
+        
+        [Fact]
+        public void T04_Should_Create_interface()
+        {
+            var cl = new CsClass("ITest")
+            {
+                Kind = NamespaceMemberKind.Interface
+            };
+            var m = cl.AddMethod("Count", "int")
+                .WithBody("return 12;");
+            
+            var p  = cl.AddProperty("A", "int");
+            p.MakeAutoImplementIfPossible = true;
+            p.OwnGetter = "return 123;";
+            //p.ConstValue = "12";
+            // odwrotny
+
+            ICodeWriter w = new CodeWriter();
+            cl.MakeCode(w);
+            var expected = @"
+public interface ITest
+{
+    int Count();
+
+    int A { get; set; }
+
+}";
+
+            Assert.Equal(expected.Trim(), w.Code.Trim());
+
+            p.ConstValue = "12";
+            w            = new CodeWriter();
+            cl.MakeCode(w);
+           
+            Assert.Equal(expected.Trim(), w.Code.Trim());
+        }
     }
 }

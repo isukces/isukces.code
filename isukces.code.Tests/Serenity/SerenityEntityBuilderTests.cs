@@ -43,7 +43,15 @@ namespace isukces.code.Tests.Serenity
                 .WithNotNull();
             a.AddProperty<SomeEnum16>("Kind16")
                 .WithQuickFilter()
-                .WithNotNull();
+                .WithNotNull()
+                .WithFileUpload(aa =>
+                {
+                    aa.FilenameFormat         = "Documents/~";
+                    aa.CopyToHistory          = true;
+                    aa.OriginalNameProperty   = "Name";
+                    aa.AllowNonImage          = true;
+                    aa.DisableDefaultBehavior = true;
+                });
 
 
             a.AddProperty<short>("MyInt16");
@@ -138,6 +146,7 @@ namespace Cloud.Common
         [DisplayName(""Kind16"")]
         [Serenity.ComponentModel.QuickFilter]
         [NotNull]
+        [Serenity.ComponentModel.FileUploadEditor(AllowNonImage = true,OriginalNameProperty = ""Name"",CopyToHistory = true,FilenameFormat = ""Documents/~"",DisableDefaultBehavior = true)]
         public SomeEnum16? Kind16
         {
             get { return (SomeEnum16?)Fields.Kind16[this]; }

@@ -6,7 +6,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsMethod : ClassMemberBase, ICsCodeMaker, ICsClassMember
+    public class CsMethod : ClassMemberBase
     {
         static CsMethod()
         {
@@ -76,7 +76,7 @@ namespace isukces.code
         /// </summary>
         /// <param name="writer"></param>
         /// <returns></returns>
-        public void MakeCode(ICodeWriter writer)
+        public void MakeCode(ICodeWriter writer, bool inInterface)
         {
             WriteMethodDescription(writer);
             foreach (var i in Attributes)
@@ -85,8 +85,15 @@ namespace isukces.code
             var query = from i in _parameters
                 select FormatMethodParameter(i);
             var mDefinition = string.Format("{0}({1})",
-                string.Join(" ",  GetMethodAttributes()),
+                string.Join(" ",  GetMethodAttributes(inInterface)),
                 string.Join(", ", query));
+            if (inInterface)
+            {
+                if (IsConstructor || IsStatic)
+                    return;
+                writer.WriteLine(mDefinition + ";");
+                return;
+            }
             if (IsAbstract && !IsConstructor)
             {
                 writer.WriteLine(mDefinition + ";");
@@ -108,7 +115,7 @@ namespace isukces.code
         }
 
 
-        private string[] GetMethodAttributes()
+        private string[] GetMethodAttributes(bool inInterface)
         {
             var a = new List<string>();
             if (Name == Implicit || Name == Explicit)
@@ -137,16 +144,20 @@ namespace isukces.code
             }
 
             if (!(IsConstructor && IsStatic))
-                if (Visibility != Visibilities.InterfaceDefault)
-                    a.Add(Visibility.ToString().ToLower());
+                if (!inInterface)
+                    if (Visibility != Visibilities.InterfaceDefault)
+                        a.Add(Visibility.ToString().ToLower());
             if (IsStatic)
                 a.Add("static");
-            if (!IsConstructor)
+            if (!IsConstructor )
             {
-                if (IsAbstract)
-                    a.Add("abstract");
-                if (IsOverride)
-                    a.Add("override");
+                if (!inInterface)
+                {
+                    if (IsAbstract)
+                        a.Add("abstract");
+                    if (IsOverride)
+                        a.Add("override");
+                }
                 a.Add(_resultType);
             }
 

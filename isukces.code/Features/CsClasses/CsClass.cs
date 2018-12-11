@@ -274,7 +274,7 @@ namespace isukces.code
                     ? $"{{ {OptionalVisibility(prop.GetterVisibility)}get; }}"
                     : $"{{ {OptionalVisibility(prop.GetterVisibility)}get; {OptionalVisibility(prop.SetterVisibility)}set; }}";
                 var c = header + " " + gs;
-                if (!string.IsNullOrEmpty(prop.ConstValue))
+                if (!IsInterface && !string.IsNullOrEmpty(prop.ConstValue))
                     c += " = " + prop.ConstValue + ";";
                 writer.WriteLine(c).EmptyLine();
                 emitField = false;
@@ -310,7 +310,7 @@ namespace isukces.code
             addEmptyLineBeforeRegion = Action(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
                 i =>
                 {
-                    i.MakeCode(writer);
+                    i.MakeCode(writer, IsInterface);
                     writer.EmptyLine();
                 }
             );
@@ -573,10 +573,7 @@ namespace isukces.code
         /// <summary>
         ///     emit as interface
         /// </summary>
-        public bool IsInterface
-        {
-            get { return Kind == NamespaceMemberKind.Interface; }
-        }
+        public bool IsInterface => Kind == NamespaceMemberKind.Interface;
 
         public NamespaceMemberKind Kind { get; set; }
 

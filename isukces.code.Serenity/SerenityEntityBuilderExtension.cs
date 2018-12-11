@@ -7,18 +7,22 @@ namespace isukces.code.Serenity
         public static T WithAttribute<T>(this T self, string className, string value)
             where T : IAttributable
         {
-            self.RemoveAttribute(className);
             ICsAttribute at = new CsAttribute(className).WithArgument(value);
-            self.Attributes.Add(at);
-            return self;
+            return WithAttribute(self, at);
         }
         
         public static T WithAttribute<T>(this T self, string className)
             where T : IAttributable
         {
-            self.RemoveAttribute(className);
             ICsAttribute at = new CsAttribute(className);
-            self.Attributes.Add(at);
+            return WithAttribute(self, at);
+        }
+        
+        public static T WithAttribute<T>(this T self, ICsAttribute attr)
+            where T : IAttributable
+        {
+            self.RemoveAttribute(attr.Name);            
+            self.Attributes.Add(attr);
             return self;
         }
 

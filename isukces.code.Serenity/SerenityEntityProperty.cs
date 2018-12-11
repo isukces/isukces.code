@@ -72,5 +72,49 @@ namespace isukces.code.Serenity
         public ReflectionTypeWrapper Type { get; }
         private readonly CsProperty _property;
         private readonly SerenityEntityBuilder _owner;
+
+        public SerenityEntityProperty WithFileUpload(Action<FileUploadConfig> action)
+        {
+            var cfg = new FileUploadConfig();
+            action(cfg);
+            var at = new CsAttribute("Serenity.ComponentModel.FileUploadEditor");
+
+            void Add(string name, object b)
+            {
+                if (b == null)
+                    return;
+                at.WithArgument(name, b);
+            }
+
+            Add(nameof(cfg.AllowNonImage), cfg.AllowNonImage);
+            Add(nameof(cfg.MaxSize), cfg.MaxSize);
+            Add(nameof(cfg.MinSize), cfg.MinSize);
+            Add(nameof(cfg.JsonEncodeValue), cfg.JsonEncodeValue);
+            Add(nameof(cfg.OriginalNameProperty), cfg.OriginalNameProperty);
+
+                        
+            Add(nameof(cfg.DisplayFileName), cfg.DisplayFileName);
+            Add(nameof(cfg.CopyToHistory), cfg.CopyToHistory);
+            Add(nameof(cfg.FilenameFormat), cfg.FilenameFormat);
+            Add(nameof(cfg.DisableDefaultBehavior), cfg.DisableDefaultBehavior);
+            Add(nameof(cfg.SubFolder), cfg.SubFolder);
+
+            this.WithAttribute((ICsAttribute)at);
+            return this;
+        }
+    }
+
+    public class FileUploadConfig
+    {
+        public bool?   AllowNonImage          { get; set; }
+        public int?    MaxSize                { get; set; }
+        public int?    MinSize                { get; set; }
+        public bool?   JsonEncodeValue        { get; set; }
+        public string OriginalNameProperty   { get; set; }
+        public bool?   DisplayFileName        { get; set; }
+        public bool?   CopyToHistory          { get; set; }
+        public string FilenameFormat         { get; set; }
+        public bool?   DisableDefaultBehavior { get; set; }
+        public string SubFolder              { get; set; }
     }
 }
