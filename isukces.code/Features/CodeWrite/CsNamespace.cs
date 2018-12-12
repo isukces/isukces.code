@@ -6,7 +6,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code.CodeWrite
 {
-    public class CsNamespace : IClassOwner, INamespaceCollection
+    public class CsNamespace : IClassOwner, INamespaceCollection, IConditional
     {
         public CsNamespace(INamespaceOwner owner, string name)
         {
@@ -52,5 +52,6 @@ namespace isukces.code.CodeWrite
         public INamespaceOwner        Owner   { get; set; }
         public string                 Name    { get; private set; }
         public IReadOnlyList<CsClass> Classes { get; private set; } = new List<CsClass>();
+        public string CompilerDirective { get; set; }
     }
 }

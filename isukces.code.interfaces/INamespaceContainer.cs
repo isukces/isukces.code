@@ -55,4 +55,11 @@ namespace isukces.code.interfaces
     public interface INamespaceOwner : INamespaceContainer, ITypeNameResolver
     {
     }
+    
+    public interface IConditional {
+        /// <summary>
+        /// Compiler directive required for element
+        /// </summary>
+        string CompilerDirective { get; set; }
+    }
 }

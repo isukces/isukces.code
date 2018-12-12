@@ -102,5 +102,25 @@ namespace isukces.code.CodeWrite
             // some warning should be created here
             _this.Indent = indentBefore;
         }
+        
+        public static void OpenCompilerIf(this ICodeWriter _this, string directive)
+        {
+            if (!string.IsNullOrEmpty(directive)) 
+                WritelineNoIndent(_this, "#if " + directive);
+        }
+        
+        public static void CloseCompilerIf(this ICodeWriter _this, string directive)
+        {
+            if (!string.IsNullOrEmpty(directive)) 
+                WritelineNoIndent(_this, "#endif");
+        }
+
+        private static void WritelineNoIndent(this ICodeWriter _this, string compilerCode)
+        {
+            var indentBefore = _this.Indent;
+            _this.Indent = 0;
+            _this.WriteLine(compilerCode);
+            _this.Indent = indentBefore;
+        }
     }
 }

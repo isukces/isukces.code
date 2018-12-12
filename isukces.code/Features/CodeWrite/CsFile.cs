@@ -50,6 +50,7 @@ namespace isukces.code.CodeWrite
             if (_importNamespaces.Any())
                 writer.EmptyLine();
             var classByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
+            var directiveByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.CompilerDirective);
             var enumByNamespace = (_enums ?? new List<CsEnum>())
                 .GroupBy(c => c.DotNetType == null ? emptyNamespace : c.DotNetType.Namespace)
                 .ToDictionary(a => a.Key, a => a.ToList());
@@ -61,8 +62,10 @@ namespace isukces.code.CodeWrite
                 var addEmptyLine = false;
                 if (string.IsNullOrEmpty(ns))
                     continue; // should never occurs
+                directiveByNamespace.TryGetValue(ns, out var compilerDirective);
                 {
                     writer.WriteLine("// ReSharper disable once CheckNamespace");
+                    writer.OpenCompilerIf(compilerDirective);
                     writer.Open("namespace {0}", ns);
                     var ns1 = Namespaces.FirstOrDefault(a => a.Name == ns)?.ImportNamespaces;
                     if (ns1 != null && ns1.Any())
@@ -94,6 +97,7 @@ namespace isukces.code.CodeWrite
                 }
                 if (!string.IsNullOrEmpty(ns))
                     writer.Close();
+                writer.CloseCompilerIf(compilerDirective);
             }
         }
 

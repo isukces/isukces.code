@@ -9,7 +9,7 @@ using isukces.code.interfaces;
 // ReSharper disable once CheckNamespace
 namespace isukces.code
 {
-    public class CsClass : ClassMemberBase, IClassOwner
+    public class CsClass : ClassMemberBase, IClassOwner, IConditional
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -215,7 +215,8 @@ namespace isukces.code
         }
 
         public void MakeCode(ICodeWriter writer)
-        {
+        {            
+            writer.OpenCompilerIf(CompilerDirective);
             WriteSummary(writer, Description);
             WriteAttributes(writer, Attributes);
             var def = string.Join(" ", DefAttributes());
@@ -238,6 +239,7 @@ namespace isukces.code
             // Nested
             Emit_nested(writer, addEmptyLineBeforeRegion);
             writer.Close();
+            writer.CloseCompilerIf(CompilerDirective);
         }
 
 
@@ -604,5 +606,6 @@ namespace isukces.code
 
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
+        public string CompilerDirective { get; set; }
     }
 }

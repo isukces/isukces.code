@@ -115,5 +115,31 @@ public interface ITest
            
             Assert.Equal(expected.Trim(), w.Code.Trim());
         }
+        
+        
+        [Fact]
+        public void T05_Should_generate_compiler_directive()
+        {
+            var cl = new CsClass("Src1");
+            var p  = cl.AddProperty("A", "int");
+            p.MakeAutoImplementIfPossible = true;
+            cl.CompilerDirective = "DEBUG";
+
+            ICodeWriter w = new CodeWriter();
+            cl.MakeCode(w);
+            var expected = @"
+#if DEBUG
+public class Src1
+{
+    public int A { get; set; }
+
+}
+#endif
+
+";
+            Assert.Equal(expected.Trim(), w.Code.Trim());
+
+        }
+
     }
 }
