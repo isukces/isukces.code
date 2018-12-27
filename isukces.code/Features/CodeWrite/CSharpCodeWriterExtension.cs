@@ -20,7 +20,6 @@ namespace isukces.code.CodeWrite
 
         public static ICodeWriter WriteLine(this ICodeWriter _this, string text)
         {
-
             _this.WriteIndent().AppendText(text + "\r\n");
             return _this;
         }
