@@ -389,18 +389,18 @@ namespace isukces.code
                     WriteSummary(writer, i.Description);
                     if (i.IsConst)
                     {
-                        var v = Visibility;
-                        if (v == Visibilities.InterfaceDefault)
-                            v = Visibilities.Public;                        
+                        var v = i.Visibility.ToCsCode();
+                        if (string.IsNullOrEmpty(v))
+                            v = Visibilities.Public.ToCsCode();
                         writer
-                            .WriteLine("{0} const {1} {2} = {3};", v.ToCsCode(), i.Type, i.Name, i.ConstValue)
+                            .WriteLine("{0} const {1} {2} = {3};", v, i.Type, i.Name, i.ConstValue)
                             .EmptyLine();
                     }
                     else
                     {
                         var att = new List<string>(8)
                         {
-                            i.Visibility.ToString().ToLower()
+                            i.Visibility.ToCsCode()
                         };
                         if (i.IsStatic) att.Add("static");
                         if (i.IsVolatile) att.Add("volatile");

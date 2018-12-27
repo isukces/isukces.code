@@ -23,6 +23,8 @@ namespace isukces.code.interfaces
                     return "protected";
                 case Visibilities.Private:
                     return "private";
+                case Visibilities.Internal:
+                    return "internal";
                 case Visibilities.InterfaceDefault:
                     return null;
                 default:

@@ -2,13 +2,14 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using isukces.code.interfaces;
 using isukces.code.Typescript;
 
 namespace isukces.code
 {
     public delegate void CodeFormatterDelegate();
 
-    public class CodeFormatter
+    public class CodeFormatter// :ICodeWriter
     {
         public void Block(string open, string close, CodeFormatterDelegate method)
         {
