@@ -108,12 +108,23 @@ namespace isukces.code.CodeWrite
                 WritelineNoIndent(_this, "#if " + directive);
         }
         
+        public static void OpenCompilerIf(this ICodeWriter _this, IConditional conditional)
+        {
+            _this.OpenCompilerIf(conditional?.CompilerDirective);
+        }
+        
         public static void CloseCompilerIf(this ICodeWriter _this, string directive)
         {
             if (!string.IsNullOrEmpty(directive)) 
                 WritelineNoIndent(_this, "#endif");
         }
 
+        public static void CloseCompilerIf(this ICodeWriter _this, IConditional conditional)
+        {
+            _this.CloseCompilerIf(conditional?.CompilerDirective);
+        }
+
+        
         private static void WritelineNoIndent(this ICodeWriter _this, string compilerCode)
         {
             var indentBefore = _this.Indent;

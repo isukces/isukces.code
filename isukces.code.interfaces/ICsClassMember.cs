@@ -1,6 +1,6 @@
 ﻿namespace isukces.code.interfaces
 {
-    public interface ICsClassMember: IDescriptable
+    public interface ICsClassMember: IDescriptable, IConditional
     {
         
     }

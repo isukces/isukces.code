@@ -36,6 +36,59 @@ namespace isukces.code
             return new CsAttribute(attributeName);
         }
 
+        private static void Emit_single_field(ICodeWriter writer, CsClassField field)
+        {
+            writer.OpenCompilerIf(field);
+            try
+            {
+                WriteAttributes(writer, field.Attributes);
+                WriteSummary(writer, field.Description);
+                if (field.IsConst)
+                {
+                    var v = field.Visibility.ToCsCode();
+                    if (string.IsNullOrEmpty(v))
+                        v = Visibilities.Public.ToCsCode();
+                    writer
+                        .WriteLine("{0} const {1} {2} = {3};", v, field.Type, field.Name, field.ConstValue)
+                        .EmptyLine();
+                }
+                else
+                {
+                    var att = new List<string>(8)
+                    {
+                        field.Visibility.ToCsCode()
+                    };
+                    if (field.IsStatic) att.Add("static");
+                    if (field.IsVolatile) att.Add("volatile");
+                    if (field.IsReadOnly) att.Add("readonly");
+                    att.Add(field.Type);
+                    att.Add(field.Name);
+                    if (!string.IsNullOrEmpty(field.ConstValue))
+                        att.Add("= " + field.ConstValue);
+                    var line = string.Join(" ", att) + ";";
+                    var lines =
+                        line.Split('\r', '\n')
+                            .Select(a => a.Trim())
+                            .Where(a => !string.IsNullOrEmpty(a))
+                            .ToArray();
+                    for (var ii = 0; ii < lines.Length; ii++)
+                    {
+                        if (ii == 1)
+                            writer.Indent++;
+                        writer.WriteLine(lines[ii]);
+                    }
+
+                    if (lines.Length > 1)
+                        writer.Indent--;
+                    writer.EmptyLine();
+                }
+            }
+            finally
+            {
+                writer.CloseCompilerIf(field);
+            }
+        }
+
         private static string OptionalVisibility(Visibilities? memberVisibility)
         {
             var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
@@ -98,9 +151,9 @@ namespace isukces.code
 
         // Public Methods 
 
-        public CsMethodParameter AddConst(string name, string type, string encodedValue)
+        public CsClassField AddConst(string name, string type, string encodedValue)
         {
-            var constValue = new CsMethodParameter(name, type)
+            var constValue = new CsClassField(name, type)
             {
                 ConstValue = encodedValue,
                 IsConst    = true
@@ -109,7 +162,7 @@ namespace isukces.code
             return constValue;
         }
 
-        public CsMethodParameter AddConstInt(string name, int encodedValue)
+        public CsClassField AddConstInt(string name, int encodedValue)
         {
             return AddConst(name, "int", encodedValue.ToString(CultureInfo.InvariantCulture));
         }
@@ -126,20 +179,20 @@ namespace isukces.code
             return m;
         }
 
-        public CsMethodParameter AddConstString(string name, string encodedValue)
+        public CsClassField AddConstString(string name, string plainValue)
         {
-            encodedValue = encodedValue == null ? "null" : encodedValue.CsCite();
+            var encodedValue = plainValue == null ? "null" : plainValue.CsCite();
             return AddConst(name, "string", encodedValue);
         }
 
-        public CsMethodParameter AddField(string fieldName, Type type)
+        public CsClassField AddField(string fieldName, Type type)
         {
             return AddField(fieldName, TypeName(type));
         }
 
-        public CsMethodParameter AddField(string fieldName, string type)
+        public CsClassField AddField(string fieldName, string type)
         {
-            var field = new CsMethodParameter(fieldName, type);
+            var field = new CsClassField(fieldName, type);
             Fields.Add(field);
             return field;
         }
@@ -169,8 +222,9 @@ namespace isukces.code
             if (propertyName.Contains('.'))
             {
                 property.Visibility = Visibilities.InterfaceDefault;
-                property.EmitField = false;
+                property.EmitField  = false;
             }
+
             Properties.Add(property);
             return property;
         }
@@ -198,7 +252,7 @@ namespace isukces.code
         }
 
         public void MakeCode(ICodeWriter writer)
-        {            
+        {
             writer.OpenCompilerIf(CompilerDirective);
             WriteSummary(writer, Description);
             WriteAttributes(writer, Attributes);
@@ -256,47 +310,57 @@ namespace isukces.code
 
         private void _EmitProperty(CsProperty prop, ICodeWriter writer)
         {
-            var fieldName = prop.PropertyFieldName;
-
-            var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
-            var header       = GetPropertyHeader(prop);
-
-            WriteSummary(writer, prop.Description);
-            WriteAttributes(writer, prop.Attributes);
-            var emitField = prop.EmitField && !IsInterface;
-            if (IsInterface || prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
-                string.IsNullOrEmpty(prop.OwnGetter))
+            writer.OpenCompilerIf(prop);
+            bool emitField;
+            try
             {
-                var gs = prop.IsPropertyReadOnly
-                    ? $"{{ {OptionalVisibility(prop.GetterVisibility)}get; }}"
-                    : $"{{ {OptionalVisibility(prop.GetterVisibility)}get; {OptionalVisibility(prop.SetterVisibility)}set; }}";
-                var c = header + " " + gs;
-                if (!IsInterface && !string.IsNullOrEmpty(prop.ConstValue))
-                    c += " = " + prop.ConstValue + ";";
-                writer.WriteLine(c).EmptyLine();
-                emitField = false;
-            }
-            else
-            {
-                writer.Open(header);
+                var fieldName = prop.PropertyFieldName;
+
+                var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
+                var header       = GetPropertyHeader(prop);
+
+                WriteSummary(writer, prop.Description);
+                WriteAttributes(writer, prop.Attributes);
+                emitField = prop.EmitField && !IsInterface;
+                if (IsInterface || prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
+                    string.IsNullOrEmpty(prop.OwnGetter))
                 {
-                    WriteGetterOrSetter(writer, getterLines2, "get", prop.GetterVisibility);
-                    if (!prop.IsPropertyReadOnly)
-                        WriteGetterOrSetter(writer,
-                            prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody)), "set",
-                            prop.SetterVisibility);
+                    var gs = prop.IsPropertyReadOnly
+                        ? $"{{ {OptionalVisibility(prop.GetterVisibility)}get; }}"
+                        : $"{{ {OptionalVisibility(prop.GetterVisibility)}get; {OptionalVisibility(prop.SetterVisibility)}set; }}";
+                    var c = header + " " + gs;
+                    if (!IsInterface && !string.IsNullOrEmpty(prop.ConstValue))
+                        c += " = " + prop.ConstValue + ";";
+                    writer.WriteLine(c).EmptyLine();
+                    emitField = false;
                 }
-                writer.Close().EmptyLine();
+                else
+                {
+                    writer.Open(header);
+                    {
+                        WriteGetterOrSetter(writer, getterLines2, "get", prop.GetterVisibility);
+                        if (!prop.IsPropertyReadOnly)
+                            WriteGetterOrSetter(writer,
+                                prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody)), "set",
+                                prop.SetterVisibility);
+                    }
+                    writer.Close();
+                }
+
+                if (emitField)
+                    writer
+                        .EmptyLine()
+                        .WriteLine("// ReSharper disable once InconsistentNaming")
+                        .WriteLine($"{prop.FieldVisibility.ToString().ToLower()} {prop.Type} {fieldName};");
+            }
+            finally
+            {
+                writer.CloseCompilerIf(prop);
             }
 
-            if (emitField)
-                writer
-                    .WriteLine("// ReSharper disable once InconsistentNaming")
-                    .WriteLine($"{prop.FieldVisibility.ToString().ToLower()} {prop.Type} {fieldName};")
-                    .EmptyLine();
+            writer.EmptyLine();
         }
 
-        // Private Methods 
 
         private bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
             string region)
@@ -383,50 +447,7 @@ namespace isukces.code
             if (!_fields.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
             addEmptyLineBeforeRegion = Action(writer, _fields.OrderBy(a => a.IsConst), "Fields",
-                i =>
-                {
-                    WriteAttributes(writer, i.Attributes);
-                    WriteSummary(writer, i.Description);
-                    if (i.IsConst)
-                    {
-                        var v = i.Visibility.ToCsCode();
-                        if (string.IsNullOrEmpty(v))
-                            v = Visibilities.Public.ToCsCode();
-                        writer
-                            .WriteLine("{0} const {1} {2} = {3};", v, i.Type, i.Name, i.ConstValue)
-                            .EmptyLine();
-                    }
-                    else
-                    {
-                        var att = new List<string>(8)
-                        {
-                            i.Visibility.ToCsCode()
-                        };
-                        if (i.IsStatic) att.Add("static");
-                        if (i.IsVolatile) att.Add("volatile");
-                        if (i.IsReadOnly) att.Add("readonly");
-                        att.Add(i.Type);
-                        att.Add(i.Name);
-                        if (!string.IsNullOrEmpty(i.ConstValue))
-                            att.Add("= " + i.ConstValue);
-                        var line = string.Join(" ", att) + ";";
-                        var lines =
-                            line.Split('\r', '\n')
-                                .Select(a => a.Trim())
-                                .Where(a => !string.IsNullOrEmpty(a))
-                                .ToArray();
-                        for (var ii = 0; ii < lines.Length; ii++)
-                        {
-                            if (ii == 1)
-                                writer.Indent++;
-                            writer.WriteLine(lines[ii]);
-                        }
-
-                        if (lines.Length > 1)
-                            writer.Indent--;
-                        writer.EmptyLine();
-                    }
-                }
+                field => { Emit_single_field(writer, field); }
             );
             return addEmptyLineBeforeRegion;
         }
@@ -501,7 +522,7 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get { return _name; }
+            get => _name;
             private set
             {
                 value = value?.Trim() ?? string.Empty;
@@ -514,8 +535,8 @@ namespace isukces.code
         /// </summary>
         public string BaseClass
         {
-            get { return _baseClass; }
-            set { _baseClass = value?.Trim() ?? string.Empty; }
+            get => _baseClass;
+            set => _baseClass = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -530,7 +551,7 @@ namespace isukces.code
         /// </summary>
         public List<CsProperty> Properties
         {
-            get { return _properties; }
+            get => _properties;
             set
             {
                 if (value == null) value = new List<CsProperty>();
@@ -540,12 +561,12 @@ namespace isukces.code
 
         /// <summary>
         /// </summary>
-        public List<CsMethodParameter> Fields
+        public List<CsClassField> Fields
         {
-            get { return _fields; }
+            get => _fields;
             set
             {
-                if (value == null) value = new List<CsMethodParameter>();
+                if (value == null) value = new List<CsClassField>();
                 _fields = value;
             }
         }
@@ -603,7 +624,6 @@ namespace isukces.code
         private string _baseClass = string.Empty;
 
         private List<CsProperty> _properties = new List<CsProperty>();
-        private List<CsMethodParameter> _fields = new List<CsMethodParameter>();
-        public string CompilerDirective { get; set; }
+        private List<CsClassField> _fields = new List<CsClassField>();
     }
 }

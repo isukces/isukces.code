@@ -4,7 +4,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsMethodParameter : IComparable, IAttributable
+    public class CsMethodParameter : IComparable, IAttributable 
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -228,5 +228,6 @@ namespace isukces.code
         private string _constValue = string.Empty;
         private string _description = string.Empty;
         private IList<ICsAttribute> _attributes = new List<ICsAttribute>();
+                
     }
 }

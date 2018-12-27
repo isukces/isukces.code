@@ -130,6 +130,8 @@ namespace isukces.code
 
         private string _ownGetter = string.Empty;
         private string _ownSetter = string.Empty;
+        
+        public string CompilerDirective { get; set; }
     }
 
     public class CodeLines

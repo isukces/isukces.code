@@ -16,5 +16,7 @@ namespace isukces.code
         public Visibilities Visibility { get; set; }
 
         private IList<ICsAttribute> _attributes = new List<ICsAttribute>();
+        
+        public string CompilerDirective { get; set; }
     }
 }
