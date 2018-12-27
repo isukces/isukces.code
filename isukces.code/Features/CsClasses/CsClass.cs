@@ -582,11 +582,6 @@ namespace isukces.code
         public bool IsPartial { get; set; }
 
         /// <summary>
-        ///     is class static
-        /// </summary>
-        public bool IsStatic { get; set; }
-
-        /// <summary>
         ///     is class sealed
         /// </summary>
         public bool IsSealed { get; set; }

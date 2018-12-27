@@ -227,10 +227,6 @@ namespace isukces.code
 
         /// <summary>
         /// </summary>
-        public bool IsStatic { get; set; }
-
-        /// <summary>
-        /// </summary>
         public string Body
         {
             get { return _body; }
