@@ -42,23 +42,6 @@ namespace isukces.code
             return v;
         }
 
-        private static string VisibilityToString(Visibilities visibility)
-        {
-            switch (visibility)
-            {
-                case Visibilities.Public:
-                    return "public";
-                case Visibilities.Protected:
-                    return "protected";
-                case Visibilities.Private:
-                    return "private";
-                case Visibilities.InterfaceDefault:
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
-
         private static void WriteAttributes(ICodeWriter writer, ICollection<ICsAttribute> attributes)
         {
             if (attributes == null || attributes.Count == 0)
@@ -221,9 +204,21 @@ namespace isukces.code
             WriteAttributes(writer, Attributes);
             var def = string.Join(" ", DefAttributes());
             {
-                var baseAndInterfaces = new List<string>(ImplementedInterfaces);
+                var dupa              = new HashSet<string>();
+                var baseAndInterfaces = new List<string>();
                 if (!string.IsNullOrEmpty(_baseClass))
-                    baseAndInterfaces.Insert(0, _baseClass);
+                {
+                    baseAndInterfaces.Add(_baseClass);
+                    dupa.Add(_baseClass);
+                }
+
+                for (var index = 0; index < ImplementedInterfaces.Count; index++)
+                {
+                    var interfaceName = ImplementedInterfaces[index];
+                    if (dupa.Add(interfaceName))
+                        baseAndInterfaces.Add(interfaceName);
+                }
+
                 if (baseAndInterfaces.Any())
                     def += " : " + string.Join(", ", baseAndInterfaces);
             }
@@ -340,7 +335,7 @@ namespace isukces.code
         private string[] DefAttributes()
         {
             var x                  = new List<string>(4);
-            var visibilityAsString = VisibilityToString(Visibility);
+            var visibilityAsString = Visibility.ToCsCode();
             if (visibilityAsString != null) x.Add(visibilityAsString);
             switch (Kind)
             {
@@ -394,8 +389,11 @@ namespace isukces.code
                     WriteSummary(writer, i.Description);
                     if (i.IsConst)
                     {
+                        var v = Visibility;
+                        if (v == Visibilities.InterfaceDefault)
+                            v = Visibilities.Public;                        
                         writer
-                            .WriteLine("public const {0} {1} = {2};", i.Type, i.Name, i.ConstValue)
+                            .WriteLine("{0} const {1} {2} = {3};", v.ToCsCode(), i.Type, i.Name, i.ConstValue)
                             .EmptyLine();
                     }
                     else
