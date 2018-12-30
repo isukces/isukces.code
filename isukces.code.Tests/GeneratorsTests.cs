@@ -50,13 +50,16 @@ namespace isukces.code.Tests
             Assert.Equal(NamespaceMemberKind.Class, typeof(GeneratorsTests).GetNamespaceMemberKind());
         }
 
-        [Fact]
-        public void T05_ShouldSerializeGenerator_tests()
+        [Theory]
+        [InlineData("Number1", "Number1 != 0")]
+        [InlineData("Number2", "Number2 != null && Number2.Value != 0")]
+        [InlineData("Name", "!string.IsNullOrEmpty(Name)")]
+        [InlineData("OtherValue", "!OtherValue.Equals(Foo)")]
+        public void T05_ShouldSerializeGenerator_tests(string propertyName, string expectedCode)
         {
-            var pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(
-                nameof(ShouldSerializeGeneratorTestClass.Name));
+            var pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(propertyName);
             var code = Generators.ShouldSerializeGenerator.MakeShouldSerializeCondition(pi);
-            Assert.Equal("!string.IsNullOrEmpty(Name)", code);
+            Assert.Equal(expectedCode, code);
             
             pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(
                 nameof(ShouldSerializeGeneratorTestClass.OtherValue));
@@ -76,6 +79,8 @@ namespace isukces.code.Tests
 
         public class ShouldSerializeGeneratorTestClass
         {
+            public int Number1 { get; set; }
+            public int? Number2 { get; set; }
             public string Name { get; set; }
             public SampleStruct OtherValue { get; set; }
         }

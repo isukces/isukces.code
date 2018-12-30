@@ -53,7 +53,8 @@ namespace isukces.code.AutoCode
 
                 var template = GetTypeTemplate(type);
                 if (isNullable)
-                    template = "{0} != null && " + template;
+                    return string.Format("{0} != null && ", pi.Name)
+                           + string.Format(template, pi.Name + ".Value");
                 return string.Format(template, pi.Name);
             }
 
