@@ -311,7 +311,6 @@ namespace isukces.code
         private void _EmitProperty(CsProperty prop, ICodeWriter writer)
         {
             writer.OpenCompilerIf(prop);
-            bool emitField;
             try
             {
                 var fieldName = prop.PropertyFieldName;
@@ -321,7 +320,7 @@ namespace isukces.code
 
                 WriteSummary(writer, prop.Description);
                 WriteAttributes(writer, prop.Attributes);
-                emitField = prop.EmitField && !IsInterface;
+                var emitField = prop.EmitField && !IsInterface;
                 if (IsInterface || prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
                     string.IsNullOrEmpty(prop.OwnGetter))
                 {
@@ -331,7 +330,7 @@ namespace isukces.code
                     var c = header + " " + gs;
                     if (!IsInterface && !string.IsNullOrEmpty(prop.ConstValue))
                         c += " = " + prop.ConstValue + ";";
-                    writer.WriteLine(c).EmptyLine();
+                    writer.WriteLine(c);
                     emitField = false;
                 }
                 else
