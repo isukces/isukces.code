@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using isukces.code.CodeWrite;
@@ -8,33 +9,52 @@ namespace isukces.code.AutoCode
 {
     public partial class Generators
     {
-        internal class ShouldSerializeGenerator : SingleClassGenerator, IAutoCodeGenerator
+        public class ShouldSerializeGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
-            private static string MakeShouldSerializeCondition(PropertyInfo pi)
+            static ShouldSerializeGenerator()
             {
-                var type = pi.PropertyType;
-                if (type == typeof(int))
-                    return string.Format("{0} != 0", pi.Name);
-                if (type == typeof(bool))
-                    return string.Format("{0}", pi.Name);
-                if (type == typeof(Guid?))
-                    return string.Format("{0} != null && !Guid.Empty.Equals({0}.Value)", pi.Name);
-                if (type == typeof(Guid))
-                    return string.Format("!Guid.Empty.Equals({0})", pi.Name);
-                if (type == typeof(string))
-                    return string.Format("!string.IsNullOrEmpty({0})", pi.Name);
+                Templates = new Dictionary<Type, string>
+                {
+                    [typeof(int)]    = "{0} != 0",
+                    [typeof(bool)]   = "{0}",
+                    [typeof(Guid)]   = "!Guid.Empty.Equals({0})",
+                    [typeof(string)] = "!string.IsNullOrEmpty({0})"
+                };
+            }
+
+            private static string GetTypeTemplate(Type type)
+            {
+                if (Templates.TryGetValue(type, out var template))
+                    return template;
+
+                var infoAttribute = type.GetTypeInfo().GetCustomAttribute<Auto.ShouldSerializeInfoAttribute>();
+                if (infoAttribute != null)
+                    return infoAttribute.CodeTemplate;
+                throw new Exception("Unable to get condition for " + type);
+            }
+
+            public static string MakeShouldSerializeCondition(PropertyInfo pi)
+            {
+                var type       = pi.PropertyType;
+                var isNullable = false;
                 if (type
 #if COREFX
                     .GetTypeInfo()
 #endif
-                    
                     .IsGenericType)
                 {
                     var type2 = type.GetGenericTypeDefinition();
                     if (type2 == typeof(Nullable<>))
-                        return string.Format("{0} != null", pi.Name);
+                    {
+                        isNullable = true;
+                        type       = type.GenericTypeArguments[0];
+                    }
                 }
-                throw new Exception("Unable to get condition for " + pi.PropertyType);
+
+                var template = GetTypeTemplate(type);
+                if (isNullable)
+                    template = "{0} != null && " + template;
+                return string.Format(template, pi.Name);
             }
 
             public void Generate(Type type, IAutoCodeGeneratorContext context)
@@ -49,13 +69,12 @@ namespace isukces.code.AutoCode
 #if COREFX
                     .GetTypeInfo()
 #endif
-                    
                     .GetProperties(BindingFlags.Instance | BindingFlags.Public);
                 if (properties.Length == 0) return;
                 var list = (from i in properties
-                            let at = i.GetCustomAttribute<Auto.ShouldSerializeAttribute>(false)
-                            where at != null
-                            select Tuple.Create(i, at)).ToList();
+                    let at = i.GetCustomAttribute<Auto.ShouldSerializeAttribute>(false)
+                    where at != null
+                    select Tuple.Create(i, at)).ToList();
                 if (list.Count == 0)
                     return;
 
@@ -63,8 +82,8 @@ namespace isukces.code.AutoCode
                 {
                     if (i.Item1.DeclaringType != Type)
                         continue;
-                    var m = Class.AddMethod("ShouldSerialize" + i.Item1.Name, "bool", null);
-                    var writer = new CodeWriter();
+                    var m         = Class.AddMethod("ShouldSerialize" + i.Item1.Name, "bool", null);
+                    var writer    = new CodeWriter();
                     var condition = i.Item2.Condition;
                     if (string.IsNullOrEmpty(condition))
                         condition = MakeShouldSerializeCondition(i.Item1);
@@ -72,6 +91,10 @@ namespace isukces.code.AutoCode
                     m.Body = writer.Code;
                 }
             }
+
+            // ReSharper disable once MemberCanBePrivate.Global
+            public static Dictionary<Type, string> Templates { get; }
+ 
         }
     }
 }

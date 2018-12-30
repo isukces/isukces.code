@@ -7,8 +7,6 @@ namespace isukces.code.interfaces
         [AttributeUsage(AttributeTargets.Property)]
         public class ShouldSerializeAttribute : Attribute
         {
-            #region Constructors
-
             /// <summary>
             ///     Initializes a new instance of the <see cref="T:System.Attribute" /> class.
             /// </summary>
@@ -21,13 +19,23 @@ namespace isukces.code.interfaces
             {
             }
 
-            #endregion
-
-            #region Properties
-
             public string Condition { get; set; }
+        }
+        
+        [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+        public class ShouldSerializeInfoAttribute : Attribute
+        {
+            public ShouldSerializeInfoAttribute(string codeTemplate)
+            {
+                CodeTemplate = codeTemplate ?? throw new ArgumentNullException(nameof(codeTemplate));
+            }
 
-            #endregion
+            /// <summary>
+            /// Code template, use {0} for value 
+            /// </summary>
+            public string CodeTemplate { get;   }
         }
     }
+    
+    
 }

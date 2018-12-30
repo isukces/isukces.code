@@ -50,14 +50,34 @@ namespace isukces.code.Tests
             Assert.Equal(NamespaceMemberKind.Class, typeof(GeneratorsTests).GetNamespaceMemberKind());
         }
 
+        [Fact]
+        public void T05_ShouldSerializeGenerator_tests()
+        {
+            var pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(
+                nameof(ShouldSerializeGeneratorTestClass.Name));
+            var code = Generators.ShouldSerializeGenerator.MakeShouldSerializeCondition(pi);
+            Assert.Equal("!string.IsNullOrEmpty(Name)", code);
+            
+            pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(
+                nameof(ShouldSerializeGeneratorTestClass.OtherValue));
+            code = Generators.ShouldSerializeGenerator.MakeShouldSerializeCondition(pi);
+            Assert.Equal("!OtherValue.Equals(Foo)", code);
+        }
 
-        private struct SampleStruct
+        [Auto.ShouldSerializeInfo("!{0}.Equals(Foo)")]
+        public struct SampleStruct
         {
             public int Number { get; set; }
         }
 
         private interface SampleInterface
         {
+        }
+
+        public class ShouldSerializeGeneratorTestClass
+        {
+            public string Name { get; set; }
+            public SampleStruct OtherValue { get; set; }
         }
 
         private class Gen : Generators.SingleClassGenerator
