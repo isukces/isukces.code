@@ -61,7 +61,7 @@ namespace isukces.code.AutoCode
 
                 foreach (var i in list)
                 {
-                    if (!i.Item1.DeclaringType.Equals(Type))
+                    if (i.Item1.DeclaringType != Type)
                         continue;
                     var m = Class.AddMethod("ShouldSerialize" + i.Item1.Name, "bool", null);
                     var writer = new CodeWriter();

@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 
 namespace isukces.code.AutoCode
 {
@@ -19,7 +20,8 @@ namespace isukces.code.AutoCode
                 {
                     if (_class != null)
                         return _class;
-                    return _class = Context.GetOrCreateClass(Type);
+                    _class = Context.GetOrCreateClass(Type);          
+                    return _class;
                 }
             }
 

@@ -23,11 +23,39 @@ namespace isukces.code.CodeWrite
                 s.Add(i);
             return s;
         }
-        
+
         public CsClass GetOrCreateClass(string namespaceName, string className)
         {
             var ns = GetOrCreateNamespace(namespaceName);
-            return ns.GetOrCreateClass(className);            
+            return ns.GetOrCreateClass(className);
+        }
+
+        public CsClass GetOrCreateClass(Type type, Dictionary<Type, CsClass> classesCache)
+        {
+            if (classesCache.TryGetValue(type, out var c))
+                return c;
+            if (type.DeclaringType == null)
+            {
+                var a = classesCache[type] = new CsClass(type.Name)
+                {
+                    IsPartial  = true,
+                    DotNetType = type,
+                    Owner      = this,
+                    Visibility = Visibilities.InterfaceDefault,
+                    Kind = type.GetNamespaceMemberKind()
+                };
+                var ns = GetOrCreateNamespace(type.Namespace);
+                ns.AddClass(a);
+                return a;
+            }
+
+            var parent   = GetOrCreateClass(type.DeclaringType, classesCache);
+            var existing = parent.GetOrCreateNested(type.Name);
+            existing.IsPartial  = true;
+            existing.DotNetType = type;
+            existing.Kind = type.GetNamespaceMemberKind();
+            existing.Visibility = Visibilities.InterfaceDefault;
+            return existing;
         }
 
         public CsNamespace GetOrCreateNamespace(string name)
@@ -49,7 +77,7 @@ namespace isukces.code.CodeWrite
                 writer.WriteLine("using {0};", i);
             if (_importNamespaces.Any())
                 writer.EmptyLine();
-            var classByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
+            var classByNamespace     = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
             var directiveByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.CompilerDirective);
             var enumByNamespace = (_enums ?? new List<CsEnum>())
                 .GroupBy(c => c.DotNetType == null ? emptyNamespace : c.DotNetType.Namespace)
@@ -133,7 +161,7 @@ namespace isukces.code.CodeWrite
                 throw new NullReferenceException("fi.Directory");
             fi.Directory.Create();
             var x = Encoding.UTF8.GetBytes(GetCode());
-            using (var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
+            using(var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
             {
                 fs.Write(x, 0, x.Length);
 #if !COREFX
@@ -152,18 +180,18 @@ namespace isukces.code.CodeWrite
         /// </summary>
         public List<CsEnum> Enums
         {
-            get { return _enums; }
-            set { _enums = value ?? new List<CsEnum>(); }
+            get => _enums;
+            set => _enums = value ?? new List<CsEnum>();
         }
 
         /// <summary>
         /// </summary>
         public string SuggestedFileName
         {
-            get { return _suggestedFileName; }
+            get => _suggestedFileName;
             set
             {
-                value = value?.Trim() ?? string.Empty;
+                value              = value?.Trim() ?? string.Empty;
                 _suggestedFileName = value;
             }
         }

@@ -56,9 +56,7 @@ namespace isukces.code.AutoCode
                     ns => _csFile.AddImportNamespace(ns),
                     ResolveConfigInternal);
                 foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
-                {
                     i.AssemblyStart(assembly, context);
-                }
             }
 
             for (int index = 0, length = types.Length; index < length; index++)
@@ -72,15 +70,13 @@ namespace isukces.code.AutoCode
                 foreach (var i in CodeGenerators)
                     i.Generate(type, context);
             }
+
             {
                 IAutoCodeGeneratorContext context = new SimpleAutoCodeGeneratorContext(
                     GetOrCreateClass,
                     ns => _csFile.AddImportNamespace(ns),
                     ResolveConfigInternal);
-                foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
-                {
-                    i.AssemblyEnd(assembly, context);
-                }
+                foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>()) i.AssemblyEnd(assembly, context);
             }
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
             if (_csFile.SaveIfDifferent(fileName, false))
@@ -95,30 +91,7 @@ namespace isukces.code.AutoCode
 
         private CsClass GetOrCreateClass(Type type)
         {
-            {
-                CsClass c;
-                if (_classes.TryGetValue(type, out c))
-                    return c;
-            }
-            if (type.DeclaringType == null)
-            {
-                var a = _classes[type] = new CsClass(type.Name)
-                {
-                    IsPartial = true,
-                    DotNetType = type,
-                    Owner = _csFile,
-                    Visibility = Visibilities.InterfaceDefault
-                };
-                var ns = _csFile.GetOrCreateNamespace(type.Namespace);
-                ns.AddClass(a);
-                return a;
-            }
-            var parent = GetOrCreateClass(type.DeclaringType);
-            var existing = parent.GetOrCreateNested(type.Name);
-            existing.IsPartial = true;
-            existing.DotNetType = type;
-            existing.Visibility = Visibilities.InterfaceDefault;
-            return existing;
+            return _csFile.GetOrCreateClass(type, _classes);
         }
 
         private object ResolveConfigInternal(Type type)
@@ -126,7 +99,7 @@ namespace isukces.code.AutoCode
             object value;
             if (_configs.TryGetValue(type, out value))
                 return value;
-            value = Activator.CreateInstance(type);
+            value          = Activator.CreateInstance(type);
             _configs[type] = value;
             return value;
         }
