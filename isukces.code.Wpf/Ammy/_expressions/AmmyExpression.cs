@@ -43,7 +43,7 @@ namespace isukces.code.Wpf.Ammy
 
             public string GetAmmyCode(IConversionCtx ctx)
             {
-                var q = AmmyHelper.TypeName(_type, ctx) + "." + _propertyName;
+                var q = ctx.TypeName(_type) + "." + _propertyName;
                 return q;
             }
 

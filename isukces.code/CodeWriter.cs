@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Text;
 using isukces.code.interfaces;
-using isukces.code.Typescript;
 
 namespace isukces.code
 {
-    public abstract class CodeWritter : ICodeWritter
+    public abstract class CodeWriter : ICodeWriter
     {
-        protected CodeWritter(ILangInfo langInfo)
+        protected CodeWriter(ILangInfo langInfo)
         {
             LangInfo = langInfo;
         }
@@ -84,6 +81,14 @@ namespace isukces.code
             File.WriteAllBytes(filename, newa);
         }
 
+
+        // public bool AutoCloseComment { get; set; }
+
+        public override string ToString()
+        {
+            return Code;
+        }
+
         /*
         public void Writeln(TsEnumItem format)
         {
@@ -134,9 +139,6 @@ namespace isukces.code
         /// </summary>
         public bool TrimText { get; set; }
 
-       
-        // public bool AutoCloseComment { get; set; }
-
         public string Code
         {
             get
@@ -167,8 +169,9 @@ namespace isukces.code
 
 
         private string _indentStr = "";
+
         // private Dictionary<int, string> opening = new Dictionary<int, string>();
-        private StringBuilder _sb = new StringBuilder();
+        private readonly StringBuilder _sb = new StringBuilder();
         private int _indent;
         private const int IndentSize = 4;
     }

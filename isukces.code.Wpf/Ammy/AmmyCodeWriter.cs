@@ -5,9 +5,9 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Wpf.Ammy
 {
-    public class AmmyCodeWritter : CodeWritter, IAmmyNamespaceProvider, IAmmyCodeWritter
+    public class AmmyCodeWriter : CodeWriter, IAmmyNamespaceProvider, IAmmyCodeWriter
     {
-        public AmmyCodeWritter() : base(AmmyLangInfo.Instance)
+        public AmmyCodeWriter() : base(AmmyLangInfo.Instance)
         {
         }
 

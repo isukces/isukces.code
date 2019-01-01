@@ -4,9 +4,9 @@ namespace isukces.code.Typescript
 {
     public class TsDecorator : ITsCodeProvider
     {
-        public void WriteCodeTo(ITsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWriter writer)
         {
-            writter.WriteLine("@" + Name + "()");
+            writer.WriteLine("@" + Name + "()");
         }
 
         public string Name { get; set; }

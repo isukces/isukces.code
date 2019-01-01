@@ -4,9 +4,9 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsCodeWritter : CodeWritter, ICsCodeWritter
+    public class CsCodeWriter : CodeWriter, ICsCodeWriter
     {
-        public CsCodeWritter() 
+        public CsCodeWriter() 
             : base(CsLangInfo.Instance)
         {            
         }

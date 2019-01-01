@@ -8,7 +8,7 @@ namespace isukces.code.Wpf.Ammy
     {
         public string GetAmmyCode(IConversionCtx ctx)
         {
-            var converted = Items.Select(a => AmmyHelper.AnyObjectToString(a, ctx));
+            var converted = Items.Select(a => AmmyHelper.ToCodePiece(a, ctx));
             return "[" + string.Join(", ", converted) + "]";
         }
 

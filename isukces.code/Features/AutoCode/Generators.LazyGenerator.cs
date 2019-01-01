@@ -187,7 +187,7 @@ namespace isukces.code.AutoCode
                     prop.IsStatic = mi.IsMemberStatic();
                     prop.IsPropertyReadOnly = true;
                     prop.EmitField = false;
-                    ICsCodeWritter writer = new CsCodeWritter();
+                    ICsCodeWriter writer = new CsCodeWriter();
                     {
                         writer.WriteLine("var result = {0};", fieldName);
                         writer.WriteLine("// ReSharper disable once InvertIf");

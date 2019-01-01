@@ -15,7 +15,7 @@ namespace isukces.code.Typescript
             return dec;
         }
 
-        public abstract void WriteCodeTo(ITsCodeWritter writter);
+        public abstract void WriteCodeTo(ITsCodeWriter writer);
 
 
         public string Name { get; set; }

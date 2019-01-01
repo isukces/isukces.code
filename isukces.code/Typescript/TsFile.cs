@@ -16,17 +16,17 @@ namespace isukces.code.Typescript
             return GetCode();
         }
 
-        public void WriteCodeTo(ITsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWriter writer)
         {
             foreach (var i in References)
-                i.WriteCodeTo(writter);
+                i.WriteCodeTo(writer);
             foreach (var i in Members)
-                i.WriteCodeTo(writter);
+                i.WriteCodeTo(writer);
         }
 
         private string GetCode()
         {
-            var ctx = new TsCodeWritter();
+            var ctx = new TsCodeWriter();
             WriteCodeTo(ctx);
             return ctx.Code;
         }

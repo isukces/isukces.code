@@ -34,7 +34,7 @@ namespace isukces.code.AutoCode
                     Single(csClass, attribute);
                 {
                     var m = csClass.AddMethod("GetAllReactiveCommands", "IEnumerable< IReactiveCommand>", "");
-                    var c = new CsCodeWritter();
+                    var c = new CsCodeWriter();
                     foreach (var attribute in attributes)
                         c.WriteLine("yield return {0}Command;", attribute.Name);
                     m.Body = c.Code;

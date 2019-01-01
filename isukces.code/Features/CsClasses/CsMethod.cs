@@ -76,7 +76,7 @@ namespace isukces.code
         /// </summary>
         /// <param name="writer"></param>
         /// <returns></returns>
-        public void MakeCode(ICsCodeWritter writer, bool inInterface)
+        public void MakeCode(ICsCodeWriter writer, bool inInterface)
         {
             WriteMethodDescription(writer);
             foreach (var i in Attributes)
@@ -165,7 +165,7 @@ namespace isukces.code
             return a.ToArray();
         }
 
-        private void WriteMethodDescription(ICsCodeWritter writer)
+        private void WriteMethodDescription(ICsCodeWriter writer)
         {
             var anyParameterHasDescription = _parameters.Any(a => !string.IsNullOrEmpty(a.Description));
             var hasMethodDescription       = !string.IsNullOrEmpty(Description);

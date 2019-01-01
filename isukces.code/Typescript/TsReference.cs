@@ -4,9 +4,9 @@ namespace isukces.code.Typescript
 {
     public class TsReference : ITsCodeProvider
     {
-        public void WriteCodeTo(ITsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWriter writer)
         {
-            writter.WriteLine($"/// <reference path=\"{Path}\"/>");
+            writer.WriteLine($"/// <reference path=\"{Path}\"/>");
         }
 
         public string Path { get; set; }

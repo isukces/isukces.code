@@ -22,20 +22,20 @@ namespace isukces.code.Typescript
             return this;
         }
 
-        public override void WriteCodeTo(ITsCodeWritter writter)
+        public override void WriteCodeTo(ITsCodeWriter writer)
         {
-            Introduction?.WriteCodeTo(writter);
+            Introduction?.WriteCodeTo(writer);
             if (Decorators != null && Decorators.Any())
                 foreach (var i in Decorators)
-                    i.WriteCodeTo(writter);
-            writter.Open(string.Join(" ", GetClassHeader()));
+                    i.WriteCodeTo(writer);
+            writer.Open(string.Join(" ", GetClassHeader()));
             var left = Members.Count;
             foreach (var i in Members)
             {
                 var line = --left != 0 ? i.GetCode() + "," : i.GetCode();
-                writter.WriteLine(line);
+                writer.WriteLine(line);
             }
-            writter.Close();
+            writer.Close();
         }
 
         private IEnumerable<string> GetClassHeader()

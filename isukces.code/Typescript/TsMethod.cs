@@ -34,22 +34,22 @@ namespace isukces.code.Typescript
             return this;
         }
 
-        public void WriteCodeTo(ITsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWriter writer)
         {            
             var header = string.Join(" ", GetHeaderItems());
-            if (writter.HeadersOnly)
+            if (writer.HeadersOnly)
             {
-                writter.WriteLine(header + ";");
+                writer.WriteLine(header + ";");
                 return;
             }
-            writter.Open(header);
+            writer.Open(header);
             if (!string.IsNullOrEmpty(Body))
             {
                 var b = Body.Replace("\r\n", "\n").Split('\n');
                 foreach (var line in b)
-                    writter.WriteLine(line);
+                    writer.WriteLine(line);
             }
-            writter.Close();
+            writer.Close();
         }
 
         private IEnumerable<string> GetHeaderItems()

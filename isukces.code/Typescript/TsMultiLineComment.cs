@@ -10,7 +10,7 @@ namespace isukces.code.Typescript
             Text = text;
         }
 
-        public void WriteCodeTo(ITsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWriter writer)
         {
             if (string.IsNullOrWhiteSpace(Text))
                 return;
@@ -26,15 +26,15 @@ namespace isukces.code.Typescript
                         line = "   " + line;
                     if (index == lastIdx)
                         line += " */";
-                    writter.WriteLine(line);
+                    writer.WriteLine(line);
                 }
             }
             else
             {
-                writter.WriteLine("/*");
+                writer.WriteLine("/*");
                 foreach (var line in lines)
-                    writter.WriteLine(line);
-                writter.WriteLine("*/");
+                    writer.WriteLine(line);
+                writer.WriteLine("*/");
 
             }
         }

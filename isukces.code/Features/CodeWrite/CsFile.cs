@@ -68,7 +68,7 @@ namespace isukces.code.CodeWrite
             return result;
         }
 
-        public void MakeCode(ICsCodeWritter writer)
+        public void MakeCode(ICsCodeWriter writer)
         {
             if (Namespaces == null || Namespaces.Count == 0)
                 return;
@@ -150,7 +150,7 @@ namespace isukces.code.CodeWrite
 
         private string GetCode()
         {
-            var writer = new CsCodeWritter();
+            var writer = new CsCodeWriter();
             MakeCode(writer);
             return writer.Code;
         }

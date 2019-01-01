@@ -27,18 +27,18 @@ namespace isukces.code.Typescript
         }
 
 
-        public override void WriteCodeTo(ITsCodeWritter writter)
+        public override void WriteCodeTo(ITsCodeWriter writer)
         {
-            writter.DoWithHeadersOnly(IsInterface, () =>
+            writer.DoWithHeadersOnly(IsInterface, () =>
             {
-                Introduction?.WriteCodeTo(writter);
+                Introduction?.WriteCodeTo(writer);
                 if (Decorators != null && Decorators.Any())
                     foreach (var i in Decorators)
-                        i.WriteCodeTo(writter);
-                writter.Open(string.Join(" ", GetClassHeader()));
+                        i.WriteCodeTo(writer);
+                writer.Open(string.Join(" ", GetClassHeader()));
                 foreach (var i in Members)
-                    i.WriteCodeTo(writter);
-                writter.Close();
+                    i.WriteCodeTo(writer);
+                writer.Close();
             });
         }
 

@@ -2,14 +2,14 @@ using System;
 
 namespace isukces.code.interfaces
 {
-    public interface ITsCodeWritter : ICodeWritter
+    public interface ITsCodeWriter : ICodeWriter
     {
         bool HeadersOnly { get; set; }
     }
 
     public static class TsCodeWritterExt
     {
-        public static void DoWithHeadersOnly(this ITsCodeWritter src, bool temporaryHeadersOnly, Action a)
+        public static void DoWithHeadersOnly(this ITsCodeWriter src, bool temporaryHeadersOnly, Action a)
         {
             var back = src.HeadersOnly;
             src.HeadersOnly = temporaryHeadersOnly;

@@ -9,13 +9,13 @@ namespace isukces.code.Typescript
             Text = text;
         }
 
-        public void WriteCodeTo(ITsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWriter writer)
         {
             if (string.IsNullOrWhiteSpace(Text))
                 return;
             var lines = Text.Trim().SplitToLines();
             foreach (var line in lines)
-                writter.WriteLine("// " + line);
+                writer.WriteLine("// " + line);
         }
 
         public string Text { get; set; }

@@ -5,7 +5,7 @@ namespace isukces.code.Typescript
 {
     public interface ITsCodeProvider
     {
-        void WriteCodeTo(ITsCodeWritter writter);
+        void WriteCodeTo(ITsCodeWriter writer);
     }
   
 }

@@ -3,9 +3,9 @@ using isukces.code.interfaces;
 
 namespace isukces.code.Typescript
 {
-    public class TsCodeWritter : CodeWritter, ITsCodeWritter
+    public class TsCodeWriter : CodeWriter, ITsCodeWriter
     {
-        public TsCodeWritter() : base(TsLangInfo.Instance)
+        public TsCodeWriter() : base(TsLangInfo.Instance)
         {
         }
         

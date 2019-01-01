@@ -1,16 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Windows.Controls;
+using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Wpf.Ammy
 {
-    internal class AmmyObjectBuilder<T> : IAmmyExpression
+    public class AmmyObjectBuilder<T> : IAmmyCodePieceConvertible
     {
-        public string GetAmmyCode(IConversionCtx ctx)
+        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
         {
-            return AmmyHelper.EmitObject<T>(_props, ctx, _content);
+            return ToComplexAmmyCodePiece(ctx);
+        }
+
+        public IComplexAmmyCodePiece ToComplexAmmyCodePiece(IConversionCtx ctx)
+        {
+            IEnumerable<KeyValuePair<string, object>> GetProperties()
+            {
+                foreach (var i in _props)
+                    yield return i;
+                foreach (var i in _content)
+                    yield return new KeyValuePair<string, object>(null, i);
+            }
+
+            var props      = GetProperties().ToArray();
+            var codePieces = AmmyHelper.Emit(ctx, props).ToArray();
+
+            return new ComplexAmmyCodePiece(codePieces, ctx.TypeName<T>());
         }
 
         public AmmyObjectBuilder<T> With<TValue>(Expression<Func<T, TValue>> func, TValue v)
@@ -61,6 +79,12 @@ namespace isukces.code.Wpf.Ammy
             if (v == null)
                 return this;
             return WithAny(func, v);
+        }
+
+        public void WriteTo(AmmyCodeWriter writer, ConversionCtx ctx)
+        {
+            var nested = ToComplexAmmyCodePiece(ctx);
+            writer.WriteComplex(nested);
         }
 
         private readonly Dictionary<string, object> _props = new Dictionary<string, object>();
