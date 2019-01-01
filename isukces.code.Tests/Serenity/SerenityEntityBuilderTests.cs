@@ -63,7 +63,7 @@ namespace isukces.code.Tests.Serenity
 
             var w = new CodeWriter();
             file.MakeCode(w);
-            var newExpected = Encode(w.Code);
+            var newExpected = Encode(w.GetCode());
             const string expected = @"using isukces.code.Tests.Serenity;
 
 // ReSharper disable once CheckNamespace
@@ -206,7 +206,7 @@ namespace Cloud.Common
     }
 }
 ";
-            Assert.Equal(expected, w.Code);
+            Assert.Equal(expected, w.GetCode());
         }
 
         private static string Encode(string c)

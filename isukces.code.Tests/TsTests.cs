@@ -9,7 +9,7 @@ namespace isukces.code.Tests
     {
         private static string GetCode(ITsCodeProvider ns)
         {
-            var cf = new CSCodeFormatter();
+            var cf = new CsCodeFormatter();
             ns.WriteCodeTo(new TsWriteContext(cf));
             return cf.Text.Trim();
         }
@@ -348,7 +348,7 @@ export enum MyEnum
             file.AddImportNamespace("blabla");
             ICodeWriter writer = new CodeWriter();
             file.MakeCode(writer);
-            Assert.Equal("", writer.Code);
+            Assert.Equal("", writer.GetCode());
         }
 
 

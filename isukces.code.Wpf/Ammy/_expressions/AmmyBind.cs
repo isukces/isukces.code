@@ -12,7 +12,7 @@ namespace isukces.code.Wpf.Ammy
         {
             var txt = "bind";
             if (!string.IsNullOrEmpty(PropertyName) && PropertyName!=".")
-                txt += " " + PropertyName.CsCite();
+                txt += " " + PropertyName.CsEncode();
             {
                 var se = new List<string>();
                 if (Mode!=null)

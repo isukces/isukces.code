@@ -65,7 +65,7 @@ namespace isukces.code.AutoCode
                     {
                         var constructorArgs = GetConstructorArgs(properties);
                         var usedProperties = ToHashSet(constructorArgs);
-                        var cw = new CodeFormatter();
+                        var cw = new CsCodeFormatter();
                         cw.Writeln("// ReSharper disable UseObjectOrCollectionInitializer");
                         cw.Writeln("// ReSharper disable MemberCanBeMadeStatic.Local");
                         cw.Writeln("var result = new {0}({1});", Type.Name, string.Join(", ", constructorArgs));

@@ -209,7 +209,7 @@ namespace isukces.code.AutoCode
                         writer.CloseBrackets();
                         writer.WriteLine("return {0};", assignS.Assign2("result"));
                     }
-                    prop.OwnGetter = writer.Code;
+                    prop.OwnGetter = writer.GetCode();
                 }
             }
 

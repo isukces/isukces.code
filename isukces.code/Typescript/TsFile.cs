@@ -25,7 +25,7 @@ namespace isukces.code.Typescript
 
         private string GetCode()
         {
-            var cf = new CSCodeFormatter();
+            var cf = new CsCodeFormatter();
             var ctx = new TsWriteContext(cf);
             WriteCodeTo(ctx);
             return cf.Text;

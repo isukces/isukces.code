@@ -3,11 +3,11 @@ using System.Linq;
 
 namespace isukces.code
 {
-    public class CSCodeFormatter : CodeFormatter
+    public class CsCodeFormatter : CodeFormatter
     {
-        public CSCodeFormatter()
-        {
-            LangInfo = new CSLangInfo();
+        public CsCodeFormatter() 
+            : base(CsLangInfo.Instance)
+        {            
         }
 
         public void AddNamespaces(string namespaceName)
@@ -21,12 +21,7 @@ namespace isukces.code
                 AddNamespaces(x);
         }
 
-        public string Cite(string x)
-        {
-            return "\"" + x.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
-        }
-
-        public CSCodeFormatter SingleLineIf(string condition, string statement, string elseStatement = null)
+        public CsCodeFormatter SingleLineIf(string condition, string statement, string elseStatement = null)
         {
             Writeln("if (" + condition + ")");
             IncIndent();
@@ -41,7 +36,7 @@ namespace isukces.code
             return this;
         }
 
-        public CSCodeFormatter WriteSingleLineSummary(string x)
+        public CsCodeFormatter WriteSingleLineSummary(string x)
         {
             var lines = x.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()));
             Writeln("/// <summary>");
@@ -52,11 +47,12 @@ namespace isukces.code
         }
 
 
-        public void WriteSummary(string x)
+        public CsCodeFormatter WriteSummary(string x)
         {
             // System.Xml.Linq.XObject el = new XElement("param", new XAttribute("name", p.Name), p.Description);
             // cs.Writeln("/// {0}", el);
             Writeln("/// {0}", x);
+            return this;
         }
     }
 }

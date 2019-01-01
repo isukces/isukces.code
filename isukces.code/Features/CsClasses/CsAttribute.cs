@@ -53,7 +53,7 @@ namespace isukces.code
                     sValue = aBool ? "true" : "false";
                     break;
                 case string aString:
-                    sValue = aString.CsCite();
+                    sValue = aString.CsEncode();
                     break;
                 case IDirectCode aDirectCode:
                     sValue = aDirectCode.Code;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,15 @@ using isukces.code.interfaces;
 using isukces.code.Typescript;
 
 namespace isukces.code
-{
-    public delegate void CodeFormatterDelegate();
-
-    public class CodeFormatter// :ICodeWriter
+{    
+    public abstract class CodeFormatter// :ICodeWriter
     {
-        public void Block(string open, string close, CodeFormatterDelegate method)
+        protected CodeFormatter(ILangInfo langInfo)
+        {
+            LangInfo = langInfo;
+        }
+
+        public void Block(string open, string close, Action method)
         {
             Writeln(open);
             IncIndent();
@@ -19,7 +23,7 @@ namespace isukces.code
             Close(close);
         }
 
-        public void Block(string open, CodeFormatterDelegate method)
+        public void Block(string open, Action method)
         {
             Writeln(open);
             IncIndent();
@@ -155,7 +159,7 @@ namespace isukces.code
         /// <summary>
         ///     opis języka
         /// </summary>
-        public ILangInfo LangInfo { get; set; }
+        public ILangInfo LangInfo { get; }
 
         public string[] Lines
         {

@@ -42,7 +42,7 @@ namespace isukces.code.CodeWrite
                     DotNetType = type,
                     Owner      = this,
                     Visibility = Visibilities.InterfaceDefault,
-                    Kind = type.GetNamespaceMemberKind()
+                    Kind       = type.GetNamespaceMemberKind()
                 };
                 var ns = GetOrCreateNamespace(type.Namespace);
                 ns.AddClass(a);
@@ -53,7 +53,7 @@ namespace isukces.code.CodeWrite
             var existing = parent.GetOrCreateNested(type.Name);
             existing.IsPartial  = true;
             existing.DotNetType = type;
-            existing.Kind = type.GetNamespaceMemberKind();
+            existing.Kind       = type.GetNamespaceMemberKind();
             existing.Visibility = Visibilities.InterfaceDefault;
             return existing;
         }
@@ -151,7 +151,7 @@ namespace isukces.code.CodeWrite
         {
             var writer = new CodeWriter();
             MakeCode(writer);
-            return writer.Code;
+            return writer.GetCode();
         }
 
         private void Save(string filename)

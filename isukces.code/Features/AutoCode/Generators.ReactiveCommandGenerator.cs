@@ -37,7 +37,7 @@ namespace isukces.code.AutoCode
                     var c = new CodeWriter();
                     foreach (var attribute in attributes)
                         c.WriteLine("yield return {0}Command;", attribute.Name);
-                    m.Body = c.Code;
+                    m.Body = c.GetCode();
                 }
             }
 

@@ -6,9 +6,8 @@ namespace isukces.code.Wpf.Ammy
 {
     public class AmmyCodeFormatter : CodeFormatter, IAmmyNamespaceProvider
     {
-        public AmmyCodeFormatter()
+        public AmmyCodeFormatter() : base(AmmyLangInfo.Instance)
         {
-            LangInfo = new AmmyLangInfo();
         }
 
         public void AddNamespace<T>()

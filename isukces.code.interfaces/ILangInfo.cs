@@ -1,27 +1,25 @@
 ﻿namespace isukces.code.interfaces
 {
-    public interface ILangInfo {
-        #region Properties
+    public interface ILangInfo
+    {
         /// <summary>
-        /// Dodaj BOM dla UTF-8
+        ///     Dodaj BOM dla UTF-8
         /// </summary>
         bool AddBOM { get; }
 
         /// <summary>
-        /// tekst zamykający
+        ///     tekst zamykający
         /// </summary>
         string CloseText { get; }
 
         /// <summary>
-        /// Komentarz jednolinijkowy
+        ///     Komentarz jednolinijkowy
         /// </summary>
         string OneLineComment { get; }
 
         /// <summary>
-        /// tekst otwierający
+        ///     tekst otwierający
         /// </summary>
         string OpenText { get; }
-        #endregion
-
     }
 }

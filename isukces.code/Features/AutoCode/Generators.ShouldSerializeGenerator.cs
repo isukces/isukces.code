@@ -89,7 +89,7 @@ namespace isukces.code.AutoCode
                     if (string.IsNullOrEmpty(condition))
                         condition = MakeShouldSerializeCondition(i.Item1);
                     writer.WriteLine("return {0};", condition);
-                    m.Body = writer.Code;
+                    m.Body = writer.GetCode();
                 }
             }
 

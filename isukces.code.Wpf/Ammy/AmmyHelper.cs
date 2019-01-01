@@ -40,7 +40,7 @@ namespace isukces.code.Wpf.Ammy
                 case null:
                     return "null";
                 case string s:
-                    return s.CsCite();
+                    return s.CsEncode();
                 case int i:
                     return i.ToString(CultureInfo.InvariantCulture);
                 case double d:

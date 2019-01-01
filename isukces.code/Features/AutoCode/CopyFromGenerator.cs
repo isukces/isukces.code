@@ -79,7 +79,7 @@ namespace isukces.code.AutoCode
             writer.WriteLine("var a = new {0}();", type);
             writer.WriteLine("a.CopyFrom(this);");
             writer.WriteLine("return a;");
-            cm.Body = writer.Code;
+            cm.Body = writer.GetCode();
         }
 
         private void GenerateInternal()
@@ -99,7 +99,7 @@ namespace isukces.code.AutoCode
                                       .GetProperties();
                 foreach (var i in properties)
                     ProcessProperty(i, _copyFromAttribute, writer);
-                cm.Body = writer.Code;
+                cm.Body = writer.GetCode();
             }
             if (_doCloneable)
                 GenerateMethodClone(Type, Class);

@@ -18,7 +18,7 @@ namespace isukces.code.Wpf.Ammy
 
         public static IAmmyExpression FromString(string s)
         {
-            return new AmmyExpression(s.CsCite());
+            return new AmmyExpression(s.CsEncode());
         }
 
         public string GetAmmyCode(IConversionCtx ctx)

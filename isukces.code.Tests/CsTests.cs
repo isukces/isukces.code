@@ -14,13 +14,13 @@ namespace isukces.code.Tests
 
             const string specialR = "\r";
             Assert.Equal(1,                               specialR.Length);
-            Assert.Equal(quote + backslash + "r" + quote, specialR.CsCite());
+            Assert.Equal(quote + backslash + "r" + quote, specialR.CsEncode());
             var specialN = "\n";
             Assert.Equal(1,                               specialN.Length);
-            Assert.Equal(quote + backslash + "n" + quote, specialN.CsCite());
+            Assert.Equal(quote + backslash + "n" + quote, specialN.CsEncode());
             var specialT = "\t";
             Assert.Equal(1,                               specialT.Length);
-            Assert.Equal(quote + backslash + "t" + quote, specialT.CsCite());
+            Assert.Equal(quote + backslash + "t" + quote, specialT.CsEncode());
         }
 
         [Fact]
@@ -45,7 +45,7 @@ namespace isukces.code.Tests
 
 }
 ";
-            Assert.Equal(expected.Trim(), w.Code.Trim());
+            Assert.Equal(expected.Trim(), w.GetCode().Trim());
         }
 
         
@@ -66,7 +66,7 @@ namespace isukces.code.Tests
 
 }
 ";
-            Assert.Equal(expected.Trim(), w.Code.Trim());
+            Assert.Equal(expected.Trim(), w.GetCodeTrim());
 
             p.ConstValue = "12";
             w = new CodeWriter();
@@ -77,7 +77,7 @@ namespace isukces.code.Tests
 
 }
 ";
-            Assert.Equal(expected.Trim(), w.Code.Trim());
+            Assert.Equal(expected.Trim(), w.GetCodeTrim());
         }
         
         [Fact]
@@ -107,13 +107,13 @@ public interface ITest
 
 }";
 
-            Assert.Equal(expected.Trim(), w.Code.Trim());
+            Assert.Equal(expected.Trim(), w.GetCodeTrim());
 
             p.ConstValue = "12";
             w            = new CodeWriter();
             cl.MakeCode(w);
            
-            Assert.Equal(expected.Trim(), w.Code.Trim());
+            Assert.Equal(expected.Trim(), w.GetCodeTrim());
         }
         
         
@@ -137,7 +137,7 @@ public class Src1
 #endif
 
 ";
-            Assert.Equal(expected.Trim(), w.Code.Trim());
+            Assert.Equal(expected.Trim(), w.GetCodeTrim());
 
         }
 

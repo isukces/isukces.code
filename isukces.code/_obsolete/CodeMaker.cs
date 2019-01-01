@@ -5,7 +5,8 @@ using System.Text.RegularExpressions;
 
 namespace isukces.code
 {
-    public class CodeMaker : object
+    [Obsolete]
+    public class CodeMaker
     {
 
         /// <summary>
@@ -30,10 +31,10 @@ namespace isukces.code
         public static string StripBrackets(string x)
         {
             if (string.IsNullOrEmpty(x))
-                throw new ArgumentNullException("x");
+                throw new ArgumentNullException(nameof(x));
             x = x.Trim();
 
-            if (x.StartsWith("(") && x.EndsWith(")"))
+            if (x.StartsWith("(", StringComparison.Ordinal) && x.EndsWith(")", StringComparison.Ordinal))
             {
                 if (x.Contains("\""))
                     throw new NotImplementedException();
@@ -283,8 +284,7 @@ namespace isukces.code
         public static string StandardMethods(Type type)
         {
             var cm = new CodeMaker();
-            cm.Code = new CodeFormatter();
-            cm.Code.LangInfo = new CSLangInfo();
+            cm.Code = new CsCodeFormatter();
             cm.SourceType = type;
             return cm.StandardMethods();
         }

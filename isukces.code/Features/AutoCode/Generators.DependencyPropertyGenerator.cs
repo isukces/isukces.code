@@ -47,7 +47,7 @@ namespace isukces.code.AutoCode
                             writer.WriteLine("typeof({0}),", csClass.Name);
                             writer.WriteLine("{0})", meta);
                         }
-                        staticField.ConstValue = writer.Code;
+                        staticField.ConstValue = writer.GetCode();
                     }
                 }
 

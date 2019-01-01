@@ -2,24 +2,24 @@
 {
     public class AmmyLangInfo : ILangInfo
     {
-        public bool AddBOM
+        private AmmyLangInfo()
         {
-            get { return false; }
         }
 
-        public string CloseText
-        {
-            get { return "}"; }
-        }
+        public static ILangInfo Instance => InstanceHolder.SingleInstance;
 
-        public string OneLineComment
-        {
-            get { return "//"; }
-        }
 
-        public string OpenText
+        public bool AddBOM => false;
+
+        public string CloseText => "}";
+
+        public string OneLineComment => "//";
+
+        public string OpenText => "{";
+
+        private static class InstanceHolder
         {
-            get { return "{"; }
+            public static readonly AmmyLangInfo SingleInstance = new AmmyLangInfo();
         }
     }
 }

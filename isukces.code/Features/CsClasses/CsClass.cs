@@ -181,7 +181,7 @@ namespace isukces.code
 
         public CsClassField AddConstString(string name, string plainValue)
         {
-            var encodedValue = plainValue == null ? "null" : plainValue.CsCite();
+            var encodedValue = plainValue == null ? "null" : plainValue.CsEncode();
             return AddConst(name, "string", encodedValue);
         }
 
