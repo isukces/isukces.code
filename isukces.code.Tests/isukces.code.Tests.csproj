@@ -4,7 +4,7 @@
     <Authors>Internet Sukces Piotr St�clik</Authors>
     <Company>Internet Sukces Piotr St�clik</Company>
     <Copyright>Copyright by Internet Sukces Piotr St�clik 2017</Copyright>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net451</TargetFramework>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
@@ -23,7 +23,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
     <ProjectReference Include="..\isukces.code.interfaces\isukces.code.interfaces.csproj" />
     <ProjectReference Include="..\isukces.code.Serenity\isukces.code.Serenity.csproj" />
-    <ProjectReference Include="..\isukces.code.Wpf\isukces.code.Wpf.csproj" />
     <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
   </ItemGroup>
 </Project>

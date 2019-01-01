@@ -1,6 +1,6 @@
 using isukces.code.interfaces.Ammy;
 
-namespace isukces.code.Wpf.Ammy
+namespace isukces.code.Ammy
 {
     public class SimpleAmmyCodePiece : ISimpleAmmyCodePiece
     {

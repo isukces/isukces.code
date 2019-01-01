@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Windows.Controls;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
-namespace isukces.code.Wpf.Ammy
+namespace isukces.code.Ammy
 {
     public class AmmyObjectBuilder<T> : IAmmyCodePieceConvertible
     {
@@ -91,11 +90,5 @@ namespace isukces.code.Wpf.Ammy
         public readonly List<object> _content = new List<object>();
     }
 
-    internal static class AmmyObjectBuilderExt
-    {
-        public static AmmyObjectBuilder<TextBlock> WithDefaultStyle(this AmmyObjectBuilder<TextBlock> x)
-        {
-            return x.WithAny(nameof(TextBlock.FontFamily), new AmmyVariable("FontFamily"));
-        }
-    }
+   
 }

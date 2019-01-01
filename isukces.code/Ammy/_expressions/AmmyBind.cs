@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿#if FULLFX
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
-namespace isukces.code.Wpf.Ammy
+namespace isukces.code.Ammy
 {
     public class AmmyBind:IAmmyExpression
     {
@@ -38,3 +39,4 @@ namespace isukces.code.Wpf.Ammy
         }
     }
 }
+#endif

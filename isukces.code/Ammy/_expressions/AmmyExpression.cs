@@ -2,7 +2,7 @@
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
-namespace isukces.code.Wpf.Ammy
+namespace isukces.code.Ammy
 {
     internal class AmmyExpression : IAmmyExpression
     {

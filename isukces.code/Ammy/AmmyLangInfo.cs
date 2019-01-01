@@ -1,6 +1,6 @@
 ﻿using isukces.code.interfaces;
 
-namespace isukces.code.Wpf.Ammy
+namespace isukces.code.Ammy
 {
     public class AmmyLangInfo : ILangInfo
     {

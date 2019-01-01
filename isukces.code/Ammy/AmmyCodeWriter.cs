@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
-namespace isukces.code.Wpf.Ammy
+namespace isukces.code.Ammy
 {
     public class AmmyCodeWriter : CodeWriter, IAmmyNamespaceProvider, IAmmyCodeWriter
     {

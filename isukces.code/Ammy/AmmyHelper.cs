@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 using JetBrains.Annotations;
 
-namespace isukces.code.Wpf.Ammy
+namespace isukces.code.Ammy
 {
     public static class AmmyHelper
     {
@@ -88,7 +89,7 @@ namespace isukces.code.Wpf.Ammy
                 }
 
                 var t = obj.GetType();
-                if (t.IsEnum)
+                if (t.GetTypeInfo().IsEnum)
                 {
                     if (ctx.FullNamespaces)
                         return ctx.TypeName(t) + "." + obj;

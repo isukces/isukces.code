@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using isukces.code.Ammy;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
-using isukces.code.Wpf.Ammy;
 using Xunit;
 
 namespace isukces.code.Tests.Ammy
