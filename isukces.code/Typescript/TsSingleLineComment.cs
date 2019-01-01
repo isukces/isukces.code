@@ -7,13 +7,13 @@ namespace isukces.code.Typescript
             Text = text;
         }
 
-        public void WriteCodeTo(TsCodeFormatter formatter)
+        public void WriteCodeTo(TsCodeWritter writter)
         {
             if (string.IsNullOrWhiteSpace(Text))
                 return;
             var lines = Text.Trim().SplitToLines();
             foreach (var line in lines)
-                formatter.Writeln("// " + line);
+                writter.Writeln("// " + line);
         }
 
         public string Text { get; set; }

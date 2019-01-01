@@ -61,7 +61,7 @@ namespace isukces.code.Tests.Serenity
             file.AddImportNamespace(typeof(SomeEnum32));
             a.Build(file);
 
-            ICsCodeFormatter w = new CsCodeFormatter();
+            ICsCodeWritter w = new CsCodeWritter();
             file.MakeCode(w);
             var newExpected = Encode(w.Code);
             const string expected = @"using isukces.code.Tests.Serenity;

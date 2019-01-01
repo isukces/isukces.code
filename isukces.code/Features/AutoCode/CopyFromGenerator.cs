@@ -15,7 +15,7 @@ namespace isukces.code.AutoCode
         // private readonly AutoCodeGeneratorConfiguration _configuration;
 
 
-        private void CloneWithValuesProcessor(PropertyInfo pi, ICsCodeFormatter writer, ITypeNameResolver resolver)
+        private void CloneWithValuesProcessor(PropertyInfo pi, ICsCodeWritter writer, ITypeNameResolver resolver)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
 #if !COREFX
@@ -46,7 +46,7 @@ namespace isukces.code.AutoCode
                 pi.PropertyType);
         }
 
-        private static void CopyArray(PropertyInfo pi, string type, ICsCodeFormatter writer)
+        private static void CopyArray(PropertyInfo pi, string type, ICsCodeWritter writer)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
             writer.WriteLine("if (source.{0} == null)", pi.Name);
@@ -75,7 +75,7 @@ namespace isukces.code.AutoCode
         {
             csClass.ImplementedInterfaces.Add("ICloneable");
             var         cm     = csClass.AddMethod("Clone", "object", "Makes clone of object");
-            ICsCodeFormatter writer = new CsCodeFormatter();
+            ICsCodeWritter writer = new CsCodeWritter();
             writer.WriteLine("var a = new {0}();", type);
             writer.WriteLine("a.CopyFrom(this);");
             writer.WriteLine("return a;");
@@ -89,7 +89,7 @@ namespace isukces.code.AutoCode
             {
                 var cm = Class.AddMethod("CopyFrom", "void", null);
                 cm.AddParam("source", Class.TypeName(Type)); // reduce type
-                ICsCodeFormatter writer = new CsCodeFormatter();
+                ICsCodeWritter writer = new CsCodeWritter();
                 writer.WriteLine("if (ReferenceEquals(source, null))");
                 writer.WriteLine("    throw new ArgumentNullException(nameof(source));");
                 var properties = Class.DotNetType
@@ -106,7 +106,7 @@ namespace isukces.code.AutoCode
         }
 
 
-        protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeFormatter writer)
+        protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeWritter writer)
         {
             ITypeNameResolver resolver = Class;
             if (pi.PropertyType
@@ -251,7 +251,7 @@ namespace isukces.code.AutoCode
             // writer.WriteLine("// {0} {1}", pi.Name, pi.PropertyType);
         }
 
-        private void AddRange(ICsCodeFormatter writer, string target, string source)
+        private void AddRange(ICsCodeWritter writer, string target, string source)
         {
             if (_configuration.ListExtension == null)
                 throw new NotImplementedException("AddRange");

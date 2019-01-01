@@ -12,7 +12,7 @@ namespace isukces.code
             return method;
         }
 
-        public static CsMethod WithBody(this CsMethod method, CodeFormatter code)
+        public static CsMethod WithBody(this CsMethod method, CodeWritter code)
         {
             return WithBody(method, code?.Code);
         }

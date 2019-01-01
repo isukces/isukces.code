@@ -15,7 +15,7 @@ namespace isukces.code
             LangInfo = langInfo;
         }
 
-        public void AppendText(string text)
+        public void Append(string text)
         {
             _sb.Append(text);
         }
@@ -84,6 +84,7 @@ namespace isukces.code
             File.WriteAllBytes(filename, newa);
         }
 
+        /*
         public void Writeln(TsEnumItem format)
         {
             _sb.AppendLine();
@@ -103,11 +104,13 @@ namespace isukces.code
             else
                 _sb.AppendLine(_indentStr + x);
         }
+        
 
         public void Writeln(string format, params object[] args)
         {
             Writeln(string.Format(format, args));
         }
+        */
 
         /// <summary>
         ///     opis języka

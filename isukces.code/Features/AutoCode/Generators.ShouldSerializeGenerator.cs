@@ -84,7 +84,7 @@ namespace isukces.code.AutoCode
                     if (i.Item1.DeclaringType != Type)
                         continue;
                     var m         = Class.AddMethod("ShouldSerialize" + i.Item1.Name, "bool", null);
-                    var writer    = new CsCodeFormatter();
+                    var writer    = new CsCodeWritter();
                     var condition = i.Item2.Condition;
                     if (string.IsNullOrEmpty(condition))
                         condition = MakeShouldSerializeCondition(i.Item1);

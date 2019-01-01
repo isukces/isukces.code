@@ -36,7 +36,7 @@ namespace isukces.code.interfaces
             where T : ICodeWritter
         {
             if (!skip)
-                _this.AppendText("\r\n");
+                _this.Append("\r\n");
             return _this;
         }
 
@@ -62,7 +62,7 @@ namespace isukces.code.interfaces
             where T : ICodeWritter
         {
             if (_this.Indent > 0)
-                _this.AppendText(new string(' ', _this.Indent * 4));
+                _this.Append(new string(' ', _this.Indent * 4));
             return _this;
         }
     }

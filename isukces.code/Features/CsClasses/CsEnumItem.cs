@@ -7,7 +7,7 @@ namespace isukces.code
 {
     public class CsEnumItem : IDescriptable
     {
-        public void MakeCode(ICsCodeFormatter writer, bool addComma)
+        public void MakeCode(ICsCodeWritter writer, bool addComma)
         {
             var commentLines = new List<string>();
             if (!string.IsNullOrEmpty(Label))

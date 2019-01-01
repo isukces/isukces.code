@@ -18,11 +18,11 @@ namespace isukces.code.Typescript
             return "TsField: " + GetHeaderItems(false);
         }
 
-        public void WriteCodeTo(TsCodeFormatter formatter)
+        public void WriteCodeTo(TsCodeWritter writter)
         {
-            Introduction?.WriteCodeTo(formatter);
-            var code = GetHeaderItems(formatter.HeadersOnly);
-            formatter.Writeln(code);
+            Introduction?.WriteCodeTo(writter);
+            var code = GetHeaderItems(writter.HeadersOnly);
+            writter.Writeln(code);
         }
 
 

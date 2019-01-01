@@ -6,7 +6,7 @@ namespace isukces.code.interfaces
 {
     public interface ICodeWritter
     {
-        void AppendText(string text);
+        void Append(string text);
         
         [NotNull]
         string Code { get; }
@@ -105,14 +105,14 @@ namespace isukces.code.interfaces
         public static T WriteLine<T>(this T _this)
             where T : ICodeWritter
         {
-            _this.AppendText("\r\n");
+            _this.Append("\r\n");
             return _this;
         }
 
         public static T WriteLine<T>(this T _this, string text)
             where T : ICodeWritter
         {
-            _this.WriteIndent().AppendText(text + "\r\n");
+            _this.WriteIndent().Append(text + "\r\n");
             return _this;
         }
 

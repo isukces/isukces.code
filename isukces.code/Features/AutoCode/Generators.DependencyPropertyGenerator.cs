@@ -33,7 +33,7 @@ namespace isukces.code.AutoCode
                     staticField.IsReadOnly = true;
                     staticField.Visibility = Visibilities.Public;
                     {
-                        ICsCodeFormatter writer = new CsCodeFormatter();
+                        ICsCodeWritter writer = new CsCodeWritter();
                         // writer.WriteLine("public static readonly System.Windows.DependencyProperty {0}Property = ",i.Name);
                         writer.Indent++;
                         writer.WriteLine("System.Windows.DependencyProperty.Register(");

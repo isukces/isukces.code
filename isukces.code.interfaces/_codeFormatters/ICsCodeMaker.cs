@@ -36,10 +36,10 @@ namespace isukces.code.interfaces
     
     public interface ICsCodeMaker
     {
-        void MakeCode(ICsCodeFormatter writer);
+        void MakeCode(ICsCodeWritter writer);
     }
 
-    public interface ITsCodeFormatter:ICodeFormatter
+    public interface ITsCodeWritter:ICodeWritter
     {
         
     }
