@@ -1,3 +1,5 @@
+using isukces.code.interfaces;
+
 namespace isukces.code.Typescript
 {
     public class TsLangInfo : ILangInfo

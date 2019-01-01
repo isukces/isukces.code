@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using isukces.code.interfaces;
 
 namespace isukces.code.Typescript
 {

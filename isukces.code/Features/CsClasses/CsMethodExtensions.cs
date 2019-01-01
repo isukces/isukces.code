@@ -14,7 +14,7 @@ namespace isukces.code
 
         public static CsMethod WithBody(this CsMethod method, CodeFormatter code)
         {
-            return WithBody(method, code?.Text);
+            return WithBody(method, code?.Code);
         }
 
         public static CsMethod WithOverride(this CsMethod method, bool isOverride = true)

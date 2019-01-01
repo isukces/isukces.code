@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Wpf.Ammy
 {
-    public class AmmyCodeFormatter : CodeFormatter, IAmmyNamespaceProvider
+    public class AmmyCodeWritter : CodeWritter, IAmmyNamespaceProvider, IAmmyCodeWritter
     {
-        public AmmyCodeFormatter() : base(AmmyLangInfo.Instance)
+        public AmmyCodeWritter() : base(AmmyLangInfo.Instance)
         {
         }
 
@@ -15,17 +16,7 @@ namespace isukces.code.Wpf.Ammy
             _namespaces.Add(typeof(T).Namespace);
         }
 
-        public void CloseArray()
-        {
-            DecIndent();
-            Writeln("]");
-        }
-
-        public void OpenArray(string text)
-        {
-            Writeln(text + " [");
-            IncIndent();
-        }
+      
 
         public void Writeln(IAmmyExpression expression)
         {
@@ -41,7 +32,7 @@ namespace isukces.code.Wpf.Ammy
             get
             {
                 var ns = Namespaces.Distinct().Select(q => "using " + q + "\r\n");
-                return string.Join("", ns) + "\r\n" + Text;
+                return string.Join("", ns) + "\r\n" + Code;
             }
         }
 

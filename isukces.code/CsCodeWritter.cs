@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsCodeFormatter : CodeFormatter
+    public class CsCodeWritter : CodeWritter, ICsCodeWritter
     {
-        public CsCodeFormatter() 
+        public CsCodeWritter() 
             : base(CsLangInfo.Instance)
         {            
         }
@@ -21,22 +22,22 @@ namespace isukces.code
                 AddNamespaces(x);
         }
 
-        public CsCodeFormatter SingleLineIf(string condition, string statement, string elseStatement = null)
+        public CsCodeWritter SingleLineIf(string condition, string statement, string elseStatement = null)
         {
             Writeln("if (" + condition + ")");
-            IncIndent();
+            this.IncIndent();
             Writeln(statement);
-            DecIndent();
+            this.DecIndent();
             if (string.IsNullOrEmpty(elseStatement))
                 return this;
             Writeln("else");
-            IncIndent();
+            this.IncIndent();
             Writeln(elseStatement);
-            DecIndent();
+            this.DecIndent();
             return this;
         }
 
-        public CsCodeFormatter WriteSingleLineSummary(string x)
+        public CsCodeWritter WriteSingleLineSummary(string x)
         {
             var lines = x.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()));
             Writeln("/// <summary>");
@@ -47,7 +48,7 @@ namespace isukces.code
         }
 
 
-        public CsCodeFormatter WriteSummary(string x)
+        public CsCodeWritter WriteSummary(string x)
         {
             // System.Xml.Linq.XObject el = new XElement("param", new XAttribute("name", p.Name), p.Description);
             // cs.Writeln("/// {0}", el);

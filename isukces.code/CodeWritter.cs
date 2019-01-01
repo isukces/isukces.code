@@ -7,103 +7,53 @@ using isukces.code.interfaces;
 using isukces.code.Typescript;
 
 namespace isukces.code
-{    
-    public abstract class CodeFormatter// :ICodeWriter
+{
+    public abstract class CodeWritter : ICodeWritter
     {
-        protected CodeFormatter(ILangInfo langInfo)
+        protected CodeWritter(ILangInfo langInfo)
         {
             LangInfo = langInfo;
         }
 
-        public void Block(string open, string close, Action method)
+        public void AppendText(string text)
+        {
+            _sb.Append(text);
+        }
+/*
+        public void Block(string open, string customCloseText, Action method)
         {
             Writeln(open);
-            IncIndent();
+            this.IncIndent();
             method();
-            Close(close);
+            this.Close(customCloseText);
         }
 
         public void Block(string open, Action method)
         {
             Writeln(open);
-            IncIndent();
+            this.IncIndent();
             method();
-            Close();
+            this.Close();
         }
 
 
         public void Clear()
         {
-            _sb = new StringBuilder();
-            _indent = 0;
-            opening = new Dictionary<int, string>();
+            _sb     = new StringBuilder();
+            Indent  = 0;
+            // opening = new Dictionary<int, string>();
         }
-
-        public void Close()
-        {
-            Close(false);
-        }
-
-        public void Close(string customCloseText)
-        {
-            DecIndent();
-            Writeln(customCloseText);
-        }
-
-        public void Close(bool addEmptyLine)
-        {
-            DecIndent();
-            if (AutoCloseComment)
-                Writeln(LangInfo.CloseText + " " + LangInfo.OneLineComment + " " + opening[_indent]);
-            else
-                Writeln(LangInfo.CloseText);
-            if (addEmptyLine)
-                Writeln();
-        }
-
-
-        public void CloseNl()
-        {
-            Close(false);
-            Writeln();
-        }
-
-        public void DecIndent()
-        {
-            if (_indent == 0) return;
-            _indent--;
-            _indentStr = _indentStr.Substring(INDENT.Length);
-        }
-
-        public void IncIndent()
-        {
-            _indent++;
-            _indentStr += INDENT;
-        }
-
-        public void Open(string x)
-        {
-            opening[_indent] = x;
-            // Writeln(x + " " + LangInfo.OpenText);
-            Writeln(x);
-            Writeln(LangInfo.OpenText);
-            IncIndent();
-        }
-
-        public void Open(string format, params object[] args)
-        {
-            Open(string.Format(format, args));
-        }
+*/
 
         public void Save(string filename)
         {
             var fi = new FileInfo(filename);
             fi.Directory.Create();
-            var x = Encoding.UTF8.GetBytes(Text);
-            using (var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
+            var x = Encoding.UTF8.GetBytes(Code);
+            using(var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
             {
                 if (LangInfo.AddBOM)
-                    fs.Write(new byte[] { 0xEF, 0xBB, 0xBF }, 0, 3);
+                    fs.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
                 fs.Write(x, 0, x.Length);
                 // fs.Close();
             }
@@ -116,18 +66,20 @@ namespace isukces.code
                 Save(filename);
                 return;
             }
+
             byte[] existing, newa;
             existing = File.ReadAllBytes(filename);
-            using (var fs = new MemoryStream())
+            using(var fs = new MemoryStream())
             {
                 {
                     if (LangInfo.AddBOM)
-                        fs.Write(new byte[] { 0xEF, 0xBB, 0xBF }, 0, 3);
-                    var x = Encoding.UTF8.GetBytes(Text);
+                        fs.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
+                    var x = Encoding.UTF8.GetBytes(Code);
                     fs.Write(x, 0, x.Length);
                 }
                 newa = fs.ToArray();
             }
+
             if (newa.SequenceEqual(existing)) return;
             File.WriteAllBytes(filename, newa);
         }
@@ -144,6 +96,7 @@ namespace isukces.code
                 _sb.AppendLine();
                 return;
             }
+
             //x = x.Trim();
             if (string.IsNullOrEmpty(x))
                 _sb.AppendLine();
@@ -165,12 +118,10 @@ namespace isukces.code
         {
             get
             {
-                var tmp = Text;
-                var l = tmp.Split('\n');
+                var tmp = Code;
+                var l   = tmp.Split('\n');
                 for (var i = 0; i < l.Length; i++)
-                {
                     l[i] = l[i].Replace("\r", "");
-                }
                 return l;
             }
         }
@@ -180,8 +131,10 @@ namespace isukces.code
         /// </summary>
         public bool TrimText { get; set; }
 
+       
+        // public bool AutoCloseComment { get; set; }
 
-        public string Text
+        public string Code
         {
             get
             {
@@ -192,13 +145,28 @@ namespace isukces.code
         }
 
 
-        public bool AutoCloseComment { get; set; }
+        public int Indent
+        {
+            get => _indent;
+            set
+            {
+                if (value < 0)
+                    value = 0;
+                if (value == _indent)
+                    return;
 
-        private int _indent;
+                _indent = value;
+                _indentStr = value > 0
+                    ? new string(' ', IndentSize * value)
+                    : string.Empty;
+            }
+        }
+
+
         private string _indentStr = "";
-        private Dictionary<int, string> opening = new Dictionary<int, string>();
+        // private Dictionary<int, string> opening = new Dictionary<int, string>();
         private StringBuilder _sb = new StringBuilder();
-
-        private const string INDENT = "    ";
+        private int _indent;
+        private const int IndentSize = 4;
     }
 }

@@ -36,7 +36,7 @@ namespace isukces.code
             return new CsAttribute(attributeName);
         }
 
-        private static void Emit_single_field(ICodeWriter writer, CsClassField field)
+        private static void Emit_single_field(ICsCodeFormatter writer, CsClassField field)
         {
             writer.OpenCompilerIf(field);
             try
@@ -95,7 +95,7 @@ namespace isukces.code
             return v;
         }
 
-        private static void WriteAttributes(ICodeWriter writer, ICollection<ICsAttribute> attributes)
+        private static void WriteAttributes(ICsCodeFormatter writer, ICollection<ICsAttribute> attributes)
         {
             if (attributes == null || attributes.Count == 0)
                 return;
@@ -103,7 +103,7 @@ namespace isukces.code
                 writer.WriteLine("[{0}]", j.Code);
         }
 
-        private static void WriteGetterOrSetter(ICodeWriter writer, CodeLines code, string keyWord,
+        private static void WriteGetterOrSetter(ICsCodeFormatter writer, CodeLines code, string keyWord,
             Visibilities? memberVisibility)
         {
             if (code?.Lines == null || code.Lines.Length == 0) return;
@@ -138,7 +138,7 @@ namespace isukces.code
             }
         }
 
-        private static void WriteSummary(ICodeWriter writer, string description)
+        private static void WriteSummary(ICsCodeFormatter writer, string description)
         {
             description = description?.Trim();
             if (string.IsNullOrEmpty(description)) return;
@@ -251,7 +251,7 @@ namespace isukces.code
             return existing;
         }
 
-        public void MakeCode(ICodeWriter writer)
+        public void MakeCode(ICsCodeFormatter  writer)
         {
             writer.OpenCompilerIf(CompilerDirective);
             WriteSummary(writer, Description);
@@ -308,7 +308,7 @@ namespace isukces.code
             return this;
         }
 
-        private void _EmitProperty(CsProperty prop, ICodeWriter writer)
+        private void _EmitProperty(CsProperty prop, ICsCodeFormatter writer)
         {
             writer.OpenCompilerIf(prop);
             try
@@ -361,7 +361,7 @@ namespace isukces.code
         }
 
 
-        private bool _wm(ICodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
+        private bool _wm(ICsCodeFormatter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
             string region)
         {
             var csMethods = m as CsMethod[] ?? m.ToArray();
@@ -377,7 +377,7 @@ namespace isukces.code
             return addEmptyLineBeforeRegion;
         }
 
-        private bool Action<T>(ICodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
+        private bool Action<T>(ICsCodeFormatter writer, IEnumerable<T> list, string region, Action<T> action)
         {
             var enumerable = list as IList<T> ?? list.ToList();
             if (!enumerable.Any()) return false;
@@ -429,7 +429,7 @@ namespace isukces.code
             return x.ToArray();
         }
 
-        private bool Emit_constructors(ICodeWriter writer, bool addEmptyLineBeforeRegion)
+        private bool Emit_constructors(ICsCodeFormatter writer, bool addEmptyLineBeforeRegion)
         {
             var c = _methods.Where(i => i.IsConstructor).ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
@@ -441,7 +441,7 @@ namespace isukces.code
             return addEmptyLineBeforeRegion;
         }
 
-        private bool Emit_fields(ICodeWriter writer, bool addEmptyLineBeforeRegion)
+        private bool Emit_fields(ICsCodeFormatter writer, bool addEmptyLineBeforeRegion)
         {
             if (!_fields.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
@@ -451,7 +451,7 @@ namespace isukces.code
             return addEmptyLineBeforeRegion;
         }
 
-        private bool Emit_methods(ICodeWriter writer, bool addEmptyLineBeforeRegion)
+        private bool Emit_methods(ICsCodeFormatter writer, bool addEmptyLineBeforeRegion)
         {
             var c = _methods.Where(i => !i.IsConstructor).ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
@@ -463,7 +463,7 @@ namespace isukces.code
             return addEmptyLineBeforeRegion;
         }
 
-        private void Emit_nested(ICodeWriter writer, bool addEmptyLineBeforeRegion)
+        private void Emit_nested(ICsCodeFormatter writer, bool addEmptyLineBeforeRegion)
         {
             // ReSharper disable once InvertIf
             if (!_nestedClasses.Any()) return;
@@ -477,7 +477,7 @@ namespace isukces.code
             );
         }
 
-        private bool Emit_properties(ICodeWriter writer, bool addEmptyLineBeforeRegion)
+        private bool Emit_properties(ICsCodeFormatter writer, bool addEmptyLineBeforeRegion)
         {
             if (!_properties.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);

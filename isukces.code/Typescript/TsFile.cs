@@ -27,7 +27,7 @@ namespace isukces.code.Typescript
         {
             var ctx = new TsCodeFormatter();
             WriteCodeTo(ctx);
-            return ctx.Text;
+            return ctx.Code;
         }
 
 

@@ -4,6 +4,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code.CodeWrite
 {
+    /*
     public class CodeWriter : ICodeWriter
     {
         public void AppendText(string text)
@@ -46,4 +47,5 @@ namespace isukces.code.CodeWrite
 
         
     }
+    */
 }

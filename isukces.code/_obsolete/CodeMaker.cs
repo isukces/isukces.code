@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if OBSOLETE
+using System;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -292,3 +293,4 @@ namespace isukces.code
 
     }
 }
+#endif

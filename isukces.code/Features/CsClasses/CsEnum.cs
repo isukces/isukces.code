@@ -12,7 +12,7 @@ namespace isukces.code
             Items = new List<CsEnumItem>();
         }
 
-        public void MakeCode(ICodeWriter writer)
+        public void MakeCode(ICsCodeFormatter writer)
         {
             writer.Open("public enum {0}", Name);
             if (Items != null)

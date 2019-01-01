@@ -15,7 +15,7 @@ namespace isukces.code.AutoCode
         // private readonly AutoCodeGeneratorConfiguration _configuration;
 
 
-        private void CloneWithValuesProcessor(PropertyInfo pi, ICodeWriter writer, ITypeNameResolver resolver)
+        private void CloneWithValuesProcessor(PropertyInfo pi, ICsCodeFormatter writer, ITypeNameResolver resolver)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
 #if !COREFX
@@ -46,7 +46,7 @@ namespace isukces.code.AutoCode
                 pi.PropertyType);
         }
 
-        private static void CopyArray(PropertyInfo pi, string type, ICodeWriter writer)
+        private static void CopyArray(PropertyInfo pi, string type, ICsCodeFormatter writer)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
             writer.WriteLine("if (source.{0} == null)", pi.Name);
@@ -75,11 +75,11 @@ namespace isukces.code.AutoCode
         {
             csClass.ImplementedInterfaces.Add("ICloneable");
             var         cm     = csClass.AddMethod("Clone", "object", "Makes clone of object");
-            ICodeWriter writer = new CodeWriter();
+            ICsCodeFormatter writer = new CsCodeFormatter();
             writer.WriteLine("var a = new {0}();", type);
             writer.WriteLine("a.CopyFrom(this);");
             writer.WriteLine("return a;");
-            cm.Body = writer.GetCode();
+            cm.Body = writer.Code;
         }
 
         private void GenerateInternal()
@@ -89,7 +89,7 @@ namespace isukces.code.AutoCode
             {
                 var cm = Class.AddMethod("CopyFrom", "void", null);
                 cm.AddParam("source", Class.TypeName(Type)); // reduce type
-                ICodeWriter writer = new CodeWriter();
+                ICsCodeFormatter writer = new CsCodeFormatter();
                 writer.WriteLine("if (ReferenceEquals(source, null))");
                 writer.WriteLine("    throw new ArgumentNullException(nameof(source));");
                 var properties = Class.DotNetType
@@ -99,14 +99,14 @@ namespace isukces.code.AutoCode
                                       .GetProperties();
                 foreach (var i in properties)
                     ProcessProperty(i, _copyFromAttribute, writer);
-                cm.Body = writer.GetCode();
+                cm.Body = writer.Code;
             }
             if (_doCloneable)
                 GenerateMethodClone(Type, Class);
         }
 
 
-        protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICodeWriter writer)
+        protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeFormatter writer)
         {
             ITypeNameResolver resolver = Class;
             if (pi.PropertyType
@@ -251,7 +251,7 @@ namespace isukces.code.AutoCode
             // writer.WriteLine("// {0} {1}", pi.Name, pi.PropertyType);
         }
 
-        private void AddRange(ICodeWriter writer, string target, string source)
+        private void AddRange(ICsCodeFormatter writer, string target, string source)
         {
             if (_configuration.ListExtension == null)
                 throw new NotImplementedException("AddRange");

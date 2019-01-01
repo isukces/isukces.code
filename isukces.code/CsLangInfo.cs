@@ -1,4 +1,6 @@
-﻿namespace isukces.code
+﻿using isukces.code.interfaces;
+
+namespace isukces.code
 {
     public class CsLangInfo : ILangInfo
     {

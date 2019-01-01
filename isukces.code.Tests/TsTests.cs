@@ -11,7 +11,7 @@ namespace isukces.code.Tests
         {
             var cf = new TsCodeFormatter();
             ns.WriteCodeTo(cf);
-            return cf.Text.Trim();
+            return cf.Code.Trim();
         }
 
         [Fact]
@@ -339,16 +339,14 @@ export enum MyEnum
 
         }
 
-
-
         [Fact]
         public void T15_ShouldProduceEmptyFile()
         {
             var file = new CsFile();
             file.AddImportNamespace("blabla");
-            ICodeWriter writer = new CodeWriter();
+            ICsCodeFormatter writer = new CsCodeFormatter();
             file.MakeCode(writer);
-            Assert.Equal("", writer.GetCode());
+            Assert.Equal("", writer.Code);
         }
 
 

@@ -2,9 +2,9 @@ using System;
 
 namespace isukces.code.Typescript
 {
-    public class TsCodeFormatter : CodeFormatter
+    public class TsCodeWritter : CodeWritter
     {
-        public TsCodeFormatter() : base(TsLangInfo.Instance)
+        public TsCodeWritter() : base(TsLangInfo.Instance)
         {
         }
         

@@ -74,7 +74,7 @@ namespace isukces.code.AutoCode
                                 cw.Writeln("result.{0} = {0};", i.Name);
                         cw.Writeln("return result;");
                         var m = cv.AddMethod("Build", Type.Name, "");
-                        m.Body = cw.Text;
+                        m.Body = cw.Code;
                     }
                 }
             }

@@ -1,4 +1,6 @@
-﻿namespace isukces.code.Wpf.Ammy
+﻿using isukces.code.interfaces;
+
+namespace isukces.code.Wpf.Ammy
 {
     public class AmmyLangInfo : ILangInfo
     {

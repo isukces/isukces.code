@@ -34,7 +34,7 @@ namespace isukces.code.Tests
             m.AddParam("right", "Src2");
             // odwrotny
 
-            ICodeWriter w = new CodeWriter();
+            ICsCodeFormatter w = new CsCodeFormatter();
             cl.MakeCode(w);
             var expected = @"public struct Src1
 {
@@ -45,7 +45,7 @@ namespace isukces.code.Tests
 
 }
 ";
-            Assert.Equal(expected.Trim(), w.GetCode().Trim());
+            Assert.Equal(expected.Trim(), w.Code.Trim());
         }
 
         
@@ -58,7 +58,7 @@ namespace isukces.code.Tests
             //p.ConstValue = "12";
             // odwrotny
 
-            ICodeWriter w = new CodeWriter();
+            var w = new CsCodeFormatter();
             cl.MakeCode(w);
             var expected = @"public class Src1
 {
@@ -69,7 +69,7 @@ namespace isukces.code.Tests
             Assert.Equal(expected.Trim(), w.GetCodeTrim());
 
             p.ConstValue = "12";
-            w = new CodeWriter();
+            w = new CsCodeFormatter();
             cl.MakeCode(w);
               expected = @"public class Src1
 {
@@ -96,7 +96,7 @@ namespace isukces.code.Tests
             //p.ConstValue = "12";
             // odwrotny
 
-            ICodeWriter w = new CodeWriter();
+            var w = new CsCodeFormatter();
             cl.MakeCode(w);
             var expected = @"
 public interface ITest
@@ -110,7 +110,7 @@ public interface ITest
             Assert.Equal(expected.Trim(), w.GetCodeTrim());
 
             p.ConstValue = "12";
-            w            = new CodeWriter();
+            w            = new CsCodeFormatter();
             cl.MakeCode(w);
            
             Assert.Equal(expected.Trim(), w.GetCodeTrim());
@@ -125,7 +125,7 @@ public interface ITest
             p.MakeAutoImplementIfPossible = true;
             cl.CompilerDirective = "DEBUG";
 
-            ICodeWriter w = new CodeWriter();
+            var w = new CsCodeFormatter();
             cl.MakeCode(w);
             var expected = @"
 #if DEBUG

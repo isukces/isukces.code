@@ -1,13 +1,9 @@
-﻿namespace isukces.code.AutoCode
+﻿#if OBSOLETE
+namespace isukces.code.AutoCode
 {
     public static class WriterExtension
     {
-        public static void CloseBrackets(this IDirectCodeWriter src)
-        {
-            src.DecIndent();
-            src.WriteLn("}");
-        }
-
+       
         public static void DecIndent(this IDirectCodeWriter src)
         {
             src.ChangeIndent(-1);
@@ -30,3 +26,4 @@
         }
     }
 }
+#endif

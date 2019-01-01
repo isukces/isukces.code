@@ -3,10 +3,8 @@ using JetBrains.Annotations;
 
 namespace isukces.code.interfaces
 {
-    public interface ICsCodeMaker
-    {
-        void MakeCode(ICodeWriter writer);
-    }
+    /*
+   
 
     public interface ICodeWriter
     {
@@ -32,11 +30,17 @@ namespace isukces.code.interfaces
             return writer;
         }
 
-        [NotNull]
-        public static string GetCodeTrim([NotNull] this ICodeWriter writer)
-        {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
-            return writer.GetCode().Trim();
-        }
+      
+    }
+    */
+    
+    public interface ICsCodeMaker
+    {
+        void MakeCode(ICsCodeFormatter writer);
+    }
+
+    public interface ITsCodeFormatter:ICodeFormatter
+    {
+        
     }
 }

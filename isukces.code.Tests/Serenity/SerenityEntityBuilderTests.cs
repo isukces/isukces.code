@@ -61,9 +61,9 @@ namespace isukces.code.Tests.Serenity
             file.AddImportNamespace(typeof(SomeEnum32));
             a.Build(file);
 
-            var w = new CodeWriter();
+            ICsCodeFormatter w = new CsCodeFormatter();
             file.MakeCode(w);
-            var newExpected = Encode(w.GetCode());
+            var newExpected = Encode(w.Code);
             const string expected = @"using isukces.code.Tests.Serenity;
 
 // ReSharper disable once CheckNamespace
@@ -206,7 +206,7 @@ namespace Cloud.Common
     }
 }
 ";
-            Assert.Equal(expected, w.GetCode());
+            Assert.Equal(expected, w.Code);
         }
 
         private static string Encode(string c)
