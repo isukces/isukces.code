@@ -33,7 +33,7 @@ namespace isukces.code.Typescript
             foreach (var i in Members)
             {
                 var line = --left != 0 ? i.GetCode() + "," : i.GetCode();
-                writter.Writeln(line);
+                writter.WriteLine(line);
             }
             writter.Close();
         }

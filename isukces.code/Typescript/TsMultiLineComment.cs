@@ -1,3 +1,5 @@
+using isukces.code.interfaces;
+
 namespace isukces.code.Typescript
 {
     public class TsMultiLineComment : ITsCodeProvider
@@ -24,15 +26,15 @@ namespace isukces.code.Typescript
                         line = "   " + line;
                     if (index == lastIdx)
                         line += " */";
-                    writter.Writeln(line);
+                    writter.WriteLine(line);
                 }
             }
             else
             {
-                writter.Writeln("/*");
+                writter.WriteLine("/*");
                 foreach (var line in lines)
-                    writter.Writeln(line);
-                writter.Writeln("*/");
+                    writter.WriteLine(line);
+                writter.WriteLine("*/");
 
             }
         }

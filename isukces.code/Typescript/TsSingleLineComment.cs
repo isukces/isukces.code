@@ -1,3 +1,5 @@
+using isukces.code.interfaces;
+
 namespace isukces.code.Typescript
 {
     public class TsSingleLineComment : ITsCodeProvider
@@ -13,7 +15,7 @@ namespace isukces.code.Typescript
                 return;
             var lines = Text.Trim().SplitToLines();
             foreach (var line in lines)
-                writter.Writeln("// " + line);
+                writter.WriteLine("// " + line);
         }
 
         public string Text { get; set; }

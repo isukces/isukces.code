@@ -1,4 +1,6 @@
-﻿namespace isukces.code.Typescript
+﻿using isukces.code.interfaces;
+
+namespace isukces.code.Typescript
 {
     public class TsDirectCode : ITsCodeProvider
     {
@@ -9,7 +11,7 @@
 
         public void WriteCodeTo(TsCodeWritter writter)
         {
-            writter.Writeln(_code);
+            writter.WriteLine(_code);
         }
 
         private readonly string _code;

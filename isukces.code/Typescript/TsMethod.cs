@@ -39,7 +39,7 @@ namespace isukces.code.Typescript
             var header = string.Join(" ", GetHeaderItems());
             if (writter.HeadersOnly)
             {
-                writter.Writeln(header + ";");
+                writter.WriteLine(header + ";");
                 return;
             }
             writter.Open(header);
@@ -47,7 +47,7 @@ namespace isukces.code.Typescript
             {
                 var b = Body.Replace("\r\n", "\n").Split('\n');
                 foreach (var line in b)
-                    writter.Writeln(line);
+                    writter.WriteLine(line);
             }
             writter.Close();
         }

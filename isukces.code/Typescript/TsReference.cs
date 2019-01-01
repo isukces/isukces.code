@@ -1,10 +1,12 @@
-﻿namespace isukces.code.Typescript
+﻿using isukces.code.interfaces;
+
+namespace isukces.code.Typescript
 {
     public class TsReference : ITsCodeProvider
     {
         public void WriteCodeTo(TsCodeWritter writter)
         {
-            writter.Writeln($"/// <reference path=\"{Path}\"/>");
+            writter.WriteLine($"/// <reference path=\"{Path}\"/>");
         }
 
         public string Path { get; set; }

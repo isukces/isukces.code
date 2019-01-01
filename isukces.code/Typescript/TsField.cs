@@ -1,4 +1,5 @@
 using System.Text;
+using isukces.code.interfaces;
 
 namespace isukces.code.Typescript
 {
@@ -22,7 +23,7 @@ namespace isukces.code.Typescript
         {
             Introduction?.WriteCodeTo(writter);
             var code = GetHeaderItems(writter.HeadersOnly);
-            writter.Writeln(code);
+            writter.WriteLine(code);
         }
 
 

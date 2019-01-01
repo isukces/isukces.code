@@ -66,13 +66,13 @@ namespace isukces.code.AutoCode
                         var constructorArgs = GetConstructorArgs(properties);
                         var usedProperties = ToHashSet(constructorArgs);
                         var cw = new CsCodeWritter();
-                        cw.Writeln("// ReSharper disable UseObjectOrCollectionInitializer");
-                        cw.Writeln("// ReSharper disable MemberCanBeMadeStatic.Local");
-                        cw.Writeln("var result = new {0}({1});", Type.Name, string.Join(", ", constructorArgs));
+                        cw.WriteLine("// ReSharper disable UseObjectOrCollectionInitializer");
+                        cw.WriteLine("// ReSharper disable MemberCanBeMadeStatic.Local");
+                        cw.WriteLine("var result = new {0}({1});", Type.Name, string.Join(", ", constructorArgs));
                         foreach (var i in properties)
                             if (!usedProperties.Contains(i.Name))
-                                cw.Writeln("result.{0} = {0};", i.Name);
-                        cw.Writeln("return result;");
+                                cw.WriteLine("result.{0} = {0};", i.Name);
+                        cw.WriteLine("return result;");
                         var m = cv.AddMethod("Build", Type.Name, "");
                         m.Body = cw.Code;
                     }
