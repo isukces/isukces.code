@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2018</Copyright>
+    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2019</Copyright>
     <TargetFrameworks>netstandard1.6;net451</TargetFrameworks>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>

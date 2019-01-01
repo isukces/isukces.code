@@ -66,7 +66,8 @@ namespace isukces.code.AutoCode
                         var constructorArgs = GetConstructorArgs(properties);
                         var usedProperties = ToHashSet(constructorArgs);
                         var cw = new CodeFormatter();
-                        cw.Writeln("// ReSharper disable once UseObjectOrCollectionInitializer");
+                        cw.Writeln("// ReSharper disable UseObjectOrCollectionInitializer");
+                        cw.Writeln("// ReSharper disable MemberCanBeMadeStatic.Local");
                         cw.Writeln("var result = new {0}({1});", Type.Name, string.Join(", ", constructorArgs));
                         foreach (var i in properties)
                             if (!usedProperties.Contains(i.Name))
