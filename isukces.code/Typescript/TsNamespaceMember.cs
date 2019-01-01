@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using isukces.code.interfaces;
 
 namespace isukces.code.Typescript
 {
@@ -14,7 +15,7 @@ namespace isukces.code.Typescript
             return dec;
         }
 
-        public abstract void WriteCodeTo(TsCodeWritter writter);
+        public abstract void WriteCodeTo(ITsCodeWritter writter);
 
 
         public string Name { get; set; }

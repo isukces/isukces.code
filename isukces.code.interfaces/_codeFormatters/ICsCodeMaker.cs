@@ -32,15 +32,11 @@ namespace isukces.code.interfaces
 
       
     }
-    */
+    
     
     public interface ICsCodeMaker
     {
         void MakeCode(ICsCodeWritter writer);
     }
-
-    public interface ITsCodeWritter:ICodeWritter
-    {
-        
-    }
+    */
 }

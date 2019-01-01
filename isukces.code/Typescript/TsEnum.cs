@@ -22,7 +22,7 @@ namespace isukces.code.Typescript
             return this;
         }
 
-        public override void WriteCodeTo(TsCodeWritter writter)
+        public override void WriteCodeTo(ITsCodeWritter writter)
         {
             Introduction?.WriteCodeTo(writter);
             if (Decorators != null && Decorators.Any())

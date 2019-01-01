@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using isukces.code.interfaces;
 using isukces.code.IO;
 
 namespace isukces.code.Typescript
@@ -15,7 +16,7 @@ namespace isukces.code.Typescript
             return GetCode();
         }
 
-        public void WriteCodeTo(TsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWritter writter)
         {
             foreach (var i in References)
                 i.WriteCodeTo(writter);
@@ -31,7 +32,7 @@ namespace isukces.code.Typescript
         }
 
 
-        public List<TsReference> References { get; set; } = new List<TsReference>();
-        public List<ITsCodeProvider> Members { get; set; } = new List<ITsCodeProvider>();
+        public List<TsReference> References { get; } = new List<TsReference>();
+        public List<ITsCodeProvider> Members { get; } = new List<ITsCodeProvider>();
     }
 }

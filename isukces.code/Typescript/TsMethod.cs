@@ -34,7 +34,7 @@ namespace isukces.code.Typescript
             return this;
         }
 
-        public void WriteCodeTo(TsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWritter writter)
         {            
             var header = string.Join(" ", GetHeaderItems());
             if (writter.HeadersOnly)

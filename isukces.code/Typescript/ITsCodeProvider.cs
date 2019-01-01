@@ -1,10 +1,11 @@
 ﻿using System;
+using isukces.code.interfaces;
 
 namespace isukces.code.Typescript
 {
     public interface ITsCodeProvider
     {
-        void WriteCodeTo(TsCodeWritter writter);
+        void WriteCodeTo(ITsCodeWritter writter);
     }
   
 }

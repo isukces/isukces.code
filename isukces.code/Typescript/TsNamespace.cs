@@ -25,7 +25,7 @@ namespace isukces.code.Typescript
             return c;
         }
 
-        public void WriteCodeTo(TsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWritter writter)
         {
             writter.Open($"{(IsExport ? "export " : "")}namespace {Name}");
             if (Members != null)

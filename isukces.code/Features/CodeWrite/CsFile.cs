@@ -9,7 +9,7 @@ using isukces.code.IO;
 
 namespace isukces.code.CodeWrite
 {
-    public class CsFile : ICsCodeMaker, IClassOwner, INamespaceCollection, INamespaceOwner
+    public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     {
         public void AddImportNamespace(string aNamespace)
         {

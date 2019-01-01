@@ -27,7 +27,7 @@ namespace isukces.code.Typescript
         }
 
 
-        public override void WriteCodeTo(TsCodeWritter writter)
+        public override void WriteCodeTo(ITsCodeWritter writter)
         {
             writter.DoWithHeadersOnly(IsInterface, () =>
             {

@@ -10,7 +10,7 @@ namespace isukces.code.Typescript
             Text = text;
         }
 
-        public void WriteCodeTo(TsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWritter writter)
         {
             if (string.IsNullOrWhiteSpace(Text))
                 return;

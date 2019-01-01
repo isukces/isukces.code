@@ -9,7 +9,7 @@ namespace isukces.code.Typescript
             _code = code;
         }
 
-        public void WriteCodeTo(TsCodeWritter writter)
+        public void WriteCodeTo(ITsCodeWritter writter)
         {
             writter.WriteLine(_code);
         }
