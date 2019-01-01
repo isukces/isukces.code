@@ -7,9 +7,9 @@
             _code = code;
         }
 
-        public void WriteCodeTo(TsWriteContext context)
+        public void WriteCodeTo(TsCodeFormatter formatter)
         {
-            context.Formatter.Writeln(_code);
+            formatter.Writeln(_code);
         }
 
         private readonly string _code;

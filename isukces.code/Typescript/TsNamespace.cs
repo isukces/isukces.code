@@ -24,13 +24,13 @@ namespace isukces.code.Typescript
             return c;
         }
 
-        public void WriteCodeTo(TsWriteContext context)
+        public void WriteCodeTo(TsCodeFormatter formatter)
         {
-            context.Formatter.Open($"{(IsExport ? "export " : "")}namespace {Name}");
+            formatter.Open($"{(IsExport ? "export " : "")}namespace {Name}");
             if (Members != null)
                 foreach (var i in Members)
-                    i.WriteCodeTo(context);
-            context.Formatter.Close();
+                    i.WriteCodeTo(formatter);
+            formatter.Close();
         }
 
         public string Name { get; set; }

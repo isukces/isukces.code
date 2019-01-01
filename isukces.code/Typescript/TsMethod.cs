@@ -33,23 +33,22 @@ namespace isukces.code.Typescript
             return this;
         }
 
-        public void WriteCodeTo(TsWriteContext context)
-        {
-            var cf = context.Formatter;
+        public void WriteCodeTo(TsCodeFormatter formatter)
+        {            
             var header = string.Join(" ", GetHeaderItems());
-            if (context.Flags.HasFlag(TsWriteContextFlags.HeadersOnly))
+            if (formatter.HeadersOnly)
             {
-                cf.Writeln(header + ";");
+                formatter.Writeln(header + ";");
                 return;
             }
-            cf.Open(header);
+            formatter.Open(header);
             if (!string.IsNullOrEmpty(Body))
             {
                 var b = Body.Replace("\r\n", "\n").Split('\n');
                 foreach (var line in b)
-                    cf.Writeln(line);
+                    formatter.Writeln(line);
             }
-            cf.Close();
+            formatter.Close();
         }
 
         private IEnumerable<string> GetHeaderItems()

@@ -8,7 +8,7 @@ namespace isukces.code.Typescript
         protected TsClassOrInterface(bool isInterface, string name)
         {
             IsInterface = isInterface;
-            Name = name;
+            Name        = name;
         }
 
         public TsField AddField(string name, string type = null)
@@ -26,29 +26,25 @@ namespace isukces.code.Typescript
         }
 
 
-        public override void WriteCodeTo(TsWriteContext context)
+        public override void WriteCodeTo(TsCodeFormatter formatter)
         {
-            if (IsInterface)
-                context = context.CopyWithFlag(TsWriteContextFlags.HeadersOnly);
-            Introduction?.WriteCodeTo(context);
-            if (Decorators != null && Decorators.Any())
-                foreach (var i in Decorators)
-                    i.WriteCodeTo(context);
-            context.Formatter.Open(string.Join(" ", GetClassHeader()));
-            foreach (var i in Members)
-                i.WriteCodeTo(context);
-            context.Formatter.Close();
-            /*
-             @Serenity.Decorators.registerClass()
-    @Serenity.Decorators.responsive()
-    export class MyTasksDialog extends Serenity.EntityDialog<MyTasksRow, any> {
-             */
+            formatter.DoWithHeadersOnly(IsInterface, () =>
+            {
+                Introduction?.WriteCodeTo(formatter);
+                if (Decorators != null && Decorators.Any())
+                    foreach (var i in Decorators)
+                        i.WriteCodeTo(formatter);
+                formatter.Open(string.Join(" ", GetClassHeader()));
+                foreach (var i in Members)
+                    i.WriteCodeTo(formatter);
+                formatter.Close();
+            });
         }
 
 
         protected abstract IEnumerable<string> GetClassHeader();
 
-        public List<ITsCodeProvider> Members { get; set; } = new List<ITsCodeProvider>();
-        protected bool IsInterface;
+        public List<ITsCodeProvider> Members     { get; } = new List<ITsCodeProvider>();
+        public bool                  IsInterface { get; }
     }
 }

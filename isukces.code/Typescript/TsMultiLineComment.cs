@@ -8,7 +8,7 @@ namespace isukces.code.Typescript
             Text = text;
         }
 
-        public void WriteCodeTo(TsWriteContext context)
+        public void WriteCodeTo(TsCodeFormatter formatter)
         {
             if (string.IsNullOrWhiteSpace(Text))
                 return;
@@ -24,15 +24,15 @@ namespace isukces.code.Typescript
                         line = "   " + line;
                     if (index == lastIdx)
                         line += " */";
-                    context.Formatter.Writeln(line);
+                    formatter.Writeln(line);
                 }
             }
             else
             {
-                context.Formatter.Writeln("/*");
+                formatter.Writeln("/*");
                 foreach (var line in lines)
-                    context.Formatter.Writeln(line);
-                context.Formatter.Writeln("*/");
+                    formatter.Writeln(line);
+                formatter.Writeln("*/");
 
             }
         }

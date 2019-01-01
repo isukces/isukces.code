@@ -9,8 +9,8 @@ namespace isukces.code.Tests
     {
         private static string GetCode(ITsCodeProvider ns)
         {
-            var cf = new CsCodeFormatter();
-            ns.WriteCodeTo(new TsWriteContext(cf));
+            var cf = new TsCodeFormatter();
+            ns.WriteCodeTo(cf);
             return cf.Text.Trim();
         }
 
