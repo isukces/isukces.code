@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
@@ -10,7 +11,25 @@ namespace isukces.code.Ammy
         {
         }
 
+        protected override string GetCodeForSave()
+        {
+            return FullCode;
+        }
+
         public ISet<string> Namespaces => _namespaces;
+
+        public string FullCode
+        {
+            get
+            {
+                var code = Code;
+                if (!Namespaces.Any())
+                    return code;
+                var ns = Namespaces.OrderBy(a => a).Select(a => "using " + a);
+                code = string.Join("\r\n", ns) + "\r\n\r\n" + code;
+                return code;
+            }
+        }
 
         private readonly HashSet<string> _namespaces = new HashSet<string>();
     }

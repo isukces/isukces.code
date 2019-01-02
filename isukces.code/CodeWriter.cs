@@ -42,17 +42,18 @@ namespace isukces.code
         }
 */
 
+        protected virtual string GetCodeForSave()
+        {
+            return Code;
+        }
+
         public void Save(string filename)
         {
             var fi = new FileInfo(filename);
             fi.Directory.Create();
-            var x = Encoding.UTF8.GetBytes(Code);
             using(var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
             {
-                if (LangInfo.AddBOM)
-                    fs.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
-                fs.Write(x, 0, x.Length);
-                // fs.Close();
+                SaveToStream(fs);
             }
         }
 
@@ -64,21 +65,24 @@ namespace isukces.code
                 return;
             }
 
-            byte[] existing, newa;
-            existing = File.ReadAllBytes(filename);
+            byte[] newa;
+            var existing = File.ReadAllBytes(filename);
             using(var fs = new MemoryStream())
             {
-                {
-                    if (LangInfo.AddBOM)
-                        fs.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
-                    var x = Encoding.UTF8.GetBytes(Code);
-                    fs.Write(x, 0, x.Length);
-                }
+                SaveToStream(fs);
                 newa = fs.ToArray();
             }
 
             if (newa.SequenceEqual(existing)) return;
             File.WriteAllBytes(filename, newa);
+        }
+
+        private void SaveToStream(Stream stream)
+        {
+            if (LangInfo.AddBOM)
+                stream.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
+            var x = Encoding.UTF8.GetBytes(GetCodeForSave());
+            stream.Write(x, 0, x.Length);
         }
 
 
