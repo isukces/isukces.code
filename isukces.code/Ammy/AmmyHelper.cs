@@ -41,7 +41,7 @@ namespace isukces.code.Ammy
             }
         }
 
-
+/*
         public static void EmitObject<TObjType>(
             IEnumerable<KeyValuePair<string, object>> properties,
             IConversionCtx f,
@@ -49,8 +49,9 @@ namespace isukces.code.Ammy
         {
             var typeName = f.TypeName<TObjType>();
             var tmp      = Emit(f, properties).ToArray();
-            writer.WriteComplex(typeName, tmp);
+            writer.AppendComplex(typeName, tmp, AmmyBracketKind.Square);
         }
+        */
 
         public static MemberExpression GetMemberInfo(Expression method)
         {
@@ -70,6 +71,14 @@ namespace isukces.code.Ammy
         }
 
         [NotNull]
+        public static IAmmyCodePiece ToCodePiece(object obj, IConversionCtx ctx, string propertyName)
+        {
+            var tmp = ToCodePiece(obj, ctx);
+            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp);
+            return tmp;
+        }
+        
+        [NotNull]
         public static IAmmyCodePiece ToCodePiece(object obj, IConversionCtx ctx)
         {
             string ToSimpleAmmyCodePiece()
@@ -83,9 +92,7 @@ namespace isukces.code.Ammy
                     case int i:
                         return i.ToString(CultureInfo.InvariantCulture);
                     case double d:
-                        return d.ToString(CultureInfo.InvariantCulture);
-                    case IAmmyExpression ac:
-                        return ac.GetAmmyCode(ctx);
+                        return d.ToString(CultureInfo.InvariantCulture);          
                 }
 
                 var t = obj.GetType();
@@ -136,7 +143,7 @@ namespace isukces.code.Ammy
         }
 
         public IAmmyNamespaceProvider NamespaceProvider { get; }
-        public bool                   FullNamespaces    { get; }
+        public bool                   FullNamespaces    { get; set; }
 
         public event EventHandler<ResolveSeparateLinesEventArgs> OnResolveSeparateLines;
 

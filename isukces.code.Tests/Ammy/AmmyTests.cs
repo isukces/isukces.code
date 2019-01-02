@@ -54,5 +54,26 @@ namespace isukces.code.Tests.Ammy
 }";
             Assert.Equal(expected, writer.GetCodeTrim());
         }
+
+        [Fact]
+        public void T03_should_convert_array()
+        {
+            var writer = new AmmyCodeWriter();
+            var ctx    = new ConversionCtx(writer);
+            ctx.OnResolveSeparateLines += (a, bb) => { bb.WriteInSeparateLines = true; };
+            
+            var b = new AmmyArray();
+            b.Items.Add("jeden");
+            b.Items.Add("dwa");
+            b.Items.Add("trzy");
+            b.WriteTo(writer, ctx);
+            const string expected = @"[
+    ""jeden""
+    ""dwa""
+    ""trzy""
+]";
+            Assert.Equal(expected, writer.GetCodeTrim());
+        }
+        
     }
 }

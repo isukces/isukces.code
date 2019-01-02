@@ -10,15 +10,8 @@ namespace isukces.code.Ammy
         {
         }
 
-        public void AddNamespace<T>()
-        {
-            _namespaces.Add(typeof(T).Namespace);
-        }
+        public ISet<string> Namespaces => _namespaces;
 
-      
-
-
-        private List<string>          _namespaces { get; } = new List<string>();
-        public  IReadOnlyList<string> Namespaces  => _namespaces;
+        private readonly HashSet<string> _namespaces = new HashSet<string>();
     }
 }

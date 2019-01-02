@@ -5,10 +5,11 @@ namespace isukces.code.Ammy
 {
     public class ComplexAmmyCodePiece : IComplexAmmyCodePiece
     {
-        public ComplexAmmyCodePiece(IReadOnlyList<IAmmyCodePiece> codePieces, string openingCode)
+        public ComplexAmmyCodePiece(IReadOnlyList<IAmmyCodePiece> codePieces, string openingCode, AmmyBracketKind brackets = AmmyBracketKind.Mustache)
         {
             _codePieces = codePieces;
             OpeningCode = openingCode;
+            Brackets = brackets;
         }
 
         public IReadOnlyList<IAmmyCodePiece> GetNestedCodePieces()
@@ -21,7 +22,9 @@ namespace isukces.code.Ammy
             return OpeningCode;
         }
 
-        public string OpeningCode { get; set; }
+        public AmmyBracketKind Brackets { get;  }
+
+        public string OpeningCode { get; }
 
         public bool WriteInSeparateLines { get; set; }
         private readonly IReadOnlyList<IAmmyCodePiece> _codePieces;

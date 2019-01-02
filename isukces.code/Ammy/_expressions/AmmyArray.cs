@@ -4,12 +4,18 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    internal class AmmyArray : IAmmyExpression
+    public class AmmyArray : IAmmyCodePieceConvertible
     {
-        public string GetAmmyCode(IConversionCtx ctx)
+        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
         {
-            var converted = Items.Select(a => AmmyHelper.ToCodePiece(a, ctx));
-            return "[" + string.Join(", ", converted) + "]";
+            var converted = new IAmmyCodePiece[Items.Count];
+            for (var index = 0; index < Items.Count; index++)
+            {
+                var a = Items[index];
+                converted[index] = AmmyHelper.ToCodePiece(a, ctx, null);
+            }
+
+            return new ComplexAmmyCodePiece(converted, null, AmmyBracketKind.Square);
         }
 
         public List<object> Items { get; } = new List<object>();

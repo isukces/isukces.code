@@ -1,22 +1,29 @@
-﻿#if FULLFX
+﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public class AmmyBind:IAmmyExpression
+    public class AmmyBind : IAmmyCodePieceConvertible
     {
+        public AmmyBind(string propertyName, DataBindingMode? mode = null)
+        {
+            PropertyName = propertyName;
+            Mode         = mode;
+        }
+
+      
+
         public override string ToString()
         {
             var txt = "bind";
-            if (!string.IsNullOrEmpty(PropertyName) && PropertyName!=".")
+            if (!string.IsNullOrEmpty(PropertyName) && PropertyName != ".")
                 txt += " " + PropertyName.CsEncode();
             {
                 var se = new List<string>();
-                if (Mode!=null)
+                if (Mode != null)
                     se.Add($"Mode: {Mode}");
                 if (se.Any())
                     txt = txt + " set [" + string.Join(", ", se) + "]";
@@ -24,19 +31,22 @@ namespace isukces.code.Ammy
             return txt;
         }
 
-        public string GetAmmyCode(IConversionCtx ctx)
+        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
         {
-            return ToString();
+            return new SimpleAmmyCodePiece(ToString());
         }
 
-        public string PropertyName { get; set; }
-        public BindingDirection? Mode { get; set; }
+        public string           PropertyName { get; set; }
+        public DataBindingMode? Mode         { get; set; }
+    }
 
-        public AmmyBind(string propertyName, BindingDirection? mode=null)
-        {
-            PropertyName = propertyName;
-            Mode = mode;
-        }
+
+    public enum DataBindingMode
+    {
+        TwoWay,
+        OneWay,
+        OneTime,
+        OneWayToSource,
+        Default
     }
 }
-#endif

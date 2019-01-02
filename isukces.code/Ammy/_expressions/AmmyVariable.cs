@@ -2,16 +2,16 @@
 
 namespace isukces.code.Ammy
 {
-    public class AmmyVariable : IAmmyExpression
+    public class AmmyVariable : IAmmyCodePieceConvertible
     {
         public AmmyVariable(string variableName)
         {
             VariableName = variableName;
         }
 
-        public string GetAmmyCode(IConversionCtx ctx)
+        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
         {
-            return "$" + VariableName;
+            return new SimpleAmmyCodePiece("$" + VariableName);
         }
 
         public string VariableName { get; }

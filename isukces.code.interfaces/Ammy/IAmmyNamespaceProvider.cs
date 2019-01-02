@@ -6,6 +6,6 @@ namespace isukces.code.interfaces.Ammy
     public interface IAmmyNamespaceProvider
     {
         [NotNull]
-        IReadOnlyList<string> Namespaces { get; }
+        ISet<string> Namespaces { get; }   
     }
 }

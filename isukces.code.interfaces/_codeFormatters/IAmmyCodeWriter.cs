@@ -11,37 +11,28 @@ namespace isukces.code.interfaces
 
     public static class AmmyCodeFormatterExt
     {
-        public static void CloseArray(this IAmmyCodeWriter src)
-        {
-            src.Indent--;
-            src.WriteLine("]");
-        }
-
-        public static void OpenArray(this IAmmyCodeWriter src, string text)
-        {
-            src.WriteLine(text + " [");
-            src.Indent++;
-        }
-
-        public static int WriteComplex(this IAmmyCodeWriter writer, IComplexAmmyCodePiece code)
+        public static int AppendComplex(this IAmmyCodeWriter writer, IComplexAmmyCodePiece code)
         {
             var                           openingCode = code.GetOpeningCode();
             IReadOnlyList<IAmmyCodePiece> prop        = code.GetNestedCodePieces().ToList();
-            return WriteComplex(writer, openingCode, prop);
+            return AppendComplex(writer, openingCode, prop, code.Brackets);
         }
 
-        public static int WriteComplex(this IAmmyCodeWriter writer, string openingCode,
-            IReadOnlyList<IAmmyCodePiece> codePieces)
+        public static int AppendComplex(this IAmmyCodeWriter writer, string openingCode,
+            IReadOnlyList<IAmmyCodePiece> codePieces, AmmyBracketKind kind)
         {
+            var openingBracket = GetOpeningBracket(kind);
+            var closingBracket = GetClosingBracket(kind);
             // nie dodajemy entera na końcu
             if (codePieces == null || codePieces.Count == 0)
             {
-                writer.Append(openingCode + " {}");
+                writer.Append(openingCode + " " + openingBracket + closingBracket);
                 return 0;
             }
-            int entersCount = 0;
 
-            writer.Append(openingCode + " {");
+            var entersCount = 0;
+
+            writer.Append(openingCode + " " + openingBracket);
             writer.Indent++;
             var addComma                         = false;
             var addNewLineBeforeClose            = false;
@@ -54,23 +45,25 @@ namespace isukces.code.interfaces
                         writer.WriteLine();
                         entersCount++;
                     }
+
                     writer.WriteIndent();
                     switch (i)
                     {
-                        case IComplexAmmyCodePiece complexAmmyCodePiece:                          
-                            var nestedEntes = writer.WriteComplex(complexAmmyCodePiece);
+                        case IComplexAmmyCodePiece complexAmmyCodePiece:
+                            var nestedEntes = writer.AppendComplex(complexAmmyCodePiece);
                             break;
                         case ISimpleAmmyCodePiece simpleAmmyCode:
                             writer.Append(simpleAmmyCode.Code);
-                          
+
                             break;
                         default:
                             throw new NotImplementedException(i.GetType().Name);
                     }
+
                     writer.WriteLine();
                     addNewLineBeforeClose            = true;
                     needAddNewLineForPreviousContent = false;
-                    addComma = false;
+                    addComma                         = false;
                 }
                 else
                 {
@@ -81,7 +74,7 @@ namespace isukces.code.interfaces
                     switch (i)
                     {
                         case IComplexAmmyCodePiece complexAmmyCodePiece:
-                            writer.WriteComplex(complexAmmyCodePiece);
+                            writer.AppendComplex(complexAmmyCodePiece);
                             addNewLineBeforeClose            = true;
                             needAddNewLineForPreviousContent = false;
                             break;
@@ -101,18 +94,56 @@ namespace isukces.code.interfaces
                 writer.WriteLine();
                 entersCount++;
                 writer.Indent--;
-                writer.WriteIndent().Append("}");
+                writer.WriteIndent().Append(closingBracket);
             }
             else
             {
                 if (needAddNewLineForPreviousContent)
-                    writer.Append(" }");
+                    writer.Append(" " + closingBracket);
                 else
-                    writer.Append("}");
+                    writer.Append(closingBracket);
                 writer.Indent--;
             }
 
             return entersCount;
+        }
+
+        public static void CloseArray(this IAmmyCodeWriter src)
+        {
+            src.Indent--;
+            src.WriteLine("]");
+        }
+
+        public static void OpenArray(this IAmmyCodeWriter src, string text)
+        {
+            src.WriteLine(text + " [");
+            src.Indent++;
+        }
+
+        private static string GetClosingBracket(AmmyBracketKind kind)
+        {
+            switch (kind)
+            {
+                case AmmyBracketKind.Mustache:
+                    return "}";
+                case AmmyBracketKind.Square:
+                    return "]";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
+            }
+        }
+
+        private static string GetOpeningBracket(AmmyBracketKind kind)
+        {
+            switch (kind)
+            {
+                case AmmyBracketKind.Mustache:
+                    return "{";
+                case AmmyBracketKind.Square:
+                    return "[";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
+            }
         }
     }
 }

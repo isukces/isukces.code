@@ -80,12 +80,6 @@ namespace isukces.code.Ammy
             return WithAny(func, v);
         }
 
-        public void WriteTo(AmmyCodeWriter writer, ConversionCtx ctx)
-        {
-            var nested = ToComplexAmmyCodePiece(ctx);
-            writer.WriteComplex(nested);
-        }
-
         private readonly Dictionary<string, object> _props = new Dictionary<string, object>();
         public readonly List<object> _content = new List<object>();
     }

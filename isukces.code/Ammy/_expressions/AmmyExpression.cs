@@ -4,26 +4,26 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    internal class AmmyExpression : IAmmyExpression
+    public class AmmyExpression : IAmmyCodePieceConvertible
     {
         public AmmyExpression(string code)
         {
             _code = code;
         }
 
-        public static IAmmyExpression FromStatic<T>(string propertyName)
+        public static IAmmyCodePieceConvertible FromStatic<T>(string propertyName)
         {
-            return new Sf(typeof(T), propertyName);
+            return new StaticSource(typeof(T), propertyName);
         }
 
-        public static IAmmyExpression FromString(string s)
+        public static IAmmyCodePieceConvertible FromString(string s)
         {
             return new AmmyExpression(s.CsEncode());
         }
 
-        public string GetAmmyCode(IConversionCtx ctx)
+        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
         {
-            return _code;
+            return new SimpleAmmyCodePiece(_code);
         }
 
         public override string ToString()
@@ -33,19 +33,20 @@ namespace isukces.code.Ammy
 
         private readonly string _code;
 
-        private class Sf : IAmmyExpression
+        private class StaticSource : IAmmyCodePieceConvertible
         {
-            public Sf(Type type, string propertyName)
+            public StaticSource(Type type, string propertyName)
             {
-                _type = type;
+                _type         = type;
                 _propertyName = propertyName;
             }
 
-            public string GetAmmyCode(IConversionCtx ctx)
+            public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
             {
                 var q = ctx.TypeName(_type) + "." + _propertyName;
-                return q;
+                return new SimpleAmmyCodePiece(q);
             }
+
 
             private readonly Type _type;
             private readonly string _propertyName;

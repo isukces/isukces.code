@@ -6,8 +6,8 @@ namespace isukces.code.interfaces.Ammy
 {
     public interface IConversionCtx
     {
-        IAmmyNamespaceProvider NamespaceProvider            { get; }
-        bool                   FullNamespaces { get; }
+        IAmmyNamespaceProvider NamespaceProvider { get; }
+        bool                   FullNamespaces    { get; }
         bool ResolveSeparateLines(string propertyName, IAmmyCodePiece value);
     }
 
@@ -31,11 +31,6 @@ namespace isukces.code.interfaces.Ammy
         bool WriteInSeparateLines { get; set; }
     }
 
-    public interface IAmmyCodePieceConvertible
-    {
-        IAmmyCodePiece ToCodePiece(IConversionCtx ctx);
-    }
-
     public interface ISimpleAmmyCodePiece:IAmmyCodePiece
     { 
         string Code { get; }        
@@ -45,6 +40,13 @@ namespace isukces.code.interfaces.Ammy
     {
         IReadOnlyList<IAmmyCodePiece> GetNestedCodePieces();
         string GetOpeningCode();
+        AmmyBracketKind Brackets { get; }
+    }
+
+    public enum AmmyBracketKind
+    {
+        Mustache,
+        Square
     }
         
 }
