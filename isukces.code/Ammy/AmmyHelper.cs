@@ -48,7 +48,7 @@ namespace isukces.code.Ammy
         public static IAmmyCodePiece ToCodePiece(object obj, IConversionCtx ctx, string propertyName)
         {
             var tmp = ToCodePiece(obj, ctx);
-            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp);
+            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp, obj);
             return tmp;
         }
 
@@ -94,7 +94,7 @@ namespace isukces.code.Ammy
         private static IAmmyCodePiece ToAmmyCodePiece(IConversionCtx ctx, KeyValuePair<string, object> a)
         {
             var piece        = ToCodePiece(a.Value, ctx);
-            var separateLine = ctx.ResolveSeparateLines(a.Key, piece);
+            var separateLine = ctx.ResolveSeparateLines(a.Key, piece, a.Value);
             piece.WriteInSeparateLines = separateLine;
             if (string.IsNullOrEmpty(a.Key))
                 return piece;
@@ -124,7 +124,7 @@ namespace isukces.code.Ammy
             FullNamespaces    = fullNamespaces;
         }
 
-        public bool ResolveSeparateLines([CanBeNull] string propertyName, [NotNull] IAmmyCodePiece value)
+        public bool ResolveSeparateLines(string propertyName, IAmmyCodePiece value,  object sourceObject)
         {
             var h = OnResolveSeparateLines;
             if (h == null)
@@ -133,7 +133,8 @@ namespace isukces.code.Ammy
             {
                 PropertyName         = propertyName,
                 Value                = value,
-                WriteInSeparateLines = value.WriteInSeparateLines
+                WriteInSeparateLines = value.WriteInSeparateLines,
+                SourceObject = sourceObject
             };
             h.Invoke(this, a);
             return a.WriteInSeparateLines;
@@ -149,6 +150,7 @@ namespace isukces.code.Ammy
             public string         PropertyName         { get; set; }
             public IAmmyCodePiece Value                { get; set; }
             public bool           WriteInSeparateLines { get; set; }
+            public object         SourceObject         { get; set; }
         }
     }
 }

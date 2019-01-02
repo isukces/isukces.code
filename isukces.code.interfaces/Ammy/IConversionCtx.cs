@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace isukces.code.interfaces.Ammy
 {
@@ -8,7 +9,7 @@ namespace isukces.code.interfaces.Ammy
     {
         IAmmyNamespaceProvider NamespaceProvider { get; }
         bool                   FullNamespaces    { get; }
-        bool ResolveSeparateLines(string propertyName, IAmmyCodePiece value);
+        bool ResolveSeparateLines([CanBeNull] string propertyName, [NotNull] IAmmyCodePiece value,  [CanBeNull]object sourceObject);
     }
 
     public static class ConversionCtxExt
