@@ -9,7 +9,7 @@ namespace isukces.code.interfaces.Ammy
 
     public static class AmmyCodePieceConvertibleExt
     {
-        public static void WriteLine(this IAmmyCodePieceConvertible src, IAmmyCodeWriter writer, IConversionCtx ctx)
+        public static void WriteLineTo(this IAmmyCodePieceConvertible src, IAmmyCodeWriter writer, IConversionCtx ctx)
         {
             var nested = src.ToCodePiece(ctx);
             switch (nested)
