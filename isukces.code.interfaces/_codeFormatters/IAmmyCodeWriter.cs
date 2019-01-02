@@ -98,11 +98,11 @@ namespace isukces.code.interfaces
             }
             else
             {
-                if (needAddNewLineForPreviousContent)
-                    writer.Append(" " + closingBracket);
-                else
-                    writer.Append(closingBracket);
                 writer.Indent--;
+                if (needAddNewLineForPreviousContent) 
+                    writer.Append(" " + closingBracket);
+                else 
+                    writer.WriteIndent().Append(closingBracket);
             }
 
             return entersCount;

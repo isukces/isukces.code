@@ -16,14 +16,14 @@ namespace isukces.code.Tests.Ammy
             b.WithAny("Text", "bla");
             var writer = new AmmyCodeWriter();
             var ctx= new ConversionCtx(writer);                        
-            b.WriteTo(writer, ctx);
+            b.AppendTo(writer, ctx);
             Assert.Equal("System.Object { Number: 1, Text: \"bla\" }", writer.GetCodeTrim());
             
             // every in separate line
             writer   = new AmmyCodeWriter();
             ctx = new ConversionCtx(writer);
             ctx.OnResolveSeparateLines += (a, bb) => { bb.WriteInSeparateLines = true; };            
-            b.WriteTo(writer, ctx);
+            b.AppendTo(writer, ctx);
             var expected = @"System.Object {
     Number: 1
     Text: ""bla""
@@ -45,7 +45,7 @@ namespace isukces.code.Tests.Ammy
             b.WithAny("Other", 2);
             b.WithAny("Nested", nested);
 
-            b.WriteTo(writer, ctx);
+            b.AppendTo(writer, ctx);
             
             var expected = @"System.Object {
     Number: 1
@@ -66,7 +66,7 @@ namespace isukces.code.Tests.Ammy
             b.Items.Add("jeden");
             b.Items.Add("dwa");
             b.Items.Add("trzy");
-            b.WriteTo(writer, ctx);
+            b.AppendTo(writer, ctx);
             const string expected = @"[
     ""jeden""
     ""dwa""
