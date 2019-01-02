@@ -12,46 +12,20 @@ namespace isukces.code.Ammy
 {
     public static class AmmyHelper
     {
-        public static IEnumerable<IAmmyCodePiece> Emit(IConversionCtx ctx,
+        public static IEnumerable<IAmmyCodePiece> ConvertToCodePieces(IConversionCtx ctx,
             IEnumerable<KeyValuePair<string, object>> properties)
         {
-            foreach (var a in properties)
+            var propertiesArray = properties.ToArray();
+            var result          = new IAmmyCodePiece[propertiesArray.Length];
+            for (var index = 0; index < propertiesArray.Length; index++)
             {
-                var piece        = ToCodePiece(a.Value, ctx);
-                var separateLine = ctx.ResolveSeparateLines(a.Key, piece);
-                piece.WriteInSeparateLines = separateLine;
-                if (string.IsNullOrEmpty(a.Key))
-                    yield return piece;
-                {
-                }
-                switch (piece)
-                {
-                    case IComplexAmmyCodePiece complexAmmyCodePiece:                        
-                        yield return new ComplexAmmyCodePiece(complexAmmyCodePiece.GetNestedCodePieces(), a.Key + ": "+complexAmmyCodePiece.GetOpeningCode())
-                        {
-                            WriteInSeparateLines = piece.WriteInSeparateLines
-                        };
-                        break;
-                    case ISimpleAmmyCodePiece sac:
-                        yield return new SimpleAmmyCodePiece(a.Key + ": " + sac.Code, separateLine);
-                        break;
-                    default:
-                        throw new NotSupportedException(piece.GetType().ToString());
-                }
+                var keyValue      = propertiesArray[index];
+                var ammyCodePiece = ToAmmyCodePiece(ctx, keyValue);
+                result[index] = ammyCodePiece;
             }
-        }
 
-/*
-        public static void EmitObject<TObjType>(
-            IEnumerable<KeyValuePair<string, object>> properties,
-            IConversionCtx f,
-            IAmmyCodeWriter writer)
-        {
-            var typeName = f.TypeName<TObjType>();
-            var tmp      = Emit(f, properties).ToArray();
-            writer.AppendComplex(typeName, tmp, AmmyBracketKind.Square);
+            return result;
         }
-        */
 
         public static MemberExpression GetMemberInfo(Expression method)
         {
@@ -77,7 +51,7 @@ namespace isukces.code.Ammy
             tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp);
             return tmp;
         }
-        
+
         [NotNull]
         public static IAmmyCodePiece ToCodePiece(object obj, IConversionCtx ctx)
         {
@@ -92,7 +66,7 @@ namespace isukces.code.Ammy
                     case int i:
                         return i.ToString(CultureInfo.InvariantCulture);
                     case double d:
-                        return d.ToString(CultureInfo.InvariantCulture);          
+                        return d.ToString(CultureInfo.InvariantCulture);
                 }
 
                 var t = obj.GetType();
@@ -115,6 +89,29 @@ namespace isukces.code.Ammy
                 return new SimpleAmmyCodePiece(simple);
 
             throw new NotSupportedException("Unable to convert ToCodePiece " + obj.GetType());
+        }
+
+        private static IAmmyCodePiece ToAmmyCodePiece(IConversionCtx ctx, KeyValuePair<string, object> a)
+        {
+            var piece        = ToCodePiece(a.Value, ctx);
+            var separateLine = ctx.ResolveSeparateLines(a.Key, piece);
+            piece.WriteInSeparateLines = separateLine;
+            if (string.IsNullOrEmpty(a.Key))
+                return piece;
+
+            switch (piece)
+            {
+                case IComplexAmmyCodePiece complexAmmyCodePiece:
+                    return new ComplexAmmyCodePiece(complexAmmyCodePiece.GetNestedCodePieces(),
+                        a.Key + ": " + complexAmmyCodePiece.GetOpeningCode())
+                    {
+                        WriteInSeparateLines = piece.WriteInSeparateLines
+                    };
+                case ISimpleAmmyCodePiece sac:
+                    return new SimpleAmmyCodePiece(a.Key + ": " + sac.Code, separateLine);
+                default:
+                    throw new NotSupportedException(piece.GetType().ToString());
+            }
         }
     }
 

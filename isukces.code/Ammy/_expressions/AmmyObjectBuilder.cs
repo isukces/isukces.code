@@ -25,7 +25,7 @@ namespace isukces.code.Ammy
             }
 
             var props      = GetProperties().ToArray();
-            var codePieces = AmmyHelper.Emit(ctx, props).ToArray();
+            var codePieces = AmmyHelper.ConvertToCodePieces(ctx, props).ToArray();
 
             return new ComplexAmmyCodePiece(codePieces, ctx.TypeName<T>());
         }

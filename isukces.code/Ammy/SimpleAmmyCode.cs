@@ -6,11 +6,16 @@ namespace isukces.code.Ammy
     {
         public SimpleAmmyCodePiece(string code, bool writeInSeparateLines = false)
         {
-            Code = code;
+            Code                 = code;
             WriteInSeparateLines = writeInSeparateLines;
         }
 
-        public string Code { get; }
-        public bool WriteInSeparateLines { get; set; }
+        public override string ToString()
+        {
+            return "Simple ammy code: " + Code;
+        }
+
+        public string Code                 { get; }
+        public bool   WriteInSeparateLines { get; set; }
     }
 }
