@@ -128,7 +128,8 @@ namespace isukces.code.Ammy
             {
                 case IComplexAmmyCodePiece complexAmmyCodePiece:
                     return new ComplexAmmyCodePiece(complexAmmyCodePiece.GetNestedCodePieces(),
-                        propertyName + ": " + complexAmmyCodePiece.GetOpeningCode())
+                        propertyName + ": " + complexAmmyCodePiece.GetOpeningCode(),
+                        complexAmmyCodePiece.Brackets)
                     {
                         WriteInSeparateLines = piece.WriteInSeparateLines
                     };
