@@ -5,14 +5,15 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public class MixinBuilder<T> : IAmmyContainer, IAmmyCodePieceConvertible
+    public partial class MixinBuilder<TPropertyBrowser> : IAmmyContainer, IAmmyCodePieceConvertible
     {
         public MixinBuilder(string mixinName)
         {
-            WrappedMixin = new Mixin(mixinName, typeof(T));
+            WrappedMixin = new Mixin(mixinName, typeof(TPropertyBrowser));
         }
 
-        public MixinBuilder<T> WithProperty(Expression<Func<T, object>> propertyNameE, object value)
+        public MixinBuilder<TPropertyBrowser> WithProperty(Expression<Func<TPropertyBrowser, object>> propertyNameE,
+            object value)
         {
             var propertyName = ExpressionTools.GetBindingPath(propertyNameE);
             this.WithProperty(propertyName, value);
@@ -20,8 +21,8 @@ namespace isukces.code.Ammy
         }
 
 
-        public MixinBuilder<T> WithPropertyAncestorBind<T1>(
-            Expression<Func<T, object>> propertyNameE,
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<T1>(
+            Expression<Func<TPropertyBrowser, object>> propertyNameE,
             Expression<Func<T1, object>> action,
             params KeyValuePair<string, string>[] bindingSettings)
         {
@@ -32,19 +33,12 @@ namespace isukces.code.Ammy
         }
 
 
-        public MixinBuilder<T> WithPropertyAncestorBind(string propertyName, string path,
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind(string propertyName, string path,
             params KeyValuePair<string, string>[] bindingSettings)
         {
             return this.WithPropertyAncestorBind(propertyName, path, DefaultAncestorType, bindingSettings);
         }
 
-
-        public MixinBuilder<T> WithPropertyStaticValue<T1>(Expression<Func<T, T1>> propertyNameE, T1 value)
-        {
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameE);
-            this.WithProperty(propertyName, value);
-            return this;
-        }
 
         IAmmyCodePiece IAmmyCodePieceConvertible.ToAmmyCode(IConversionCtx ctx)
         {
@@ -59,5 +53,25 @@ namespace isukces.code.Ammy
         IDictionary<string, object> IAmmyPropertyContainer.Properties => WrappedMixin.Properties;
 
         IList<object> IAmmyContentItemsContainer.ContentItems => WrappedMixin.ContentItems;
+    }
+
+
+    public partial class MixinBuilder<TPropertyBrowser> 
+    {
+        public MixinBuilder<TPropertyBrowser> WithProperty<TValue>(
+            Expression<Func<TPropertyBrowser, TValue>> func, object v)
+        {
+            var mi = AmmyHelper.GetMemberInfo(func);
+            this.WithProperty(mi.Member.Name, v);
+            return this;
+        }
+
+        public MixinBuilder<TPropertyBrowser> WithPropertyStaticValue<TValue>(
+            Expression<Func<TPropertyBrowser, TValue>> func, TValue v)
+        {
+            var mi = AmmyHelper.GetMemberInfo(func);
+            this.WithProperty(mi.Member.Name, v);
+            return this;
+        }
     }
 }

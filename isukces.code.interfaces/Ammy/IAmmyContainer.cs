@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using JetBrains.Annotations;
 
 namespace isukces.code.interfaces.Ammy
@@ -6,7 +8,7 @@ namespace isukces.code.interfaces.Ammy
     public interface IAmmyContainer : IAmmyPropertyContainer, IAmmyContentItemsContainer
     {
     }
-
+    
     public interface IAmmyPropertyContainer
     {
         [NotNull]
@@ -19,8 +21,8 @@ namespace isukces.code.interfaces.Ammy
         IList<object> ContentItems { get; }
     }
 
-    public static class AmmyContainerExt
-    {
+    public static class AmmyContainerExtension
+    {               
         public static T WithProperty<T>(this T self, string name, object value)
             where T : IAmmyPropertyContainer
         {
