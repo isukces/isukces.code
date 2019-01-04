@@ -13,7 +13,7 @@ namespace isukces.code.Ammy
             return GetBindingPath(action);
         }
 
-        public static string GetBindingPath<T>(Expression<Func<T, object>> action)
+        public static string GetBindingPath<T,T2>(Expression<Func<T, T2>> action)
         {
             var parts = new List<string>();
 

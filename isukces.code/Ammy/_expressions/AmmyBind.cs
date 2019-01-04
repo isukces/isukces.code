@@ -21,7 +21,7 @@ namespace isukces.code.Ammy
             Items.Add(new KeyValuePair<string, object>(key, value));
         }
 
-        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
+        public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
             return new SimpleAmmyCodePiece(ToOneLineCode(ctx));
         }
@@ -41,7 +41,7 @@ namespace isukces.code.Ammy
 
             if (Items.Any())
             {
-                var cp = Items.ToAmmyPropertiesCodePieces(ctx);
+                var cp = Items.ToAmmyPropertiesCode(ctx, this);
                 txt.Append(" set [");
                 for (var index = 0; index < cp.Length; index++)
                 {

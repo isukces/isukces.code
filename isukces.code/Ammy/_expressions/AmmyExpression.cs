@@ -21,7 +21,7 @@ namespace isukces.code.Ammy
             return new AmmyExpression(s.CsEncode());
         }
 
-        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
+        public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
             return new SimpleAmmyCodePiece(_code);
         }
@@ -41,7 +41,7 @@ namespace isukces.code.Ammy
                 _propertyName = propertyName;
             }
 
-            public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
+            public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
             {
                 var q = ctx.TypeName(_type) + "." + _propertyName;
                 return new SimpleAmmyCodePiece(q);

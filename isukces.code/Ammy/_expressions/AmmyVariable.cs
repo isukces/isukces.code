@@ -9,7 +9,7 @@ namespace isukces.code.Ammy
             VariableName = variableName;
         }
 
-        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
+        public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
             return new SimpleAmmyCodePiece("$" + VariableName);
         }

@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
+using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public class MixinBuilder<T>
+    public class MixinBuilder<T> : IAmmyContainer, IAmmyCodePieceConvertible
     {
         public MixinBuilder(string mixinName)
         {
@@ -15,25 +15,13 @@ namespace isukces.code.Ammy
         public MixinBuilder<T> WithProperty(Expression<Func<T, object>> propertyNameE, object value)
         {
             var propertyName = ExpressionTools.GetBindingPath(propertyNameE);
-            WrappedMixin.WithProperty(propertyName, value);
+            this.WithProperty(propertyName, value);
             return this;
         }
 
 
-        public MixinBuilder<T> WithContent(object content)
-        {
-            WrappedMixin.AddContent(content);
-            return this;
-        }
-
-        public MixinBuilder<T> WithPropertyAncestorBind(string propertyName, string path,
-            params KeyValuePair<string, string>[] bindingSettings)
-        {
-            return WithPropertyAncestorBind(null, propertyName, path, bindingSettings);
-        }
-
-
-        public MixinBuilder<T> WithPropertyAncestorBind<T1>(Expression<Func<T, object>> propertyNameE,
+        public MixinBuilder<T> WithPropertyAncestorBind<T1>(
+            Expression<Func<T, object>> propertyNameE,
             Expression<Func<T1, object>> action,
             params KeyValuePair<string, string>[] bindingSettings)
         {
@@ -44,30 +32,32 @@ namespace isukces.code.Ammy
         }
 
 
-        public MixinBuilder<T> WithPropertyAncestorBind(Type ancestorType, string propertyName, string path,
+        public MixinBuilder<T> WithPropertyAncestorBind(string propertyName, string path,
             params KeyValuePair<string, string>[] bindingSettings)
         {
-            if (ancestorType == null)
-                ancestorType = DefaultAncestorType;
-            var bind = new AmmyBind(path)
-            {
-                From = new AncestorSource(ancestorType)
-            };
-            
-            //var value = $"bind {path} from $ancestor<{ancestorType.FullName}>";
-            if (bindingSettings != null && bindingSettings.Any())
-            {
-                foreach (var i in bindingSettings)
-                    bind.AddParameter(i.Key, new SimpleAmmyCodePiece(i.Value));
-                 
-            }
+            return this.WithPropertyAncestorBind(propertyName, path, DefaultAncestorType, bindingSettings);
+        }
 
-            WrappedMixin.WithProperty(propertyName, bind);
+
+        public MixinBuilder<T> WithPropertyStaticValue<T1>(Expression<Func<T, T1>> propertyNameE, T1 value)
+        {
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameE);
+            this.WithProperty(propertyName, value);
             return this;
+        }
+
+        IAmmyCodePiece IAmmyCodePieceConvertible.ToAmmyCode(IConversionCtx ctx)
+        {
+            return WrappedMixin.ToAmmyCode(ctx);
         }
 
         public Type DefaultAncestorType { get; set; }
 
         public Mixin WrappedMixin { get; }
+
+
+        IDictionary<string, object> IAmmyPropertyContainer.Properties => WrappedMixin.Properties;
+
+        IList<object> IAmmyContentItemsContainer.ContentItems => WrappedMixin.ContentItems;
     }
 }

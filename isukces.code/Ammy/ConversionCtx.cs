@@ -11,17 +11,18 @@ namespace isukces.code.Ammy
             FullNamespaces    = fullNamespaces;
         }
 
-        public bool ResolveSeparateLines(string propertyName, IAmmyCodePiece value, object sourceObject)
+        public bool ResolveSeparateLines(string propertyName, IAmmyCodePiece code, object sourceValue, object sourceValueHost)
         {
             var h = OnResolveSeparateLines;
             if (h == null)
-                return value.WriteInSeparateLines;
+                return code.WriteInSeparateLines;
             var a = new ResolveSeparateLinesEventArgs
             {
                 PropertyName         = propertyName,
-                Value                = value,
-                WriteInSeparateLines = value.WriteInSeparateLines,
-                SourceObject         = sourceObject
+                Code                 = code,
+                WriteInSeparateLines = code.WriteInSeparateLines,
+                SourceValue          = sourceValue,
+                SourceValueHost      = sourceValueHost
             };
             h.Invoke(this, a);
             return a.WriteInSeparateLines;
@@ -34,10 +35,24 @@ namespace isukces.code.Ammy
 
         public class ResolveSeparateLinesEventArgs : EventArgs
         {
-            public string         PropertyName         { get; set; }
-            public IAmmyCodePiece Value                { get; set; }
-            public bool           WriteInSeparateLines { get; set; }
-            public object         SourceObject         { get; set; }
+            public string PropertyName { get; set; }
+
+            /// <summary>
+            ///     Code of converted SourceValue
+            /// </summary>
+            public IAmmyCodePiece Code { get; set; }
+
+            public bool WriteInSeparateLines { get; set; }
+
+            /// <summary>
+            ///     Value that was converted to Code
+            /// </summary>
+            public object SourceValue { get; set; }
+            
+            /// <summary>
+            /// Object that: SourceValue.PropertyName = SourceValue
+            /// </summary>
+            public object SourceValueHost { get; set; }
         }
     }
 }

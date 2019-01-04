@@ -43,7 +43,7 @@ namespace isukces.code.Ammy
             if (src is IAmmyCodePiece ammyCodePiece)
                 return ammyCodePiece;
             if (src is IAmmyCodePieceConvertible convertible)
-                return convertible.ToCodePiece(ctx);
+                return convertible.ToAmmyCode(ctx);
 
             var simple = ToSimpleAmmyCodePiece();
             if (simple != null)
@@ -74,23 +74,42 @@ namespace isukces.code.Ammy
 
         [NotNull]
         public static IAmmyCodePiece ToCodePieceWithLineSeparators(this IConversionCtx ctx, object obj,
-            string propertyName)
+            string propertyName, object objHost)
         {
             var tmp = AnyToCodePiece(ctx, obj);
-            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp, obj);
+            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp, obj, objHost);
             return tmp;
         }
 
         [NotNull]
-        public static IAmmyCodePiece[] ToAmmyPropertiesCodePieces(this IEnumerable<KeyValuePair<string, object>> values,
+        public static IAmmyCodePiece[] ToAmmyPropertiesCode(this IEnumerable<KeyValuePair<string, object>> values,
             IConversionCtx ctx,
+            object objHost,
             bool? forceWriteInSeparateLines = null)
         {
             if (values == null)
                 return new IAmmyCodePiece[0];
             var result = values.Select(a =>
             {
-                var piece = ctx.ToAmmyPropertyCodePiece(a.Key, a.Value);
+                var piece = ctx.ToAmmyPropertyCodePiece(a.Key, a.Value, objHost);
+                if (forceWriteInSeparateLines != null)
+                    piece.WriteInSeparateLines = forceWriteInSeparateLines.Value;
+                return piece;
+            }).ToArray();
+            return result;
+        }
+        
+        [NotNull]
+        public static IAmmyCodePiece[] ToAmmyContentItemsCode(this IEnumerable<object> values,
+            IConversionCtx ctx,
+            object objHost,
+            bool? forceWriteInSeparateLines = null)
+        {
+            if (values == null)
+                return new IAmmyCodePiece[0];
+            var result = values.Select(a =>
+            {
+                var piece = ctx.ToAmmyPropertyCodePiece(null, a, objHost);
                 if (forceWriteInSeparateLines != null)
                     piece.WriteInSeparateLines = forceWriteInSeparateLines.Value;
                 return piece;
@@ -98,9 +117,10 @@ namespace isukces.code.Ammy
             return result;
         }
 
-        public static IAmmyCodePiece ToAmmyPropertyCodePiece(this IConversionCtx ctx, string propertyName, object value)
+        public static IAmmyCodePiece ToAmmyPropertyCodePiece(this IConversionCtx ctx, string propertyName, object value,
+            object objHost)
         {
-            var piece = ToCodePieceWithLineSeparators(ctx, value, propertyName);
+            var piece = ToCodePieceWithLineSeparators(ctx, value, propertyName, objHost);
             if (string.IsNullOrEmpty(propertyName))
                 return piece;
 

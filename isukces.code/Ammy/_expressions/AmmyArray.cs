@@ -6,13 +6,13 @@ namespace isukces.code.Ammy
 {
     public class AmmyArray : IAmmyCodePieceConvertible
     {
-        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
+        public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
             var converted = new IAmmyCodePiece[Items.Count];
             for (var index = 0; index < Items.Count; index++)
             {
                 var a = Items[index];
-                converted[index] = ctx.ToCodePieceWithLineSeparators(a, null);
+                converted[index] = ctx.ToCodePieceWithLineSeparators(a, null, this);
             }
 
             return new ComplexAmmyCodePiece(converted, null, AmmyBracketKind.Square);

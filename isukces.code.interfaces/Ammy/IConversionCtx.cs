@@ -9,13 +9,15 @@ namespace isukces.code.interfaces.Ammy
     {
         IAmmyNamespaceProvider NamespaceProvider { get; }
         bool                   FullNamespaces    { get; }
-        bool ResolveSeparateLines([CanBeNull] string propertyName, [NotNull] IAmmyCodePiece value,  [CanBeNull]object sourceObject);
+        bool ResolveSeparateLines([CanBeNull]string propertyName, [NotNull]IAmmyCodePiece code, [CanBeNull]object sourceValue, [CanBeNull]object sourceValueHost);
     }
 
     public static class ConversionCtxExt
     {
         public static string TypeName(this IConversionCtx ctx, Type t)
         {
+            if (t.DeclaringType != null)
+                return TypeName(ctx, t.DeclaringType) + "." + t.Name;
             if (!ctx.FullNamespaces && ctx.NamespaceProvider.Namespaces.Contains(t.Namespace))
                 return t.Name;
             return t.FullName;
@@ -50,18 +52,6 @@ namespace isukces.code.interfaces.Ammy
         Square
     }
 
-    public interface IAmmyPropertyContainer
-    {
-        [NotNull]
-        IDictionary<string, object> Properties { get; }
-    }
-    public interface IAmmyContentItemsContainer
-    {
-        [NotNull]
-        IList<object> ContentItems { get; }
-    }
-    public interface IAmmyContainer:IAmmyPropertyContainer, IAmmyContentItemsContainer
-    {        
-    }
+   
         
 }

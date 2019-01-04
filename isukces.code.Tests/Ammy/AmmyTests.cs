@@ -12,8 +12,8 @@ namespace isukces.code.Tests.Ammy
         public void T01_should_create_simple_code()
         {
             var b = new AmmyObjectBuilder<object>();
-            b.WithAny("Number", 1);                       
-            b.WithAny("Text", "bla");
+            b.WithProperty("Number", 1);                       
+            b.WithProperty("Text", "bla");
             var writer = new AmmyCodeWriter();
             var ctx= new ConversionCtx(writer);                        
             b.AppendTo(writer, ctx);
@@ -41,9 +41,9 @@ namespace isukces.code.Tests.Ammy
             
             var b = new AmmyObjectBuilder<object>();
             var nested = new AmmyObjectBuilder<object>();
-            b.WithAny("Number", 1);
-            b.WithAny("Other", 2);
-            b.WithAny("Nested", nested);
+            b.WithProperty("Number", 1);
+            b.WithProperty("Other", 2);
+            b.WithProperty("Nested", nested);
 
             b.AppendTo(writer, ctx);
             
@@ -73,7 +73,6 @@ namespace isukces.code.Tests.Ammy
     ""trzy""
 ]";
             Assert.Equal(expected, writer.GetCodeTrim());
-        }
-        
+        }         
     }
 }

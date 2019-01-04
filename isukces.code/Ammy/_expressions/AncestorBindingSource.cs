@@ -3,14 +3,14 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public class AncestorSource : IAmmyCodePieceConvertible
+    public class AncestorBindingSource : IAmmyCodePieceConvertible
     {
-        public AncestorSource(Type ancestorType)
+        public AncestorBindingSource(Type ancestorType)
         {
             _ancestorType = ancestorType;
         }
 
-        public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
+        public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
             var txt = "$ancestor<" + ctx.TypeName(_ancestorType) + ">";
             return new SimpleAmmyCodePiece(txt);
