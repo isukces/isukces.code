@@ -12,7 +12,7 @@ namespace isukces.code.Ammy
             for (var index = 0; index < Items.Count; index++)
             {
                 var a = Items[index];
-                converted[index] = AmmyHelper.ToCodePiece(a, ctx, null);
+                converted[index] = ctx.ToCodePieceWithLineSeparators(a, null);
             }
 
             return new ComplexAmmyCodePiece(converted, null, AmmyBracketKind.Square);

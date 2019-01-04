@@ -57,12 +57,12 @@ namespace isukces.code
             }
         }
 
-        public void SaveIfDifferent(string filename)
+        public bool SaveIfDifferent(string filename)
         {
             if (!File.Exists(filename))
             {
                 Save(filename);
-                return;
+                return true;
             }
 
             byte[] newa;
@@ -73,8 +73,10 @@ namespace isukces.code
                 newa = fs.ToArray();
             }
 
-            if (newa.SequenceEqual(existing)) return;
+            if (newa.SequenceEqual(existing)) 
+                return false;
             File.WriteAllBytes(filename, newa);
+            return true;
         }
 
         private void SaveToStream(Stream stream)
@@ -93,33 +95,7 @@ namespace isukces.code
             return Code;
         }
 
-        /*
-        public void Writeln(TsEnumItem format)
-        {
-            _sb.AppendLine();
-        }
-
-        public virtual void Writeln(string x = null)
-        {
-            if (x == (object)null)
-            {
-                _sb.AppendLine();
-                return;
-            }
-
-            //x = x.Trim();
-            if (string.IsNullOrEmpty(x))
-                _sb.AppendLine();
-            else
-                _sb.AppendLine(_indentStr + x);
-        }
-        
-
-        public void Writeln(string format, params object[] args)
-        {
-            Writeln(string.Format(format, args));
-        }
-        */
+       
 
         /// <summary>
         ///     opis języka

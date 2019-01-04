@@ -49,5 +49,19 @@ namespace isukces.code.interfaces.Ammy
         Mustache,
         Square
     }
+
+    public interface IAmmyPropertyContainer
+    {
+        [NotNull]
+        IDictionary<string, object> Properties { get; }
+    }
+    public interface IAmmyContentItemsContainer
+    {
+        [NotNull]
+        IList<object> ContentItems { get; }
+    }
+    public interface IAmmyContainer:IAmmyPropertyContainer, IAmmyContentItemsContainer
+    {        
+    }
         
 }

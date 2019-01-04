@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
@@ -16,17 +15,10 @@ namespace isukces.code.Ammy
 
         public IComplexAmmyCodePiece ToComplexAmmyCodePiece(IConversionCtx ctx)
         {
-            IEnumerable<KeyValuePair<string, object>> GetProperties()
-            {
-                foreach (var i in _props)
-                    yield return i;
-                foreach (var i in _content)
-                    yield return new KeyValuePair<string, object>(null, i);
-            }
+            var part1 = _props.ToAmmyPropertiesCodePieces(ctx);
+            var part2 = _content.Select(a => ctx.ToAmmyPropertyCodePiece(null, a));
 
-            var props      = GetProperties().ToArray();
-            var codePieces = AmmyHelper.ConvertToCodePieces(ctx, props).ToArray();
-
+            var codePieces = part1.Concat(part2).ToArray();
             return new ComplexAmmyCodePiece(codePieces, ctx.TypeName<T>());
         }
 
@@ -83,6 +75,4 @@ namespace isukces.code.Ammy
         private readonly Dictionary<string, object> _props = new Dictionary<string, object>();
         public readonly List<object> _content = new List<object>();
     }
-
-   
 }

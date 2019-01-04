@@ -1,4 +1,5 @@
 ﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 using System.Collections.Generic;
 using System.Linq;
 using isukces.code.interfaces;
@@ -8,36 +9,64 @@ namespace isukces.code.Ammy
 {
     public class AmmyBind : IAmmyCodePieceConvertible
     {
-        public AmmyBind(string propertyName, DataBindingMode? mode = null)
+        public AmmyBind(string bindingPath, DataBindingMode? mode = null)
         {
-            PropertyName = propertyName;
-            Mode         = mode;
+            BindingPath = bindingPath;
+            if (mode != null)
+                AddParameter("Mode", mode);
         }
 
-      
-
-        public override string ToString()
+        public void AddParameter(string key, object value)
         {
-            var txt = "bind";
-            if (!string.IsNullOrEmpty(PropertyName) && PropertyName != ".")
-                txt += " " + PropertyName.CsEncode();
-            {
-                var se = new List<string>();
-                if (Mode != null)
-                    se.Add($"Mode: {Mode}");
-                if (se.Any())
-                    txt = txt + " set [" + string.Join(", ", se) + "]";
-            }
-            return txt;
+            Items.Add(new KeyValuePair<string, object>(key, value));
         }
 
         public IAmmyCodePiece ToCodePiece(IConversionCtx ctx)
         {
-            return new SimpleAmmyCodePiece(ToString());
+            return new SimpleAmmyCodePiece(ToOneLineCode(ctx));
         }
 
-        public string           PropertyName { get; set; }
-        public DataBindingMode? Mode         { get; set; }
+        public string ToOneLineCode(IConversionCtx ctx)
+        {
+            var txt = new AmmyCodeWriter();
+            txt.Append("bind");
+            if (!string.IsNullOrEmpty(BindingPath) && BindingPath != ".")
+                txt.Append(" " + BindingPath.CsEncode());
+            if (From != null)
+            {
+                var piece = ctx.AnyToCodePiece(From);
+                txt.Append(" from ");
+                txt.AppendCodePiece(piece);
+            }
+
+            if (Items.Any())
+            {
+                var cp = Items.ToAmmyPropertiesCodePieces(ctx);
+                txt.Append(" set [");
+                for (var index = 0; index < cp.Length; index++)
+                {
+                    if (index > 0)
+                        txt.Append(", ");
+                    txt.AppendCodePiece(cp[index]);
+                }
+
+                txt.Append("]");
+            }
+
+            return txt.Code;
+        }
+
+
+        public override string ToString()
+        {
+            return ToOneLineCode(new ConversionCtx(new AmmyNamespaceProvider()));
+        }
+
+        public string BindingPath { get; set; }
+
+        // public DataBindingMode? Mode        { get; set; }
+        public object                             From  { get; set; }
+        public List<KeyValuePair<string, object>> Items { get; } = new List<KeyValuePair<string, object>>();
     }
 
 
