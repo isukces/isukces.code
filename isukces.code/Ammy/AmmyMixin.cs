@@ -4,9 +4,9 @@ using JetBrains.Annotations;
 
 namespace isukces.code.Ammy
 {
-    public class Mixin : AmmyContainerBase, IAmmyCodePieceConvertible
+    public class AmmyMixin : AmmyContainerBase, IAmmyCodePieceConvertible
     {
-        public Mixin(string name, [NotNull] Type forType)
+        public AmmyMixin(string name, [NotNull] Type forType)
         {
             Name            = name;
             MixinTargetType = forType ?? throw new ArgumentNullException(nameof(forType));

@@ -9,7 +9,7 @@ namespace isukces.code.Ammy
     {
         public MixinBuilder(string mixinName)
         {
-            WrappedMixin = new Mixin(mixinName, typeof(TPropertyBrowser));
+            WrappedMixin = new AmmyMixin(mixinName, typeof(TPropertyBrowser));
         }
 
         public MixinBuilder<TPropertyBrowser> WithProperty(Expression<Func<TPropertyBrowser, object>> propertyNameE,
@@ -47,7 +47,7 @@ namespace isukces.code.Ammy
 
         public Type DefaultAncestorType { get; set; }
 
-        public Mixin WrappedMixin { get; }
+        public AmmyMixin WrappedMixin { get; }
 
 
         IDictionary<string, object> IAmmyPropertyContainer.Properties => WrappedMixin.Properties;

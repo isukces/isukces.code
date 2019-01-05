@@ -73,6 +73,42 @@ namespace isukces.code.Tests.Ammy
     ""trzy""
 ]";
             Assert.Equal(expected, writer.GetCodeTrim());
-        }         
+        }
+
+        [Fact]
+        public void T04_should_convert_arguments()
+        {
+            var writer = new AmmyCodeWriter();
+            var ctx    = new ConversionCtx(writer);
+
+            var result = ctx.ConvertArguments((obj, i) => obj == null, 1, null, 3, null, null);
+            Assert.NotNull(result);
+            Assert.Equal(3, result.Length);
+            foreach (var i in result)
+            {
+                writer.AppendCodePiece(i);
+                writer.Append(",");
+            }
+
+            Assert.Equal("1,none,3,", writer.Code);
+        }
+        
+        [Fact]
+        public void T05_should_convert_arguments()
+        {
+            var writer = new AmmyCodeWriter();
+            var ctx    = new ConversionCtx(writer);
+
+            var result = ctx.ConvertArguments(null, 1, null, 3, null, null);
+            Assert.NotNull(result);
+            Assert.Equal(5, result.Length);
+            foreach (var i in result)
+            {
+                writer.AppendCodePiece(i);
+                writer.Append(",");
+            }
+
+            Assert.Equal("1,none,3,none,none,", writer.Code);
+        }
     }
 }

@@ -53,7 +53,41 @@ namespace isukces.code.Ammy
             }
 
             throw new NotSupportedException("Unable to convert ToCodePiece " + src.GetType());
-        }       
+        }
+
+        [NotNull]
+        public static IAmmyCodePiece[] ConvertArguments(
+            [NotNull] this IConversionCtx ctx,
+            [CanBeNull] Func<object, int, bool> cutLastIf,
+            params object[] arguments)
+        {
+            if (ctx == null) throw new ArgumentNullException(nameof(ctx));
+            var result      = new IAmmyCodePiece[arguments.Length];
+            var callCutLast = cutLastIf != null;
+            var take        = arguments.Length;
+            for (var argumentIndex = arguments.Length - 1; argumentIndex >= 0; argumentIndex--)
+            {
+                var arg = arguments[argumentIndex];
+                if (callCutLast)
+                {
+                    if (cutLastIf(arg, argumentIndex))
+                    {
+                        take = argumentIndex;
+                        continue;
+                    }
+
+                    callCutLast = false;
+                }
+
+                result[argumentIndex] = ctx.AnyToCodePiece(arg ?? AmmyNone.Instance);
+            }
+
+            if (take == arguments.Length)
+                return result;
+            var res = new IAmmyCodePiece[take];
+            Array.Copy(result, res, take);
+            return res;
+        }
 
         public static MemberExpression GetMemberInfo(Expression method)
         {
@@ -73,12 +107,21 @@ namespace isukces.code.Ammy
         }
 
         [NotNull]
-        public static IAmmyCodePiece ToCodePieceWithLineSeparators(this IConversionCtx ctx, object obj,
-            string propertyName, object objHost)
+        public static IAmmyCodePiece[] ToAmmyContentItemsCode(this IEnumerable<object> values,
+            IConversionCtx ctx,
+            object objHost,
+            bool? forceWriteInSeparateLines = null)
         {
-            var tmp = AnyToCodePiece(ctx, obj);
-            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp, obj, objHost);
-            return tmp;
+            if (values == null)
+                return new IAmmyCodePiece[0];
+            var result = values.Select(a =>
+            {
+                var piece = ctx.ToAmmyPropertyCodePiece(null, a, objHost);
+                if (forceWriteInSeparateLines != null)
+                    piece.WriteInSeparateLines = forceWriteInSeparateLines.Value;
+                return piece;
+            }).ToArray();
+            return result;
         }
 
         [NotNull]
@@ -92,24 +135,6 @@ namespace isukces.code.Ammy
             var result = values.Select(a =>
             {
                 var piece = ctx.ToAmmyPropertyCodePiece(a.Key, a.Value, objHost);
-                if (forceWriteInSeparateLines != null)
-                    piece.WriteInSeparateLines = forceWriteInSeparateLines.Value;
-                return piece;
-            }).ToArray();
-            return result;
-        }
-        
-        [NotNull]
-        public static IAmmyCodePiece[] ToAmmyContentItemsCode(this IEnumerable<object> values,
-            IConversionCtx ctx,
-            object objHost,
-            bool? forceWriteInSeparateLines = null)
-        {
-            if (values == null)
-                return new IAmmyCodePiece[0];
-            var result = values.Select(a =>
-            {
-                var piece = ctx.ToAmmyPropertyCodePiece(null, a, objHost);
                 if (forceWriteInSeparateLines != null)
                     piece.WriteInSeparateLines = forceWriteInSeparateLines.Value;
                 return piece;
@@ -138,6 +163,15 @@ namespace isukces.code.Ammy
                 default:
                     throw new NotSupportedException(piece.GetType().ToString());
             }
+        }
+
+        [NotNull]
+        public static IAmmyCodePiece ToCodePieceWithLineSeparators(this IConversionCtx ctx, object obj,
+            string propertyName, object objHost)
+        {
+            var tmp = AnyToCodePiece(ctx, obj);
+            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp, obj, objHost);
+            return tmp;
         }
     }
 }
