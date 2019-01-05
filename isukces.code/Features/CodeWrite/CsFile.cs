@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using isukces.code.AutoCode;
 using isukces.code.interfaces;
@@ -34,9 +35,19 @@ namespace isukces.code.CodeWrite
         {
             if (classesCache.TryGetValue(type, out var c))
                 return c;
+            var name = type.Name;
+            var ti = type.GetTypeInfo();
+            if (ti.IsGenericType)
+            {
+                if (!ti.IsGenericTypeDefinition)
+                    throw new NotSupportedException();
+                name = name.Split('`')[0];
+                var nn = ti.GetGenericArguments().Select(a => a.Name);
+                name += "<" + string.Join(",", nn) + ">";
+            }
             if (type.DeclaringType == null)
             {
-                var a = classesCache[type] = new CsClass(type.Name)
+                var a = classesCache[type] = new CsClass(name)
                 {
                     IsPartial  = true,
                     DotNetType = type,
@@ -50,7 +61,7 @@ namespace isukces.code.CodeWrite
             }
 
             var parent   = GetOrCreateClass(type.DeclaringType, classesCache);
-            var existing = parent.GetOrCreateNested(type.Name);
+            var existing = parent.GetOrCreateNested(name);
             existing.IsPartial  = true;
             existing.DotNetType = type;
             existing.Kind       = type.GetNamespaceMemberKind();
