@@ -79,7 +79,9 @@ namespace isukces.code.Ammy
                     callCutLast = false;
                 }
 
-                result[argumentIndex] = ctx.AnyToCodePiece(arg ?? AmmyNone.Instance);
+                var code = ctx.AnyToCodePiece(arg ?? AmmyNone.Instance);
+                code.WriteInSeparateLines = false;
+                result[argumentIndex] = code;
             }
 
             if (take == arguments.Length)

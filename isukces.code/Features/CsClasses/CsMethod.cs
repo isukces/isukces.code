@@ -80,7 +80,7 @@ namespace isukces.code
         {
             WriteMethodDescription(writer);
             foreach (var i in Attributes)
-                writer.WriteLine("[ {0} ]", i);
+                writer.WriteLine("[{0}]", i);
 
             var query = from i in _parameters
                 select FormatMethodParameter(i);

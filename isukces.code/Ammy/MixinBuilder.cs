@@ -53,25 +53,5 @@ namespace isukces.code.Ammy
         IDictionary<string, object> IAmmyPropertyContainer.Properties => WrappedMixin.Properties;
 
         IList<object> IAmmyContentItemsContainer.ContentItems => WrappedMixin.ContentItems;
-    }
-
-
-    public partial class MixinBuilder<TPropertyBrowser> 
-    {
-        public MixinBuilder<TPropertyBrowser> WithProperty<TValue>(
-            Expression<Func<TPropertyBrowser, TValue>> func, object v)
-        {
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, v);
-            return this;
-        }
-
-        public MixinBuilder<TPropertyBrowser> WithPropertyStaticValue<TValue>(
-            Expression<Func<TPropertyBrowser, TValue>> func, TValue v)
-        {
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, v);
-            return this;
-        }
-    }
+    } 
 }

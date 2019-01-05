@@ -55,29 +55,6 @@ namespace isukces.code.Ammy
             return self.WithPropertyNotNull(mi.Member.Name, v);
         }
         
-        /*
-        
-        public static TSelf WithProperty<TSelf, TPropertyBrowser, TValue>(
-            this TSelf src, 
-            Expression<Func<TPropertyBrowser, TValue>> func, object v)
-        where TSelf:IAmmyGenericContainer<TPropertyBrowser>
-        {
-            var mi = AmmyHelper.GetMemberInfo(func);
-            src.WithProperty(mi.Member.Name, v);
-            return src;
-        }
-        
-        public static TSelf WithPropertyStaticValue<TSelf, TPropertyBrowser, TValue>(
-            this TSelf src, 
-            Expression<Func<TPropertyBrowser, TValue>> func, TValue v)
-            where TSelf:IAmmyGenericContainer<TPropertyBrowser>
-        {
-            var mi = AmmyHelper.GetMemberInfo(func);
-            src.WithProperty(mi.Member.Name, v);
-            return src;
-        }
-         
-         */
     }
  
 }

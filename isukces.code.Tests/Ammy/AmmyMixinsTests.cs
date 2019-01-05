@@ -14,7 +14,7 @@ namespace isukces.code.Tests.Ammy
                 {
                     DefaultAncestorType = typeof(SampleUserControl)
                 }
-                .WithPropertyStaticValue(a => a.Width, 10)
+                .WithPropertyGeneric(a => a.Width, 10)
                 .WithProperty(a => a.Heigth, new AmmyVariable("standardHeight"))
                 .WithPropertyAncestorBind<SampleUserControl>(a => a.Content, a => a.Model.FirstName);
 
@@ -38,7 +38,7 @@ namespace isukces.code.Tests.Ammy
                 {
                     DefaultAncestorType = typeof(SampleUserControl)
                 }
-                .WithPropertyStaticValue(a => a.Width, 10)
+                .WithPropertyGeneric(a => a.Width, 10)
                 .WithProperty(a => a.Heigth, new AmmyVariable("standardHeight"))
                 .WithPropertyAncestorBind<SampleUserControl>(a => a.Content, a => a.Model.FirstName);
 
