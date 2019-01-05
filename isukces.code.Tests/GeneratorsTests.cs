@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using isukces.code.Ammy;
 using isukces.code.AutoCode;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
@@ -57,17 +58,25 @@ namespace isukces.code.Tests
         [InlineData("OtherValue", "!OtherValue.Equals(Foo)")]
         public void T05_ShouldSerializeGenerator_tests(string propertyName, string expectedCode)
         {
-            var pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(propertyName);
+            var pi   = typeof(ShouldSerializeGeneratorTestClass).GetProperty(propertyName);
             var code = Generators.ShouldSerializeGenerator.MakeShouldSerializeCondition(pi);
             Assert.Equal(expectedCode, code);
-            
+
             pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(
                 nameof(ShouldSerializeGeneratorTestClass.OtherValue));
             code = Generators.ShouldSerializeGenerator.MakeShouldSerializeCondition(pi);
             Assert.Equal("!OtherValue.Equals(Foo)", code);
         }
 
-        [Auto.ShouldSerializeInfo("!{0}.Equals(Foo)")]
+        [Fact]
+        public void T06_Should_convert_generic_type_name()
+        {
+            var t  = typeof(AmmyObjectBuilder<>);
+            var tn = new CsFile().TypeName(t);
+            Assert.Equal("isukces.code.Ammy.AmmyObjectBuilder<TPropertyBrowser>", tn);
+        }
+
+        [Auto.ShouldSerializeInfoAttribute("!{0}.Equals(Foo)")]
         public struct SampleStruct
         {
             public int Number { get; set; }
@@ -79,9 +88,9 @@ namespace isukces.code.Tests
 
         public class ShouldSerializeGeneratorTestClass
         {
-            public int Number1 { get; set; }
-            public int? Number2 { get; set; }
-            public string Name { get; set; }
+            public int          Number1    { get; set; }
+            public int?         Number2    { get; set; }
+            public string       Name       { get; set; }
             public SampleStruct OtherValue { get; set; }
         }
 

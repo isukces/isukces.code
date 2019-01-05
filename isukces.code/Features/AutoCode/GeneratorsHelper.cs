@@ -60,15 +60,25 @@ namespace isukces.code.AutoCode
                 var w = new ReflectionTypeWrapper(type);
                 if (w.IsGenericType)
                 {
+                    
+                    if (w.IsGenericTypeDefinition)
                     {
-                        var nullable = w.UnwrapNullable(true);
-                        if (nullable != null)
-                            return TypeName(nullable, container) + "?";
+                        var args  = w.GetGenericArguments();
+                        var args2 = string.Join(",", args.Select(a => a.Name));
+                        fullName = type.FullName.Split('`')[0] + "<" + args2 + ">";
                     }
-                    var gt = type.GetGenericTypeDefinition();
-                    var args = w.GetGenericArguments();
-                    var args2 = string.Join(",", args.Select(a => TypeName(a, container)));
-                    fullName = gt.FullName.Split('`')[0] + "<" + args2 + ">";
+                    else
+                    {
+                        {
+                            var nullable = w.UnwrapNullable(true);
+                            if (nullable != null)
+                                return TypeName(nullable, container) + "?";
+                        }
+                        var gt    = type.GetGenericTypeDefinition();
+                        var args  = w.GetGenericArguments();
+                        var args2 = string.Join(",", args.Select(a => TypeName(a, container)));
+                        fullName = gt.FullName.Split('`')[0] + "<" + args2 + ">";
+                    }
                 }
                 else
                     fullName = type.FullName;

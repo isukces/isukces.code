@@ -45,6 +45,7 @@ namespace isukces.code
         public bool IsEnum        => _typeInfo?.IsEnum ?? false;
         public bool IsValueType   => _typeInfo?.IsValueType ?? false;
         public bool IsGenericType => _typeInfo?.IsGenericType ?? false;
+        public bool IsGenericTypeDefinition => _typeInfo?.IsGenericTypeDefinition ?? false;
 
         public Type Type { get; }
     }
