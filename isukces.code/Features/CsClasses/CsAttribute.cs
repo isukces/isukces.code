@@ -30,7 +30,9 @@ namespace isukces.code
 
         public override string ToString()
         {
-            var values = _list.Select(KeyValuePairToString);
+            var values = _list.Select(KeyValuePairToString).ToArray();
+            if (values.Length == 0)
+                return Name;
             return string.Format("{0}({1})", Name, string.Join(", ", values));
             // [PrimaryKey("Id", autoIncrement = false)]
         }
