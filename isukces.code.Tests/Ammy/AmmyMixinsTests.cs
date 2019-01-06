@@ -11,8 +11,7 @@ namespace isukces.code.Tests.Ammy
         public void T01_should_create_mixin_from_builder()
         {
             var m = new MixinBuilder<SampleWindowsControls>("test")
-                {
-                    DefaultAncestorType = typeof(SampleUserControl)
+                {                    
                 }
                 .WithPropertyGeneric(a => a.Width, 10)
                 .WithProperty(a => a.Heigth, new AmmyVariable("standardHeight"))
@@ -35,9 +34,6 @@ namespace isukces.code.Tests.Ammy
         public void T02_should_create_mixin_from_builder_with_short_type_name()
         {
             var m = new MixinBuilder<SampleWindowsControls>("test")
-                {
-                    DefaultAncestorType = typeof(SampleUserControl)
-                }
                 .WithPropertyGeneric(a => a.Width, 10)
                 .WithProperty(a => a.Heigth, new AmmyVariable("standardHeight"))
                 .WithPropertyAncestorBind<SampleUserControl>(a => a.Content, a => a.Model.FirstName);

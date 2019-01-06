@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using isukces.code.interfaces.Ammy;
+using JetBrains.Annotations;
 
 namespace isukces.code.Ammy
 {
@@ -20,32 +21,22 @@ namespace isukces.code.Ammy
             return this;
         }
 
-
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<T1>(
-            Expression<Func<TPropertyBrowser, object>> propertyNameE,
-            Expression<Func<T1, object>> action,
-            params KeyValuePair<string, string>[] bindingSettings)
+        
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TBindTo>(
+            Expression<Func<TPropertyBrowser, object>> propertyNameExpression, 
+            Expression<Func<TBindTo, object>> bindToPathExpression, 
+            [CanBeNull]KeyValuePair<string, string>[] bindingSettings = null)
         {
-            var path         = ExpressionTools.GetBindingPath(action);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameE);
-            WithPropertyAncestorBind(propertyName, path, bindingSettings);
-            return this;
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TBindTo), bindingSettings);
         }
-
-
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind(string propertyName, string path,
-            params KeyValuePair<string, string>[] bindingSettings)
-        {
-            return this.WithPropertyAncestorBind(propertyName, path, DefaultAncestorType, bindingSettings);
-        }
-
-
+       
         IAmmyCodePiece IAmmyCodePieceConvertible.ToAmmyCode(IConversionCtx ctx)
         {
             return WrappedMixin.ToAmmyCode(ctx);
         }
-
-        public Type DefaultAncestorType { get; set; }
+ 
 
         public AmmyMixin WrappedMixin { get; }
 

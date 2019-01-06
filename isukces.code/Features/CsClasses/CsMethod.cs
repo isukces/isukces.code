@@ -54,7 +54,7 @@ namespace isukces.code
             if (i.Attributes.Any())
             {
                 var joioned = string.Join(", ", i.Attributes);
-                sb.Append($"[ {joioned} ] ");
+                sb.Append($"[{joioned}] ");
             }
             if (i.UseThis)
                 sb.Append("this ");

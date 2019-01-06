@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using isukces.code.interfaces.Ammy;
+using JetBrains.Annotations;
 
 namespace isukces.code.Ammy
 {
@@ -26,10 +27,11 @@ namespace isukces.code.Ammy
         public static T WithPropertyAncestorBind<T>(this T self, 
             string propertyName, 
             string path,
-            Type ancestorType,
-            KeyValuePair<string, string>[] bindingSettings)
+            [NotNull] Type ancestorType,
+            [CanBeNull] KeyValuePair<string, string>[] bindingSettings = null)
             where T : IAmmyPropertyContainer
         {
+            if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
 
             var bind = new AmmyBind(path)

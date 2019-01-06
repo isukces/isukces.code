@@ -169,8 +169,8 @@ namespace isukces.code
         /// </summary>
         public string ConstValue
         {
-            get { return _constValue; }
-            set { _constValue = value?.Trim(); }
+            get => _constValue;
+            set => _constValue = value?.Trim();
         }
 
         public bool IsConst { get; set; }
