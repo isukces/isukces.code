@@ -11,7 +11,7 @@ namespace isukces.code.Ammy
     {
         public static IAmmyCodePiece[] GetCodePiecesUniversal(this IAmmyContainer self, IConversionCtx ctx)
         {
-            var properites   = self.Properties.ToAmmyPropertiesCode(ctx, self);
+            var properites   = self.Properties.ToAmmyPropertiesCodeWithLineSeparators(ctx, self);
             var contentItems = self.ContentItems.ToAmmyContentItemsCode(ctx, self, true);
 
             var codePieces = properites.Concat(contentItems).ToArray();

@@ -19,14 +19,20 @@ namespace isukces.code.Ammy
             {
                 switch (src)
                 {
-                    case null:
-                        return "null";
-                    case string s:
-                        return s.CsEncode();
-                    case int i:
-                        return i.ToString(CultureInfo.InvariantCulture);
-                    case double d:
-                        return d.ToString(CultureInfo.InvariantCulture);
+                    case null: return "null";
+                    case bool boolValue: return boolValue ? "true" : "false";
+                    case string stringValue: return stringValue.CsEncode();
+                    case int intValue: return intValue.ToString(CultureInfo.InvariantCulture);
+                    case long longValue: return longValue.ToString(CultureInfo.InvariantCulture);
+                    case short shortValue: return shortValue.ToString(CultureInfo.InvariantCulture);
+                    case byte byteValue: return byteValue.ToString(CultureInfo.InvariantCulture);
+                    case uint uintValue: return uintValue.ToString(CultureInfo.InvariantCulture);
+                    case ulong ulongValue: return ulongValue.ToString(CultureInfo.InvariantCulture);
+                    case ushort ushortValue: return ushortValue.ToString(CultureInfo.InvariantCulture);
+                    case sbyte sbyteValue: return sbyteValue.ToString(CultureInfo.InvariantCulture);
+                    case double doubleValue: return doubleValue.ToString(CultureInfo.InvariantCulture);
+                    case float floatValue: return floatValue.ToString(CultureInfo.InvariantCulture);
+                    case decimal decimalValue: return decimalValue.ToString(CultureInfo.InvariantCulture);
                 }
 
                 var t = src.GetType();
@@ -81,7 +87,7 @@ namespace isukces.code.Ammy
 
                 var code = ctx.AnyToCodePiece(arg ?? AmmyNone.Instance);
                 code.WriteInSeparateLines = false;
-                result[argumentIndex] = code;
+                result[argumentIndex]     = code;
             }
 
             if (take == arguments.Length)
@@ -139,6 +145,23 @@ namespace isukces.code.Ammy
                 var piece = ctx.ToAmmyPropertyCodePiece(a.Key, a.Value, objHost);
                 if (forceWriteInSeparateLines != null)
                     piece.WriteInSeparateLines = forceWriteInSeparateLines.Value;
+                return piece;
+            }).ToArray();
+            return result;
+        }
+
+        [NotNull]
+        public static IAmmyCodePiece[] ToAmmyPropertiesCodeWithLineSeparators(
+            this IEnumerable<KeyValuePair<string, object>> values,
+            IConversionCtx ctx,
+            object objHost)
+        {
+            if (values == null)
+                return new IAmmyCodePiece[0];
+            var result = values.Select(a =>
+            {
+                var piece = ctx.ToAmmyPropertyCodePiece(a.Key, a.Value, objHost);
+                piece.WriteInSeparateLines = ctx.ResolveSeparateLines(a.Key, piece, a.Value, objHost);
                 return piece;
             }).ToArray();
             return result;

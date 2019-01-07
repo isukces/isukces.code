@@ -11,9 +11,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.19005.53</AssemblyVersion>
-    <Version>1.0.19005.53</Version>
-    <FileVersion>1.0.19005.53</FileVersion>
+    <AssemblyVersion>1.0.19006.54</AssemblyVersion>
+    <Version>1.0.19006.54</Version>
+    <FileVersion>1.0.19006.54</FileVersion>
     <AssemblyTitle>iSukces.Code.Interfaces</AssemblyTitle>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>

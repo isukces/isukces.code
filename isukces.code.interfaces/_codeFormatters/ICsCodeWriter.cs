@@ -1,4 +1,5 @@
 // ReSharper disable MemberCanBePrivate.Global
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -94,6 +95,15 @@ namespace isukces.code.interfaces
         public static T WriteIndent<T>(this T _this)
             where T : ICodeWriter
         {
+            if (_this.Indent > 0)
+                _this.Append(new string(' ', _this.Indent * 4));
+            return _this;
+        }
+
+        public static T WriteNewLineAndIndent<T>(this T _this)
+            where T : ICodeWriter
+        {
+            _this.WriteLine();
             if (_this.Indent > 0)
                 _this.Append(new string(' ', _this.Indent * 4));
             return _this;

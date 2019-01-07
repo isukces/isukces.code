@@ -19,7 +19,13 @@ namespace isukces.code.interfaces.Ammy
         {
             src.AppendTo(writer, ctx);
         }
-        
+
+        public static IAmmyCodeWriter AppendCommaIf(this IAmmyCodeWriter writer, bool condition)
+        {
+            if (condition)
+                writer.Append(", ");
+            return writer;
+        }
         public static void AppendCodePiece(this IAmmyCodeWriter writer, IAmmyCodePiece piece)
         {
             switch (piece)

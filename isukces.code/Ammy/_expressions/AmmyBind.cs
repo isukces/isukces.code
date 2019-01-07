@@ -41,18 +41,35 @@ namespace isukces.code.Ammy
 
             if (Items.Any())
             {
-                var cp = Items.ToAmmyPropertiesCode(ctx, this);
-                txt.Append(" set [");
-                for (var index = 0; index < cp.Length; index++)
+                var bindingSetItems = Items.ToAmmyPropertiesCodeWithLineSeparators(ctx, this);
+                var anyInNewLine = bindingSetItems.Any(a => a.WriteInSeparateLines);
+                if (anyInNewLine)
+                    txt.WriteNewLineAndIndent().Append("set [");
+                else
+                    txt.Append(" set [");
+                txt.Indent++;
+                
+                var addComma = false;
+                for (var index = 0; index < bindingSetItems.Length; index++)
                 {
-                    if (index > 0)
-                        txt.Append(", ");
-                    txt.AppendCodePiece(cp[index]);
+                    var el = bindingSetItems[index];
+                    if (el.WriteInSeparateLines)
+                    {
+                        txt.WriteNewLineAndIndent().AppendCodePiece(el);
+                        addComma = false;
+                    }
+                    else
+                    {
+                        txt.AppendCommaIf(addComma).AppendCodePiece(el);
+                        addComma = true;
+                    }
                 }
 
+                txt.DecIndent();
+                if (anyInNewLine)
+                    txt.WriteNewLineAndIndent();
                 txt.Append("]");
             }
-
             return txt.Code;
         }
 

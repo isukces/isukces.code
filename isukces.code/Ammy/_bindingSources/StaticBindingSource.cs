@@ -1,0 +1,23 @@
+using System;
+using isukces.code.interfaces.Ammy;
+
+namespace isukces.code.Ammy
+{
+    public class StaticBindingSource : IAmmyCodePieceConvertible
+    {
+        public StaticBindingSource(Type type, string property)
+        {
+            _type     = type;
+            _property = property;
+        }
+
+        public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
+        {
+            var code = ctx.TypeName(_type) + "." + _property;
+            return new SimpleAmmyCodePiece(code);
+        }
+
+        private readonly Type _type;
+        private readonly string _property;
+    }
+}
