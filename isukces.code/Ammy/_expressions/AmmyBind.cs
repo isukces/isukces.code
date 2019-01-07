@@ -1,5 +1,6 @@
 ﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using isukces.code.interfaces;
@@ -14,6 +15,19 @@ namespace isukces.code.Ammy
             BindingPath = bindingPath;
             if (mode != null)
                 AddParameter("Mode", mode);
+        }
+
+        public static AmmyBind FromAncestor(string path, Type ancestorType, int? level = null)
+        {
+            return new AmmyBind(path)
+            {
+                From = new AncestorBindingSource(ancestorType, level)
+            };
+        }
+
+        public static AmmyBind FromAncestor<T>(string path, int? level = null)
+        {
+            return FromAncestor(path, typeof(T), level);
         }
 
         public void AddParameter(string key, object value)
@@ -42,13 +56,13 @@ namespace isukces.code.Ammy
             if (Items.Any())
             {
                 var bindingSetItems = Items.ToAmmyPropertiesCodeWithLineSeparators(ctx, this);
-                var anyInNewLine = bindingSetItems.Any(a => a.WriteInSeparateLines);
+                var anyInNewLine    = bindingSetItems.Any(a => a.WriteInSeparateLines);
                 if (anyInNewLine)
                     txt.WriteNewLineAndIndent().Append("set [");
                 else
                     txt.Append(" set [");
                 txt.Indent++;
-                
+
                 var addComma = false;
                 for (var index = 0; index < bindingSetItems.Length; index++)
                 {
@@ -70,6 +84,7 @@ namespace isukces.code.Ammy
                     txt.WriteNewLineAndIndent();
                 txt.Append("]");
             }
+
             return txt.Code;
         }
 

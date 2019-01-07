@@ -33,11 +33,7 @@ namespace isukces.code.Ammy
         {
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
-
-            var bind = new AmmyBind(path)
-            {
-                From = new AncestorBindingSource(ancestorType)
-            };
+            var bind = AmmyBind.FromAncestor(path, ancestorType);
 
             //var value = $"bind {path} from $ancestor<{ancestorType.FullName}>";
             if (bindingSettings != null && bindingSettings.Any())
