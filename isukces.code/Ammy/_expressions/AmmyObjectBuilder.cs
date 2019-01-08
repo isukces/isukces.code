@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using isukces.code.interfaces.Ammy;
 
@@ -16,6 +17,11 @@ namespace isukces.code.Ammy
         {
             return this.ToComplexAmmyCode(ctx, ctx.TypeName<TPropertyBrowser>());
         }
+        
+        /// <summary>
+        /// Additional information used by custom generators
+        /// </summary>
+        public Dictionary<string, object> UserFlags { get; } = new Dictionary<string, object>(); 
     }
 
 }
