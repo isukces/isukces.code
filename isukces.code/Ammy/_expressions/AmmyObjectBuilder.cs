@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyContainerBase, 
+    public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyContainerBase,
         IAmmyObjectBuilder<TPropertyBrowser>
     {
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
@@ -15,13 +14,31 @@ namespace isukces.code.Ammy
 
         public IComplexAmmyCodePiece ToComplexAmmyCode(IConversionCtx ctx)
         {
-            return this.ToComplexAmmyCode(ctx, ctx.TypeName<TPropertyBrowser>());
+            var opening = ctx.TypeName<TPropertyBrowser>();
+            if (!string.IsNullOrEmpty(Name))
+            {
+                if (NameKind == ObjectNameKind.Name)
+                    opening += " " + Name.CsEncode() + " ";
+                else
+                    opening += " Key=" + Name.CsEncode() + " ";
+            }
+
+            return this.ToComplexAmmyCode(ctx, opening);
         }
-        
+
         /// <summary>
-        /// Additional information used by custom generators
+        ///     Additional information used by custom generators
         /// </summary>
-        public Dictionary<string, object> UserFlags { get; } = new Dictionary<string, object>(); 
+        public Dictionary<string, object> UserFlags { get; } = new Dictionary<string, object>();
+
+        public string Name { get; set; }
+
+        public ObjectNameKind NameKind { get; set; }
     }
 
+    public enum ObjectNameKind
+    {
+        Name,
+        Key
+    }
 }
