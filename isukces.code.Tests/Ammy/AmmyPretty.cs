@@ -7,9 +7,7 @@ using isukces.code.interfaces.Ammy;
 namespace isukces.code.Tests.Ammy
 {
     public class AmmyPretty
-    {
-       
-
+    {       
         public static bool UseNewLine(ConversionCtx.ResolveSeparateLinesEventArgs args)
         {
             if (args.SourceValueHost is AmmyMixin)
@@ -111,14 +109,6 @@ namespace isukces.code.Tests.Ammy
                 return type.GetGenericArguments()[0];
             return null;
         }
-
-        
-
-        public enum X
-        {
-            Never,
-            Depends,
-            Always
-        }
+ 
     }
 }
