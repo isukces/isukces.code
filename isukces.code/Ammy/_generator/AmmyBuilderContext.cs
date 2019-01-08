@@ -4,9 +4,14 @@ namespace isukces.code.Ammy
 {
     public class AmmyBuilderContext
     {
-        public AmmyBuilderContext(string prefix)
+        public AmmyBuilderContext(string mixinNamePrefix)
         {
-            _prefix = prefix;
+            MixinNamePrefix = mixinNamePrefix;
+        }
+
+        public string GetFullMixinName(string shortName)
+        {
+            return MixinNamePrefix + shortName;
         }
 
         public IEnumerable<AmmyMixin> GetMixins()
@@ -14,15 +19,15 @@ namespace isukces.code.Ammy
             return _mixins;
         }
 
-        public MixinBuilder<T> RegisterMixin<T>(string name)
+        public MixinBuilder<T> RegisterMixin<T>(string shortName)
         {
-            var m = new MixinBuilder<T>(_prefix + name);
+            var m = new MixinBuilder<T>(GetFullMixinName(shortName));
             _mixins.Add(m.WrappedMixin);
             return m;
         }
 
+        public string MixinNamePrefix { get; }
 
         private readonly List<AmmyMixin> _mixins = new List<AmmyMixin>();
-        private readonly string _prefix;
     }
 }
