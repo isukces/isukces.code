@@ -41,10 +41,13 @@ namespace isukces.code.Ammy
                 i.Value.WriteLineTo(writ, ctx);
 
             var txt = writ.FullCode;
-            CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false);
+            if (CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false)) 
+                AfterSave?.Invoke(this, EventArgs.Empty);
             CodeParts = null;
         }
 
+        public event EventHandler AfterSave;
+        
         public void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
         {
             CodeParts = new Dictionary<string, IAmmyCodePieceConvertible>();
