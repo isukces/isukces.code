@@ -53,8 +53,7 @@ namespace isukces.code.interfaces
                             var nestedEntes = writer.AppendComplex(complexAmmyCodePiece);
                             break;
                         case ISimpleAmmyCodePiece simpleAmmyCode:
-                            writer.Append(simpleAmmyCode.Code);
-
+                            writer.AppendCodePiece(simpleAmmyCode);
                             break;
                         default:
                             throw new NotImplementedException(i.GetType().Name);
@@ -79,7 +78,7 @@ namespace isukces.code.interfaces
                             needAddNewLineForPreviousContent = false;
                             break;
                         case ISimpleAmmyCodePiece simpleAmmyCode:
-                            writer.Append(simpleAmmyCode.Code);
+                            writer.AppendCodePiece(simpleAmmyCode);
                             break;
                         default:
                             throw new NotImplementedException(i.GetType().Name);

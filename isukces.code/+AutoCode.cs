@@ -91,4 +91,36 @@ namespace isukces.code.Ammy
         }
 
     }
+
+    partial class AmmyBind
+    {
+        [isukces.code.AutocodeGenerated]
+        public AmmyBind WithBindFromAncestor<T>(int? level = null)
+        {
+            return this.WithBindFromAncestor(typeof(T), level);
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBind WithConverterStatic<T>(string propertyName)
+        {
+            return this.WithConverterStatic(typeof(T), propertyName);
+        }
+
+    }
+
+    partial class AmmyBindBuilder
+    {
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithBindFromAncestor<T>(int? level = null)
+        {
+            return this.WithBindFromAncestor(typeof(T), level);
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithConverterStatic<T>(string propertyName)
+        {
+            return this.WithConverterStatic(typeof(T), propertyName);
+        }
+
+    }
 }

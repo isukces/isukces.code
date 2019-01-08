@@ -4,7 +4,8 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyContainerBase, IAmmyCodePieceConvertible        
+    public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyContainerBase, 
+        IAmmyObjectBuilder<TPropertyBrowser>
     {
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {

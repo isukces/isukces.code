@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using isukces.code.interfaces.Ammy;
 using JetBrains.Annotations;
 
 namespace isukces.code.Ammy
 {
-    public class AmmyBindBuilder
+    public partial class AmmyBindBuilder : IAmmyBindConverterHost, IAmmyBindSourceHost
     {
         public AmmyBindBuilder(string path)
         {
@@ -15,55 +16,37 @@ namespace isukces.code.Ammy
         {
             var ab = new AmmyBind(Path);
             if (Mode != null)
-                ab.AddParameter("Mode", Mode.Value);
+                ab.WithMode(Mode.Value);
             if (Converter != null)
-                ab.AddParameter("Converter", Converter);
+                ab.WithConverter(Converter);
             if (ValidationRules.Count > 0)
             {
                 if (ValidationRules.Count == 1)
                 {
-                    ab.AddParameter("ValidationRules", ValidationRules[0]);
+                    ab.WithValidationRules(ValidationRules[0]);
                 }
                 else
                 {
                     var array = new AmmyArray();
                     foreach (var i in ValidationRules)
                         array.Items.Add(i);
-                    ab.AddParameter("ValidationRules", array);
+                    ab.WithValidationRules(array);
                 }
             }
 
             ab.From = From;
             return ab;
         }
-
-
-        public AmmyBindBuilder WithFromAncestor([NotNull] Type ancestorType, int? level = null)
-        {
-            if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
-            From = new AncestorBindingSource(ancestorType, level);
-            return this;
-        }
-        
-        public AmmyBindBuilder WithFromAncestor<T>(int? level = null)
-        {
-            return WithFromAncestor(typeof(T), level);
-        }
-
+ 
         public AmmyBindBuilder WithFrom(object data)
         {
             From = data;
             return this;
         }
-       
+
         public AmmyBindBuilder WithMode(DataBindingMode mode)
         {
             Mode = mode;
-            return this;
-        }
-        public AmmyBindBuilder WithConverter(object converter)
-        {
-            Converter = converter;
             return this;
         }
 
@@ -74,11 +57,20 @@ namespace isukces.code.Ammy
             return this;
         }
 
+        void IAmmyBindConverterHost.SetBindConverter(object converter)
+        {
+            Converter = converter;
+        }
+
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public string           Path            { get; set; }
         public DataBindingMode? Mode            { get; set; }
         public object           From            { get; set; }
         public object           Converter       { get; set; }
         public List<object>     ValidationRules { get; } = new List<object>();
+        void IAmmyBindSourceHost.SetBindingSource(object bindingSource)
+        {
+            From = bindingSource;
+        }
     }
 }

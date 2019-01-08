@@ -36,7 +36,21 @@ namespace isukces.code.interfaces.Ammy
                     writer.AppendComplex(complexAmmyCodePiece);
                     break;
                 case ISimpleAmmyCodePiece simpleAmmyCodePiece:
-                    writer.Append(simpleAmmyCodePiece.Code);
+                    
+                    foreach (var c in simpleAmmyCodePiece.Code)
+                    {
+                        switch (c)
+                        {
+                            case '\r':
+                                continue;
+                            case '\n':
+                                writer.WriteNewLineAndIndent();
+                                break;
+                            default:
+                                writer.Append(c.ToString());
+                                break;
+                        }
+                    }
                     break;
                 default:
                     throw new NotSupportedException(piece.GetType().ToString());

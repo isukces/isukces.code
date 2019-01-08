@@ -132,6 +132,7 @@ namespace isukces.code.Ammy
             return result;
         }
 
+        /*
         [NotNull]
         public static IAmmyCodePiece[] ToAmmyPropertiesCode(this IEnumerable<KeyValuePair<string, object>> values,
             IConversionCtx ctx,
@@ -149,6 +150,7 @@ namespace isukces.code.Ammy
             }).ToArray();
             return result;
         }
+        */
 
         [NotNull]
         public static IAmmyCodePiece[] ToAmmyPropertiesCodeWithLineSeparators(
@@ -171,6 +173,20 @@ namespace isukces.code.Ammy
             object objHost)
         {
             var piece = ToCodePieceWithLineSeparators(ctx, value, propertyName, objHost);
+            return WithPropertyNameBefore(piece, propertyName);
+        }
+
+        [NotNull]
+        public static IAmmyCodePiece ToCodePieceWithLineSeparators(this IConversionCtx ctx, object obj,
+            string propertyName, object objHost)
+        {
+            var tmp = AnyToCodePiece(ctx, obj);
+            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp, obj, objHost);
+            return tmp;
+        }
+
+        public static IAmmyCodePiece WithPropertyNameBefore(this IAmmyCodePiece piece, string propertyName)
+        {
             if (string.IsNullOrEmpty(propertyName))
                 return piece;
 
@@ -188,15 +204,6 @@ namespace isukces.code.Ammy
                 default:
                     throw new NotSupportedException(piece.GetType().ToString());
             }
-        }
-
-        [NotNull]
-        public static IAmmyCodePiece ToCodePieceWithLineSeparators(this IConversionCtx ctx, object obj,
-            string propertyName, object objHost)
-        {
-            var tmp = AnyToCodePiece(ctx, obj);
-            tmp.WriteInSeparateLines = ctx.ResolveSeparateLines(propertyName, tmp, obj, objHost);
-            return tmp;
         }
     }
 }

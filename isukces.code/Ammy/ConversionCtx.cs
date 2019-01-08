@@ -53,6 +53,8 @@ namespace isukces.code.Ammy
             /// Object that: SourceValue.PropertyName = SourceValue
             /// </summary>
             public object SourceValueHost { get; set; }
+
+            public bool Handled { get; set; }
         }
     }
 }

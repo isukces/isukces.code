@@ -20,6 +20,9 @@ namespace AutoCodeBuilder
                 .WithSkip<AmmyContainerBase>()
                 .WithSkip<AmmyMixin>();
             autoCodeGenerator.CodeGenerators.Add(ammyPropertyContainerMethodGenerator);
+
+            autoCodeGenerator.CodeGenerators.Add(new AmmyBindConverterHostGenerator());
+            autoCodeGenerator.CodeGenerators.Add(new AmmyBindSourceHostGenerator());
             
             
             var saved        = false;

@@ -34,7 +34,7 @@ namespace isukces.code.Tests.Ammy
         {
             var a = new AmmyBindBuilder("PropName")
                 .WithMode(DataBindingMode.OneTime)
-                .WithConverter(new AmmyStaticResource("MyConverter"))
+                .WithConverterStaticResource("MyConverter")
                 .Build();            
             var            writer = new AmmyCodeWriter();
             IConversionCtx ctx    = new ConversionCtx(writer);
@@ -65,7 +65,7 @@ namespace isukces.code.Tests.Ammy
                 .WithProperty(aa => aa.MinValue, 12);
             var a = new AmmyBindBuilder("PropName")                
                 .WithValidationRule(vr)
-                .WithFromAncestor<AmmyBindingTests>()
+                .WithBindFromAncestor<AmmyBindingTests>()
                 .Build();            
             var            writer = new AmmyCodeWriter();
             ConversionCtx ctx    = new ConversionCtx(writer);
@@ -76,9 +76,9 @@ namespace isukces.code.Tests.Ammy
             };
             a.AppendTo(writer, ctx);
             const string expected = @"bind ""PropName"" from $ancestor<isukces.code.Tests.Ammy.AmmyBindingTests>
-set [
-    ValidationRules: isukces.code.Tests.Ammy.AmmyBindingTests.SampleValidationRule { MinValue: 12 }
-]";
+    set [
+        ValidationRules: isukces.code.Tests.Ammy.AmmyBindingTests.SampleValidationRule { MinValue: 12 }
+    ]";
             Assert.Equal(expected, writer.Code);
         }
 

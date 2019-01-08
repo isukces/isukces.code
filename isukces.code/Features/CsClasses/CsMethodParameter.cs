@@ -4,7 +4,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsMethodParameter : IComparable, IAttributable 
+    public class CsMethodParameter : IComparable, IAttributable
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -34,8 +34,8 @@ namespace isukces.code
         /// </summary>
         public CsMethodParameter(string name, string type, string description)
         {
-            Name = name;
-            Type = type;
+            Name        = name;
+            Type        = type;
             Description = description;
         }
 
@@ -49,7 +49,7 @@ namespace isukces.code
         {
             return ReferenceEquals(left, null)
                 ? ReferenceEquals(right, null)
-                : !ReferenceEquals(right, null) && (left.Name == right.Name) && (left.Type == right.Type);
+                : !ReferenceEquals(right, null) && left.Name == right.Name && left.Type == right.Type;
         }
 
         public static bool operator >(CsMethodParameter left, CsMethodParameter right)
@@ -137,6 +137,18 @@ namespace isukces.code
             return string.Format("{0} {1} {2}", Visibility.ToString().ToLower(), Type, Name);
         }
 
+        public CsMethodParameter WithConstValue(string constValue)
+        {
+            ConstValue = constValue;
+            return this;
+        }
+
+        public CsMethodParameter WithConstValueNull()
+        {
+            ConstValue = "null";
+            return this;
+        }
+
         public CsMethodParameter WithDescription(string description)
         {
             Description = description;
@@ -146,12 +158,6 @@ namespace isukces.code
         public CsMethodParameter WithIsReadOnly(bool isReadOnly = true)
         {
             IsReadOnly = isReadOnly;
-            return this;
-        }
-        
-        public CsMethodParameter WithConstValue(string constValue)
-        {
-            ConstValue=  constValue;
             return this;
         }
 
@@ -194,8 +200,8 @@ namespace isukces.code
         /// </summary>
         public string Description
         {
-            get { return _description; }
-            set { _description = value?.Trim() ?? string.Empty; }
+            get => _description;
+            set => _description = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -203,8 +209,8 @@ namespace isukces.code
         /// </summary>
         public IList<ICsAttribute> Attributes
         {
-            get { return _attributes; }
-            set { _attributes = value ?? new List<ICsAttribute>(); }
+            get => _attributes;
+            set => _attributes = value ?? new List<ICsAttribute>();
         }
 
         /// <summary>
@@ -228,6 +234,5 @@ namespace isukces.code
         private string _constValue = string.Empty;
         private string _description = string.Empty;
         private IList<ICsAttribute> _attributes = new List<ICsAttribute>();
-                
     }
 }

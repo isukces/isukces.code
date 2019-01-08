@@ -38,7 +38,7 @@ namespace isukces.code.Ammy
             //var value = $"bind {path} from $ancestor<{ancestorType.FullName}>";
             if (bindingSettings != null && bindingSettings.Any())
                 foreach (var i in bindingSettings)
-                    bind.AddParameter(i.Key, new SimpleAmmyCodePiece(i.Value));
+                    bind.WithSetParameter(i.Key, new SimpleAmmyCodePiece(i.Value));
             self.WithProperty(propertyName, bind);
             return self;
         }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using isukces.code.Ammy;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
@@ -110,5 +109,7 @@ namespace isukces.code.Tests.Ammy
 
             Assert.Equal("1,none,3,none,none,", writer.Code);
         }
+
+      
     }
 }

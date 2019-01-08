@@ -50,7 +50,6 @@ namespace isukces.code.Ammy
             CodeParts = new Dictionary<string, IAmmyCodePieceConvertible>();
         }
 
-
         public virtual void Generate(Type type, IAutoCodeGeneratorContext context)
         {
             var methods = type.GetTypeInfo().GetMethods(BindingFlags.Static | BindingFlags.Public);
