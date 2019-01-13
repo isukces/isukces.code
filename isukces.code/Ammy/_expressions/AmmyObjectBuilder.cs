@@ -26,6 +26,14 @@ namespace isukces.code.Ammy
             return this.ToComplexAmmyCode(ctx, opening);
         }
 
+
+        public AmmyObjectBuilder<TPropertyBrowser> WithName(string name, ObjectNameKind nameKind = ObjectNameKind.Name)
+        {
+            Name     = name;
+            NameKind = nameKind;
+            return this;
+        }
+
         /// <summary>
         ///     Additional information used by custom generators
         /// </summary>

@@ -48,6 +48,19 @@ namespace isukces.code.Ammy
             return this.WithPropertyNotNull(mi.Member.Name, value);
         }
 
+        [isukces.code.AutocodeGenerated]
+        public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
+        {
+            return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
+        {
+            (this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);
+            return this;
+        }
+
     }
 
     partial class AmmyObjectBuilder<TPropertyBrowser>
@@ -88,6 +101,19 @@ namespace isukces.code.Ammy
         {
             var mi = AmmyHelper.GetMemberInfo(func);
             return this.WithPropertyNotNull(mi.Member.Name, value);
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
+        {
+            return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
+        {
+            (this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);
+            return this;
         }
 
     }

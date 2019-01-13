@@ -82,6 +82,30 @@ namespace AutoCodeBuilder
                 p.Attributes.Add(new CsAttribute("CanBeNull"));
                 p.ConstValue = "null";
             }
+            
+            {
+                // ======== WithPropertyStaticResource
+                var cf = new CsCodeWriter();
+                cf.WriteLine("return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));");
+
+                var m = CreateMethod("WithPropertyStaticResource", type, cl, cf);
+                var p = m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
+                p.Attributes.Add(new CsAttribute("NotNull"));
+                p = m.AddParam("resourceName", "string");
+                p.Attributes.Add(new CsAttribute("NotNull"));
+            }
+            {
+                // ======== WithPropertyStaticResource ver 2
+                var cf = new CsCodeWriter();
+                cf.WriteLine("(this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);");
+                cf.WriteLine("return this;");
+
+                var m = CreateMethod("WithPropertyStaticResource", type, cl, cf);
+                var p = m.AddParam("propertyName", "string");
+                p.Attributes.Add(new CsAttribute("NotNull"));
+                p = m.AddParam("resourceName", "string");
+                p.Attributes.Add(new CsAttribute("NotNull"));
+            }
         }
 
         public AmmyPropertyContainerMethodGenerator WithSkip<T>()
