@@ -11,6 +11,11 @@ namespace isukces.code.Ammy
 {
     public class AmmyAutocodeGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
     {
+        public void AddVariable(string name, string value)
+        {
+            CodeParts["a VARIABLE " + name] = new AmmyVariableDefinition(name, value);
+        }
+        
         public AmmyAutocodeGenerator(Func<Assembly, FileInfo> getFileLocation)
         {
             _getFileLocation = getFileLocation;
@@ -25,13 +30,6 @@ namespace isukces.code.Ammy
             }
 
             var fi = _getFileLocation(assembly);
-
-            /*
-            InitCodeWriter?.Invoke(this, new InitCodeWriterEventArgs
-            {
-                CodeWriter = _writer
-            });
-            */
 
             var ctx = new ConversionCtx(_writer);
             {
