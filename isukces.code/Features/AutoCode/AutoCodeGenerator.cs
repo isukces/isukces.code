@@ -47,7 +47,7 @@ namespace isukces.code.AutoCode
             _csFile = new CsFile();
             foreach (var i in FileNamespaces)
                 _csFile.AddImportNamespace(i);
-            _classes = new Dictionary<Type, CsClass>();
+            _classes = new Dictionary<TypeProvider, CsClass>();
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
             {
@@ -89,15 +89,14 @@ namespace isukces.code.AutoCode
         }
 
 
-        private CsClass GetOrCreateClass(Type type)
+        private CsClass GetOrCreateClass(TypeProvider type)
         {
             return _csFile.GetOrCreateClass(type, _classes);
         }
 
         private object ResolveConfigInternal(Type type)
         {
-            object value;
-            if (_configs.TryGetValue(type, out value))
+            if (_configs.TryGetValue(type, out var value))
                 return value;
             value          = Activator.CreateInstance(type);
             _configs[type] = value;
@@ -113,7 +112,7 @@ namespace isukces.code.AutoCode
 
         private readonly Dictionary<Type, object> _configs = new Dictionary<Type, object>();
 
-        private Dictionary<Type, CsClass> _classes;
+        private Dictionary<TypeProvider, CsClass> _classes;
         private CsFile _csFile;
     }
 }

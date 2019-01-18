@@ -27,7 +27,7 @@ namespace isukces.code.Tests
         public void T02_Should_Create_operator()
         {
             var cl = new CsClass("Src1");
-            cl.Kind = NamespaceMemberKind.Struct;
+            cl.Kind = CsNamespaceMemberKind.Struct;
             var m  = cl.AddMethod("*", "Result")
                 .WithBody("return new Result(left.Value * right.Value);");
             m.AddParam("left",  "Src1");
@@ -85,7 +85,7 @@ namespace isukces.code.Tests
         {
             var cl = new CsClass("ITest")
             {
-                Kind = NamespaceMemberKind.Interface
+                Kind = CsNamespaceMemberKind.Interface
             };
             var m = cl.AddMethod("Count", "int")
                 .WithBody("return 12;");

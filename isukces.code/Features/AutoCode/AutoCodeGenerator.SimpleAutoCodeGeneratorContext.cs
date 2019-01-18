@@ -7,7 +7,7 @@ namespace isukces.code.AutoCode
     {
         private class SimpleAutoCodeGeneratorContext : IAutoCodeGeneratorContext
         {
-            public SimpleAutoCodeGeneratorContext(Func<Type, CsClass> getOrCreateClassFunc,
+            public SimpleAutoCodeGeneratorContext(Func<TypeProvider, CsClass> getOrCreateClassFunc,
                 Action<string> addNamespaceAction, Func<Type, object> resolveConfigFunc)
             {
                 GetOrCreateClassFunc = getOrCreateClassFunc;
@@ -20,7 +20,7 @@ namespace isukces.code.AutoCode
                 AddNamespaceAction(namepace);
             }
 
-            public CsClass GetOrCreateClass(Type type)
+            public CsClass GetOrCreateClass(TypeProvider type)
             {
                 return GetOrCreateClassFunc(type);
             }
@@ -31,7 +31,7 @@ namespace isukces.code.AutoCode
             }
 
             public Func<Type, object> ResolveConfigFunc { get; set; }
-            public Func<Type, CsClass> GetOrCreateClassFunc { get; set; }
+            public Func<TypeProvider, CsClass> GetOrCreateClassFunc { get; set; }
             public Action<string> AddNamespaceAction { get; set; }
         }
     }

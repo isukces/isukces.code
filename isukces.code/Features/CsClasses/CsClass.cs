@@ -402,7 +402,7 @@ namespace isukces.code
             if (visibilityAsString != null) x.Add(visibilityAsString);
             switch (Kind)
             {
-                case NamespaceMemberKind.Class:
+                case CsNamespaceMemberKind.Class:
                     if (GetIsAbstract())
                         x.Add("abstract");
                     if (IsStatic)
@@ -411,12 +411,12 @@ namespace isukces.code
                         x.Add("partial");
                     x.Add("class");
                     break;
-                case NamespaceMemberKind.Interface:
+                case CsNamespaceMemberKind.Interface:
                     if (IsPartial)
                         x.Add("partial");
                     x.Add("interface");
                     break;
-                case NamespaceMemberKind.Struct:
+                case CsNamespaceMemberKind.Struct:
                     if (IsPartial)
                         x.Add("partial");
                     x.Add("struct");
@@ -588,9 +588,9 @@ namespace isukces.code
         /// <summary>
         ///     emit as interface
         /// </summary>
-        public bool IsInterface => Kind == NamespaceMemberKind.Interface;
+        public bool IsInterface => Kind == CsNamespaceMemberKind.Interface;
 
-        public NamespaceMemberKind Kind { get; set; }
+        public CsNamespaceMemberKind Kind { get; set; }
 
         public LanguageFeatures Features { get; set; } = DefaultLanguageFeatures;
 

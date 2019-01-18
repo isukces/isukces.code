@@ -17,7 +17,7 @@ namespace isukces.code.Tests
             IAutoCodeGeneratorContext ctx = new TestContext();
             var                       cl  = gen.Make(typeof(GeneratorsTests), ctx);
             Assert.NotNull(cl);
-            Assert.Equal(cl.Kind, NamespaceMemberKind.Class);
+            Assert.Equal(cl.Kind, CsNamespaceMemberKind.Class);
             Assert.True(cl.IsPartial);
         }
 
@@ -28,7 +28,7 @@ namespace isukces.code.Tests
             IAutoCodeGeneratorContext ctx = new TestContext();
             var                       cl  = gen.Make(typeof(SampleInterface), ctx);
             Assert.NotNull(cl);
-            Assert.Equal(cl.Kind, NamespaceMemberKind.Interface);
+            Assert.Equal(cl.Kind, CsNamespaceMemberKind.Interface);
             Assert.True(cl.IsPartial);
         }
 
@@ -39,16 +39,16 @@ namespace isukces.code.Tests
             IAutoCodeGeneratorContext ctx = new TestContext();
             var                       cl  = gen.Make(typeof(SampleStruct), ctx);
             Assert.NotNull(cl);
-            Assert.Equal(cl.Kind, NamespaceMemberKind.Struct);
+            Assert.Equal(cl.Kind, CsNamespaceMemberKind.Struct);
             Assert.True(cl.IsPartial);
         }
 
         [Fact]
         public void T04_should_recognize_type()
         {
-            Assert.Equal(NamespaceMemberKind.Struct, typeof(SampleStruct).GetNamespaceMemberKind());
-            Assert.Equal(NamespaceMemberKind.Interface, typeof(SampleInterface).GetNamespaceMemberKind());
-            Assert.Equal(NamespaceMemberKind.Class, typeof(GeneratorsTests).GetNamespaceMemberKind());
+            Assert.Equal(CsNamespaceMemberKind.Struct, typeof(SampleStruct).GetNamespaceMemberKind());
+            Assert.Equal(CsNamespaceMemberKind.Interface, typeof(SampleInterface).GetNamespaceMemberKind());
+            Assert.Equal(CsNamespaceMemberKind.Class, typeof(GeneratorsTests).GetNamespaceMemberKind());
         }
 
         [Theory]
@@ -109,12 +109,13 @@ namespace isukces.code.Tests
             {
                 throw new NotImplementedException();
             }
+            
 
-            public CsClass GetOrCreateClass(Type type)
+            public CsClass GetOrCreateClass(TypeProvider type)
             {
                 if (_file == null)
                     _file = new CsFile();
-                return _file.GetOrCreateClass(type, new Dictionary<Type, CsClass>());
+                return _file.GetOrCreateClass(type, new Dictionary<TypeProvider, CsClass>());
             }
 
             public T ResolveConfig<T>() where T : class, IAutoCodeConfiguration, new()

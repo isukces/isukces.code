@@ -6,17 +6,6 @@ namespace isukces.code
 {
     public static class CsClassMemberExtensions2
     {
-        public static NamespaceMemberKind GetNamespaceMemberKind(this Type type)
-        {
-            if (type == null) throw new ArgumentNullException(nameof(type));
-            var ti = type.GetTypeInfo();
-            if (ti.IsInterface)
-                return NamespaceMemberKind.Interface;
-            if (ti.IsValueType)
-                return NamespaceMemberKind.Struct;
-            return NamespaceMemberKind.Class;
-        }
-
         public static T WithAttribute<T>(this T method, string name)
             where T : ICsClassMember
         {

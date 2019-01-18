@@ -31,42 +31,86 @@ namespace isukces.code.CodeWrite
             return ns.GetOrCreateClass(className);
         }
 
-        public CsClass GetOrCreateClass(Type type, Dictionary<Type, CsClass> classesCache)
+        public CsClass GetOrCreateClass(TypeProvider typeP, Dictionary<TypeProvider, CsClass> classesCache)
         {
-            if (classesCache.TryGetValue(type, out var c))
+            if (typeP.IsEmpty)
+                throw new ArgumentException("Value can't be empty", nameof(typeP));
+            if (classesCache.TryGetValue(typeP, out var c))
+            {
+                if (c.DotNetType == null && typeP.Type != null)
+                    c.DotNetType = typeP.Type;
                 return c;
-            var name = type.Name;
-            var ti = type.GetTypeInfo();
-            if (ti.IsGenericType)
-            {
-                if (!ti.IsGenericTypeDefinition)
-                    throw new NotSupportedException();
-                name = name.Split('`')[0];
-                var nn = ti.GetGenericArguments().Select(a => a.Name);
-                name += "<" + string.Join(",", nn) + ">";
-            }
-            if (type.DeclaringType == null)
-            {
-                var a = classesCache[type] = new CsClass(name)
-                {
-                    IsPartial  = true,
-                    DotNetType = type,
-                    Owner      = this,
-                    Visibility = Visibilities.InterfaceDefault,
-                    Kind       = type.GetNamespaceMemberKind()
-                };
-                var ns = GetOrCreateNamespace(type.Namespace);
-                ns.AddClass(a);
-                return a;
             }
 
-            var parent   = GetOrCreateClass(type.DeclaringType, classesCache);
-            var existing = parent.GetOrCreateNested(name);
-            existing.IsPartial  = true;
-            existing.DotNetType = type;
-            existing.Kind       = type.GetNamespaceMemberKind();
-            existing.Visibility = Visibilities.InterfaceDefault;
-            return existing;
+            if (typeP.Type != null)
+            {
+                var type = typeP.Type;
+                var name = type.Name;
+                var ti   = type.GetTypeInfo();
+                if (ti.IsGenericType)
+                {
+                    if (!ti.IsGenericTypeDefinition)
+                        throw new NotSupportedException();
+                    name = name.Split('`')[0];
+                    var nn = ti.GetGenericArguments().Select(a => a.Name);
+                    name += "<" + string.Join(",", nn) + ">";
+                }
+
+                if (type.DeclaringType == null)
+                {
+                    var ns       = GetOrCreateNamespace(type.Namespace);
+                    var existing = ns.Classes.FirstOrDefault(a => a.Name == name);
+                    if (existing == null)
+                    {
+                        existing = new CsClass(name)
+                        {
+                            IsPartial  = true,
+                            Owner      = this,
+                            Visibility = Visibilities.InterfaceDefault,
+                            Kind       = type.GetNamespaceMemberKind()
+                        };
+                        ns.AddClass(existing);
+                    }
+
+                    existing.DotNetType = type;
+                    classesCache[typeP] = existing;
+                    return existing;
+                }
+
+                {
+                    var parent   = GetOrCreateClass(TypeProvider.FromType(type.DeclaringType), classesCache);
+                    var existing = parent.GetOrCreateNested(name);
+                    existing.IsPartial  = true;
+                    existing.DotNetType = type;
+                    existing.Kind       = type.GetNamespaceMemberKind();
+                    existing.Visibility = Visibilities.InterfaceDefault;
+                    return existing;
+                }
+            }
+
+            {
+                var typeNameParts  = typeP.TypeName.Split('.');
+                var namespaceParts = typeNameParts.Take(typeNameParts.Length - 1).ToArray();
+                var namespaceName  = string.Join(".", namespaceParts);
+                var ns             = GetOrCreateNamespace(namespaceName);
+
+                var name   = typeNameParts.Last();
+                var result = ns.Classes.FirstOrDefault(aa => aa.Name == name);
+                if (result != null)
+                    return classesCache[typeP] = result;
+
+                result = classesCache[typeP] = new CsClass(name)
+                {
+                    IsPartial = true,
+                    // DotNetType = type, // UNKNOWN
+                    Owner      = this,
+                    Visibility = Visibilities.InterfaceDefault,
+                    Kind       = typeP.Kind
+                };
+
+                ns.AddClass(result);
+                return result;
+            }
         }
 
         public CsNamespace GetOrCreateNamespace(string name)
@@ -150,7 +194,7 @@ namespace isukces.code.CodeWrite
             return GetCode();
         }
 
-        
+
         public string TypeName(Type type)
         {
             return GeneratorsHelper.TypeName(type, this);
