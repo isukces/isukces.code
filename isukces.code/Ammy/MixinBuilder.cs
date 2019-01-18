@@ -19,18 +19,7 @@ namespace isukces.code.Ammy
             var propertyName = ExpressionTools.GetBindingPath(propertyNameE);
             this.WithProperty(propertyName, value);
             return this;
-        }
-
-        
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TBindTo>(
-            Expression<Func<TPropertyBrowser, object>> propertyNameExpression, 
-            Expression<Func<TBindTo, object>> bindToPathExpression, 
-            [CanBeNull]KeyValuePair<string, string>[] bindingSettings = null)
-        {
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TBindTo), bindingSettings);
-        }
+        }            
        
         IAmmyCodePiece IAmmyCodePieceConvertible.ToAmmyCode(IConversionCtx ctx)
         {

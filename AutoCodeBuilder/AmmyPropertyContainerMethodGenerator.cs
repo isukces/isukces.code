@@ -77,7 +77,7 @@ namespace AutoCodeBuilder
 
                 var m = CreateMethod("WithPropertyAncestorBind<TAncestor>", type, cl, cf);
                 m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
-                m.AddParam("bindToPathExpression", "Expression<Func<TPropertyBrowser, object>>");
+                m.AddParam("bindToPathExpression", "Expression<Func<TAncestor, object>>");
                 var p = m.AddParam("bindingSettings", "KeyValuePair<string, string>[]");
                 p.Attributes.Add(new CsAttribute("CanBeNull"));
                 p.ConstValue = "null";
