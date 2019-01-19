@@ -19,7 +19,7 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] KeyValuePair<string, string>[] bindingSettings = null)
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
             var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
@@ -74,7 +74,7 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] KeyValuePair<string, string>[] bindingSettings = null)
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
             var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);

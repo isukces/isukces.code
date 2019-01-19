@@ -110,6 +110,5 @@ namespace isukces.code.Tests.Ammy
             Assert.Equal("1,none,3,none,none,", writer.Code);
         }
 
-      
     }
 }

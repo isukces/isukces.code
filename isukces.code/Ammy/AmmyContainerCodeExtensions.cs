@@ -28,17 +28,20 @@ namespace isukces.code.Ammy
             string propertyName, 
             string path,
             [NotNull] Type ancestorType,
-            [CanBeNull] KeyValuePair<string, string>[] bindingSettings = null)
+            [CanBeNull] Action<AmmyBind> bindingSettings = null)
             where T : IAmmyPropertyContainer
         {
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
-            var bind = AmmyBind.FromAncestor(path, ancestorType);
+            AmmyBind bind = AmmyBind.FromAncestor(path, ancestorType);
 
             //var value = $"bind {path} from $ancestor<{ancestorType.FullName}>";
+            /*
             if (bindingSettings != null && bindingSettings.Any())
                 foreach (var i in bindingSettings)
                     bind.WithSetParameter(i.Key, new SimpleAmmyCodePiece(i.Value));
+                    */
+            bindingSettings?.Invoke(bind);
             self.WithProperty(propertyName, bind);
             return self;
         }

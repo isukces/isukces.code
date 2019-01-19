@@ -72,13 +72,12 @@ namespace AutoCodeBuilder
                 var cf = new CsCodeWriter();
                 cf.WriteLine("var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);");
                 cf.WriteLine("var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);");
-                cf.WriteLine(
-                    "return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);");
+                cf.WriteLine("return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);");
 
                 var m = CreateMethod("WithPropertyAncestorBind<TAncestor>", type, cl, cf);
                 m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
                 m.AddParam("bindToPathExpression", "Expression<Func<TAncestor, object>>");
-                var p = m.AddParam("bindingSettings", "KeyValuePair<string, string>[]");
+                var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
                 p.Attributes.Add(new CsAttribute("CanBeNull"));
                 p.ConstValue = "null";
             }
