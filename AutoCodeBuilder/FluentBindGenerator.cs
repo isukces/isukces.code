@@ -9,12 +9,11 @@ namespace AutoCodeBuilder
 {
     internal class FluentBindGenerator : BaseGenerator, IAutoCodeGenerator
     {
-        const string ValidationRules = "ValidationRules";
         static FluentBindGenerator()
         {
-            void Add<T>(string name, bool addStatic = false)
+            void Add<T>(string name, bool addStatic = false, bool isNormalProperty = false)
             {
-                BindingParams.Add(new BindingParamInfo(typeof(T), name, addStatic));
+                BindingParams.Add(new BindingParamInfo(typeof(T), name, addStatic, isNormalProperty));
             }
 
             Add<DataBindingMode>("Mode");
@@ -40,7 +39,23 @@ namespace AutoCodeBuilder
             Add<bool>("ValidatesOnDataErrors");
             Add<bool>("ValidatesOnExceptions");
             Add<string>("XPath");
+
+            Add<object>("From", true, true);
+            Add<string>("Path", false, true);
         }
+
+        private static Type MakeNullable(Type type)
+        {
+            return type.IsValueType
+                ? typeof(Nullable<>).MakeGenericType(type)
+                : type;
+        }
+
+        private static string SetPropertyAndReturnThis(string propertyName, string value)
+        {
+            return $"{propertyName} = {value}; return this;";
+        }
+
 
         public void Generate(Type type, IAutoCodeGeneratorContext context)
         {
@@ -48,16 +63,57 @@ namespace AutoCodeBuilder
             {
                 _currentClass = context.GetOrCreateClass(type);
                 foreach (var i in BindingParams)
-                    AddFluentMethod(i.Type, i.Name, i.AddStatic);
-            }else if (type == typeof(AmmyBindBuilder))
+                    AddFluentMethod(
+                        (paramName, argName) =>
+                        {
+                            if (i.IsNormalProperty)
+                                return SetPropertyAndReturnThis(paramName, argName);
+                            return $"return WithSetParameter({paramName.CsEncode()}, {argName});";
+                        },
+                        i.Type, i.Name, i.AddStatic, !i.IsNormalProperty);
+            }
+            else if (type == typeof(AmmyBindBuilder))
             {
                 BuildAmmyBindBuilder(context);
             }
         }
 
+
+        private void AddFluentMethod(Func<string, string, string> creator, Type type, string paramName, bool addStatic,
+            bool addObjectOverload)
+        {
+            {
+                var methodName = "With" + paramName;
+                var argName    = paramName.FirstLower();
+                // var body       = $"return WithSetParameter({paramName.CsEncode()}, {argName});";
+                var body = creator(paramName, argName);
+                var m = _currentClass.AddMethod(methodName, _currentClass.Name)
+                    .WithBody(body);
+                m.AddParam(argName, _currentClass.TypeName(type));
+                m.WithAttribute(_currentClass, typeof(AutocodeGeneratedAttribute));
+                if (type == typeof(object))
+                    return;
+                if (addObjectOverload)
+                    AddFluentMethod(creator, typeof(object), paramName, false, false);
+            }
+            if (addStatic)
+            {
+                var          methodName = "With" + paramName + "Static<T>";
+                const string argName    = "propertyName";
+                var          variable   = paramName.FirstLower();
+                var          c          = new CsCodeWriter();
+                c.WriteLine($"var {variable} = new StaticBindingSource(typeof(T), {argName});");
+                c.WriteLine($"return WithSetParameter({paramName.CsEncode()}, {variable});");
+                var m = _currentClass.AddMethod(methodName, _currentClass.Name)
+                    .WithBody(c)
+                    .WithAutocodeGeneratedAttribute(_currentClass);
+                m.AddParam(argName, _currentClass.TypeName(typeof(string)));
+
+            }
+        }
+
         private void BuildAmmyBindBuilder(IAutoCodeGeneratorContext context)
         {
-            
             _currentClass = context.GetOrCreateClass(typeof(AmmyBindBuilder));
             var setupCode = new CsCodeWriter();
             foreach (var i in BindingParams)
@@ -75,7 +131,7 @@ namespace AutoCodeBuilder
                 {
                     type2 = MakeNullable(type2);
                     setupCode.SingleLineIf(
-                        $"{i.Name} != null", 
+                        $"{i.Name} != null",
                         $"bind.With{i.Name}({i.Name});");
                 }
 
@@ -84,6 +140,11 @@ namespace AutoCodeBuilder
                     .WithMakeAutoImplementIfPossible()
                     .WithIsPropertyReadOnly(isReadOnly);
                 p.ConstValue = init;
+
+                if (!isReadOnly)
+                    AddFluentMethod(
+                        SetPropertyAndReturnThis,
+                        type2, i.Name, i.AddStatic, false);
             }
 
             _currentClass.AddMethod("SetupAmmyBind", "void")
@@ -94,59 +155,25 @@ namespace AutoCodeBuilder
                 .AddParam<AmmyBind>("bind", _currentClass);
         }
 
-        private static Type MakeNullable(Type type)
-        {
-            return type.IsValueType 
-                ? typeof(Nullable<>).MakeGenericType(type) 
-                : type;
-        }
-
-
-        private void AddFluentMethod(Type type, string paramName, bool addStatic)
-        {
-            {
-                var methodName = "With" + paramName;
-                var argName    = paramName.FirstLower();
-                var body       = $"return WithSetParameter({paramName.CsEncode()}, {argName});";
-                var m = _currentClass.AddMethod(methodName, _currentClass.Name)
-                    .WithBody(body);
-                m.AddParam(argName, _currentClass.TypeName(type));
-                m.WithAttribute(_currentClass, typeof(AutocodeGeneratedAttribute));
-                if (type == typeof(object))
-                    return;
-                AddFluentMethod(typeof(object), paramName, false);
-            }
-            if (addStatic)
-            {
-                var          methodName = "With" + paramName + "Static<T>";
-                const string argName    = "propertyName";
-                var          variable   = paramName.FirstLower();
-                var          c          = new CsCodeWriter();
-                c.WriteLine($"var {variable} = new StaticBindingSource(typeof(T), {argName});");
-                c.WriteLine($"return WithSetParameter({paramName.CsEncode()}, {variable});");
-                var m = _currentClass.AddMethod(methodName, _currentClass.Name)
-                    .WithBody(c)
-                    .WithAutocodeGeneratedAttribute(_currentClass);
-                m.AddParam(argName, _currentClass.TypeName(typeof(string)));                
-            }
-        }
-        
         private static readonly List<BindingParamInfo> BindingParams = new List<BindingParamInfo>();
 
         private CsClass _currentClass;
+        private const string ValidationRules = "ValidationRules";
 
         private struct BindingParamInfo
         {
-            public BindingParamInfo(Type type, string name, bool addStatic)
+            public BindingParamInfo(Type type, string name, bool addStatic, bool isNormalProperty)
             {
-                Type      = type;
-                Name      = name;
-                AddStatic = addStatic;
+                Type             = type;
+                Name             = name;
+                AddStatic        = addStatic;
+                IsNormalProperty = isNormalProperty;
             }
 
-            public Type   Type      { get; }
-            public string Name      { get; }
-            public bool   AddStatic { get; }
+            public Type   Type             { get; }
+            public string Name             { get; }
+            public bool   AddStatic        { get; }
+            public bool   IsNormalProperty { get; }
         }
     }
 }

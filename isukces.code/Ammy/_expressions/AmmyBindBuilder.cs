@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
@@ -17,34 +16,23 @@ namespace isukces.code.Ammy
                 From = From
             };
             SetupAmmyBind(ammyBind);
-            if (ValidationRules.Count > 0)
+            switch (ValidationRules.Count)
             {
-                if (ValidationRules.Count == 1)
-                {
+                case 0:
+                    return ammyBind;
+                case 1:
                     ammyBind.WithValidationRules(ValidationRules[0]);
-                }
-                else
+                    break;
+                default:
                 {
                     var array = new AmmyArray();
                     foreach (var i in ValidationRules)
                         array.Items.Add(i);
                     ammyBind.WithValidationRules(array);
+                    break;
                 }
             }
-
             return ammyBind;
-        }
-
-        public AmmyBindBuilder WithFrom(object data)
-        {
-            From = data;
-            return this;
-        }
-
-        public AmmyBindBuilder WithMode(DataBindingMode mode)
-        {
-            Mode = mode;
-            return this;
         }
 
         public AmmyBindBuilder WithValidationRule(object data)
@@ -63,9 +51,5 @@ namespace isukces.code.Ammy
         {
             From = bindingSource;
         }
-
-        // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
-        public string           Path            { get; set; }
-        public object           From            { get; set; }
     }
 }

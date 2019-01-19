@@ -11,9 +11,9 @@ namespace isukces.code.Ammy
     public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>,
         IAmmyBindConverterHost, IAmmyBindSourceHost
     {
-        public AmmyBind(string bindingPath, DataBindingMode? mode = null)
+        public AmmyBind(string path, DataBindingMode? mode = null)
         {
-            BindingPath = bindingPath;
+            Path = path;
             if (mode != null)
                 WithMode(mode);
         }
@@ -54,8 +54,8 @@ namespace isukces.code.Ammy
         {
             var txt = new AmmyCodeWriter();
             txt.Append("bind");
-            if (!string.IsNullOrEmpty(BindingPath) && BindingPath != ".")
-                txt.Append(" " + BindingPath.CsEncode());
+            if (!string.IsNullOrEmpty(Path) && Path != ".")
+                txt.Append(" " + Path.CsEncode());
             if (From != null)
             {
                 var piece = ctx.AnyToCodePiece(From);
@@ -175,7 +175,7 @@ namespace isukces.code.Ammy
             From = bindingSource;
         }
 
-        public string BindingPath { get; set; }
+        public string Path { get; set; }
 
         // public DataBindingMode? Mode        { get; set; }
         public object                             From     { get; set; }

@@ -175,6 +175,12 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
+        public AmmyBind WithFrom(object from)
+        {
+            From = from; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
         public AmmyBind WithIsAsync(bool isAsync)
         {
             return WithSetParameter("IsAsync", isAsync);
@@ -232,6 +238,12 @@ namespace isukces.code.Ammy
         public AmmyBind WithNotifyOnValidationError(object notifyOnValidationError)
         {
             return WithSetParameter("NotifyOnValidationError", notifyOnValidationError);
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBind WithPath(string path)
+        {
+            Path = path; return this;
         }
 
         [isukces.code.AutocodeGenerated]
@@ -317,9 +329,117 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithBindingGroupName(string bindingGroupName)
+        {
+            BindingGroupName = bindingGroupName; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithBindsDirectlyToSource(bool? bindsDirectlyToSource)
+        {
+            BindsDirectlyToSource = bindsDirectlyToSource; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithConverter(object converter)
+        {
+            Converter = converter; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithConverterCulture(object converterCulture)
+        {
+            ConverterCulture = converterCulture; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithConverterParameter(object converterParameter)
+        {
+            ConverterParameter = converterParameter; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
         public AmmyBindBuilder WithConverterStatic<T>(string propertyName)
         {
             return this.WithConverterStatic(typeof(T), propertyName);
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithFrom(object from)
+        {
+            From = from; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithIsAsync(bool? isAsync)
+        {
+            IsAsync = isAsync; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithMode(DataBindingMode? mode)
+        {
+            Mode = mode; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithNotifyOnSourceUpdated(bool? notifyOnSourceUpdated)
+        {
+            NotifyOnSourceUpdated = notifyOnSourceUpdated; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithNotifyOnTargetUpdated(bool? notifyOnTargetUpdated)
+        {
+            NotifyOnTargetUpdated = notifyOnTargetUpdated; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithNotifyOnValidationError(bool? notifyOnValidationError)
+        {
+            NotifyOnValidationError = notifyOnValidationError; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithPath(string path)
+        {
+            Path = path; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithStringFormat(string stringFormat)
+        {
+            StringFormat = stringFormat; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithTargetNullValue(object targetNullValue)
+        {
+            TargetNullValue = targetNullValue; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithUpdateSourceTrigger(DataUpdateSourceTrigger? updateSourceTrigger)
+        {
+            UpdateSourceTrigger = updateSourceTrigger; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithValidatesOnDataErrors(bool? validatesOnDataErrors)
+        {
+            ValidatesOnDataErrors = validatesOnDataErrors; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithValidatesOnExceptions(bool? validatesOnExceptions)
+        {
+            ValidatesOnExceptions = validatesOnExceptions; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithXPath(string xPath)
+        {
+            XPath = xPath; return this;
         }
 
         [isukces.code.AutocodeGenerated]
@@ -357,6 +477,10 @@ namespace isukces.code.Ammy
                 bind.WithValidatesOnExceptions(ValidatesOnExceptions);
             if (XPath != null)
                 bind.WithXPath(XPath);
+            if (From != null)
+                bind.WithFrom(From);
+            if (Path != null)
+                bind.WithPath(Path);
         }
 
         public DataBindingMode? Mode { get; set; }
@@ -392,6 +516,10 @@ namespace isukces.code.Ammy
         public bool? ValidatesOnExceptions { get; set; }
 
         public string XPath { get; set; }
+
+        public object From { get; set; }
+
+        public string Path { get; set; }
 
     }
 }
