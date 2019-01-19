@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using isukces.code.interfaces.Ammy;
-using JetBrains.Annotations;
 
 namespace isukces.code.Ammy
 {
@@ -37,7 +35,7 @@ namespace isukces.code.Ammy
             ab.From = From;
             return ab;
         }
- 
+
         public AmmyBindBuilder WithFrom(object data)
         {
             From = data;
@@ -62,15 +60,16 @@ namespace isukces.code.Ammy
             Converter = converter;
         }
 
+        void IAmmyBindSourceHost.SetBindingSource(object bindingSource)
+        {
+            From = bindingSource;
+        }
+
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public string           Path            { get; set; }
         public DataBindingMode? Mode            { get; set; }
         public object           From            { get; set; }
         public object           Converter       { get; set; }
         public List<object>     ValidationRules { get; } = new List<object>();
-        void IAmmyBindSourceHost.SetBindingSource(object bindingSource)
-        {
-            From = bindingSource;
-        }
     }
 }

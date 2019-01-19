@@ -20,7 +20,7 @@ namespace isukces.code.Ammy
 
         public static AmmyBind FromAncestor(string path, Type ancestorType, int? level = null)
         {
-            return new AmmyBind(path).WithBindFromAncestor(ancestorType);            
+            return new AmmyBind(path).WithBindFromAncestor(ancestorType);
         }
 
         public static AmmyBind FromAncestor<T>(string path, int? level = null)
@@ -140,11 +140,6 @@ namespace isukces.code.Ammy
             return ToOneLineCode(new ConversionCtx(new AmmyNamespaceProvider()));
         }
 
-        public AmmyBind WithMode(DataBindingMode? value)
-        {
-            return WithSetParameter("Mode", value);
-        }
-
         public AmmyBind WithSetParameter(string key, object value)
         {
             if (!string.IsNullOrEmpty(key))
@@ -164,15 +159,11 @@ namespace isukces.code.Ammy
             return this;
         }
 
-        public AmmyBind WithValidationRules(object value)
-        {
-            return WithSetParameter("ValidationRules", value);
-        }
-
         private List<KeyValuePair<string, object>> GetOrderedItems(IEnumerable<KeyValuePair<string, object>> items)
         {
             return items.OrderBy(a => a.Key, this).ToList();
         }
+
 
         void IAmmyBindConverterHost.SetBindConverter(object converter)
         {
@@ -203,7 +194,6 @@ namespace isukces.code.Ammy
         }
     }
 
-
     public enum DataBindingMode
     {
         TwoWay,
@@ -211,5 +201,12 @@ namespace isukces.code.Ammy
         OneTime,
         OneWayToSource,
         Default
+    }
+    public enum DataUpdateSourceTrigger
+    {
+        Default,
+        PropertyChanged,
+        LostFocus,
+        Explicit,
     }
 }

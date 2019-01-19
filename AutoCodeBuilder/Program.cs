@@ -23,6 +23,7 @@ namespace AutoCodeBuilder
 
             autoCodeGenerator.CodeGenerators.Add(new AmmyBindConverterHostGenerator());
             autoCodeGenerator.CodeGenerators.Add(new AmmyBindSourceHostGenerator());
+            autoCodeGenerator.CodeGenerators.Add(new FluentBindGenerator());
             
             
             var saved        = false;
