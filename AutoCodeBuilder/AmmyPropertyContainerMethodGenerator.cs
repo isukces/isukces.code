@@ -27,20 +27,20 @@ namespace AutoCodeBuilder
 
             var cl = context.GetOrCreateClass(type);
             {
-                var cf = new CsCodeWriter();
-                cf.WriteLine("var mi = AmmyHelper.GetMemberInfo(func);");
-                cf.WriteLine("this.WithProperty(mi.Member.Name, value);");
-                cf.WriteLine("return this;");
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator), "G2")
+                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
+                    .WriteLine("this.WithProperty(mi.Member.Name, value);")
+                    .WriteLine("return this;");
 
                 var m = CreateMethod("WithProperty<TValue>", type, cl, cf);
                 m.AddParam("func", "Expression<Func<TPropertyBrowser, TValue>>");
                 m.AddParam("value", "object");
             }
             {
-                var cf = new CsCodeWriter();
-                cf.WriteLine("var mi = AmmyHelper.GetMemberInfo(func);");
-                cf.WriteLine("this.WithProperty(mi.Member.Name, value);");
-                cf.WriteLine("return this;");
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator), "G3")
+                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
+                    .WriteLine("this.WithProperty(mi.Member.Name, value);")
+                    .WriteLine("return this;");
 
                 var m = CreateMethod("WithPropertyGeneric<TValue>", type, cl, cf);
                 m.AddParam("func", "Expression<Func<TPropertyBrowser, TValue>>");
@@ -48,9 +48,9 @@ namespace AutoCodeBuilder
             }
             {
                 // ======== WithPropertyNotNull
-                var cf = new CsCodeWriter();
-                cf.WriteLine("var mi = AmmyHelper.GetMemberInfo(func);");
-                cf.WriteLine("return this.WithPropertyNotNull(mi.Member.Name, value);" );
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator), "G4")
+                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
+                    .WriteLine("return this.WithPropertyNotNull(mi.Member.Name, value);");
 
                 var m = CreateMethod("WithPropertyNotNull<TValue>", type, cl, cf);
                 m.AddParam("func", "Expression<Func<TPropertyBrowser, TValue>>");
@@ -58,9 +58,9 @@ namespace AutoCodeBuilder
             }
             {
                 // ======== WithPropertyGenericNotNull
-                var cf = new CsCodeWriter();
-                cf.WriteLine("var mi = AmmyHelper.GetMemberInfo(func);");
-                cf.WriteLine("return this.WithPropertyNotNull(mi.Member.Name, value);");
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G5")
+                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
+                    .WriteLine("return this.WithPropertyNotNull(mi.Member.Name, value);");
 
                 var m = CreateMethod("WithPropertyGenericNotNull<TValue>", type, cl, cf);
                 m.AddParam("func", "Expression<Func<TPropertyBrowser, TValue>>");
@@ -69,10 +69,10 @@ namespace AutoCodeBuilder
 
             {
                 // ======== WithPropertyAncestorBind
-                var cf = new CsCodeWriter();
-                cf.WriteLine("var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);");
-                cf.WriteLine("var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);");
-                cf.WriteLine("return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);");
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G6")
+                    .WriteLine("var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);")
+                    .WriteLine("var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);")
+                    .WriteLine("return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);");
 
                 var m = CreateMethod("WithPropertyAncestorBind<TAncestor>", type, cl, cf);
                 m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
@@ -84,8 +84,8 @@ namespace AutoCodeBuilder
             
             {
                 // ======== WithPropertyStaticResource
-                var cf = new CsCodeWriter();
-                cf.WriteLine("return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));");
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G7")
+                    .WriteLine("return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));");
 
                 var m = CreateMethod("WithPropertyStaticResource", type, cl, cf);
                 var p = m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
@@ -95,9 +95,9 @@ namespace AutoCodeBuilder
             }
             {
                 // ======== WithPropertyStaticResource ver 2
-                var cf = new CsCodeWriter();
-                cf.WriteLine("(this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);");
-                cf.WriteLine("return this;");
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G8")
+                    .WriteLine("(this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);")
+                    .WriteLine("return this;");
 
                 var m = CreateMethod("WithPropertyStaticResource", type, cl, cf);
                 var p = m.AddParam("propertyName", "string");
