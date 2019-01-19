@@ -44,7 +44,7 @@ namespace isukces.code.CodeWrite
 
         public string TypeName(Type type)
         {
-            return GeneratorsHelper.TypeName(type, this);
+            return GeneratorsHelper.TypeName(this, type);
         }
 
         public ISet<string> ImportNamespaces { get; } = new HashSet<string>();

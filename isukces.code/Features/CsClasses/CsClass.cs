@@ -297,11 +297,6 @@ namespace isukces.code
             return "csClass " + _name;
         }
 
-        public string TypeName(Type type)
-        {
-            return GeneratorsHelper.TypeName(type, this);
-        }
-
         public CsClass WithBaseClass(string baseClass)
         {
             BaseClass = baseClass;

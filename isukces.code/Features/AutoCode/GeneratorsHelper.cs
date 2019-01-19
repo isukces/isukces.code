@@ -6,7 +6,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
 {
-    public class GeneratorsHelper
+    public static class GeneratorsHelper
     {
         public static string FieldName(string x)
         {
@@ -35,7 +35,11 @@ namespace isukces.code.AutoCode
             return s;
         }
 
-        public static string TypeName(Type type, INamespaceContainer container)
+        public static string TypeName<T>(this INamespaceContainer container)
+        {
+            return TypeName(container, typeof(T));
+        }
+        public static string TypeName(this INamespaceContainer container, Type type)
         {
             //todo: Generic types
             if (type == null)
@@ -43,7 +47,7 @@ namespace isukces.code.AutoCode
             if (type.IsArray)
             {
                 var arrayRank = type.GetArrayRank();
-                var st        = TypeName(type.GetElementType(), container);
+                var st        = TypeName(container, type.GetElementType());
                 if (arrayRank < 2)
                     return st + "[]";
                 return string.Format("{0}[{1}]", st, new string(',', arrayRank - 1));
@@ -53,7 +57,7 @@ namespace isukces.code.AutoCode
             if (!string.IsNullOrEmpty(simple))
                 return simple;
             if (type.DeclaringType != null)
-                return TypeName(type.DeclaringType, container) + "." + type.Name;
+                return TypeName(container, type.DeclaringType) + "." + type.Name;
 
             string fullName;
             {
@@ -72,11 +76,11 @@ namespace isukces.code.AutoCode
                         {
                             var nullable = w.UnwrapNullable(true);
                             if (nullable != null)
-                                return TypeName(nullable, container) + "?";
+                                return TypeName(container, nullable) + "?";
                         }
                         var gt    = type.GetGenericTypeDefinition();
                         var args  = w.GetGenericArguments();
-                        var args2 = string.Join(",", args.Select(a => TypeName(a, container)));
+                        var args2 = string.Join(",", args.Select(a => TypeName(container, a)));
                         fullName = gt.FullName.Split('`')[0] + "<" + args2 + ">";
                     }
                 }

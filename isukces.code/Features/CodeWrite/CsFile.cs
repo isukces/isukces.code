@@ -194,15 +194,6 @@ namespace isukces.code.CodeWrite
             return GetCode();
         }
 
-
-        public string TypeName(Type type)
-        {
-            return GeneratorsHelper.TypeName(type, this);
-        }
-
-
-        // Public Methods 
-
         private string GetCode()
         {
             var writer = new CsCodeWriter();
