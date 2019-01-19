@@ -74,6 +74,12 @@ namespace isukces.code
             return this;
         }
 
+        public CsProperty WithMakeAutoImplementIfPossible(bool value = true)
+        {
+            MakeAutoImplementIfPossible = value;
+            return this;
+        }
+
         public CsProperty WithOwnGetter(string ownGetter)
         {
             OwnGetter = ownGetter;
