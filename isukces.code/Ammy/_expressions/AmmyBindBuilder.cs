@@ -12,28 +12,27 @@ namespace isukces.code.Ammy
 
         public AmmyBind Build()
         {
-            var ab = new AmmyBind(Path);
-            if (Mode != null)
-                ab.WithMode(Mode.Value);
-            if (Converter != null)
-                ab.WithConverter(Converter);
+            var ammyBind = new AmmyBind(Path)
+            {
+                From = From
+            };
+            SetupAmmyBind(ammyBind);
             if (ValidationRules.Count > 0)
             {
                 if (ValidationRules.Count == 1)
                 {
-                    ab.WithValidationRules(ValidationRules[0]);
+                    ammyBind.WithValidationRules(ValidationRules[0]);
                 }
                 else
                 {
                     var array = new AmmyArray();
                     foreach (var i in ValidationRules)
                         array.Items.Add(i);
-                    ab.WithValidationRules(array);
+                    ammyBind.WithValidationRules(array);
                 }
             }
 
-            ab.From = From;
-            return ab;
+            return ammyBind;
         }
 
         public AmmyBindBuilder WithFrom(object data)
@@ -67,9 +66,6 @@ namespace isukces.code.Ammy
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public string           Path            { get; set; }
-        public DataBindingMode? Mode            { get; set; }
         public object           From            { get; set; }
-        public object           Converter       { get; set; }
-        public List<object>     ValidationRules { get; } = new List<object>();
     }
 }

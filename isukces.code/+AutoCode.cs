@@ -322,5 +322,76 @@ namespace isukces.code.Ammy
             return this.WithConverterStatic(typeof(T), propertyName);
         }
 
+        [isukces.code.AutocodeGenerated]
+        private void SetupAmmyBind(AmmyBind bind)
+        {
+            if (Mode != null)
+                bind.WithMode(Mode);
+            if (BindingGroupName != null)
+                bind.WithBindingGroupName(BindingGroupName);
+            if (BindsDirectlyToSource != null)
+                bind.WithBindsDirectlyToSource(BindsDirectlyToSource);
+            if (Converter != null)
+                bind.WithConverter(Converter);
+            if (ConverterCulture != null)
+                bind.WithConverterCulture(ConverterCulture);
+            if (ConverterParameter != null)
+                bind.WithConverterParameter(ConverterParameter);
+            if (IsAsync != null)
+                bind.WithIsAsync(IsAsync);
+            if (NotifyOnSourceUpdated != null)
+                bind.WithNotifyOnSourceUpdated(NotifyOnSourceUpdated);
+            if (NotifyOnTargetUpdated != null)
+                bind.WithNotifyOnTargetUpdated(NotifyOnTargetUpdated);
+            if (NotifyOnValidationError != null)
+                bind.WithNotifyOnValidationError(NotifyOnValidationError);
+            if (StringFormat != null)
+                bind.WithStringFormat(StringFormat);
+            if (TargetNullValue != null)
+                bind.WithTargetNullValue(TargetNullValue);
+            if (UpdateSourceTrigger != null)
+                bind.WithUpdateSourceTrigger(UpdateSourceTrigger);
+            if (ValidatesOnDataErrors != null)
+                bind.WithValidatesOnDataErrors(ValidatesOnDataErrors);
+            if (ValidatesOnExceptions != null)
+                bind.WithValidatesOnExceptions(ValidatesOnExceptions);
+            if (XPath != null)
+                bind.WithXPath(XPath);
+        }
+
+        public DataBindingMode? Mode { get; set; }
+
+        public List<object> ValidationRules { get; } = new List<object>();
+
+        public string BindingGroupName { get; set; }
+
+        public bool? BindsDirectlyToSource { get; set; }
+
+        public object Converter { get; set; }
+
+        public object ConverterCulture { get; set; }
+
+        public object ConverterParameter { get; set; }
+
+        public bool? IsAsync { get; set; }
+
+        public bool? NotifyOnSourceUpdated { get; set; }
+
+        public bool? NotifyOnTargetUpdated { get; set; }
+
+        public bool? NotifyOnValidationError { get; set; }
+
+        public string StringFormat { get; set; }
+
+        public object TargetNullValue { get; set; }
+
+        public DataUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
+
+        public bool? ValidatesOnDataErrors { get; set; }
+
+        public bool? ValidatesOnExceptions { get; set; }
+
+        public string XPath { get; set; }
+
     }
 }

@@ -9,6 +9,7 @@ namespace AutoCodeBuilder
 {
     internal class FluentBindGenerator : BaseGenerator, IAutoCodeGenerator
     {
+        const string ValidationRules = "ValidationRules";
         static FluentBindGenerator()
         {
             void Add<T>(string name, bool addStatic = false)
@@ -17,7 +18,7 @@ namespace AutoCodeBuilder
             }
 
             Add<DataBindingMode>("Mode");
-            Add<object>("ValidationRules");
+            Add<object>(ValidationRules);
             Add<string>("BindingGroupName");
             Add<bool>("BindsDirectlyToSource");
 
@@ -48,7 +49,56 @@ namespace AutoCodeBuilder
                 _currentClass = context.GetOrCreateClass(type);
                 foreach (var i in BindingParams)
                     AddFluentMethod(i.Type, i.Name, i.AddStatic);
-            } 
+            }else if (type == typeof(AmmyBindBuilder))
+            {
+                BuildAmmyBindBuilder(context);
+            }
+        }
+
+        private void BuildAmmyBindBuilder(IAutoCodeGeneratorContext context)
+        {
+            
+            _currentClass = context.GetOrCreateClass(typeof(AmmyBindBuilder));
+            var setupCode = new CsCodeWriter();
+            foreach (var i in BindingParams)
+            {
+                var    type2      = i.Type;
+                string init       = null;
+                var    isReadOnly = false;
+                if (i.Name == ValidationRules)
+                {
+                    type2      = typeof(List<object>);
+                    init       = "new " + _currentClass.TypeName(type2) + "()";
+                    isReadOnly = true;
+                }
+                else
+                {
+                    type2 = MakeNullable(type2);
+                    setupCode.SingleLineIf(
+                        $"{i.Name} != null", 
+                        $"bind.With{i.Name}({i.Name});");
+                }
+
+                var p = _currentClass.AddProperty(i.Name, type2)
+                    .WithNoEmitField()
+                    .WithMakeAutoImplementIfPossible()
+                    .WithIsPropertyReadOnly(isReadOnly);
+                p.ConstValue = init;
+            }
+
+            _currentClass.AddMethod("SetupAmmyBind", "void")
+                .WithVisibility(Visibilities.Private)
+                .WithBody(setupCode)
+                .WithAutocodeGeneratedAttribute(_currentClass
+                )
+                .AddParam<AmmyBind>("bind", _currentClass);
+        }
+
+        private static Type MakeNullable(Type type)
+        {
+            return type.IsValueType 
+                ? typeof(Nullable<>).MakeGenericType(type) 
+                : type;
         }
 
 
@@ -75,12 +125,12 @@ namespace AutoCodeBuilder
                 c.WriteLine($"var {variable} = new StaticBindingSource(typeof(T), {argName});");
                 c.WriteLine($"return WithSetParameter({paramName.CsEncode()}, {variable});");
                 var m = _currentClass.AddMethod(methodName, _currentClass.Name)
-                    .WithBody(c);
-                m.AddParam(argName, _currentClass.TypeName(typeof(string)));
-                m.WithAttribute(_currentClass, typeof(AutocodeGeneratedAttribute));
+                    .WithBody(c)
+                    .WithAutocodeGeneratedAttribute(_currentClass);
+                m.AddParam(argName, _currentClass.TypeName(typeof(string)));                
             }
         }
-
+        
         private static readonly List<BindingParamInfo> BindingParams = new List<BindingParamInfo>();
 
         private CsClass _currentClass;

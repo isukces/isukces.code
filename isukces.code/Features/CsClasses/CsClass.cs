@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using isukces.code.AutoCode;
-using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -251,7 +250,7 @@ namespace isukces.code
             return existing;
         }
 
-        public void MakeCode(ICsCodeWriter  writer)
+        public void MakeCode(ICsCodeWriter writer)
         {
             writer.OpenCompilerIf(CompilerDirective);
             WriteSummary(writer, Description);
@@ -295,6 +294,18 @@ namespace isukces.code
         public override string ToString()
         {
             return "csClass " + _name;
+        }
+
+        public string TypeName<T>()
+        {
+            return TypeName(typeof(T));
+        }
+
+        public string TypeName(Type type)
+        {
+            if (Owner == null)
+                throw new NullReferenceException(nameof(Owner));
+            return Owner.TypeName(type);
         }
 
         public CsClass WithBaseClass(string baseClass)
@@ -517,11 +528,7 @@ namespace isukces.code
         public string Name
         {
             get => _name;
-            private set
-            {
-                value = value?.Trim() ?? string.Empty;
-                _name = value;
-            }
+            private set => _name = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -546,11 +553,7 @@ namespace isukces.code
         public List<CsProperty> Properties
         {
             get => _properties;
-            set
-            {
-                if (value == null) value = new List<CsProperty>();
-                _properties = value;
-            }
+            set => _properties = value ?? new List<CsProperty>();
         }
 
         /// <summary>
@@ -558,11 +561,7 @@ namespace isukces.code
         public List<CsClassField> Fields
         {
             get => _fields;
-            set
-            {
-                if (value == null) value = new List<CsClassField>();
-                _fields = value;
-            }
+            set => _fields = value ?? new List<CsClassField>();
         }
 
         /// <summary>

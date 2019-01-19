@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
 namespace isukces.code
@@ -10,7 +10,7 @@ namespace isukces.code
     {
         static CsMethod()
         {
-            operators        = new HashSet<string>();
+            operators = new HashSet<string>();
             const string tmp = "+, -, !, ~, ++, --, +, -, *, /, %, &, |, ^, <<, >>,==, !=, <, >, <=, >=,&&, ||";
             foreach (var i in tmp.Split(','))
                 operators.Add(i.Trim());
@@ -31,6 +31,7 @@ namespace isukces.code
         {
             Name = name;
         }
+
 
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -56,6 +57,7 @@ namespace isukces.code
                 var joioned = string.Join(", ", i.Attributes);
                 sb.Append($"[{joioned}] ");
             }
+
             if (i.UseThis)
                 sb.Append("this ");
             sb.AppendFormat("{0} {1}", i.Type, i.Name);
@@ -67,6 +69,18 @@ namespace isukces.code
         public CsMethodParameter AddParam(string name, string type, string description = null)
         {
             var parameter = new CsMethodParameter(name, type, description);
+            _parameters.Add(parameter);
+            return parameter;
+        }
+
+        public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null)
+        {
+            return AddParam(name, typeof(T), owner, description);
+        }
+
+        public CsMethodParameter AddParam(string name, Type type, CsClass owner, string description = null)
+        {
+            var parameter = new CsMethodParameter(name, owner.TypeName(type), description);
             _parameters.Add(parameter);
             return parameter;
         }
@@ -85,7 +99,7 @@ namespace isukces.code
             var query = from i in _parameters
                 select FormatMethodParameter(i);
             var mDefinition = string.Format("{0}({1})",
-                string.Join(" ",  GetMethodAttributes(inInterface)),
+                string.Join(" ", GetMethodAttributes(inInterface)),
                 string.Join(", ", query));
             if (inInterface)
             {
@@ -94,6 +108,7 @@ namespace isukces.code
                 writer.WriteLine(mDefinition + ";");
                 return;
             }
+
             if (IsAbstract && !IsConstructor)
             {
                 writer.WriteLine(mDefinition + ";");
@@ -112,6 +127,11 @@ namespace isukces.code
                 writer.WriteLine(i);
 
             writer.Close();
+        }
+
+        public CsMethod WithAutocodeGeneratedAttribute(CsClass csClass)
+        {
+            return this.WithAttribute(csClass, typeof(AutocodeGeneratedAttribute));
         }
 
 
@@ -149,7 +169,7 @@ namespace isukces.code
                         a.Add(Visibility.ToString().ToLower());
             if (IsStatic)
                 a.Add("static");
-            if (!IsConstructor )
+            if (!IsConstructor)
             {
                 if (!inInterface)
                 {
@@ -158,6 +178,7 @@ namespace isukces.code
                     if (IsOverride)
                         a.Add("override");
                 }
+
                 a.Add(_resultType);
             }
 
@@ -187,8 +208,8 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get { return _name; }
-            set { _name = value?.Trim() ?? string.Empty; }
+            get => _name;
+            set => _name = value?.Trim() ?? string.Empty;
         }
 
 
@@ -196,19 +217,19 @@ namespace isukces.code
         /// </summary>
         public string ResultType
         {
-            get { return _resultType; }
-            set { _resultType = value?.Trim() ?? string.Empty; }
+            get => _resultType;
+            set => _resultType = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
         /// </summary>
         public List<CsMethodParameter> Parameters
         {
-            get { return _parameters; }
+            get => _parameters;
             set
             {
                 if (value == null) value = new List<CsMethodParameter>();
-                _parameters              = value;
+                _parameters = value;
             }
         }
 
@@ -229,8 +250,8 @@ namespace isukces.code
         /// </summary>
         public string Body
         {
-            get { return _body; }
-            set { _body = value?.Trim() ?? string.Empty; }
+            get => _body;
+            set => _body = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -238,8 +259,8 @@ namespace isukces.code
         /// </summary>
         public string BaseConstructorCall
         {
-            get { return _baseConstructorCall; }
-            set { _baseConstructorCall = value?.Trim() ?? string.Empty; }
+            get => _baseConstructorCall;
+            set => _baseConstructorCall = value?.Trim() ?? string.Empty;
         }
 
         private static readonly HashSet<string> operators;
@@ -247,11 +268,11 @@ namespace isukces.code
         public static string Implicit = "implicit";
         public static string Explicit = "explicit";
 
-        private string                  _name                = string.Empty;
-        private string                  _resultType          = "void";
-        private List<CsMethodParameter> _parameters          = new List<CsMethodParameter>();
-        private string                  _body                = string.Empty;
-        private string                  _baseConstructorCall = string.Empty;
+        private string _name = string.Empty;
+        private string _resultType = "void";
+        private List<CsMethodParameter> _parameters = new List<CsMethodParameter>();
+        private string _body = string.Empty;
+        private string _baseConstructorCall = string.Empty;
     }
 
     /*
