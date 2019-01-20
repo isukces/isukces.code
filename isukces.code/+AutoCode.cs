@@ -135,10 +135,38 @@ namespace isukces.code.Ammy
     partial class AmmyBind
     {
         [isukces.code.AutocodeGenerated]
-        public AmmyBind WithBindFromAncestor<T>(int? level = null)
+        public AmmyBind WithBindFrom(object from)
         {
-            // generator : AmmyBindSourceHostGenerator G1
-            return this.WithBindFromAncestor(typeof(T), level);
+            // generator : FluentBindGenerator G1
+            From = from; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBind WithBindFromAncestor(Type ancestorType, int? level = null)
+        {
+            // generator : FluentBindGenerator G4
+            From = new AncestorBindingSource(ancestorType, level); return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBind WithBindFromAncestor<TAncestor>(int? level = null)
+        {
+            // generator : FluentBindGenerator G5
+            From = new AncestorBindingSource(typeof(TAncestor),  level); return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBind WithBindFromResource(string resourceName)
+        {
+            // generator : FluentBindGenerator G3
+            From = new AmmyStaticResource(resourceName); return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBind WithBindFromStatic<TStaticPropertyOwner>(string propertyName)
+        {
+            // generator : FluentBindGenerator G2
+            From = new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName); return this;
         }
 
         [isukces.code.AutocodeGenerated]
@@ -184,6 +212,13 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
+        public AmmyBind WithConverterFromResource(string resourceName)
+        {
+            // generator : FluentBindGenerator G3
+            return WithSetParameter("Converter", new AmmyStaticResource(resourceName));
+        }
+
+        [isukces.code.AutocodeGenerated]
         public AmmyBind WithConverterFromStatic<TStaticPropertyOwner>(string propertyName)
         {
             // generator : FluentBindGenerator G2
@@ -191,38 +226,10 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
-        public AmmyBind WithConverterFromStaticResource(string resourceName)
-        {
-            // generator : FluentBindGenerator G3
-            return WithSetParameter("Converter", new AmmyStaticResource(resourceName));
-        }
-
-        [isukces.code.AutocodeGenerated]
         public AmmyBind WithConverterParameter(object converterParameter)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ConverterParameter", converterParameter);
-        }
-
-        [isukces.code.AutocodeGenerated]
-        public AmmyBind WithFrom(object from)
-        {
-            // generator : FluentBindGenerator G1
-            From = from; return this;
-        }
-
-        [isukces.code.AutocodeGenerated]
-        public AmmyBind WithFromFromStatic<TStaticPropertyOwner>(string propertyName)
-        {
-            // generator : FluentBindGenerator G2
-            From = new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName); return this;
-        }
-
-        [isukces.code.AutocodeGenerated]
-        public AmmyBind WithFromFromStaticResource(string resourceName)
-        {
-            // generator : FluentBindGenerator G3
-            From = new AmmyStaticResource(resourceName); return this;
         }
 
         [isukces.code.AutocodeGenerated]
@@ -391,10 +398,38 @@ namespace isukces.code.Ammy
     partial class AmmyBindBuilder
     {
         [isukces.code.AutocodeGenerated]
-        public AmmyBindBuilder WithBindFromAncestor<T>(int? level = null)
+        public AmmyBindBuilder WithBindFrom(object from)
         {
-            // generator : AmmyBindSourceHostGenerator G1
-            return this.WithBindFromAncestor(typeof(T), level);
+            // generator : FluentBindGenerator G1
+            From = from; return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithBindFromAncestor(Type ancestorType, int? level = null)
+        {
+            // generator : FluentBindGenerator G4
+            From = new AncestorBindingSource(ancestorType, level); return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithBindFromAncestor<TAncestor>(int? level = null)
+        {
+            // generator : FluentBindGenerator G5
+            From = new AncestorBindingSource(typeof(TAncestor),  level); return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithBindFromResource(string resourceName)
+        {
+            // generator : FluentBindGenerator G3
+            From = new AmmyStaticResource(resourceName); return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithBindFromStatic<TStaticPropertyOwner>(string propertyName)
+        {
+            // generator : FluentBindGenerator G2
+            From = new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName); return this;
         }
 
         [isukces.code.AutocodeGenerated]
@@ -426,6 +461,13 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
+        public AmmyBindBuilder WithConverterFromResource(string resourceName)
+        {
+            // generator : FluentBindGenerator G3
+            Converter = new AmmyStaticResource(resourceName); return this;
+        }
+
+        [isukces.code.AutocodeGenerated]
         public AmmyBindBuilder WithConverterFromStatic<TStaticPropertyOwner>(string propertyName)
         {
             // generator : FluentBindGenerator G2
@@ -433,38 +475,10 @@ namespace isukces.code.Ammy
         }
 
         [isukces.code.AutocodeGenerated]
-        public AmmyBindBuilder WithConverterFromStaticResource(string resourceName)
-        {
-            // generator : FluentBindGenerator G3
-            Converter = new AmmyStaticResource(resourceName); return this;
-        }
-
-        [isukces.code.AutocodeGenerated]
         public AmmyBindBuilder WithConverterParameter(object converterParameter)
         {
             // generator : FluentBindGenerator G1
             ConverterParameter = converterParameter; return this;
-        }
-
-        [isukces.code.AutocodeGenerated]
-        public AmmyBindBuilder WithFrom(object from)
-        {
-            // generator : FluentBindGenerator G1
-            From = from; return this;
-        }
-
-        [isukces.code.AutocodeGenerated]
-        public AmmyBindBuilder WithFromFromStatic<TStaticPropertyOwner>(string propertyName)
-        {
-            // generator : FluentBindGenerator G2
-            From = new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName); return this;
-        }
-
-        [isukces.code.AutocodeGenerated]
-        public AmmyBindBuilder WithFromFromStaticResource(string resourceName)
-        {
-            // generator : FluentBindGenerator G3
-            From = new AmmyStaticResource(resourceName); return this;
         }
 
         [isukces.code.AutocodeGenerated]
@@ -554,7 +568,7 @@ namespace isukces.code.Ammy
         [isukces.code.AutocodeGenerated]
         private void SetupAmmyBind(AmmyBind bind)
         {
-            // generator : FluentBindGenerator G4
+            // generator : FluentBindGenerator G11
             if (Mode != null)
                 bind.WithMode(Mode);
             if (BindingGroupName != null)
@@ -588,7 +602,7 @@ namespace isukces.code.Ammy
             if (XPath != null)
                 bind.WithXPath(XPath);
             if (From != null)
-                bind.WithFrom(From);
+                bind.WithBindFrom(From);
             if (Path != null)
                 bind.WithPath(Path);
         }

@@ -4,6 +4,7 @@ using isukces.code.AutoCode;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
+/*
 namespace AutoCodeBuilder
 {
     internal class AmmyBindSourceHostGenerator : BaseGenerator, IAutoCodeGenerator
@@ -25,3 +26,4 @@ namespace AutoCodeBuilder
         }
     }
 }
+*/

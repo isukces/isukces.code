@@ -2,7 +2,7 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyBindBuilder : IAmmyBindConverterHost, IAmmyBindSourceHost
+    public partial class AmmyBindBuilder 
     {
         public AmmyBindBuilder(string path)
         {
@@ -42,14 +42,5 @@ namespace isukces.code.Ammy
             return this;
         }
 
-        void IAmmyBindConverterHost.SetBindConverter(object converter)
-        {
-            Converter = converter;
-        }
-
-        void IAmmyBindSourceHost.SetBindingSource(object bindingSource)
-        {
-            From = bindingSource;
-        }
     }
 }

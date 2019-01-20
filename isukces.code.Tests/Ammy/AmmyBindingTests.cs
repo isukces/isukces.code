@@ -34,7 +34,7 @@ namespace isukces.code.Tests.Ammy
         {
             var a = new AmmyBindBuilder("PropName")
                 .WithMode(DataBindingMode.OneTime)
-                .WithConverterStaticResource("MyConverter")
+                .WithConverterFromResource("MyConverter")
                 .Build();            
             var            writer = new AmmyCodeWriter();
             IConversionCtx ctx    = new ConversionCtx(writer);

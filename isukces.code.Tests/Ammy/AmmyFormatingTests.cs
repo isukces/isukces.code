@@ -53,7 +53,7 @@ namespace isukces.code.Tests.Ammy
 
             var text = new AmmyBindBuilder("CustomHeight")
                 .WithMode(DataBindingMode.TwoWay)
-                .WithConverterStaticResource("MyConverter")
+                .WithConverterFromResource("MyConverter")
                 .WithValidationRule(MekeDoubleValidation("Custom height", false, 500, 6200))
                 .Build();
 
@@ -81,7 +81,7 @@ namespace isukces.code.Tests.Ammy
 
             var text = new AmmyBindBuilder("CustomHeight")
                 .WithMode(DataBindingMode.TwoWay)
-                .WithConverterStaticResource("MyConverter")
+                .WithConverterFromResource("MyConverter")
                 .Build();
 
             var tb = new AmmyObjectBuilder<TextBox>()

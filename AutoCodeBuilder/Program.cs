@@ -21,8 +21,8 @@ namespace AutoCodeBuilder
                 .WithSkip<AmmyMixin>();
             autoCodeGenerator.CodeGenerators.Add(ammyPropertyContainerMethodGenerator);
 
-            autoCodeGenerator.CodeGenerators.Add(new AmmyBindConverterHostGenerator());
-            autoCodeGenerator.CodeGenerators.Add(new AmmyBindSourceHostGenerator());
+            // autoCodeGenerator.CodeGenerators.Add(new AmmyBindConverterHostGenerator());
+            // autoCodeGenerator.CodeGenerators.Add(new AmmyBindSourceHostGenerator());
             autoCodeGenerator.CodeGenerators.Add(new FluentBindGenerator());
             
             

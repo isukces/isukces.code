@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using isukces.code;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
@@ -105,6 +104,8 @@ namespace AutoCodeBuilder
                 p = m.AddParam("resourceName", "string");
                 p.Attributes.Add(new CsAttribute("NotNull"));
             }
+
+          
         }
 
         public AmmyPropertyContainerMethodGenerator WithSkip<T>()

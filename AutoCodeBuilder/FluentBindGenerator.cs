@@ -88,13 +88,14 @@ namespace AutoCodeBuilder
         private void AddFluentMethod(Func<string, string, string> creator, Type type, string paramName, bool addStatic,
             bool addObjectOverload)
         {
+            var flu = new FluentMethodInfo(paramName);
+
             {
-                var methodName = "With" + paramName;
-                var argName    = paramName.FirstLower();
+                var argName = paramName.FirstLower();
                 // var body       = $"return WithSetParameter({paramName.CsEncode()}, {argName});";
                 var body = CreateCode(nameof(FluentBindGenerator), "G1")
                     .WriteLine(creator(paramName, argName));
-                var m = _currentClass.AddMethod(methodName, _currentClass.Name)
+                var m = _currentClass.AddMethod(flu.FluentPrefix, _currentClass.Name)
                     .WithBody(body);
                 m.AddParam(argName, _currentClass.TypeName(type));
                 m.WithAttribute(_currentClass, typeof(AutocodeGeneratedAttribute));
@@ -103,36 +104,57 @@ namespace AutoCodeBuilder
             }
             if (!addStatic) return;
             {
-                var methodName = NameFromStatic(paramName);
-                const string argName    = "propertyName";
-                var value = $"new StaticBindingSource(typeof(TStaticPropertyOwner), {argName})";
+                const string argName = "propertyName";
+                var          value   = $"new StaticBindingSource(typeof(TStaticPropertyOwner), {argName})";
                 var code = CreateCode(nameof(FluentBindGenerator), "G2")
                     .WriteLine(creator(paramName, value));
-                    //.WriteLine($"return WithSetParameter({paramName.CsEncode()}, {variable});");
-                _currentClass.AddMethod(methodName, _currentClass.Name)
+                _currentClass.AddMethod(flu.Static+"<TStaticPropertyOwner>", _currentClass.Name)
                     .WithBody(code)
                     .WithAutocodeGeneratedAttribute(_currentClass)
                     .AddParam<string>(argName, _currentClass);
             }
             {
-                var methodName = NameFromStaticResource(paramName);
-                const string argName    = "resourceName";
-                var value = $"new AmmyStaticResource({argName})";
+                const string argName = "resourceName";
+                var          value   = $"new AmmyStaticResource({argName})";
                 var code = CreateCode(nameof(FluentBindGenerator), "G3")
                     .WriteLine(creator(paramName, value));
-                _currentClass.AddMethod(methodName, _currentClass.Name)
+                _currentClass.AddMethod(flu.StaticResource, _currentClass.Name)
                     .WithBody(code)
                     .WithAutocodeGeneratedAttribute(_currentClass)
                     .AddParam<string>(argName, _currentClass);
+            }
+            if (flu.AllowAncestor)
+            {
+                {
+                    const string value = "new AncestorBindingSource(ancestorType, level)";
+                    var code = CreateCode(nameof(FluentBindGenerator), "G4")
+                        .WriteLine(creator(paramName, value));
+                    var m = _currentClass.AddMethod(flu.Ancestor, _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass);
+                    m.AddParam<Type>("ancestorType", _currentClass);
+                    m.AddParam<int?>("level", _currentClass).WithConstValueNull();
+                }
+                {
+                    var          methodName = flu.Ancestor + "<TAncestor>";
+                    const string value      = "new AncestorBindingSource(typeof(TAncestor),  level)";
+                    var code = CreateCode(nameof(FluentBindGenerator), "G5")
+                        .WriteLine(creator(paramName, value));
+                    var m = _currentClass.AddMethod(methodName, _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass);
+                    m.AddParam<int?>("level", _currentClass).WithConstValueNull();
+                }
             }
         }
 
         private void BuildAmmyBindBuilder(IAutoCodeGeneratorContext context)
         {
             _currentClass = context.GetOrCreateClass(typeof(AmmyBindBuilder));
-            var setupCode = CreateCode(nameof(FluentBindGenerator), "G4");
+            var setupCode = CreateCode(nameof(FluentBindGenerator), "G11");
             foreach (var i in BindingParams)
             {
+                var    flu        = new FluentMethodInfo(i.Name);
                 var    type2      = i.Type;
                 string init       = null;
                 var    isReadOnly = false;
@@ -147,7 +169,7 @@ namespace AutoCodeBuilder
                     type2 = MakeNullable(type2);
                     setupCode.SingleLineIf(
                         $"{i.Name} != null",
-                        $"bind.With{i.Name}({i.Name});");
+                        $"bind.{flu.FluentPrefix}({i.Name});");
                 }
 
                 var p = _currentClass.AddProperty(i.Name, type2)

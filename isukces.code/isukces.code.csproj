@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.19019.75</AssemblyVersion>
-    <Version>1.0.19019.75</Version>
-    <FileVersion>1.0.19019.75</FileVersion>
+    <AssemblyVersion>1.0.19020.76</AssemblyVersion>
+    <Version>1.0.19020.76</Version>
+    <FileVersion>1.0.19020.76</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
@@ -29,6 +29,9 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="WindowsBase" Condition="'$(TargetFramework)' == 'net451'" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Ammy\_extension" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <DefineConstants>COREFX</DefineConstants>

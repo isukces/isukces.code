@@ -6,7 +6,7 @@ using isukces.code.AutoCode;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 using JetBrains.Annotations;
-
+/*
 namespace AutoCodeBuilder
 {
     internal class AmmyBindConverterHostGenerator : BaseGenerator, IAutoCodeGenerator
@@ -29,3 +29,4 @@ namespace AutoCodeBuilder
         }
     }
 }
+*/

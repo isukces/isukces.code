@@ -8,8 +8,7 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>,
-        IAmmyBindConverterHost, IAmmyBindSourceHost
+    public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>        
     {
         public AmmyBind(string path, DataBindingMode? mode = null)
         {
@@ -162,17 +161,6 @@ namespace isukces.code.Ammy
         private List<KeyValuePair<string, object>> GetOrderedItems(IEnumerable<KeyValuePair<string, object>> items)
         {
             return items.OrderBy(a => a.Key, this).ToList();
-        }
-
-
-        void IAmmyBindConverterHost.SetBindConverter(object converter)
-        {
-            WithSetParameter("Converter", converter);
-        }
-
-        void IAmmyBindSourceHost.SetBindingSource(object bindingSource)
-        {
-            From = bindingSource;
         }
 
         public string Path { get; set; }

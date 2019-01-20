@@ -37,15 +37,7 @@ namespace AutoCodeBuilder
             return m;
         }
 
-        protected static string NameFromStatic(string paramName)
-        {
-            return $"With{paramName}FromStatic<TStaticPropertyOwner>";
-        }
-
-        protected static string NameFromStaticResource(string paramName)
-        {
-            return $"With{paramName}FromStaticResource";
-        }
+       
 
         protected static bool NotImplements<TInterface>(Type type)
         {
