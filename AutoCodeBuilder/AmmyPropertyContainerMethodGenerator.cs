@@ -20,6 +20,7 @@ namespace AutoCodeBuilder
             context.AddNamespace("System");
             context.AddNamespace("isukces.code.interfaces.Ammy");
             context.AddNamespace("isukces.code.Ammy");
+            context.AddNamespace("isukces.code");
             context.AddNamespace<KeyValuePair<string, string>>();
             context.AddNamespace(typeof(AmmyHelper));
             context.AddNamespace<NotNullAttribute>();
@@ -45,6 +46,7 @@ namespace AutoCodeBuilder
                 m.AddParam("func", "Expression<Func<TPropertyBrowser, TValue>>");
                 m.AddParam("value", "TValue");
             }
+          
             {
                 // ======== WithPropertyNotNull
                 var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator), "G4")
@@ -80,7 +82,19 @@ namespace AutoCodeBuilder
                 p.Attributes.Add(new CsAttribute("CanBeNull"));
                 p.ConstValue = "null";
             }
-            
+            {
+                var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G9")
+                    .WriteLine("var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);")
+                    .WriteLine("var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);")
+                    .WriteLine("return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);");
+
+                var m = CreateMethod("WithPropertyAncestorBind<TAncestor, TValue>", type, cl, cf);
+                m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, TValue>>");
+                m.AddParam("bindToPathExpression", "Expression<Func<TAncestor, TValue>>");
+                var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
+                p.Attributes.Add(new CsAttribute("CanBeNull"));
+                p.ConstValue = "null";
+            }
             {
                 // ======== WithPropertyStaticResource
                 var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G7")

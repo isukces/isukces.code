@@ -1,3 +1,4 @@
+using isukces.code;
 using isukces.code.Ammy;
 using isukces.code.interfaces.Ammy;
 using JetBrains.Annotations;
@@ -10,7 +11,7 @@ namespace isukces.code.Ammy
 {
     partial class MixinBuilder<TPropertyBrowser>
     {
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G2
@@ -19,7 +20,16 @@ namespace isukces.code.Ammy
             return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G9
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator G6
@@ -28,7 +38,7 @@ namespace isukces.code.Ammy
             return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G3
@@ -37,7 +47,7 @@ namespace isukces.code.Ammy
             return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G5
@@ -45,7 +55,7 @@ namespace isukces.code.Ammy
             return this.WithPropertyNotNull(mi.Member.Name, value);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G4
@@ -53,14 +63,14 @@ namespace isukces.code.Ammy
             return this.WithPropertyNotNull(mi.Member.Name, value);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
         {
             // generator : AmmyPropertyContainerMethodGenerator G7
             return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
         {
             // generator : AmmyPropertyContainerMethodGenerator G8
@@ -72,7 +82,7 @@ namespace isukces.code.Ammy
 
     partial class AmmyObjectBuilder<TPropertyBrowser>
     {
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G2
@@ -81,7 +91,16 @@ namespace isukces.code.Ammy
             return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G9
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator G6
@@ -90,7 +109,7 @@ namespace isukces.code.Ammy
             return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G3
@@ -99,7 +118,7 @@ namespace isukces.code.Ammy
             return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G5
@@ -107,7 +126,7 @@ namespace isukces.code.Ammy
             return this.WithPropertyNotNull(mi.Member.Name, value);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G4
@@ -115,14 +134,14 @@ namespace isukces.code.Ammy
             return this.WithPropertyNotNull(mi.Member.Name, value);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
         {
             // generator : AmmyPropertyContainerMethodGenerator G7
             return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
         {
             // generator : AmmyPropertyContainerMethodGenerator G8
@@ -134,259 +153,259 @@ namespace isukces.code.Ammy
 
     partial class AmmyBind
     {
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindFrom(object from)
         {
             // generator : FluentBindGenerator G1
             From = from; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindFromAncestor(Type ancestorType, int? level = null)
         {
             // generator : FluentBindGenerator G4
             From = new AncestorBindingSource(ancestorType, level); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindFromAncestor<TAncestor>(int? level = null)
         {
             // generator : FluentBindGenerator G5
             From = new AncestorBindingSource(typeof(TAncestor),  level); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindFromResource(string resourceName)
         {
             // generator : FluentBindGenerator G3
             From = new AmmyStaticResource(resourceName); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindFromStatic<TStaticPropertyOwner>(string propertyName)
         {
             // generator : FluentBindGenerator G2
             From = new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindingGroupName(string bindingGroupName)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("BindingGroupName", bindingGroupName);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindingGroupName(object bindingGroupName)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("BindingGroupName", bindingGroupName);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindsDirectlyToSource(bool bindsDirectlyToSource)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("BindsDirectlyToSource", bindsDirectlyToSource);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithBindsDirectlyToSource(object bindsDirectlyToSource)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("BindsDirectlyToSource", bindsDirectlyToSource);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithConverter(object converter)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("Converter", converter);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithConverterCulture(object converterCulture)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ConverterCulture", converterCulture);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithConverterFromResource(string resourceName)
         {
             // generator : FluentBindGenerator G3
             return WithSetParameter("Converter", new AmmyStaticResource(resourceName));
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithConverterFromStatic<TStaticPropertyOwner>(string propertyName)
         {
             // generator : FluentBindGenerator G2
             return WithSetParameter("Converter", new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName));
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithConverterParameter(object converterParameter)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ConverterParameter", converterParameter);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithIsAsync(bool isAsync)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("IsAsync", isAsync);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithIsAsync(object isAsync)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("IsAsync", isAsync);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithMode(DataBindingMode mode)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("Mode", mode);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithMode(object mode)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("Mode", mode);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithNotifyOnSourceUpdated(bool notifyOnSourceUpdated)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("NotifyOnSourceUpdated", notifyOnSourceUpdated);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithNotifyOnSourceUpdated(object notifyOnSourceUpdated)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("NotifyOnSourceUpdated", notifyOnSourceUpdated);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithNotifyOnTargetUpdated(bool notifyOnTargetUpdated)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("NotifyOnTargetUpdated", notifyOnTargetUpdated);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithNotifyOnTargetUpdated(object notifyOnTargetUpdated)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("NotifyOnTargetUpdated", notifyOnTargetUpdated);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithNotifyOnValidationError(bool notifyOnValidationError)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("NotifyOnValidationError", notifyOnValidationError);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithNotifyOnValidationError(object notifyOnValidationError)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("NotifyOnValidationError", notifyOnValidationError);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithPath(string path)
         {
             // generator : FluentBindGenerator G1
             Path = path; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithStringFormat(string stringFormat)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("StringFormat", stringFormat);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithStringFormat(object stringFormat)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("StringFormat", stringFormat);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithTargetNullValue(object targetNullValue)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("TargetNullValue", targetNullValue);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithUpdateSourceTrigger(DataUpdateSourceTrigger updateSourceTrigger)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("UpdateSourceTrigger", updateSourceTrigger);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithUpdateSourceTrigger(object updateSourceTrigger)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("UpdateSourceTrigger", updateSourceTrigger);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithValidatesOnDataErrors(bool validatesOnDataErrors)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ValidatesOnDataErrors", validatesOnDataErrors);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithValidatesOnDataErrors(object validatesOnDataErrors)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ValidatesOnDataErrors", validatesOnDataErrors);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithValidatesOnExceptions(bool validatesOnExceptions)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ValidatesOnExceptions", validatesOnExceptions);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithValidatesOnExceptions(object validatesOnExceptions)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ValidatesOnExceptions", validatesOnExceptions);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithValidationRules(object validationRules)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("ValidationRules", validationRules);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithXPath(string xPath)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("XPath", xPath);
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBind WithXPath(object xPath)
         {
             // generator : FluentBindGenerator G1
@@ -397,175 +416,175 @@ namespace isukces.code.Ammy
 
     partial class AmmyBindBuilder
     {
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithBindFrom(object from)
         {
             // generator : FluentBindGenerator G1
             From = from; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithBindFromAncestor(Type ancestorType, int? level = null)
         {
             // generator : FluentBindGenerator G4
             From = new AncestorBindingSource(ancestorType, level); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithBindFromAncestor<TAncestor>(int? level = null)
         {
             // generator : FluentBindGenerator G5
             From = new AncestorBindingSource(typeof(TAncestor),  level); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithBindFromResource(string resourceName)
         {
             // generator : FluentBindGenerator G3
             From = new AmmyStaticResource(resourceName); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithBindFromStatic<TStaticPropertyOwner>(string propertyName)
         {
             // generator : FluentBindGenerator G2
             From = new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithBindingGroupName(string bindingGroupName)
         {
             // generator : FluentBindGenerator G1
             BindingGroupName = bindingGroupName; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithBindsDirectlyToSource(bool? bindsDirectlyToSource)
         {
             // generator : FluentBindGenerator G1
             BindsDirectlyToSource = bindsDirectlyToSource; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithConverter(object converter)
         {
             // generator : FluentBindGenerator G1
             Converter = converter; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithConverterCulture(object converterCulture)
         {
             // generator : FluentBindGenerator G1
             ConverterCulture = converterCulture; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithConverterFromResource(string resourceName)
         {
             // generator : FluentBindGenerator G3
             Converter = new AmmyStaticResource(resourceName); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithConverterFromStatic<TStaticPropertyOwner>(string propertyName)
         {
             // generator : FluentBindGenerator G2
             Converter = new StaticBindingSource(typeof(TStaticPropertyOwner), propertyName); return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithConverterParameter(object converterParameter)
         {
             // generator : FluentBindGenerator G1
             ConverterParameter = converterParameter; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithIsAsync(bool? isAsync)
         {
             // generator : FluentBindGenerator G1
             IsAsync = isAsync; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithMode(DataBindingMode? mode)
         {
             // generator : FluentBindGenerator G1
             Mode = mode; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithNotifyOnSourceUpdated(bool? notifyOnSourceUpdated)
         {
             // generator : FluentBindGenerator G1
             NotifyOnSourceUpdated = notifyOnSourceUpdated; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithNotifyOnTargetUpdated(bool? notifyOnTargetUpdated)
         {
             // generator : FluentBindGenerator G1
             NotifyOnTargetUpdated = notifyOnTargetUpdated; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithNotifyOnValidationError(bool? notifyOnValidationError)
         {
             // generator : FluentBindGenerator G1
             NotifyOnValidationError = notifyOnValidationError; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithPath(string path)
         {
             // generator : FluentBindGenerator G1
             Path = path; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithStringFormat(string stringFormat)
         {
             // generator : FluentBindGenerator G1
             StringFormat = stringFormat; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithTargetNullValue(object targetNullValue)
         {
             // generator : FluentBindGenerator G1
             TargetNullValue = targetNullValue; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithUpdateSourceTrigger(DataUpdateSourceTrigger? updateSourceTrigger)
         {
             // generator : FluentBindGenerator G1
             UpdateSourceTrigger = updateSourceTrigger; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithValidatesOnDataErrors(bool? validatesOnDataErrors)
         {
             // generator : FluentBindGenerator G1
             ValidatesOnDataErrors = validatesOnDataErrors; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithValidatesOnExceptions(bool? validatesOnExceptions)
         {
             // generator : FluentBindGenerator G1
             ValidatesOnExceptions = validatesOnExceptions; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         public AmmyBindBuilder WithXPath(string xPath)
         {
             // generator : FluentBindGenerator G1
             XPath = xPath; return this;
         }
 
-        [isukces.code.AutocodeGenerated]
+        [AutocodeGenerated]
         private void SetupAmmyBind(AmmyBind bind)
         {
             // generator : FluentBindGenerator G11

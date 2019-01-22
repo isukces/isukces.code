@@ -16,6 +16,7 @@ namespace AutoCodeBuilder
             {
                 BaseDir = solutionDir
             };
+            autoCodeGenerator.FileNamespaces.Add("isukces.code");
             var ammyPropertyContainerMethodGenerator = new AmmyPropertyContainerMethodGenerator()
                 .WithSkip<AmmyContainerBase>()
                 .WithSkip<AmmyMixin>();

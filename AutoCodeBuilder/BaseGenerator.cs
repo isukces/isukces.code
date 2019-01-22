@@ -28,12 +28,12 @@ namespace AutoCodeBuilder
             return code;
         }
 
-        protected static CsMethod CreateMethod(string name, Type type, CsClass cl, CodeWriter cf)
+        protected  CsMethod CreateMethod(string name, Type type, CsClass cl, CodeWriter cf)
         {
             var m = cl.AddMethod(name, cl.TypeName(type))
                 // .WithStatic()
                 .WithBody(cf);
-            m.WithAttribute(cl, typeof(AutocodeGeneratedAttribute));
+            m.Attributes.Add(new CsAttribute(cl.TypeName<AutocodeGeneratedAttribute>()).WithArgument(GetType().Name));
             return m;
         }
 
