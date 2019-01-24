@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace isukces.code.Ammy
 {
@@ -14,20 +15,44 @@ namespace isukces.code.Ammy
             return MixinNamePrefix + shortName;
         }
 
-        public IEnumerable<AmmyMixin> GetMixins()
+        public MixinBuilder<T> RegisterMixin<T>(string name, bool globalName = false)
         {
-            return _mixins;
-        }
-
-        public MixinBuilder<T> RegisterMixin<T>(string shortName)
-        {
-            var m = new MixinBuilder<T>(GetFullMixinName(shortName));
+            if (!globalName)
+                name = GetFullMixinName(name);
+            var m = new MixinBuilder<T>(name);
             _mixins.Add(m.WrappedMixin);
             return m;
         }
 
-        public string MixinNamePrefix { get; }
+        public AmmyBuilderContext RegisterVariable(string name, int value, bool globalName = false)
+        {
+            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
+        }
+
+        public AmmyBuilderContext RegisterVariable(string name, double value, bool globalName = false)
+        {
+            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
+        }
+
+        public AmmyBuilderContext RegisterVariable(string name, string value, bool globalName = false)
+        {
+            if (!globalName)
+                name = GetFullMixinName(name);
+            var v = new AmmyVariableDefinition(name, value);
+            _variables.Add(v);
+            return this;
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(AmmyBuilderContext)} {Variables.Count} variable(s), {Mixins.Count} mixin(s)";
+        }
+
+        public IReadOnlyList<AmmyMixin>              Mixins          => _mixins;
+        public IReadOnlyList<AmmyVariableDefinition> Variables       => _variables;
+        public string                                MixinNamePrefix { get; }
 
         private readonly List<AmmyMixin> _mixins = new List<AmmyMixin>();
+        private readonly List<AmmyVariableDefinition> _variables = new List<AmmyVariableDefinition>();
     }
 }

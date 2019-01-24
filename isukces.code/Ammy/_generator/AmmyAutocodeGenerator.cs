@@ -11,14 +11,19 @@ namespace isukces.code.Ammy
 {
     public class AmmyAutocodeGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
     {
-        public void AddVariable(string name, string value)
-        {
-            CodeParts["a VARIABLE " + name] = new AmmyVariableDefinition(name, value);
-        }
-        
         public AmmyAutocodeGenerator(Func<Assembly, FileInfo> getFileLocation)
         {
             _getFileLocation = getFileLocation;
+        }
+
+        public void AddMixin(AmmyMixin mixin)
+        {
+            CodeParts["b MIXIN:" + mixin.Name] = mixin;
+        }
+
+        public void AddVariable(string name, string value)
+        {
+            AddVariable(new AmmyVariableDefinition(name, value));
         }
 
         public void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
@@ -65,6 +70,11 @@ namespace isukces.code.Ammy
                 UseAmmyBuilderAttribute(type, method);
         }
 
+        private void AddVariable(AmmyVariableDefinition variableDefinition)
+        {
+            CodeParts["a VARIABLE " + variableDefinition.Name] = variableDefinition;
+        }
+
         private void UseAmmyBuilderAttribute(Type type, MethodInfo method)
         {
             var at = method.GetCustomAttribute<AmmyBuilderAttribute>();
@@ -80,9 +90,12 @@ namespace isukces.code.Ammy
 
             var ctx = new AmmyBuilderContext(prefix);
             method.Invoke(null, new object[] {ctx});
-            foreach (var mixin in ctx.GetMixins())
-                CodeParts["b MIXIN:" + mixin.Name] = mixin;
+            foreach (var mixin in ctx.Mixins)
+                AddMixin(mixin);
+            foreach (var variableDefinition in ctx.Variables)
+                AddVariable(variableDefinition);
         }
+
 
         protected Dictionary<string, IAmmyCodePieceConvertible> CodeParts { get; private set; }
 
