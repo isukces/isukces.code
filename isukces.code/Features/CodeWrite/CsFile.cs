@@ -16,14 +16,7 @@ namespace isukces.code.CodeWrite
         {
             _importNamespaces.Add(aNamespace);
         }
-
-        public ISet<string> GetNamespaces(bool withParent)
-        {
-            var s = new HashSet<string>();
-            foreach (var i in _importNamespaces)
-                s.Add(i);
-            return s;
-        }
+       
 
         public CsClass GetOrCreateClass(string namespaceName, string className)
         {
@@ -192,6 +185,11 @@ namespace isukces.code.CodeWrite
         public override string ToString()
         {
             return GetCode();
+        }
+
+        public bool IsKnownNamespace(string namespaceName)
+        {
+            return !string.IsNullOrEmpty(namespaceName) && _importNamespaces.Contains(namespaceName);
         }
 
         public string TypeName(Type type)

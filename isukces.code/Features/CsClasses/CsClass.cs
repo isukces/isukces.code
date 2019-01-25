@@ -227,16 +227,7 @@ namespace isukces.code
             Properties.Add(property);
             return property;
         }
-
-        public ISet<string> GetNamespaces(bool withParent)
-        {
-            var parentNamespaces = Owner?.GetNamespaces(true);
-            var appendNamespace  = DotNetType?.Namespace;
-            var append2          = string.IsNullOrEmpty(appendNamespace) ? null : new[] {appendNamespace};
-            var copy             = GeneratorsHelper.MakeCopy(parentNamespaces, append2);
-            return copy;
-        }
-
+     
         public CsClass GetOrCreateNested(string typeName)
         {
             var existing = _nestedClasses
@@ -294,6 +285,11 @@ namespace isukces.code
         public override string ToString()
         {
             return "csClass " + _name;
+        }
+
+        public bool IsKnownNamespace(string namespaceName)
+        {
+            return Owner?.IsKnownNamespace(namespaceName) ?? false;
         }
 
         public string TypeName<T>()

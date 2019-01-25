@@ -25,21 +25,19 @@ namespace isukces.code.CodeWrite
         {
             ImportNamespaces.Add(aNamespace);
         }
-       
-        public ISet<string> GetNamespaces(bool withParent)
-        {
-            var pNs = Owner?.GetNamespaces(true);
-
-            return GeneratorsHelper.MakeCopy(
-                ImportNamespaces,
-                withParent ? pNs : null,
-                withParent ? null : pNs);
-        }
 
         public CsClass GetOrCreateClass(string csClassName)
         {
             var existing = Classes.FirstOrDefault(a => a.Name == csClassName);
             return existing ?? AddClass(new CsClass(csClassName));
+        }
+
+        public bool IsKnownNamespace(string namespaceName)
+        {
+            if (string.IsNullOrEmpty(namespaceName)) return false;
+            if (Name == namespaceName) return true;
+            if (ImportNamespaces.Contains(namespaceName)) return true;
+            return Owner?.IsKnownNamespace(namespaceName) ?? false;
         }
 
         public string TypeName(Type type)
@@ -49,9 +47,9 @@ namespace isukces.code.CodeWrite
 
         public ISet<string> ImportNamespaces { get; } = new HashSet<string>();
 
-        public INamespaceOwner        Owner   { get; set; }
-        public string                 Name    { get; private set; }
-        public IReadOnlyList<CsClass> Classes { get; private set; } = new List<CsClass>();
-        public string CompilerDirective { get; set; }
+        public INamespaceOwner        Owner             { get; set; }
+        public string                 Name              { get; }
+        public IReadOnlyList<CsClass> Classes           { get; } = new List<CsClass>();
+        public string                 CompilerDirective { get; set; }
     }
 }

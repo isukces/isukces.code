@@ -7,19 +7,19 @@ namespace isukces.code.Tests
     public class CsTests
     {
         [Fact]
-        public void ShouldCsCite()
+        public void T01_ShouldCsCite()
         {
             const string quote     = "\"";
             const string backslash = "\\";
 
             const string specialR = "\r";
-            Assert.Equal(1,                               specialR.Length);
+            Assert.Equal(1, specialR.Length);
             Assert.Equal(quote + backslash + "r" + quote, specialR.CsEncode());
             var specialN = "\n";
-            Assert.Equal(1,                               specialN.Length);
+            Assert.Equal(1, specialN.Length);
             Assert.Equal(quote + backslash + "n" + quote, specialN.CsEncode());
             var specialT = "\t";
-            Assert.Equal(1,                               specialT.Length);
+            Assert.Equal(1, specialT.Length);
             Assert.Equal(quote + backslash + "t" + quote, specialT.CsEncode());
         }
 
@@ -28,9 +28,9 @@ namespace isukces.code.Tests
         {
             var cl = new CsClass("Src1");
             cl.Kind = CsNamespaceMemberKind.Struct;
-            var m  = cl.AddMethod("*", "Result")
+            var m = cl.AddMethod("*", "Result")
                 .WithBody("return new Result(left.Value * right.Value);");
-            m.AddParam("left",  "Src1");
+            m.AddParam("left", "Src1");
             m.AddParam("right", "Src2");
             // odwrotny
 
@@ -48,12 +48,12 @@ namespace isukces.code.Tests
             Assert.Equal(expected.Trim(), w.Code.Trim());
         }
 
-        
+
         [Fact]
         public void T03_Should_Create_auto_property_with_initialisation()
         {
             var cl = new CsClass("Src1");
-            var p = cl.AddProperty("A", "int");
+            var p  = cl.AddProperty("A", "int");
             p.MakeAutoImplementIfPossible = true;
             //p.ConstValue = "12";
             // odwrotny
@@ -69,9 +69,9 @@ namespace isukces.code.Tests
             Assert.Equal(expected.Trim(), w.GetCodeTrim());
 
             p.ConstValue = "12";
-            w = new CsCodeWriter();
+            w            = new CsCodeWriter();
             cl.MakeCode(w);
-              expected = @"public class Src1
+            expected = @"public class Src1
 {
     public int A { get; set; } = 12;
 
@@ -79,7 +79,7 @@ namespace isukces.code.Tests
 ";
             Assert.Equal(expected.Trim(), w.GetCodeTrim());
         }
-        
+
         [Fact]
         public void T04_Should_Create_interface()
         {
@@ -89,10 +89,10 @@ namespace isukces.code.Tests
             };
             var m = cl.AddMethod("Count", "int")
                 .WithBody("return 12;");
-            
-            var p  = cl.AddProperty("A", "int");
+
+            var p = cl.AddProperty("A", "int");
             p.MakeAutoImplementIfPossible = true;
-            p.OwnGetter = "return 123;";
+            p.OwnGetter                   = "return 123;";
             //p.ConstValue = "12";
             // odwrotny
 
@@ -112,18 +112,18 @@ public interface ITest
             p.ConstValue = "12";
             w            = new CsCodeWriter();
             cl.MakeCode(w);
-           
+
             Assert.Equal(expected.Trim(), w.GetCodeTrim());
         }
-        
-        
+
+
         [Fact]
         public void T05_Should_generate_compiler_directive()
         {
             var cl = new CsClass("Src1");
             var p  = cl.AddProperty("A", "int");
             p.MakeAutoImplementIfPossible = true;
-            cl.CompilerDirective = "DEBUG";
+            cl.CompilerDirective          = "DEBUG";
 
             var w = new CsCodeWriter();
             cl.MakeCode(w);
@@ -138,8 +138,47 @@ public class Src1
 
 ";
             Assert.Equal(expected.Trim(), w.GetCodeTrim());
-
         }
 
+        [Fact]
+        public void T06_Should_cut_namespace()
+        {
+            var f = new CsFile();
+            f.AddImportNamespace("System.Alpha");
+            var ns = f.GetOrCreateNamespace("Custom.Beta");
+            ns.AddImportNamespace("Custom.Private");
+            var c = ns.GetOrCreateClass("Gamma");
+
+            Assert.True(c.IsKnownNamespace("Custom.Beta"));
+            Assert.True(c.IsKnownNamespace("System.Alpha"));
+            Assert.True(c.IsKnownNamespace("Custom.Private"));
+            Assert.False(c.IsKnownNamespace("Some.Unknown.Namespace"));
+
+            Assert.True(ns.IsKnownNamespace("Custom.Beta"));
+            Assert.True(ns.IsKnownNamespace("System.Alpha"));
+            Assert.True(ns.IsKnownNamespace("Custom.Private"));
+            Assert.False(ns.IsKnownNamespace("Some.Unknown.Namespace"));
+
+            Assert.False(f.IsKnownNamespace("Custom.Beta"));
+            Assert.True(f.IsKnownNamespace("System.Alpha"));
+            Assert.False(f.IsKnownNamespace("Custom.Private"));
+            Assert.False(f.IsKnownNamespace("Some.Unknown.Namespace"));
+
+            var w = new CsCodeWriter();
+            f.MakeCode(w);
+            const string expected = @"using System.Alpha;
+
+// ReSharper disable once CheckNamespace
+namespace Custom.Beta
+{
+    using Custom.Private;
+
+    public class Gamma
+    {
+    }
+}
+";
+            Assert.Equal(expected.Trim(), w.Code.Trim());
+        }
     }
 }

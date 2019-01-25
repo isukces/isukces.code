@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace isukces.code.interfaces
 {
     public interface INamespaceContainer
     {
-        ISet<string> GetNamespaces(bool withParent);
+        bool IsKnownNamespace([CanBeNull]string namespaceName);    
     }
 
     public interface INamespaceCollection

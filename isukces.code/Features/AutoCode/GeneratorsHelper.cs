@@ -88,8 +88,8 @@ namespace isukces.code.AutoCode
                     fullName = type.FullName;
             }
             var typeNamespace = type.Namespace;
-            return !string.IsNullOrEmpty(typeNamespace) &&
-                   (container?.GetNamespaces(true)?.Contains(typeNamespace) ?? false)
+            var canCut = container?.IsKnownNamespace(typeNamespace) ?? false;
+            return canCut
                 ? fullName.Substring(typeNamespace.Length + 1)
                 : fullName;
         }
