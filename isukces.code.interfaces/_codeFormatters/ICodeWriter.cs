@@ -7,27 +7,18 @@ namespace isukces.code.interfaces
     public interface ICodeWriter
     {
         void Append(string text);
-        
+
         [NotNull]
         string Code { get; }
-        
+
         [NotNull]
         ILangInfo LangInfo { get; }
-        
-        int       Indent   { get; set; }
+
+        int Indent { get; set; }
     }
 
     public static class CodeFormatterExt
     {
-        public static void DoWithKeepingIndent(this ICodeWriter _this, Action action)
-        {
-            var indentBefore = _this.Indent;
-            action();
-            if (_this.Indent == indentBefore) return;
-            // some warning should be created here
-            _this.Indent = indentBefore;
-        }
-        
         public static void Close(this ICodeWriter src, string customCloseText)
         {
             src.DecIndent();
@@ -43,7 +34,7 @@ namespace isukces.code.interfaces
                 src.WriteLine(langInfo.CloseText + " " + langInfo.OneLineComment + " " + opening[Indent]);
             else
 #endif
-                src.WriteLine(langInfo.CloseText);
+            src.WriteLine(langInfo.CloseText);
             if (addEmptyLine)
                 src.WriteLine();
         }
@@ -65,6 +56,15 @@ namespace isukces.code.interfaces
         public static void DecIndent(this ICodeWriter src)
         {
             src.Indent--;
+        }
+
+        public static void DoWithKeepingIndent(this ICodeWriter _this, Action action)
+        {
+            var indentBefore = _this.Indent;
+            action();
+            if (_this.Indent == indentBefore) return;
+            // some warning should be created here
+            _this.Indent = indentBefore;
         }
 
         [NotNull]
@@ -100,6 +100,33 @@ namespace isukces.code.interfaces
         {
             src.WriteLine(src.LangInfo.OpenText);
             src.IncIndent();
+        }
+
+        public static T WithDecIndent<T>(this T _this)
+            where T : ICodeWriter
+        {
+            _this.DecIndent();
+            return _this;
+        }
+
+        public static T WithIncIndent<T>(this T _this)
+            where T : ICodeWriter
+        {
+            _this.IncIndent();
+            return _this;
+        }
+
+        public static T WithOpen<T>(this T _this, string text)
+            where T : ICodeWriter
+        {
+            _this.Open(text);
+            return _this;
+        }
+        public static T WithClose<T>(this T _this)
+            where T : ICodeWriter
+        {
+            _this.Close();
+            return _this;
         }
 
         public static T WriteLine<T>(this T _this)

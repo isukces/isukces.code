@@ -39,6 +39,19 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G6 ver2
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            void SetupBinding(AmmyBind b)
+            {
+                bindingSettings?.Invoke(b.WithMode(mode));
+            }
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), SetupBinding);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G3
@@ -107,6 +120,19 @@ namespace isukces.code.Ammy
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
             var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
             return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G6 ver2
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            void SetupBinding(AmmyBind b)
+            {
+                bindingSettings?.Invoke(b.WithMode(mode));
+            }
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), SetupBinding);
         }
 
         [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]

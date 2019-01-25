@@ -83,6 +83,24 @@ namespace AutoCodeBuilder
                 p.ConstValue = "null";
             }
             {
+                            // ======== WithPropertyAncestorBind
+                            var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G6 ver2")
+                                .WriteLine("var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);")
+                                .WriteLine("var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);")
+                                .WithOpen("void SetupBinding(AmmyBind b)")
+                                .WriteLine("bindingSettings?.Invoke(b.WithMode(mode));")
+                                .WithClose()
+                                .WriteLine("return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), SetupBinding);");
+            
+                            var m = CreateMethod("WithPropertyAncestorBind<TAncestor>", type, cl, cf);
+                            m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
+                            m.AddParam("bindToPathExpression", "Expression<Func<TAncestor, object>>");
+                            m.AddParam("mode", cl.TypeName<DataBindingMode>());
+                            var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
+                            p.Attributes.Add(new CsAttribute("CanBeNull"));
+                            p.ConstValue = "null";
+                        }
+            {
                 var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G9")
                     .WriteLine("var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);")
                     .WriteLine("var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);")
