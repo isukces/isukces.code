@@ -33,14 +33,24 @@ namespace isukces.code.Ammy
         {
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
             if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
-            AmmyBind bind = AmmyBind.FromAncestor(path, ancestorType);
-
-            //var value = $"bind {path} from $ancestor<{ancestorType.FullName}>";
-            /*
-            if (bindingSettings != null && bindingSettings.Any())
-                foreach (var i in bindingSettings)
-                    bind.WithSetParameter(i.Key, new SimpleAmmyCodePiece(i.Value));
-                    */
+            var bind = AmmyBind.FromAncestor(path, ancestorType);
+            bindingSettings?.Invoke(bind);
+            self.WithProperty(propertyName, bind);
+            return self;
+        }
+        
+        public static T WithPropertyAncestorBind<T>(this T self, 
+            string propertyName, 
+            string path,
+            [NotNull] Type ancestorType,
+            DataBindingMode mode,
+            [CanBeNull] Action<AmmyBind> bindingSettings = null)
+            where T : IAmmyPropertyContainer
+        {
+            if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
+            if (ancestorType == null) throw new ArgumentNullException(nameof(ancestorType));
+            var bind = AmmyBind.FromAncestor(path, ancestorType);
+            bind.WithMode(mode);
             bindingSettings?.Invoke(bind);
             self.WithProperty(propertyName, bind);
             return self;
