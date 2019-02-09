@@ -16,7 +16,7 @@ namespace isukces.code.CodeWrite
         {
             _importNamespaces.Add(aNamespace);
         }
-       
+
 
         public CsClass GetOrCreateClass(string namespaceName, string className)
         {
@@ -116,11 +116,18 @@ namespace isukces.code.CodeWrite
             return result;
         }
 
+        public bool IsKnownNamespace(string namespaceName)
+        {
+            return !string.IsNullOrEmpty(namespaceName) && _importNamespaces.Contains(namespaceName);
+        }
+
         public void MakeCode(ICsCodeWriter writer)
         {
             if (Namespaces == null || Namespaces.Count == 0)
                 return;
             const string emptyNamespace = "";
+            if (!string.IsNullOrEmpty(BeginContent))
+                writer.WriteLine(BeginContent);
             foreach (var i in _importNamespaces.OrderBy(i => i))
                 writer.WriteLine("using {0};", i);
             if (_importNamespaces.Any())
@@ -175,6 +182,9 @@ namespace isukces.code.CodeWrite
                     writer.Close();
                 writer.CloseCompilerIf(compilerDirective);
             }
+            
+            if (!string.IsNullOrEmpty(EndContent))
+                writer.WriteLine(EndContent);
         }
 
         public bool SaveIfDifferent(string filename, bool addBom = false)
@@ -185,11 +195,6 @@ namespace isukces.code.CodeWrite
         public override string ToString()
         {
             return GetCode();
-        }
-
-        public bool IsKnownNamespace(string namespaceName)
-        {
-            return !string.IsNullOrEmpty(namespaceName) && _importNamespaces.Contains(namespaceName);
         }
 
         public string TypeName(Type type)
@@ -245,6 +250,17 @@ namespace isukces.code.CodeWrite
                 _suggestedFileName = value;
             }
         }
+
+
+        /// <summary>
+        ///     Optional content on the top of file
+        /// </summary>
+        public string BeginContent { get; set; }
+
+        /// <summary>
+        ///     Optional content on the end of file
+        /// </summary>
+        public string EndContent { get; set; }
 
         /// <summary>
         ///     Przestrzenie nazw

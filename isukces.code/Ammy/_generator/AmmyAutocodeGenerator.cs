@@ -70,7 +70,7 @@ namespace isukces.code.Ammy
                 UseAmmyBuilderAttribute(type, method);
         }
 
-        private void AddVariable(AmmyVariableDefinition variableDefinition)
+        public void AddVariable(AmmyVariableDefinition variableDefinition)
         {
             CodeParts["a VARIABLE " + variableDefinition.Name] = variableDefinition;
         }
