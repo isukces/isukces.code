@@ -79,6 +79,18 @@ namespace isukces.code.AutoCode
                 foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>()) i.AssemblyEnd(assembly, context);
             }
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
+            var h = BeforeSave;
+            if (h != null)
+            {
+                var args = new BeforeSaveEventArgs
+                {
+                    File     = _csFile,
+                    FileName = fileName
+                };
+                h(this, args);
+                fileName = args.FileName;
+            }
+
             if (_csFile.SaveIfDifferent(fileName, false))
                 saved = true;
         }
@@ -114,5 +126,13 @@ namespace isukces.code.AutoCode
 
         private Dictionary<TypeProvider, CsClass> _classes;
         private CsFile _csFile;
+
+        public event EventHandler<BeforeSaveEventArgs> BeforeSave;
+
+        public class BeforeSaveEventArgs : EventArgs
+        {
+            public CsFile File { get; set; }
+            public string FileName { get; set; }
+        }
     }
 }
