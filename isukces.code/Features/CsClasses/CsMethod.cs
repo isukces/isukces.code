@@ -95,7 +95,8 @@ namespace isukces.code
             WriteMethodDescription(writer);
             foreach (var i in Attributes)
                 writer.WriteLine("[{0}]", i);
-
+            // ================
+            writer.SplitWriteLine(AdditionalContentOverMethod);
             var query = from i in _parameters
                 select FormatMethodParameter(i);
             var mDefinition = string.Format("{0}({1})",
@@ -120,13 +121,8 @@ namespace isukces.code
             else
                 writer.Open(mDefinition);
 
-            query = from i in _body.Split('\r', '\n')
-                where !string.IsNullOrEmpty(i)
-                select i.TrimEnd();
-            foreach (var i in query)
-                writer.WriteLine(i);
-
-            writer.Close();
+            writer.SplitWriteLine(_body);
+            writer.Close();            
         }
 
         public CsMethod WithAutocodeGeneratedAttribute(CsClass csClass)
@@ -226,11 +222,7 @@ namespace isukces.code
         public List<CsMethodParameter> Parameters
         {
             get => _parameters;
-            set
-            {
-                if (value == null) value = new List<CsMethodParameter>();
-                _parameters = value;
-            }
+            set => _parameters = value ?? new List<CsMethodParameter>();
         }
 
         /// <summary>
@@ -262,6 +254,8 @@ namespace isukces.code
             get => _baseConstructorCall;
             set => _baseConstructorCall = value?.Trim() ?? string.Empty;
         }
+        
+        public string AdditionalContentOverMethod { get; set; }
 
         private static readonly HashSet<string> operators;
 

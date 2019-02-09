@@ -2,9 +2,10 @@
 var builder = new ProjectBuilder
 {
 	VisualStudioExe = GlobalVar["VisualStudio 2017"],
-	NugetExe = GlobalVar["Nuget"],
-	NugetRepositoryDir = GlobalVar["Private Nuget Repository"],
-
+	Nuget = {
+		Exe = GlobalVar["Nuget"],
+		RepositoryDir = GlobalVar["Private Nuget Repository"],
+	},
 	ProjectName = "isukces.code",
 	SolutionName = "isukces.code",
 	SolutionDir = ConfigDir
@@ -14,7 +15,7 @@ var builder = new ProjectBuilder
 DeleteDir(builder.ProjectDir + "\\bin", builder.ProjectDir + "\\obj");
 
 // task: Nuget restore
-Execute(builder.NugetExe, "restore " + builder.SolutionName + ".sln");
+Execute(builder.Nuget.Exe, "restore " + builder.SolutionName + ".sln");
 
 // task: Update version
 var version = VersionStorage.FromSolutionDir(builder.SolutionDir)["isukces.code"];
@@ -34,11 +35,11 @@ builder.Build("deploy");
 
 var nugetPackageFileName = string.Format(@"{0}\{1}.{2}.symbols.nupkg",
 	builder.ProjectDir + @"\bin\Release",
-	builder.GetNugetName(),
+	builder.Nuget.GetNugetName(),
 	version);
 
 // task: Copy nuget
-var nugetOut = builder.NugetRepositoryDir + "\\" + builder.GetNugetName() + "." + version + ".nupkg";
+var nugetOut = builder.Nuget.RepositoryDir + "\\" + builder.Nuget.GetNugetName() + "." + version + ".nupkg";
 
 Console.WriteLine("Copy {0} to {1}", nugetPackageFileName, nugetOut);
 File.Copy(nugetPackageFileName, nugetOut, true);

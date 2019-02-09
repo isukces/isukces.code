@@ -1,5 +1,6 @@
 #define _AutoCloseText
 using System;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace isukces.code.interfaces
@@ -140,6 +141,19 @@ namespace isukces.code.interfaces
             where T : ICodeWriter
         {
             _this.WriteIndent().Append(text + "\r\n");
+            return _this;
+        }
+
+        public static T SplitWriteLine<T>(this T _this, string text)
+            where T : ICodeWriter
+        {
+            if (string.IsNullOrEmpty(text))
+                return _this;
+            var query = from i in text.Split('\r', '\n')
+                where !string.IsNullOrEmpty(i)
+                select i.TrimEnd();
+            foreach (var i in query)
+                _this.WriteLine(i);
             return _this;
         }
 
