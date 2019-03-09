@@ -18,7 +18,7 @@ namespace isukces.code.Typescript
 
         public void WriteCodeTo(ITsCodeWriter writer)
         {
-            foreach (var i in References)
+            foreach (var i in References.Items)
                 i.WriteCodeTo(writer);
             foreach (var i in Members)
                 i.WriteCodeTo(writer);
@@ -32,7 +32,20 @@ namespace isukces.code.Typescript
         }
 
 
-        public List<TsReference> References { get; } = new List<TsReference>();
-        public List<ITsCodeProvider> Members { get; } = new List<ITsCodeProvider>();
+        public TsReferenceCollection References { get; } = new TsReferenceCollection();
+        public List<ITsCodeProvider> Members    { get; } = new List<ITsCodeProvider>();
+    }
+
+    public class TsReferenceCollection
+    {
+        public void Add(TsReference item)
+        {
+            if (_added.Add(item))
+                _items.Add(item);
+        }
+
+        public IReadOnlyList<TsReference> Items => _items;
+        private readonly HashSet<TsReference> _added = new HashSet<TsReference>();
+        private readonly List<TsReference> _items = new List<TsReference>();
     }
 }
