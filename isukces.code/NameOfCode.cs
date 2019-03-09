@@ -9,10 +9,13 @@ namespace isukces.code
             Argument = argument;
         }
 
-        public string Argument { get; }
-        public string Code
+        public override string ToString()
         {
-            get { return "nameof(" + Argument + ")"; }
+            return Code;
         }
+
+        public string Argument { get; }
+
+        public string Code => "nameof(" + Argument + ")";
     }
 }
