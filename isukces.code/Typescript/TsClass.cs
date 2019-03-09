@@ -12,6 +12,13 @@ namespace isukces.code.Typescript
         {
         }
 
+
+        public TsClass WithExtends(string baseType)
+        {
+            Extends = baseType;
+            return this;
+        }
+
         protected override IEnumerable<string> GetClassHeader()
         {
             if (IsExported)
@@ -23,7 +30,6 @@ namespace isukces.code.Typescript
             yield return Extends;
         }
 
-
-        public string Extends { get; set; }
+        public string Extends      { get; set; }       
     }
 }

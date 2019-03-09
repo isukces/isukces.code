@@ -10,6 +10,17 @@ namespace isukces.code.Typescript
         {
             Name = name;
         }
+        
+        public TsMethod WithBody(string body)
+        {
+            Body = body;
+            return this;
+        }
+        public TsMethod WithBody(ICodeWriter body)
+        {
+            Body = body.Code;
+            return this;
+        }
 
         public TsMethod WithArgument(string name, string type = null)
         {

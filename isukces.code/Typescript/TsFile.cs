@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using isukces.code.interfaces;
 using isukces.code.IO;
 
@@ -6,6 +7,16 @@ namespace isukces.code.Typescript
 {
     public class TsFile : ITsCodeProvider
     {
+        public TsNamespace GetOrCreateNamespace(string namespaceName)
+        {
+            foreach (var i in Members.OfType<TsNamespace>())
+                if (i.Name == namespaceName)
+                    return i;
+            var result = new TsNamespace(namespaceName);
+            Members.Add(result);
+            return result;
+        }
+
         public bool SaveIfDifferent(string filename, bool addBom = false)
         {
             return CodeFileUtils.SaveIfDifferent(GetCode(), filename, addBom);
@@ -35,6 +46,7 @@ namespace isukces.code.Typescript
         public TsReferenceCollection References { get; } = new TsReferenceCollection();
         public List<ITsCodeProvider> Members    { get; } = new List<ITsCodeProvider>();
     }
+
 
     public class TsReferenceCollection
     {

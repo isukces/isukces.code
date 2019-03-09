@@ -24,6 +24,12 @@ namespace isukces.code.Typescript
             Members.Add(m);
             return m;
         }
+        public TsMethod AddConstructor()
+        {
+            var m = new TsMethod {Name = "constructor"};
+            Members.Add(m);
+            return m;
+        }
 
 
         public override void WriteCodeTo(ITsCodeWriter writer)
