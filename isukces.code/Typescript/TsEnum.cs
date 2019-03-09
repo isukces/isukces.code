@@ -24,10 +24,7 @@ namespace isukces.code.Typescript
 
         public override void WriteCodeTo(ITsCodeWriter writer)
         {
-            Introduction?.WriteCodeTo(writer);
-            if (Decorators != null && Decorators.Any())
-                foreach (var i in Decorators)
-                    i.WriteCodeTo(writer);
+            WriteCommonHeaderCode(writer);
             writer.Open(string.Join(" ", GetClassHeader()));
             var left = Members.Count;
             foreach (var i in Members)

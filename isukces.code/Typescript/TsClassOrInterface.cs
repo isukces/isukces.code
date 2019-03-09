@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using isukces.code.interfaces;
 
 namespace isukces.code.Typescript
@@ -31,10 +30,7 @@ namespace isukces.code.Typescript
         {
             writer.DoWithHeadersOnly(IsInterface, () =>
             {
-                Introduction?.WriteCodeTo(writer);
-                if (Decorators != null && Decorators.Any())
-                    foreach (var i in Decorators)
-                        i.WriteCodeTo(writer);
+                WriteCommonHeaderCode(writer);
                 writer.Open(string.Join(" ", GetClassHeader()));
                 foreach (var i in Members)
                     i.WriteCodeTo(writer);
