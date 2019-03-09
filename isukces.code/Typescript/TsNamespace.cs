@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using isukces.code.interfaces;
+using JetBrains.Annotations;
 
 namespace isukces.code.Typescript
 {
@@ -23,6 +23,12 @@ namespace isukces.code.Typescript
             };
             Members.Add(c);
             return c;
+        }
+
+        [Pure]
+        public string GetTypeName(AbstractType type)
+        {
+            return type.Namespace == Name ? type.Name : type.FullName;
         }
 
         public void WriteCodeTo(ITsCodeWriter writer)
