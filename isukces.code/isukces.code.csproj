@@ -24,14 +24,14 @@
     <PackageTags>C#</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\isukces.code.interfaces\isukces.code.interfaces.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="System" />
     <Reference Include="WindowsBase" Condition="'$(TargetFramework)' == 'net451'" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ammy\_extension" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2018.3.0" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
     <DefineConstants>COREFX</DefineConstants>
