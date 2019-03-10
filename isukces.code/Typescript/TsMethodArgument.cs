@@ -14,12 +14,14 @@
 
         public string GetTsCode()
         {
+            var opt = IsOptional ? "?" : "";
             if (string.IsNullOrEmpty(Type))
-                return Name;
-            return Name + ": " + Type;
+                return Name + opt;
+            return $"{Name}{opt}: {Type}";
         }
 
-        public string Name { get; set; }
-        public string Type { get; set; }
+        public string Name       { get; set; }
+        public string Type       { get; set; }
+        public bool   IsOptional { get; set; }
     }
 }
