@@ -50,7 +50,7 @@ namespace isukces.code.Typescript
         public bool IsStatic { get; set; }
         public TsVisibility Visibility { get; set; }
         public string Initializer { get; set; }
-        public bool IsOptional { get; set; }
+        
 
         public string InlineComment { get; set; }
         public ITsCodeProvider Introduction { get; set; }
