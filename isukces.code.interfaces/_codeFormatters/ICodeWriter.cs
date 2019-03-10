@@ -54,10 +54,7 @@ namespace isukces.code.interfaces
         }
 
 
-        public static void DecIndent(this ICodeWriter src)
-        {
-            src.Indent--;
-        }
+         
 
         public static void DoWithKeepingIndent(this ICodeWriter _this, Action action)
         {
@@ -75,11 +72,7 @@ namespace isukces.code.interfaces
             return writer.Code.Trim();
         }
 
-        public static void IncIndent(this ICodeWriter src)
-        {
-            src.Indent++;
-        }
-
+        
         public static void Open(this ICodeWriter src, string x)
         {
 #if AutoCloseText
@@ -103,17 +96,17 @@ namespace isukces.code.interfaces
             src.IncIndent();
         }
 
-        public static T WithDecIndent<T>(this T _this)
+        public static T DecIndent<T>(this T _this)
             where T : ICodeWriter
         {
-            _this.DecIndent();
+            _this.Indent--;
             return _this;
         }
 
-        public static T WithIncIndent<T>(this T _this)
+        public static T IncIndent<T>(this T _this)
             where T : ICodeWriter
         {
-            _this.IncIndent();
+            _this.Indent++;
             return _this;
         }
 

@@ -20,6 +20,14 @@ namespace isukces.code.interfaces
                 throw new Exception("Invalid name");
         }
 
+        public static AbstractType FromFullName(string n)
+        {
+            var i = n.LastIndexOf('.');
+            return i < 0
+                ? new AbstractType(null, n)
+                : new AbstractType(n.Substring(0, i), n.Substring(i + 1));
+        }
+
         public AbstractType MoveToNs(string ns)
         {
             return new AbstractType(ns, Name);
