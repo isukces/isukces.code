@@ -12,36 +12,23 @@ var builder = new ProjectBuilder
 };
 
 // task: Clean
-DeleteDir(builder.ProjectDir + "\\bin", builder.ProjectDir + "\\obj");
+builder.DeleteBinObj();
+
 
 // task: Nuget restore
-Execute(builder.Nuget.Exe, "restore " + builder.SolutionName + ".sln");
+builder.Nuget.Restore();
+
 
 // task: Update version
-var version = VersionStorage.FromSolutionDir(builder.SolutionDir)["isukces.code"];
-{
-	var proj = CsProjectCore.FromFile(builder.CsProjFileName);
-	var newVer = CsProject.UpdateVersion(proj.AssemblyVersion);
-	proj.AssemblyVersion = newVer;
-	proj.PackageVersion = newVer;
-	proj.FileVersion = newVer;
-	proj.Save();
-	VersionStorage.FromSolutionDir(builder.SolutionDir)[builder.ProjectName] = newVer;         
-	version = newVer;       
-}
+var version = builder.UpdateCoreProjectVersion();
 
 // task: Build
 builder.Build("deploy");
 
-var nugetPackageFileName = string.Format(@"{0}\{1}.{2}.symbols.nupkg",
-	builder.ProjectDir + @"\bin\Release",
-	builder.Nuget.GetNugetName(),
-	version);
-
 // task: Copy nuget
-var nugetOut = builder.Nuget.RepositoryDir + "\\" + builder.Nuget.GetNugetName() + "." + version + ".nupkg";
-
-Console.WriteLine("Copy {0} to {1}", nugetPackageFileName, nugetOut);
-File.Copy(nugetPackageFileName, nugetOut, true);
+var srcNupkg = builder.GetNupkgFile(version, true).FullName;
+var nugetOut = CombinePath(builder.Nuget.RepositoryDir, builder.Nuget.GetNupkgFileName(version, false));
+Console.WriteLine("Copy {0} to {1}", srcNupkg, nugetOut);
+File.Copy(srcNupkg, nugetOut, true);
 
 Console.WriteLine("--FINISHED--");
