@@ -14,6 +14,12 @@ namespace isukces.code
 
         public static AutoCodeSettings Default => InstanceHolder.DefaultInstance;
 
+        /// <summary>
+        /// Initialize this with
+        /// AutoCodeSettings.Default.UrlStringEncode = new StaticMethodInfo(
+        ///     typeof(System.Net.WebUtility),
+        ///     nameof(System.Net.WebUtility.UrlEncode));
+        /// </summary>
         public StaticMethodInfo UrlStringEncode { get; set; }
 
 
