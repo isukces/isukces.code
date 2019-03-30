@@ -190,7 +190,9 @@ namespace isukces.code
             if (hasMethodDescription)
             {
                 writer.WriteLine("/// <summary>");
-                writer.WriteLine("/// " + Description.XmlEncode());
+                var lines = Description.Replace("\r\n", "\n").Split('\r', '\n');
+                foreach (var i in lines)
+                    writer.WriteLine("/// " + i.XmlEncode());
                 writer.WriteLine("/// </summary>");
             }
 
