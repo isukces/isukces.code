@@ -132,7 +132,7 @@ namespace isukces.code.CodeWrite
                 writer.WriteLine("using {0};", i);
             if (_importNamespaces.Any())
                 writer.EmptyLine();
-            var classByNamespace     = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
+            var classByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
             var directiveByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.CompilerDirective);
             var enumByNamespace = (_enums ?? new List<CsEnum>())
                 .GroupBy(c => c.DotNetType == null ? emptyNamespace : c.DotNetType.Namespace)
@@ -161,7 +161,7 @@ namespace isukces.code.CodeWrite
 
                 {
                     if (classByNamespace.TryGetValue(ns, out var classList))
-                        foreach (var i in classList)
+                        foreach (var i in classList.OrderBy(a=>a.Name))
                         {
                             if (addEmptyLine)
                                 writer.EmptyLine();
