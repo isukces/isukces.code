@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using isukces.code.interfaces;
 
@@ -20,6 +21,45 @@ namespace isukces.code
         public static implicit operator CsAttribute(string name)
         {
             return new CsAttribute(name);
+        }
+
+        private static string Encode(object value)
+        {
+            switch (value)
+            {
+                case null:
+                    return "null";
+                case bool aBool:
+                    return aBool ? "true" : "false";
+                case int intValue:
+                    return intValue.ToString(CultureInfo.InvariantCulture);
+                case uint uintValue:
+                    return uintValue.ToString(CultureInfo.InvariantCulture) + "u";
+                case long longValue:
+                    return longValue.ToString(CultureInfo.InvariantCulture) + "l";
+                case ulong ulongValue:
+                    return ulongValue.ToString(CultureInfo.InvariantCulture) + "ul";
+                case byte byteValue:
+                    return "(byte)" + byteValue.ToString(CultureInfo.InvariantCulture);
+                case sbyte sbyteValue:
+                    return "(sbyte)" + sbyteValue.ToString(CultureInfo.InvariantCulture);
+                case double doubleValue:
+                    return doubleValue.ToString(CultureInfo.InvariantCulture) + "d";
+                case decimal decimalValue:
+                    return decimalValue.ToString(CultureInfo.InvariantCulture) + "m";
+                case float floatValue:
+                    return floatValue.ToString(CultureInfo.InvariantCulture) + "f";
+                case Guid gValue:
+                    if (gValue.Equals(Guid.Empty))
+                        return "System.Guid.Empty";
+                    return "System.Guid.Parse(" + gValue.ToString("D").CsEncode() + ")";
+                case string aString:
+                    return aString.CsEncode();
+                case IDirectCode aDirectCode:
+                    return aDirectCode.Code;
+                default:
+                    throw new NotSupportedException(value.GetType().ToString());
+            }
         }
 
         private static string KeyValuePairToString(KeyValuePair<string, string> x)
@@ -45,24 +85,7 @@ namespace isukces.code
         public CsAttribute WithArgument(string name, object value)
         {
             name = (name ?? "").Trim();
-            string sValue;
-            switch (value)
-            {
-                case null:
-                    sValue = "null";
-                    break;
-                case bool aBool:
-                    sValue = aBool ? "true" : "false";
-                    break;
-                case string aString:
-                    sValue = aString.CsEncode();
-                    break;
-                case IDirectCode aDirectCode:
-                    sValue = aDirectCode.Code;
-                    break;
-                default:
-                    throw new NotSupportedException(value.GetType().ToString());
-            }
+            var sValue = Encode(value);
             _list.Add(new KeyValuePair<string, string>(name, sValue));
             return this;
         }

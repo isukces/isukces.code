@@ -270,17 +270,15 @@ namespace isukces.code.AutoCode
                 {
                     while (t.DeclaringType != null)
                         t = t.DeclaringType;
-                    object o            = Class.Owner;
-                    var    nsCollection = o as INamespaceCollection;
-                    while (nsCollection == null && o != null)
+                    object owner            = Class.Owner;
+                    var    nsCollection = owner as INamespaceCollection;
+                    while (nsCollection == null && owner != null)
                     {
-                        if (o is CsClass)
-                            o = ((CsClass)o).Owner;
-                        else if (o is CsNamespace) // can probably be removed
-                            o = ((CsNamespace)o).Owner;
+                        if (owner is CsClass csClass)
+                            owner = csClass.Owner;                      
                         else
                             break;
-                        nsCollection = o as INamespaceCollection;
+                        nsCollection = owner as INamespaceCollection;
                     }
                     if (nsCollection != null)
                     {
