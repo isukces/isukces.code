@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using isukces.code.interfaces;
+using JetBrains.Annotations;
 
 namespace isukces.code.AutoCode
 {
@@ -7,6 +9,9 @@ namespace isukces.code.AutoCode
     {
         void AddNamespace(string namepace);
         CsClass GetOrCreateClass(TypeProvider type);
+        
+        [NotNull]
+        IList<object> Tags { get; } 
     }
 
     public static class AutoCodeGeneratorContextExtensions

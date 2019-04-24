@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
@@ -11,8 +12,8 @@ namespace isukces.code.AutoCode
                 Action<string> addNamespaceAction, Func<Type, object> resolveConfigFunc)
             {
                 GetOrCreateClassFunc = getOrCreateClassFunc;
-                AddNamespaceAction = addNamespaceAction;
-                ResolveConfigFunc = resolveConfigFunc;
+                AddNamespaceAction   = addNamespaceAction;
+                ResolveConfigFunc    = resolveConfigFunc;
             }
 
             public void AddNamespace(string namepace)
@@ -30,9 +31,11 @@ namespace isukces.code.AutoCode
                 return (T)ResolveConfigFunc(typeof(T));
             }
 
-            public Func<Type, object> ResolveConfigFunc { get; set; }
-            public Func<TypeProvider, CsClass> GetOrCreateClassFunc { get; set; }
-            public Action<string> AddNamespaceAction { get; set; }
+            public IList<object> Tags { get; } = new List<object>();
+
+            public Func<Type, object>          ResolveConfigFunc    { get; }
+            public Func<TypeProvider, CsClass> GetOrCreateClassFunc { get; }
+            public Action<string>              AddNamespaceAction   { get; }
         }
     }
 }
