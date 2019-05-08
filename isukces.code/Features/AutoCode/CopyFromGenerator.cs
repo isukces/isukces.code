@@ -20,7 +20,7 @@ namespace isukces.code.AutoCode
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
 #if !COREFX
 
-                var isCloneable = (pi.PropertyType == typeof(ICloneable))
+                var isCloneable = pi.PropertyType == typeof(ICloneable)
                                   || pi.PropertyType.GetInterfaces().Any(a => a == typeof(ICloneable));
                 if (isCloneable)
                 {
@@ -82,9 +82,13 @@ namespace isukces.code.AutoCode
             cm.Body = writer.Code;
         }
 
-        private void GenerateInternal()
+        protected override void GenerateInternal()
         {
-            if (!_doCloneable && (_copyFromAttribute == null))
+            _copyFromAttribute = GetCustomAttribute<Auto.CopyFromAttribute>();
+            _doCloneable = GetCustomAttribute<Auto.Cloneable>() != null;
+            _configuration = Context.ResolveConfig<CopyFromGeneratorConfiguration>();
+            
+            if (!_doCloneable && _copyFromAttribute == null)
                 return;
             {
                 var cm = Class.AddMethod("CopyFrom", "void", null);
@@ -113,7 +117,7 @@ namespace isukces.code.AutoCode
 #if COREFX
                   .GetTypeInfo()
 #endif
-                  .IsValueType || (pi.PropertyType == typeof(string)))
+                  .IsValueType || pi.PropertyType == typeof(string))
             {
                 if (!pi.CanWrite || !pi.CanRead)
                     return;
@@ -137,10 +141,10 @@ namespace isukces.code.AutoCode
                 }
             }
             {
-                if ((attr != null) && attr.HasSkip(pi.Name))
+                if (attr != null && attr.HasSkip(pi.Name))
                     return;
                 var tmp = pi.GetCustomAttribute<Auto.CopyBy.ReferenceAttribute>();
-                if ((tmp != null) || ((attr != null) && attr.HasCopyByReference(pi.Name)))
+                if (tmp != null || attr != null && attr.HasCopyByReference(pi.Name))
                 {
                     writer.WriteLine("{0} = source.{0}; // BY REF {1}", pi.Name, pi.PropertyType);
                     return;
@@ -297,22 +301,6 @@ namespace isukces.code.AutoCode
         private bool                           _doCloneable;
         private CopyFromGeneratorConfiguration _configuration;
 
-        public void Generate(Type type, IAutoCodeGeneratorContext context)
-        {
-            Setup(type, context);
-
-            _copyFromAttribute = type
-#if COREFX
-                                 .GetTypeInfo()
-#endif
-                                 .GetCustomAttribute<Auto.CopyFromAttribute>();
-            _doCloneable = type
-#if COREFX
-                           .GetTypeInfo()
-#endif                                   
-                           .GetCustomAttribute<Auto.Cloneable>(false) != null;
-            _configuration = context.ResolveConfig<CopyFromGeneratorConfiguration>();
-            GenerateInternal();
-        }
+        
     }
 }

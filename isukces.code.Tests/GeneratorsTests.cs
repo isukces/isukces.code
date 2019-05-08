@@ -101,6 +101,11 @@ namespace isukces.code.Tests
                 Setup(type, context);
                 return Class;
             }
+
+            protected override void GenerateInternal()
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public class TestContext : IAutoCodeGeneratorContext

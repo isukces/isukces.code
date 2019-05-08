@@ -8,7 +8,7 @@ namespace isukces.code.AutoCode
 {
     public partial class Generators
     {
-        internal class DependencyPropertyGenerator : SingleClassGenerator, IAutoCodeGenerator
+        internal class DependencyPropertyGenerator : SingleClassGeneratorMultiple<Auto.DependencyPropertyAttribute>, IAutoCodeGenerator
         {
             private static void Single(CsClass csClass, Auto.DependencyPropertyAttribute attribute)
             {
@@ -62,23 +62,11 @@ namespace isukces.code.AutoCode
                     f.IsPropertyReadOnly = false;
                 }
             }
-
-            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            
+            protected override void GenerateInternal()
             {
-                Setup(type, context);
-                GenerateInternal();
-            }
-
-            private void GenerateInternal()
-            {
-                var attributes = Type
-#if COREFX
-                    .GetTypeInfo()
-#endif
-                    .GetCustomAttributes<Auto.DependencyPropertyAttribute>(false).ToArray();
-                if ((attributes == null) || (attributes.Length < 1)) return;
                 var csClass = Class;
-                foreach (var attribute in attributes)
+                foreach (var attribute in Attributes)
                 {
                     Single(csClass, attribute);
                 }
@@ -139,8 +127,8 @@ namespace isukces.code.AutoCode
                 private string GetDefaultValueAsString(string propertyTypeName)
                 {
                     if (DefaultValue == null) return null;
-                    if (DefaultValue is bool && (PropetyType == typeof(bool)))
-                        return (bool)DefaultValue ? "true" : "false";
+                    if (DefaultValue is bool boolValue && (PropetyType == typeof(bool)))
+                        return boolValue ? "true" : "false";
                     var initStr = DefaultValue.ToString().Trim();
                     initStr = initStr == "*"
                         ? $"new {propertyTypeName}()"

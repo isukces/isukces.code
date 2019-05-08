@@ -1,32 +1,26 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
 {
     public partial class Generators
     {
-        internal class ReactiveCommandGenerator : SingleClassGenerator, IAutoCodeGenerator
+        internal class ReactiveCommandGenerator : SingleClassGenerator
         {
             private static void Single(CsClass csClass, Auto.ReactiveCommandAttribute attribute)
             {
                 // public ReactiveCommand<object> FullViewCommand { get; protected set; }
-                var p = csClass.AddProperty(attribute.Name + "Command", $"ReactiveCommand<{csClass.TypeName(attribute.ResultType)}>");
+                var p = csClass.AddProperty(attribute.Name + "Command",
+                    $"ReactiveCommand<{csClass.TypeName(attribute.ResultType)}>");
                 p.MakeAutoImplementIfPossible = true;
-                p.Visibility = Visibilities.Public;
-                p.SetterVisibility = attribute.SetterVisibility;
-                p.GetterVisibility = attribute.GetterVisibility;
+                p.Visibility                  = Visibilities.Public;
+                p.SetterVisibility            = attribute.SetterVisibility;
+                p.GetterVisibility            = attribute.GetterVisibility;
             }
-
-            internal void GenerateInternal()
+            
+            protected override void GenerateInternal()
             {
-                var attributes = Type
-#if COREFX
-                    .GetTypeInfo()
-#endif                    
-                    .GetCustomAttributes<Auto.ReactiveCommandAttribute>(false).ToArray();
+                var attributes = GetCustomAttributes<Auto.ReactiveCommandAttribute>(false);
                 if (attributes == null || attributes.Length < 1) return;
                 var csClass = Class;
                 Context.AddNamespace("ReactiveUI");
@@ -63,8 +57,8 @@ namespace isukces.code.AutoCode
 
                      */
                     var propertyChangedStr = GetPropertyChangedStr(propertyName);
-                    var coerceStr = GetCoerceStr(propertyName);
-                    var initStr = GetDefaultValueAsString(propertyTypeName);
+                    var coerceStr          = GetCoerceStr(propertyName);
+                    var initStr            = GetDefaultValueAsString(propertyTypeName);
 
                     if (!string.IsNullOrEmpty(coerceStr))
                     {
@@ -74,6 +68,7 @@ namespace isukces.code.AutoCode
                             propertyChangedStr = "null";
                         return $"new System.Windows.PropertyMetadata({initStr}, {propertyChangedStr}, {coerceStr})";
                     }
+
                     if (string.IsNullOrEmpty(initStr))
                         return string.IsNullOrEmpty(propertyChangedStr)
                             ? null
@@ -96,7 +91,7 @@ namespace isukces.code.AutoCode
                 private string GetDefaultValueAsString(string propertyTypeName)
                 {
                     if (DefaultValue == null) return null;
-                    if (DefaultValue is bool && (PropetyType == typeof(bool)))
+                    if (DefaultValue is bool && PropetyType == typeof(bool))
                         return (bool)DefaultValue ? "true" : "false";
                     var initStr = DefaultValue.ToString().Trim();
                     initStr = initStr == "*"
@@ -116,16 +111,10 @@ namespace isukces.code.AutoCode
                 }
 
                 public string PropertyChanged { get; set; }
-                public object DefaultValue { get; set; }
+                public object DefaultValue    { get; set; }
 
-                public Type PropetyType { get; set; }
-                public string Coerce { get; set; }
-            }
-
-            public void Generate(Type type, IAutoCodeGeneratorContext context)
-            {
-                Setup(type, context);
-                GenerateInternal();
+                public Type   PropetyType { get; set; }
+                public string Coerce      { get; set; }
             }
         }
     }

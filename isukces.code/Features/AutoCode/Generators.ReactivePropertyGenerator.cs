@@ -9,7 +9,7 @@ namespace isukces.code.AutoCode
 {
     public partial class Generators
     {
-        internal class ReactivePropertyGenerator : SingleClassGenerator, IAutoCodeGenerator
+        internal class ReactivePropertyGenerator : SingleClassGeneratorMultiple<Auto.ReactivePropertyAttribute>, IAutoCodeGenerator
         {
             private static void Single(CsClass csClass, Auto.ReactivePropertyAttribute attribute)
             {
@@ -24,18 +24,11 @@ namespace isukces.code.AutoCode
                 p.FieldVisibility = attribute.FieldVisibility;
             }
 
-            internal void GenerateInternal()
+            protected override void GenerateInternal()
             {
-                var attributes = Type
-#if COREFX
-                    .GetTypeInfo()
-#endif
-                    
-                    .GetCustomAttributes<Auto.ReactivePropertyAttribute>(false).ToArray();
-                if (attributes == null || attributes.Length < 1) return;
                 var csClass = Class;
                 Context.AddNamespace("ReactiveUI");
-                foreach (var attribute in attributes)
+                foreach (var attribute in Attributes)
                 {
                     Single(csClass, attribute);
                 }
@@ -121,12 +114,7 @@ namespace isukces.code.AutoCode
                 public Type PropetyType { get; set; }
                 public string Coerce { get; set; }
             }
-
-            public void Generate(Type type, IAutoCodeGeneratorContext context)
-            {
-                Setup(type, context);
-                GenerateInternal();
-            }
+            
         }
     }
 }

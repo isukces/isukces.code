@@ -8,7 +8,7 @@ namespace isukces.code.AutoCode
 {
     public partial class Generators
     {
-        public class BuilderGenerator : SingleClassGenerator, IAutoCodeGenerator
+        public class BuilderGenerator : SingleClassGenerator<Auto.BuilderAttribute>, IAutoCodeGenerator
         {
             private static List<string> GetConstructorArgs(ConstructorInfo constructor,
                 IReadOnlyList<PropertyInfo> properties)
@@ -18,8 +18,7 @@ namespace isukces.code.AutoCode
                 var constructorParameters = constructor.GetParameters();
                 foreach (var parameter in constructorParameters)
                 {
-                    PropertyInfo propertyInfo;
-                    if (!dictionary.TryGetValue(parameter.Name, out propertyInfo))
+                    if (!dictionary.TryGetValue(parameter.Name, out var propertyInfo))
                         return null;
                     args.Add(propertyInfo.Name);
                 }
@@ -34,22 +33,9 @@ namespace isukces.code.AutoCode
                     r.Add(i);
                 return r;
             }
-
-            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            
+            protected override void GenerateInternal()
             {
-                Setup(type, context);
-                #if COREFX
-                _attribute = type.GetTypeInfo().GetCustomAttribute<Auto.BuilderAttribute>();
-                #else
-                _attribute = type.GetCustomAttribute<Auto.BuilderAttribute>();
-                #endif
-                GenerateInternal();
-            }
-
-            private void GenerateInternal()
-            {
-                if (_attribute == null)
-                    return;
                 {
                     var cv = Class.GetOrCreateNested(GetClassName());
                     var properties = GetInstanceProperties();
@@ -81,10 +67,9 @@ namespace isukces.code.AutoCode
 
             private string GetClassName()
             {
-                var name = _attribute?.BuilderClassName?.Trim();
+                var name = Attribute?.BuilderClassName?.Trim();
                 return string.IsNullOrEmpty(name) ? "Builder" : name;
             }
-
 
             private List<string> GetConstructorArgs(IReadOnlyList<PropertyInfo> properties)
             {
@@ -117,9 +102,7 @@ namespace isukces.code.AutoCode
                     .GetProperties(allInstanceProperties);
             }
 
-            private Auto.BuilderAttribute _attribute;
-
-            // private readonly AutoCodeGeneratorConfiguration _configuration;
+          
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using isukces.code.CodeWrite;
 using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
@@ -13,15 +12,16 @@ namespace isukces.code.AutoCode
         {
             private static string CoalesceNotEmpty(ISet<string> accept, params string[] items)
             {
-                if ((items == null) || (items.Length == 0)) return null;
+                if (items == null || items.Length == 0) return null;
                 for (var index = 0; index < items.Length; index++)
                 {
                     var tmp = items[index]?.Trim();
-                    if (string.IsNullOrEmpty(tmp) || ((accept != null) && accept.Contains(tmp)))
+                    if (string.IsNullOrEmpty(tmp) || accept != null && accept.Contains(tmp))
                         continue;
                     accept?.Add(tmp);
                     return tmp;
                 }
+
                 return null;
             }
 
@@ -39,6 +39,7 @@ namespace isukces.code.AutoCode
                         if (!string.IsNullOrEmpty(n))
                             return n;
                     }
+
                     if (n.ToLower().EndsWith(i))
                     {
                         n = n.Substring(0, n.Length - i.Length);
@@ -52,14 +53,16 @@ namespace isukces.code.AutoCode
 
             private static string GetCalculatedValue(MemberInfo mi)
             {
-                var methodInfo = mi as MethodInfo;
-                // todo: parametry
-                if (methodInfo != null)
-                    return $"{methodInfo.Name}()";
-                var propertyInfo = mi as PropertyInfo;
-                if (propertyInfo != null)
-                    return $"{propertyInfo.Name}()";
-                throw new NotSupportedException();
+                switch (mi)
+                {
+                    // todo: parametry
+                    case MethodInfo methodInfo:
+                        return $"{methodInfo.Name}()";
+                    case PropertyInfo propertyInfo:
+                        return $"{propertyInfo.Name}()";
+                    default:
+                        throw new NotSupportedException();
+                }
             }
 
             private static bool GetIsProperty(MemberInfo mi, Auto.LazyAttribute at)
@@ -86,7 +89,6 @@ namespace isukces.code.AutoCode
 #if COREFX
                     .GetTypeInfo()
 #endif
-                    
                     .GetMethods(GeneratorsHelper.All))
                 {
                     if (methodInfo.DeclaringType != type) continue;
@@ -94,6 +96,7 @@ namespace isukces.code.AutoCode
                     if (attribute != null)
                         list.Add(Tuple.Create(methodInfo, attribute));
                 }
+
                 return list;
             }
 
@@ -104,7 +107,6 @@ namespace isukces.code.AutoCode
 #if COREFX
                     .GetTypeInfo()
 #endif
-                    
                     .GetProperties(GeneratorsHelper.All))
                 {
                     if (propertyInfo.DeclaringType != type) continue;
@@ -112,15 +114,16 @@ namespace isukces.code.AutoCode
                     if (attribute != null)
                         list.Add(Tuple.Create(propertyInfo, attribute));
                 }
+
                 return list;
             }
 
-            private void ProcessLazy()
+            protected override void GenerateInternal()
             {
                 // todo: obsługa metod i własności z parametrami
-                var pm = ScanMethods(Type);
+                var pm         = ScanMethods(Type);
                 var properties = ScanProperties(Type);
-                if ((pm.Count == 0) && (properties.Count == 0)) return;
+                if (pm.Count == 0 && properties.Count == 0) return;
                 if (pm.Any())
                     foreach (var i in pm)
                         WriteSingle(i.Item1, i.Item2);
@@ -136,18 +139,18 @@ namespace isukces.code.AutoCode
 #if COREFX
                     .GetTypeInfo()
 #endif
-                    
                     .IsValueType)
                 {
-                    var ft = typeof(Tuple<>).MakeGenericType(t);
+                    var ft  = typeof(Tuple<>).MakeGenericType(t);
                     var ftn = Class.TypeName(ft);
                     return new AssignStrategy
                     {
                         FieldType = ft,
-                        Format1 = "new " + ftn + "({0})",
-                        Format2 = "{0}.Item1"
+                        Format1   = "new " + ftn + "({0})",
+                        Format2   = "{0}.Item1"
                     };
                 }
+
                 return new AssignStrategy
                 {
                     FieldType = t
@@ -163,30 +166,31 @@ namespace isukces.code.AutoCode
                     at.SyncObjectName, GeneratorsHelper.FieldName(baseName + "Sync"));
                 var fieldName = CoalesceNotEmpty(used,
                     at.FieldName, GeneratorsHelper.FieldName(baseName), GeneratorsHelper.FieldName(baseName + "Data"));
-                var resultType = GetResultType(mi);
-                var assignS = GetAssignStrategy(resultType);
-                var isProperty = GetIsProperty(mi, at);
+                var resultType         = GetResultType(mi);
+                var assignS            = GetAssignStrategy(resultType);
+                var isProperty         = GetIsProperty(mi, at);
                 var callCalulatedValue = GetCalculatedValue(mi);
 
                 // sync field
                 if (at.DeclareAndCreateSyncObject)
                 {
                     var f = Class.AddField(syncName, typeof(object));
-                    f.IsStatic = at.StaticSyncObject;
+                    f.IsStatic   = at.StaticSyncObject;
                     f.IsReadOnly = true;
                     f.ConstValue = "new object()";
                     f.Visibility = Visibilities.Private;
 
-                    f = Class.AddField(fieldName, assignS.FieldType);
+                    f            = Class.AddField(fieldName, assignS.FieldType);
                     f.IsVolatile = true;
                     f.Visibility = Visibilities.Private;
                 }
+
                 if (isProperty)
                 {
                     var prop = Class.AddProperty(baseName, resultType);
-                    prop.IsStatic = mi.IsMemberStatic();
+                    prop.IsStatic           = mi.IsMemberStatic();
                     prop.IsPropertyReadOnly = true;
-                    prop.EmitField = false;
+                    prop.EmitField          = false;
                     ICsCodeWriter writer = new CsCodeWriter();
                     {
                         writer.WriteLine("var result = {0};", fieldName);
@@ -226,18 +230,10 @@ namespace isukces.code.AutoCode
                     return string.Format(Format2, x);
                 }
 
-                public Type FieldType { get; set; }
-                public string Format1 { get; set; } = "{0}";
-                public string Format2 { get; set; } = "{0}";
+                public Type   FieldType { get; set; }
+                public string Format1   { get; set; } = "{0}";
+                public string Format2   { get; set; } = "{0}";
             }
-
-            public void Generate(Type type, IAutoCodeGeneratorContext context)
-            {
-                Setup(type, context);
-                ProcessLazy();
-            }
-
-
         }
     }
 }
