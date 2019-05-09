@@ -19,7 +19,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBind WithBindFromAncestor(Type ancestorType, int? level = null)
+        public AmmyBind WithBindFromAncestor(System.Type ancestorType, int? level = null)
         {
             // generator : FluentBindGenerator G4
             From = new AncestorBindingSource(ancestorType, level); return this;
@@ -282,7 +282,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBindBuilder WithBindFromAncestor(Type ancestorType, int? level = null)
+        public AmmyBindBuilder WithBindFromAncestor(System.Type ancestorType, int? level = null)
         {
             // generator : FluentBindGenerator G4
             From = new AncestorBindingSource(ancestorType, level); return this;
@@ -486,7 +486,7 @@ namespace isukces.code.Ammy
 
         public DataBindingMode? Mode { get; set; }
 
-        public List<object> ValidationRules { get; } = new List<object>();
+        public System.Collections.Generic.List<object> ValidationRules { get; } = new System.Collections.Generic.List<object>();
 
         public string BindingGroupName { get; set; }
 
