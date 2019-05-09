@@ -25,14 +25,7 @@ namespace isukces.code.AutoCode
                 return args;
             }
 
-            private static HashSet<string> ToHashSet(List<string> list)
-            {
-                if (list == null) return new HashSet<string>();
-                var r = new HashSet<string>();
-                foreach (var i in list)
-                    r.Add(i);
-                return r;
-            }
+           
             
             protected override void GenerateInternal()
             {
@@ -50,7 +43,7 @@ namespace isukces.code.AutoCode
                     }
                     {
                         var constructorArgs = GetConstructorArgs(properties);
-                        var usedProperties = ToHashSet(constructorArgs);
+                        var usedProperties = constructorArgs.ToHashSet();
                         var cw = new CsCodeWriter();
                         cw.WriteLine("// ReSharper disable UseObjectOrCollectionInitializer");
                         cw.WriteLine("// ReSharper disable MemberCanBeMadeStatic.Local");

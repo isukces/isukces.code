@@ -4,14 +4,9 @@ namespace isukces.code
 {
     public static class LinqExtensions
     {
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> src)
+        internal static HashSet<T> ToHashSet<T>(this IEnumerable<T> src)
         {
-            var r = new HashSet<T>();
-            if (src == null)
-                return r;
-            foreach (var i in src)
-                r.Add(i);
-            return r;
+            return src == null ? new HashSet<T>() : new HashSet<T>(src);
         }
     }
 }
