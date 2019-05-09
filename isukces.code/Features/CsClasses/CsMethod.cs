@@ -80,7 +80,7 @@ namespace isukces.code
 
         public CsMethodParameter AddParam(string name, Type type, CsClass owner, string description = null)
         {
-            var parameter = new CsMethodParameter(name, owner.TypeName(type), description);
+            var parameter = new CsMethodParameter(name, owner.GetTypeName(type), description);
             _parameters.Add(parameter);
             return parameter;
         }

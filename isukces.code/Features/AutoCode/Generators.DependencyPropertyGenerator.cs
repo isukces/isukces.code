@@ -12,7 +12,7 @@ namespace isukces.code.AutoCode
         {
             private static void Single(CsClass csClass, Auto.DependencyPropertyAttribute attribute)
             {
-                var propertyTypeName = csClass.TypeName(attribute.PropertyType);
+                var propertyTypeName = csClass.GetTypeName(attribute.PropertyType);
                 var dpmi = new DependencyPropertyMetadata
                 {
                     PropertyChanged = attribute.PropertyChanged,

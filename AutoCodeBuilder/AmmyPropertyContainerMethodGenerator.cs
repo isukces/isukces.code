@@ -92,7 +92,7 @@ namespace AutoCodeBuilder
                 var m = CreateMethod("WithPropertyAncestorBind<TAncestor>", type, cl, cf);
                 m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
                 m.AddParam("bindToPathExpression", "Expression<Func<TAncestor, object>>");
-                m.AddParam("mode", cl.TypeName<DataBindingMode>());
+                m.AddParam("mode", cl.GetTypeName<DataBindingMode>());
                 var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
                 p.Attributes.Add(new CsAttribute("CanBeNull"));
                 p.ConstValue = "null";
@@ -119,7 +119,7 @@ namespace AutoCodeBuilder
                 var m = CreateMethod("WithPropertyAncestorBind<TAncestor, TValue>", type, cl, cf);
                 m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, TValue>>");
                 m.AddParam("bindToPathExpression", "Expression<Func<TAncestor, TValue>>");
-                m.AddParam("mode", cl.TypeName<DataBindingMode>());
+                m.AddParam("mode", cl.GetTypeName<DataBindingMode>());
                 var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
                 p.Attributes.Add(new CsAttribute("CanBeNull"));
                 p.ConstValue = "null";

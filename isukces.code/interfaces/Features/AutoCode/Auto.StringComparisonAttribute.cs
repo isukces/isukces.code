@@ -8,9 +8,9 @@ namespace isukces.code.interfaces
         [AttributeUsage(AttributeTargets.Property)]
         public abstract class AbstractEqualityComparisonAttribute : Attribute
         {
-            public abstract string GetCoalesceExpression(ITypeToNameResolver resolver);
-            public abstract string GetEqualityComparerExpression(ITypeToNameResolver resolver);
-            public abstract string GetRelationalComparerExpression(ITypeToNameResolver resolver);
+            public abstract string GetCoalesceExpression(ITypeNameResolver resolver);
+            public abstract string GetEqualityComparerExpression(ITypeNameResolver resolver);
+            public abstract string GetRelationalComparerExpression(ITypeNameResolver resolver);
         }
 
         [AttributeUsage(AttributeTargets.Property)]
@@ -21,19 +21,19 @@ namespace isukces.code.interfaces
                 Comparison = comparison;
             }
 
-            public override string GetCoalesceExpression(ITypeToNameResolver resolver)
+            public override string GetCoalesceExpression(ITypeNameResolver resolver)
             {
                 return GeneratorsHelper.StringEmpty;
             }
 
-            public override string GetEqualityComparerExpression(ITypeToNameResolver resolver)
+            public override string GetEqualityComparerExpression(ITypeNameResolver resolver)
             {
                 return GetRelationalComparerExpression(resolver);
             }
 
-            public override string GetRelationalComparerExpression(ITypeToNameResolver resolver)
+            public override string GetRelationalComparerExpression(ITypeNameResolver resolver)
             {
-                return resolver.TypeName(typeof(StringComparer))+ "." + Comparison;
+                return resolver.GetTypeName(typeof(StringComparer))+ "." + Comparison;
             }
 
             public System.StringComparison Comparison { get; }

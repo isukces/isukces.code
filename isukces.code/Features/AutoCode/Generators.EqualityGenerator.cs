@@ -90,13 +90,13 @@ namespace isukces.code.AutoCode
                 if (_attEq != null)
                 {
                     var eqType = typeof(IAutoEquatable<>).MakeGenericType(type);
-                    _class.ImplementedInterfaces.Add(_class.TypeName(eqType));
+                    _class.ImplementedInterfaces.Add(_class.GetTypeName(eqType));
                 }
 
                 if (_attComp != null)
                 {
                     var eqType = typeof(IAutoComparable<>).MakeGenericType(type);
-                    _class.ImplementedInterfaces.Add(_class.TypeName(eqType));
+                    _class.ImplementedInterfaces.Add(_class.GetTypeName(eqType));
                 }
 
                 _canBeNull = !NullChecker.TypeIsAlwaysNotNull(type);

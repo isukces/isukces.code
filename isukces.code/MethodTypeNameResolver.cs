@@ -11,7 +11,7 @@ namespace isukces.code
             _method = method ?? throw new ArgumentNullException(nameof(method));
         }
 
-        public string TypeName(Type type)
+        public string GetTypeName(Type type)
         {
             return _method(type);
         }

@@ -8,7 +8,7 @@ namespace isukces.code.AutoCode
 {
     public static class GeneratorsHelper
     {
-        public static string DefaultComparerMethodName(Type type, ITypeToNameResolver resolver)
+        public static string DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
         {
             var comparer     = typeof(Comparer<>).MakeGenericType(type);
             var comparerName = resolver.TypeName(comparer);
@@ -42,12 +42,12 @@ namespace isukces.code.AutoCode
             return s;
         }
 
-        public static string TypeName<T>(this INamespaceContainer container)
+        /*public static string TypeName<T>(this INamespaceContainer container)
         {
             return TypeName(container, typeof(T));
-        }
+        }*/
 
-        public static string TypeName(this INamespaceContainer container, Type type)
+        public static string GetTypeName(this INamespaceContainer container, Type type)
         {
             //todo: Generic types
             if (type == null)
@@ -55,7 +55,7 @@ namespace isukces.code.AutoCode
             if (type.IsArray)
             {
                 var arrayRank = type.GetArrayRank();
-                var st        = TypeName(container, type.GetElementType());
+                var st        = GetTypeName(container, type.GetElementType());
                 if (arrayRank < 2)
                     return st + "[]";
                 return string.Format("{0}[{1}]", st, new string(',', arrayRank - 1));
@@ -65,7 +65,7 @@ namespace isukces.code.AutoCode
             if (!string.IsNullOrEmpty(simple))
                 return simple;
             if (type.DeclaringType != null)
-                return TypeName(container, type.DeclaringType) + "." + type.Name;
+                return GetTypeName(container, type.DeclaringType) + "." + type.Name;
 
             string fullName;
             {
@@ -83,11 +83,11 @@ namespace isukces.code.AutoCode
                         {
                             var nullable = w.UnwrapNullable(true);
                             if (nullable != null)
-                                return TypeName(container, nullable) + "?";
+                                return GetTypeName(container, nullable) + "?";
                         }
                         var gt    = type.GetGenericTypeDefinition();
                         var args  = w.GetGenericArguments();
-                        var args2 = string.Join(",", args.Select(a => TypeName(container, a)));
+                        var args2 = string.Join(",", args.Select(a => GetTypeName(container, a)));
                         fullName = gt.FullName.Split('`')[0] + "<" + args2 + ">";
                     }
                 }

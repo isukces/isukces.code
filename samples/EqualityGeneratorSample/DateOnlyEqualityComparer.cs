@@ -9,17 +9,17 @@ namespace EqualityGeneratorSample
     /// </summary>
     public class DateOnlyEqualityAttribute : Auto.AbstractEqualityComparisonAttribute
     {
-        public override string GetCoalesceExpression(ITypeToNameResolver resolver)
+        public override string GetCoalesceExpression(ITypeNameResolver resolver)
         {
             return resolver.GetMemeberName<DateTime>(nameof(DateTime.MinValue));
         }
 
-        public override string GetEqualityComparerExpression(ITypeToNameResolver resolver)
+        public override string GetEqualityComparerExpression(ITypeNameResolver resolver)
         {
             return resolver.GetMemeberName<DateOnlyEqualityComparer>(nameof(DateOnlyEqualityComparer.Instance));
         }
 
-        public override string GetRelationalComparerExpression(ITypeToNameResolver resolver)
+        public override string GetRelationalComparerExpression(ITypeNameResolver resolver)
         {
             return null;
         }

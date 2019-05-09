@@ -8,7 +8,7 @@ using isukces.code.interfaces;
 // ReSharper disable once CheckNamespace
 namespace isukces.code
 {
-    public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeToNameResolver
+    public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -186,7 +186,7 @@ namespace isukces.code
 
         public CsClassField AddField(string fieldName, Type type)
         {
-            return AddField(fieldName, TypeName(type));
+            return AddField(fieldName, GetTypeName(type));
         }
 
         public CsClassField AddField(string fieldName, string type)
@@ -212,7 +212,7 @@ namespace isukces.code
 
         public CsProperty AddProperty(string propertyName, Type type)
         {
-            return AddProperty(propertyName, TypeName(type));
+            return AddProperty(propertyName, GetTypeName(type));
         }
 
         public CsProperty AddProperty(string propertyName, string type)
@@ -292,11 +292,11 @@ namespace isukces.code
             return Owner?.IsKnownNamespace(namespaceName) ?? false;
         }
         
-        public string TypeName(Type type)
+        public string GetTypeName(Type type)
         {
             if (Owner == null)
                 throw new NullReferenceException(nameof(Owner));
-            return Owner.TypeName(type);
+            return Owner.GetTypeName(type);
         }
 
         public CsClass WithBaseClass(string baseClass)

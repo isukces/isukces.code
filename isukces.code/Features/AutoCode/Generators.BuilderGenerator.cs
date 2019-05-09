@@ -45,7 +45,7 @@ namespace isukces.code.AutoCode
                         prop.MakeAutoImplementIfPossible = true;
 
                         var m = cv.AddMethod("With" + i.Name, "Builder", "");
-                        m.AddParam("value", cv.TypeName(i.PropertyType), "new value");
+                        m.AddParam("value", cv.GetTypeName(i.PropertyType), "new value");
                         m.Body = $"this.{i.Name} = value;\r\nreturn this;";
                     }
                     {

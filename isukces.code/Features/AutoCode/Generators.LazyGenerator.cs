@@ -142,7 +142,7 @@ namespace isukces.code.AutoCode
                     .IsValueType)
                 {
                     var ft  = typeof(Tuple<>).MakeGenericType(t);
-                    var ftn = Class.TypeName(ft);
+                    var ftn = Class.GetTypeName(ft);
                     return new AssignStrategy
                     {
                         FieldType = ft,

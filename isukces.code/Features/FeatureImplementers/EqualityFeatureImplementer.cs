@@ -12,7 +12,7 @@ namespace isukces.code.AutoCode
         {
             _class     = @class;
             _type      = type;
-            MyTypeName = _class.TypeName(type);
+            MyTypeName = _class.GetTypeName(type);
         }
 
         public void CreateCode()
@@ -55,8 +55,8 @@ namespace isukces.code.AutoCode
 
         private void AddNeverBrowsable(IAttributable field)
         {
-            var tn1 = _class.TypeName(typeof(DebuggerBrowsableAttribute));
-            var tn2 = _class.TypeName(typeof(DebuggerBrowsableState));
+            var tn1 = _class.GetTypeName(typeof(DebuggerBrowsableAttribute));
+            var tn2 = _class.GetTypeName(typeof(DebuggerBrowsableState));
             field.Attributes.Add(new CsAttribute(tn1).WithArgument(new CsDirectCode(tn2 + ".Never")));
         }
 

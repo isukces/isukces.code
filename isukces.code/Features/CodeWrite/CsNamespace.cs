@@ -40,9 +40,9 @@ namespace isukces.code.CodeWrite
             return Owner?.IsKnownNamespace(namespaceName) ?? false;
         }
 
-        public string TypeName(Type type)
+        public string GetTypeName(Type type)
         {
-            return GeneratorsHelper.TypeName(this, type);
+            return GeneratorsHelper.GetTypeName(this, type);
         }
 
         public ISet<string> ImportNamespaces { get; } = new HashSet<string>();

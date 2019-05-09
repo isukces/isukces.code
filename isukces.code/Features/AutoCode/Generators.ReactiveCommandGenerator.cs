@@ -11,7 +11,7 @@ namespace isukces.code.AutoCode
             {
                 // public ReactiveCommand<object> FullViewCommand { get; protected set; }
                 var p = csClass.AddProperty(attribute.Name + "Command",
-                    $"ReactiveCommand<{csClass.TypeName(attribute.ResultType)}>");
+                    $"ReactiveCommand<{csClass.GetTypeName(attribute.ResultType)}>");
                 p.MakeAutoImplementIfPossible = true;
                 p.Visibility                  = Visibilities.Public;
                 p.SetterVisibility            = attribute.SetterVisibility;

@@ -38,7 +38,7 @@ namespace isukces.code.AutoCode
             return a;
         }
 
-        public string Coalesce(string expr, ITypeToNameResolver resolver, bool addBracketsOutside = false)
+        public string Coalesce(string expr, ITypeNameResolver resolver, bool addBracketsOutside = false)
         {
             var co = GetCoalesceExpression(resolver);
             if (string.IsNullOrEmpty(co))
@@ -49,7 +49,7 @@ namespace isukces.code.AutoCode
             return tmp;
         }
 
-        public string EqualsCode(string left, string right, ITypeToNameResolver resolver)
+        public string EqualsCode(string left, string right, ITypeNameResolver resolver)
         {
             if (NullToEmpty && !PropertyValueIsNotNull)
             {
@@ -61,7 +61,7 @@ namespace isukces.code.AutoCode
         }
 
 
-        public string GetHash(string propName, ITypeToNameResolver resolver)
+        public string GetHash(string propName, ITypeNameResolver resolver)
         {
             if (!PropertyValueIsNotNull)
                 propName = Coalesce(propName, resolver);
@@ -85,10 +85,10 @@ namespace isukces.code.AutoCode
         }
  
 
-        public Func<ITypeToNameResolver, string> GetCoalesceExpression           { get; set; }
+        public Func<ITypeNameResolver, string> GetCoalesceExpression           { get; set; }
         public bool                              PropertyValueIsNotNull          { get; set; }
         public bool                              NullToEmpty                     { get; protected set; }
-        public Func<ITypeToNameResolver, string> GetEqualityComparerExpression   { get; protected set; }
-        public Func<ITypeToNameResolver, string> GetRelationalComparerExpression { get; protected set; }
+        public Func<ITypeNameResolver, string> GetEqualityComparerExpression   { get; protected set; }
+        public Func<ITypeNameResolver, string> GetRelationalComparerExpression { get; protected set; }
     }
 }

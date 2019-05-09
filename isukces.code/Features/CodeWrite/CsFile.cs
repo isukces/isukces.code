@@ -197,9 +197,9 @@ namespace isukces.code.CodeWrite
             return GetCode();
         }
 
-        public string TypeName(Type type)
+        public string GetTypeName(Type type)
         {
-            return GeneratorsHelper.TypeName(this, type);
+            return GeneratorsHelper.GetTypeName(this, type);
         }
 
         private string GetCode()

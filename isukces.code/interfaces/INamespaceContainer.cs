@@ -43,12 +43,7 @@ namespace isukces.code.interfaces
             self.AddImportNamespace(type.Namespace);
         }
     }
-
-    public interface ITypeNameResolver
-    {
-        string TypeName(Type type);
-    }
-
+    
     public interface IClassOwner : INamespaceContainer, ITypeNameResolver
     {
     }

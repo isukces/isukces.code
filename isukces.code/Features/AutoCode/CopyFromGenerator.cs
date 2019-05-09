@@ -27,9 +27,9 @@ namespace isukces.code.AutoCode
                     writer.WriteLine("if (source.{0} != null)", pi.Name);
                     writer.WriteLine("    {0} = ({1})(source.{2} as {3}).Clone();",
                         wm,
-                        resolver.TypeName(pi.PropertyType),
+                        resolver.GetTypeName(pi.PropertyType),
                         pi.Name,
-                        resolver.TypeName(typeof(ICloneable)));
+                        resolver.GetTypeName(typeof(ICloneable)));
                     writer.WriteLine("else");
                     writer.WriteLine("    {0} = null;", wm);
                     return;
@@ -40,7 +40,7 @@ namespace isukces.code.AutoCode
                 throw new Exception("Unable to clone value of type " + pi.PropertyType);
             writer.WriteLine("{0} = {1}.{2}(source.{3}); // {4}",
                 wm,
-                resolver.TypeName(_configuration.CustomCloneMethod.DeclaringType),
+                resolver.GetTypeName(_configuration.CustomCloneMethod.DeclaringType),
                 _configuration.CustomCloneMethod.Name,
                 pi.Name,
                 pi.PropertyType);
@@ -92,7 +92,7 @@ namespace isukces.code.AutoCode
                 return;
             {
                 var cm = Class.AddMethod("CopyFrom", "void", null);
-                cm.AddParam("source", Class.TypeName(Type)); // reduce type
+                cm.AddParam("source", Class.GetTypeName(Type)); // reduce type
                 ICsCodeWriter writer = new CsCodeWriter();
                 writer.WriteLine("if (ReferenceEquals(source, null))");
                 writer.WriteLine("    throw new ArgumentNullException(nameof(source));");
@@ -122,7 +122,7 @@ namespace isukces.code.AutoCode
                 if (!pi.CanWrite || !pi.CanRead)
                     return;
 
-                writer.WriteLine("{0} = source.{0}; // {1}", pi.Name, resolver.TypeName(pi.PropertyType));
+                writer.WriteLine("{0} = source.{0}; // {1}", pi.Name, resolver.GetTypeName(pi.PropertyType));
                 return;
             }
             if (pi.PropertyType.IsArray)
@@ -293,7 +293,7 @@ namespace isukces.code.AutoCode
 
                 }
             }
-            var typeName = Class.TypeName(_configuration.ListExtension);
+            var typeName = Class.GetTypeName(_configuration.ListExtension);
             writer.WriteLine("{0}.AddRange({1}, {2});", typeName, target, source);
         }
 

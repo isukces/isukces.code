@@ -17,7 +17,7 @@ namespace isukces.code
         public static T WithAttribute<T>(this T method, CsClass csClass, Type type)
             where T : ICsClassMember
         {
-            return method.WithAttribute(csClass.TypeName(type));
+            return method.WithAttribute(csClass.GetTypeName(type));
         }
 
         private static string CutAttributeSuffix(string name)

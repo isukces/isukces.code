@@ -33,7 +33,7 @@ namespace AutoCodeBuilder
             var m = cl.AddMethod(name, cl.TypeName(type))
                 // .WithStatic()
                 .WithBody(cf);
-            m.Attributes.Add(new CsAttribute(cl.TypeName<AutocodeGeneratedAttribute>()).WithArgument(GetType().Name));
+            m.Attributes.Add(new CsAttribute(cl.GetTypeName<AutocodeGeneratedAttribute>()).WithArgument(GetType().Name));
             return m;
         }
 
