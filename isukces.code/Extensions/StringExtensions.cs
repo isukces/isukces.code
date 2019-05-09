@@ -1,4 +1,4 @@
-﻿namespace isukces.code.interfaces
+﻿namespace isukces.code
 {
     public static class StringExtensions
     {

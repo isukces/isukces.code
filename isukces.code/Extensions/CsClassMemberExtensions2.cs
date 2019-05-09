@@ -31,4 +31,6 @@ namespace isukces.code
 
         private const string AttributeSuffix = "Attribute";
     }
+    
+    
 }

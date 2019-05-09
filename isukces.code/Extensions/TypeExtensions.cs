@@ -1,7 +1,8 @@
 using System;
 using System.Reflection;
+using isukces.code.interfaces;
 
-namespace isukces.code.interfaces
+namespace isukces.code
 {
     public static class TypeExtensions
     {
@@ -14,6 +15,14 @@ namespace isukces.code.interfaces
             if (ti.IsValueType)
                 return CsNamespaceMemberKind.Struct;
             return CsNamespaceMemberKind.Class;
+        }
+
+        public static Type StripNullable(this Type type)
+        {
+            var typeInfo = type.GetTypeInfo();
+            if (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                return typeInfo.GetGenericArguments()[0];
+            return type;
         }
     }
 }
