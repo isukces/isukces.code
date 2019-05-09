@@ -311,22 +311,28 @@ namespace isukces.code.AutoCode
                         .GetProperty(name, GeneratorsHelper.AllInstance));
 
                 var type = property.ValueType;
+                var input = new BinaryExpressionDelegateArgs(name, "other." + name, _class, property.ValueType);
                 if (type == typeof(string))
                 {
                     var info = EqualityGeneratorPropertyInfo.FindForString(property.Member, NullChecker);
-                    // var tn   = _class.TypeName(typeof(StringComparison));
-                    return $"string.Compare({name}, other.{name}, {info.GetRelationalComparerExpression(_class)})";
+                    // name, "other." + name, _class,property.ValueType
+                    
+                    return info.GetRelationalComparerExpression(input);
                 }
-
-/*
-            if (type.Implements(typeof(IIntegerBasedKey)))
-                name += "." + nameof(IIntegerBasedKey.Value);
-*/
+                else
+                {
+                    var info = EqualityGeneratorPropertyInfo.Find(property.Member, NullChecker);
+                    if (info != null)
+                    {
+                        return info.GetRelationalComparerExpression(input);
+                    }
+                }
+ 
                 if (!property.CanBeNull)
                     return $"{name}.CompareTo(other.{name})";
 
                 var m = GeneratorsHelper.DefaultComparerMethodName(type, _class);
-                return $"{m}({name}, other.{name})";
+                return GeneratorsHelper.CallMethod(m, input);// $"{m}({input.Left}, other.{input.Right})";
             }
 
             private IEnumerable<EqualityFeatureImplementer.C1> GetCompareToExpressions()

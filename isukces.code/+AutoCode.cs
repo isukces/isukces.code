@@ -9,184 +9,6 @@ using System.Linq.Expressions;
 // ReSharper disable once CheckNamespace
 namespace isukces.code.Ammy
 {
-    partial class MixinBuilder<TPropertyBrowser>
-    {
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G2
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
-            return this;
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G9
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G9 ver2
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G6
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G6 ver2
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G3
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
-            return this;
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G5
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G4
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G7
-            return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G8
-            (this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);
-            return this;
-        }
-
-    }
-
-    partial class AmmyObjectBuilder<TPropertyBrowser>
-    {
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G2
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
-            return this;
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G9
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G9 ver2
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G6
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G6 ver2
-            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
-            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
-            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G3
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
-            return this;
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G5
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G4
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G7
-            return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
-        }
-
-        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
-        {
-            // generator : AmmyPropertyContainerMethodGenerator G8
-            (this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);
-            return this;
-        }
-
-    }
-
     partial class AmmyBind
     {
         [AutocodeGenerated]
@@ -699,6 +521,184 @@ namespace isukces.code.Ammy
         public object From { get; set; }
 
         public string Path { get; set; }
+
+    }
+
+    partial class AmmyObjectBuilder<TPropertyBrowser>
+    {
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G2
+            var mi = AmmyHelper.GetMemberInfo(func);
+            this.WithProperty(mi.Member.Name, value);
+            return this;
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G9
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G9 ver2
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G6
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G6 ver2
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G3
+            var mi = AmmyHelper.GetMemberInfo(func);
+            this.WithProperty(mi.Member.Name, value);
+            return this;
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G5
+            var mi = AmmyHelper.GetMemberInfo(func);
+            return this.WithPropertyNotNull(mi.Member.Name, value);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G4
+            var mi = AmmyHelper.GetMemberInfo(func);
+            return this.WithPropertyNotNull(mi.Member.Name, value);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G7
+            return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G8
+            (this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);
+            return this;
+        }
+
+    }
+
+    partial class MixinBuilder<TPropertyBrowser>
+    {
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G2
+            var mi = AmmyHelper.GetMemberInfo(func);
+            this.WithProperty(mi.Member.Name, value);
+            return this;
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G9
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G9 ver2
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G6
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G6 ver2
+            var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
+            var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);
+            return this.WithPropertyAncestorBind(propertyName, bindToPath, typeof(TAncestor), mode, bindingSettings);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G3
+            var mi = AmmyHelper.GetMemberInfo(func);
+            this.WithProperty(mi.Member.Name, value);
+            return this;
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G5
+            var mi = AmmyHelper.GetMemberInfo(func);
+            return this.WithPropertyNotNull(mi.Member.Name, value);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G4
+            var mi = AmmyHelper.GetMemberInfo(func);
+            return this.WithPropertyNotNull(mi.Member.Name, value);
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] Expression<Func<TPropertyBrowser, object>> propertyNameExpression, [NotNull] string resourceName)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G7
+            return this.WithProperty(propertyNameExpression, new AmmyStaticResource(resourceName));
+        }
+
+        [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
+        public MixinBuilder<TPropertyBrowser> WithPropertyStaticResource([NotNull] string propertyName, [NotNull] string resourceName)
+        {
+            // generator : AmmyPropertyContainerMethodGenerator G8
+            (this as IAmmyPropertyContainer).Properties[propertyName] = new AmmyStaticResource(resourceName);
+            return this;
+        }
 
     }
 }

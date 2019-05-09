@@ -7,6 +7,11 @@ namespace isukces.code.AutoCode
 {
     public class EqualityGeneratorPropertyInfo
     {
+        private EqualityGeneratorPropertyInfo(Type resultType)
+        {
+            _resultType = resultType;
+        }
+
         [CanBeNull]
         public static EqualityGeneratorPropertyInfo Find(MemberInfo member,
             IMemberNullValueChecker checker)
@@ -14,7 +19,7 @@ namespace isukces.code.AutoCode
             var sca = member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>();
             if (sca == null)
                 return null;
-            var info = new EqualityGeneratorPropertyInfo()
+            var info = new EqualityGeneratorPropertyInfo(GeneratorsHelper.GetMemberResultType(member))
                 .With(sca)
                 .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
             info.PropertyValueIsNotNull = checker.ReturnValueAlwaysNotNull(member);
@@ -25,12 +30,33 @@ namespace isukces.code.AutoCode
         public static EqualityGeneratorPropertyInfo FindForString(MemberInfo member,
             IMemberNullValueChecker checker)
         {
-            const string defaultStringComparer = "System.StringComparer.Ordinal";
-            var a = new EqualityGeneratorPropertyInfo
+            string Call(string name, IExpressionDelegateArgs args)
+            {
+                var instance = args.Resolver.GetMemeberName<StringComparer>(nameof(StringComparer.Ordinal));
+                return GeneratorsHelper.CallMethod(instance, name, args);
+            }
+
+            string DefaultEquals(BinaryExpressionDelegateArgs input)
+            {
+                return Call(nameof(Equals), input);
+            }
+
+            string DefaultGetHashCode(UnaryExpressionDelegateArgs input)
+            {
+                return Call(nameof(GetHashCode), input);
+            }
+
+            string DefaultGetCompareTo(BinaryExpressionDelegateArgs input)
+            {
+                return Call("Compare", input);
+            }
+
+            var a = new EqualityGeneratorPropertyInfo(typeof(string))
                 {
-                    GetEqualityComparerExpression   = _=> defaultStringComparer,
-                    GetRelationalComparerExpression = _=> defaultStringComparer,
-                    GetCoalesceExpression           = _=> GeneratorsHelper.StringEmpty
+                    GetEqualsExpression             = DefaultEquals,
+                    GetRelationalComparerExpression = DefaultGetCompareTo,
+                    GetHashCodeExpression           = DefaultGetHashCode,
+                    GetCoalesceExpression           = _ => GeneratorsHelper.StringEmpty
                 }
                 .With(member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>())
                 .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
@@ -57,7 +83,7 @@ namespace isukces.code.AutoCode
                 right = Coalesce(right, resolver);
             }
 
-            return $"{GetEqualityComparerExpression(resolver)}.Equals({left}, {right})";
+            return GetEqualsExpression(new BinaryExpressionDelegateArgs(left, right, resolver, _resultType));
         }
 
 
@@ -65,7 +91,7 @@ namespace isukces.code.AutoCode
         {
             if (!PropertyValueIsNotNull)
                 propName = Coalesce(propName, resolver);
-            return $"{GetEqualityComparerExpression(resolver)}.GetHashCode({propName})";
+            return GetHashCodeExpression(new UnaryExpressionDelegateArgs(propName, resolver, _resultType));
         }
 
         private EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute sca)
@@ -73,7 +99,8 @@ namespace isukces.code.AutoCode
             if (sca == null)
                 return this;
             GetCoalesceExpression           = sca.GetCoalesceExpression;
-            GetEqualityComparerExpression   = sca.GetEqualityComparerExpression;
+            GetEqualsExpression             = sca.GetEqualsExpression;
+            GetHashCodeExpression           = sca.GetHashCodeExpression;
             GetRelationalComparerExpression = sca.GetRelationalComparerExpression;
             return this;
         }
@@ -83,12 +110,58 @@ namespace isukces.code.AutoCode
             NullToEmpty = nullToEmpty;
             return this;
         }
- 
+
 
         public Func<ITypeNameResolver, string> GetCoalesceExpression           { get; set; }
-        public bool                              PropertyValueIsNotNull          { get; set; }
-        public bool                              NullToEmpty                     { get; protected set; }
-        public Func<ITypeNameResolver, string> GetEqualityComparerExpression   { get; protected set; }
-        public Func<ITypeNameResolver, string> GetRelationalComparerExpression { get; protected set; }
+        public bool                            PropertyValueIsNotNull          { get; set; }
+        public bool                            NullToEmpty                     { get; protected set; }
+        public BinaryExpressionDelegate        GetEqualsExpression             { get; protected set; }
+        public BinaryExpressionDelegate        GetRelationalComparerExpression { get; protected set; }
+        public UnaryExpressionDelegate         GetHashCodeExpression           { get; protected set; }
+        private readonly Type _resultType;
+    }
+
+    public delegate string BinaryExpressionDelegate(BinaryExpressionDelegateArgs input);
+
+    public delegate string UnaryExpressionDelegate(UnaryExpressionDelegateArgs input);
+
+    public struct BinaryExpressionDelegateArgs : IExpressionDelegateArgs
+    {
+        public BinaryExpressionDelegateArgs(string left, string right, ITypeNameResolver resolver, Type dataType)
+        {
+            Left     = left;
+            Right    = right;
+            Resolver = resolver;
+            DataType = dataType;
+        }
+
+        public string[] GetArguments()
+        {
+            return new[] {Left, Right};
+        }
+
+        public string            Left     { get; }
+        public string            Right    { get; }
+        public ITypeNameResolver Resolver { get; }
+        public Type              DataType { get; }
+    }
+
+    public struct UnaryExpressionDelegateArgs : IExpressionDelegateArgs
+    {
+        public UnaryExpressionDelegateArgs(string argument, ITypeNameResolver resolver, Type dataType)
+        {
+            Argument = argument;
+            Resolver = resolver;
+            DataType = dataType;
+        }
+
+        public string[] GetArguments()
+        {
+            return new[] {Argument};
+        }
+
+        public string            Argument { get; }
+        public ITypeNameResolver Resolver { get; }
+        public Type              DataType { get; }
     }
 }

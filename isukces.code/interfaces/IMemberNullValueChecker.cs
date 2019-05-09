@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using isukces.code.AutoCode;
 using JetBrains.Annotations;
 
 namespace isukces.code.interfaces
@@ -14,20 +15,8 @@ namespace isukces.code.interfaces
     {
         public bool ReturnValueAlwaysNotNull(MemberInfo mi)
         {
-            var type = GetMemberResultType(mi);
+            var type = GeneratorsHelper.GetMemberResultType(mi);
             return TypeIsAlwaysNotNull(type) || HasMemberNotNullAttribute(mi);
-        }
-
-        protected Type GetMemberResultType([NotNull] MemberInfo mi)
-        {
-            if (mi == null) throw new ArgumentNullException(nameof(mi));
-            if (mi is PropertyInfo pi)
-                return pi.PropertyType;
-            if (mi is FieldInfo fi)
-                return fi.FieldType;
-            if (mi is MethodInfo mb)
-                return mb.ReturnType;
-            throw new NotSupportedException(mi.GetType().ToString());
         }
 
         protected abstract bool HasMemberNotNullAttribute(MemberInfo mi);

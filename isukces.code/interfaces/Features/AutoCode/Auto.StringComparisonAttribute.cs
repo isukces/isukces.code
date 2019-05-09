@@ -9,8 +9,9 @@ namespace isukces.code.interfaces
         public abstract class AbstractEqualityComparisonAttribute : Attribute
         {
             public abstract string GetCoalesceExpression(ITypeNameResolver resolver);
-            public abstract string GetEqualityComparerExpression(ITypeNameResolver resolver);
-            public abstract string GetRelationalComparerExpression(ITypeNameResolver resolver);
+            public abstract string GetEqualsExpression(BinaryExpressionDelegateArgs input);
+            public abstract string GetHashCodeExpression(UnaryExpressionDelegateArgs input);
+            public abstract string GetRelationalComparerExpression(BinaryExpressionDelegateArgs input);
         }
 
         [AttributeUsage(AttributeTargets.Property)]
@@ -26,14 +27,25 @@ namespace isukces.code.interfaces
                 return GeneratorsHelper.StringEmpty;
             }
 
-            public override string GetEqualityComparerExpression(ITypeNameResolver resolver)
+            public override string GetEqualsExpression(BinaryExpressionDelegateArgs input)
             {
-                return GetRelationalComparerExpression(resolver);
+                return GetUniversal(input, nameof(Equals));
             }
 
-            public override string GetRelationalComparerExpression(ITypeNameResolver resolver)
+            public override string GetHashCodeExpression(UnaryExpressionDelegateArgs input)
             {
-                return resolver.GetTypeName(typeof(StringComparer))+ "." + Comparison;
+                return GetUniversal(input, nameof(GetHashCode));
+            }
+
+            public override string GetRelationalComparerExpression(BinaryExpressionDelegateArgs input)
+            {
+                return GetUniversal(input, "Compare");
+            }
+
+            private string GetUniversal(IExpressionDelegateArgs input, string methodName)
+            {
+                var comparerInstance = input.Resolver.GetMemeberName<StringComparer>(Comparison.ToString());
+                return GeneratorsHelper.CallMethod(comparerInstance, methodName, input);
             }
 
             public System.StringComparison Comparison { get; }

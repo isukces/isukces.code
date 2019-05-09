@@ -3,11 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using isukces.code.interfaces;
+using JetBrains.Annotations;
 
 namespace isukces.code.AutoCode
 {
     public static class GeneratorsHelper
     {
+        public static string CallMethod(string instance, string method, params string[] arguments)
+        {
+            return string.Format("{0}.{1}({2})", instance, method, string.Join(", ", arguments));
+        }
+
+
+        public static string CallMethod(string method, IArgumentsHolder holder)
+        {
+            return string.Format("{0}({1})", method, string.Join(", ", holder.GetArguments()));
+        }
+
+        public static string CallMethod(string instance, string method, IArgumentsHolder holder)
+        {
+            return string.Format("{0}.{1}({2})", instance, method, string.Join(", ", holder.GetArguments()));
+        }
+
         public static string DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
         {
             var comparer     = typeof(Comparer<>).MakeGenericType(type);
@@ -20,26 +37,17 @@ namespace isukces.code.AutoCode
             return "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
         }
 
-        public static string GetWriteMemeberName(PropertyInfo pi)
-        {
-            var props = pi.GetCustomAttribute<Auto.WriteMemberAttribute>();
-            return !string.IsNullOrEmpty(props?.Name) ? props.Name : pi.Name;
-        }
 
-        public static HashSet<T> MakeCopy<T>(IEnumerable<T> source, IEnumerable<T> append = null,
-            IEnumerable<T> remove = null)
+        public static Type GetMemberResultType([NotNull] MemberInfo mi)
         {
-            var s = new HashSet<T>();
-            if (source != null)
-                foreach (var i in source)
-                    s.Add(i);
-            if (append != null)
-                foreach (var i in append)
-                    s.Add(i);
-            if (remove != null)
-                foreach (var i in remove)
-                    s.Remove(i);
-            return s;
+            if (mi == null) throw new ArgumentNullException(nameof(mi));
+            if (mi is PropertyInfo pi)
+                return pi.PropertyType;
+            if (mi is FieldInfo fi)
+                return fi.FieldType;
+            if (mi is MethodInfo mb)
+                return mb.ReturnType;
+            throw new NotSupportedException(mi.GetType().ToString());
         }
 
         /*public static string TypeName<T>(this INamespaceContainer container)
@@ -101,6 +109,28 @@ namespace isukces.code.AutoCode
             return canCut
                 ? fullName.Substring(typeNamespace.Length + 1)
                 : fullName;
+        }
+
+        public static string GetWriteMemeberName(PropertyInfo pi)
+        {
+            var props = pi.GetCustomAttribute<Auto.WriteMemberAttribute>();
+            return !string.IsNullOrEmpty(props?.Name) ? props.Name : pi.Name;
+        }
+
+        public static HashSet<T> MakeCopy<T>(IEnumerable<T> source, IEnumerable<T> append = null,
+            IEnumerable<T> remove = null)
+        {
+            var s = new HashSet<T>();
+            if (source != null)
+                foreach (var i in source)
+                    s.Add(i);
+            if (append != null)
+                foreach (var i in append)
+                    s.Add(i);
+            if (remove != null)
+                foreach (var i in remove)
+                    s.Remove(i);
+            return s;
         }
 
         public const BindingFlags AllVisibility = BindingFlags.NonPublic | BindingFlags.Public;
