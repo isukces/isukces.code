@@ -74,10 +74,10 @@ namespace isukces.code.AutoCode
             private List<string> GetConstructorArgs(IReadOnlyList<PropertyInfo> properties)
             {
                 var constructors = Type
-                    #if COREFX
+#if COREFX
                     .GetTypeInfo()
-                    #endif
-                    .GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+#endif
+                    .GetConstructors(GeneratorsHelper.AllVisibility | BindingFlags.Instance | BindingFlags.DeclaredOnly)
                     .OrderByDescending(q => q.GetParameters().Length)
                     .ToArray();
                 foreach (var i in constructors)

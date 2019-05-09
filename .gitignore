@@ -12,3 +12,4 @@ obj
 /.idea
 /packages/*.cache
 solution-doctor.bat
+samples/.idea/

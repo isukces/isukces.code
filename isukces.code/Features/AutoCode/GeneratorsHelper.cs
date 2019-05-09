@@ -8,6 +8,13 @@ namespace isukces.code.AutoCode
 {
     public static class GeneratorsHelper
     {
+        public static string DefaultComparerMethodName(Type type, ITypeToNameResolver resolver)
+        {
+            var comparer     = typeof(Comparer<>).MakeGenericType(type);
+            var comparerName = resolver.TypeName(comparer);
+            return $"{comparerName}.Default.Compare";
+        }
+
         public static string FieldName(string x)
         {
             return "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
@@ -39,6 +46,7 @@ namespace isukces.code.AutoCode
         {
             return TypeName(container, typeof(T));
         }
+
         public static string TypeName(this INamespaceContainer container, Type type)
         {
             //todo: Generic types
@@ -53,7 +61,7 @@ namespace isukces.code.AutoCode
                 return string.Format("{0}[{1}]", st, new string(',', arrayRank - 1));
             }
 
-            var simple = IsukcesCodeReflectionExtensions.SimpleTypeName(type);
+            var simple = type.SimpleTypeName();
             if (!string.IsNullOrEmpty(simple))
                 return simple;
             if (type.DeclaringType != null)
@@ -64,7 +72,6 @@ namespace isukces.code.AutoCode
                 var w = new ReflectionTypeWrapper(type);
                 if (w.IsGenericType)
                 {
-                    
                     if (w.IsGenericTypeDefinition)
                     {
                         var args  = w.GetGenericArguments();
@@ -85,16 +92,22 @@ namespace isukces.code.AutoCode
                     }
                 }
                 else
+                {
                     fullName = type.FullName;
+                }
             }
             var typeNamespace = type.Namespace;
-            var canCut = container?.IsKnownNamespace(typeNamespace) ?? false;
+            var canCut        = container?.IsKnownNamespace(typeNamespace) ?? false;
             return canCut
                 ? fullName.Substring(typeNamespace.Length + 1)
                 : fullName;
         }
 
-        public const BindingFlags All =
-            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+        public const BindingFlags AllVisibility = BindingFlags.NonPublic | BindingFlags.Public;
+        public const BindingFlags AllInstance = BindingFlags.Instance | AllVisibility;
+        public const BindingFlags All = AllInstance | BindingFlags.Static;
+        public const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
+
+        public const string StringEmpty = "string.Empty";
     }
 }

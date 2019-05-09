@@ -79,7 +79,7 @@ namespace isukces.code.AutoCode
                 foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>()) i.AssemblyEnd(assembly, context);
             }
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
-            var h = BeforeSave;
+            var h        = BeforeSave;
             if (h != null)
             {
                 var args = new BeforeSaveEventArgs
@@ -91,13 +91,19 @@ namespace isukces.code.AutoCode
                 fileName = args.FileName;
             }
 
-            if (_csFile.SaveIfDifferent(fileName, false))
+            if (_csFile.SaveIfDifferent(fileName))
                 saved = true;
         }
 
         public TConfig ResolveConfig<TConfig>() where TConfig : class, IAutoCodeConfiguration, new()
         {
             return (TConfig)ResolveConfigInternal(typeof(TConfig));
+        }
+
+        public AutoCodeGenerator WithGenerator(IAutoCodeGenerator generator)
+        {
+            CodeGenerators.Add(generator);
+            return this;
         }
 
 
@@ -131,7 +137,7 @@ namespace isukces.code.AutoCode
 
         public class BeforeSaveEventArgs : EventArgs
         {
-            public CsFile File { get; set; }
+            public CsFile File     { get; set; }
             public string FileName { get; set; }
         }
     }

@@ -26,7 +26,7 @@ namespace isukces.code.AutoCode
         {
             public override void Generate(Type type, IAutoCodeGeneratorContext context)
             {
-                Attributes = Type
+                Attributes = type
 #if COREFX
                     .GetTypeInfo()
 #endif

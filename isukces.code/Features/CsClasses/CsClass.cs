@@ -291,12 +291,7 @@ namespace isukces.code
         {
             return Owner?.IsKnownNamespace(namespaceName) ?? false;
         }
-
-        public string TypeName<T>()
-        {
-            return TypeName(typeof(T));
-        }
-
+        
         public string TypeName(Type type)
         {
             if (Owner == null)
