@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
@@ -13,6 +15,12 @@ namespace isukces.code.AutoCode
             _class     = @class;
             _type      = type;
             MyTypeName = _class.GetTypeName(type);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string GetSuffix(int cnt)
+        {
+            return cnt == 0 ? "" : (cnt + 1).ToString(CultureInfo.InvariantCulture);
         }
 
         public void CreateCode()
@@ -53,6 +61,16 @@ namespace isukces.code.AutoCode
             return this;
         }
 
+        public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<GetHashCodeExpressionData> expressions)
+        {
+            if (GetHashCodeExpressions == null)
+                GetHashCodeExpressions = new List<GetHashCodeExpressionData>();
+            else
+                GetHashCodeExpressions.Clear();
+            GetHashCodeExpressions.AddRange(expressions);
+            return this;
+        }
+
         private void AddNeverBrowsable(IAttributable field)
         {
             var tn1 = _class.GetTypeName(typeof(DebuggerBrowsableAttribute));
@@ -72,7 +90,7 @@ namespace isukces.code.AutoCode
             var hasEqualityGeneratorAttribute = ImplementFeatures.HasFlag(Features.Equality);
             if (methodName is null)
             {
-                var tmp =  GeneratorsHelper.DefaultComparerMethodName(_type, _class);
+                var tmp = GeneratorsHelper.DefaultComparerMethodName(_type, _class);
                 methodName = tmp.GetCode();
                 foreach (var oper in CompareOperators)
                 {
@@ -120,30 +138,35 @@ namespace isukces.code.AutoCode
                 cs.WriteLine("if (ReferenceEquals(this, other)) return 0;")
                     .WriteLine("if (other is null) return 1;");
 
-            Dictionary<string, string> comparers = new Dictionary<string, string>();
+            var comparers = new Dictionary<string, string>();
             for (var index = 0; index < CompareToExpressions.Count; index++)
             {
-                var c1 = CompareToExpressions[index];
-                var expr = c1.CompareExpression;
-                if (!string.IsNullOrEmpty(c1.ComparerInstance))
+                var c1   = CompareToExpressions[index];
+                var expr = c1.ExpressionTemplate;
+                if (!string.IsNullOrEmpty(c1.Instance))
                 {
-                    if (!comparers.TryGetValue(c1.ComparerInstance, out var variableName))
+                    if (!comparers.TryGetValue(c1.Instance, out var variableName))
                     {
-                        comparers[c1.ComparerInstance] = variableName = "comparer" + (comparers.Count + 1);
-                        cs.WriteLine("var " + variableName + " = " + c1.ComparerInstance + ";");
+                        comparers[c1.Instance] = variableName = "comparer" + GetSuffix(comparers.Count);
+                        cs.WriteLine("var " + variableName + " = " + c1.Instance + ";");
                     }
 
                     expr = string.Format(expr, variableName);
                 }
+
                 if (index + 1 == CompareToExpressions.Count)
                 {
                     cs.WriteLine($"return {expr};");
                 }
                 else
                 {
-                    var compar = c1.FieldName.FirstLower() + "Comparison";
-                    cs.WriteLine($"var {compar} = {expr};")
-                        .WriteLine($"if ({compar} != 0) return {compar};");
+                    // var compar = c1.FieldName.FirstLower() + "Comparison";
+                    var compar = "comparisonResult"; // c1.FieldName.FirstLower() + "Comparison";
+                    if (index == 0)
+                        cs.WriteLine($"var {compar} = {expr};");
+                    else
+                        cs.WriteLine($"{compar} = {expr};");
+                    cs.WriteLine($"if ({compar} != 0) return {compar};");
                 }
             }
 
@@ -271,7 +294,8 @@ namespace isukces.code.AutoCode
                     break;
                 case 2:
                     cw.Open("unchecked");
-                    cw.WriteLine($"return ({GetHashCodeExpressions[0].BracketsCode} * 397) ^ {GetHashCodeExpressions[1].BracketsCode};");
+                    cw.WriteLine(
+                        $"return ({GetHashCodeExpressions[0].BracketsCode} * 397) ^ {GetHashCodeExpressions[1].BracketsCode};");
                     cw.Close();
                     break;
                 default:
@@ -299,10 +323,12 @@ namespace isukces.code.AutoCode
             return m;
         }
 
-        public List<EqualsExpressionData> EqualityExpressions { get; set; } = new List<EqualsExpressionData>();
+        public List<EqualsExpressionData>    EqualityExpressions  { get; set; } = new List<EqualsExpressionData>();
         public List<CompareToExpressionData> CompareToExpressions { get; set; } = new List<CompareToExpressionData>();
-        public List<GetHashCodeExpressionData> GetHashCodeExpressions { get; set; } = new List<GetHashCodeExpressionData>();
-        
+
+        public List<GetHashCodeExpressionData> GetHashCodeExpressions { get; set; } =
+            new List<GetHashCodeExpressionData>();
+
         public Features ImplementFeatures { get; set; }
 
         public string OtherArgName { get; set; } = "other";
@@ -314,9 +340,8 @@ namespace isukces.code.AutoCode
         /// </summary>
         public string IsEmptyObjectPropertyName { get; set; }
 
-        public bool     CachedGetHashCodeImplementation { get; set; }
-        public bool     CanBeNull                       { get; set; }
-        
+        public bool CachedGetHashCodeImplementation { get; set; }
+        public bool CanBeNull                       { get; set; }
 
 
         public static IReadOnlyList<string> CompareOperators = "> < >= <=".Split(' ');
@@ -332,16 +357,6 @@ namespace isukces.code.AutoCode
             CompareTo = 2,
             CompareOperators = 4,
             All = Equality | CompareTo | CompareOperators
-        }
-
-        public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<GetHashCodeExpressionData> expressions)
-        {
-            if (GetHashCodeExpressions == null)
-                GetHashCodeExpressions = new List<GetHashCodeExpressionData>();
-            else
-                GetHashCodeExpressions.Clear();
-            GetHashCodeExpressions.AddRange(expressions);
-            return this;
         }
     }
 }

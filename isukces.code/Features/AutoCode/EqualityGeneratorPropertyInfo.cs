@@ -45,9 +45,9 @@ namespace isukces.code.AutoCode
                 return Call(nameof(GetHashCode), input);
             }
 
-            X DefaultGetCompareTo(BinaryExpressionDelegateArgs input)
+            ExpressionWithObjectInstance DefaultGetCompareTo(BinaryExpressionDelegateArgs input)
             {
-                return new X(Call("Compare", input));
+                return new ExpressionWithObjectInstance(Call("Compare", input));
             }
 
             var a = new EqualityGeneratorPropertyInfo(typeof(string))
@@ -182,7 +182,7 @@ namespace isukces.code.AutoCode
         public bool                             PropertyValueIsNotNull          { get; set; }
         public bool                             NullToEmpty                     { get; protected set; }
         public BinaryExpressionDelegate<string> GetEqualsExpression             { get; set; }
-        public BinaryExpressionDelegate<X>      GetRelationalComparerExpression { get; protected set; }
+        public BinaryExpressionDelegate<ExpressionWithObjectInstance>      GetRelationalComparerExpression { get; protected set; }
         public UnaryExpressionDelegate          GetHashCodeExpression           { get; protected set; }
         public Auto.GetHashCodeOptions          GetHashCodeOption               { get; set; }
         public Type                             ResultType                      { get; }

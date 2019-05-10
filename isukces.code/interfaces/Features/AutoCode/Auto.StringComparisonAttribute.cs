@@ -17,7 +17,7 @@ namespace isukces.code.interfaces
             public abstract string GetCoalesceExpression(ITypeNameResolver resolver);
             public abstract string GetEqualsExpression(BinaryExpressionDelegateArgs input);
             public abstract string GetHashCodeExpression(UnaryExpressionDelegateArgs input);
-            public abstract X GetRelationalComparerExpression(BinaryExpressionDelegateArgs input);
+            public abstract ExpressionWithObjectInstance GetRelationalComparerExpression(BinaryExpressionDelegateArgs input);
 
             public virtual GetHashCodeOptions GetGetHashCodeOption()
             {
@@ -48,11 +48,11 @@ namespace isukces.code.interfaces
                 return GetUniversal(input, nameof(GetHashCode));
             }
 
-            public override X GetRelationalComparerExpression(BinaryExpressionDelegateArgs input)
+            public override ExpressionWithObjectInstance GetRelationalComparerExpression(BinaryExpressionDelegateArgs input)
             {
                 var comparerInstance = input.Resolver.GetMemeberName<StringComparer>(Comparison.ToString());
                 var code             = GeneratorsHelper.CallMethod("{0}", "Compare", input);
-                return new X(code, comparerInstance);
+                return new ExpressionWithObjectInstance(code, comparerInstance);
             }
 
             private string GetUniversal(IExpressionDelegateArgs input, string methodName)

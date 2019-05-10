@@ -336,7 +336,7 @@ namespace isukces.code.AutoCode
             }
 
            
-            private X GetCompareCode(string name)
+            private ExpressionWithObjectInstance GetCompareCode(string name)
             {
                 BinaryExpressionDelegateArgs CoalesceInput(EqualityGeneratorPropertyInfo info,
                     BinaryExpressionDelegateArgs binaryExpressionDelegateArgs)
@@ -378,8 +378,8 @@ namespace isukces.code.AutoCode
                 }
 
                 if (!property.CanBeNull)
-                    return new X($"{name}.CompareTo(other.{name})");
-
+                    return new ExpressionWithObjectInstance($"{name}.CompareTo(other.{name})");
+                
                 {
                     var info = CreateInfo(property);
                     var m    = GeneratorsHelper.DefaultComparerMethodName(type, _class);
@@ -398,11 +398,15 @@ namespace isukces.code.AutoCode
                             if (info.NullToEmpty)
                             {
                                 input = CoalesceInput(info, input);
-                                m     = GeneratorsHelper.DefaultComparerMethodName(type.StripNullable(), _class);
+                                var sType = type.StripNullable();
+                                var interf = typeof(IComparable<>).MakeGenericType(sType);
+                                if (interf.GetTypeInfo().IsAssignableFrom(sType))
+                                    return new ExpressionWithObjectInstance($"({input.Left}).CompareTo({input.Right})");
+                                m = GeneratorsHelper.DefaultComparerMethodName(sType, _class);
                             }
                         }
                     }
-                    return new X(GeneratorsHelper.CallMethod(m.ExpressionTemplate, input), m.Instance);
+                    return new ExpressionWithObjectInstance(GeneratorsHelper.CallMethod(m.ExpressionTemplate, input), m.Instance);
                 }
             }
 
@@ -415,8 +419,8 @@ namespace isukces.code.AutoCode
                 {
                     var fieldName         = fields2[index];
                     var compareExpression = GetCompareCode(fieldName);
-                    yield return new CompareToExpressionData(fieldName, compareExpression.Expression,
-                        compareExpression.ComparerInstance);
+                    yield return new CompareToExpressionData(fieldName, compareExpression.ExpressionTemplate,
+                        compareExpression.Instance);
                 }
             }
 
@@ -475,15 +479,5 @@ namespace isukces.code.AutoCode
     {
     }
 
-    public struct X
-    {
-        public X(string expression, string comparerInstance=null)
-        {
-            Expression = expression;
-            ComparerInstance   = comparerInstance;
-        }
-
-        public string Expression { get; }
-        public string ComparerInstance   { get; }
-    } 
+   
 }

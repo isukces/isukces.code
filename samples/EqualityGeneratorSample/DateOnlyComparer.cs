@@ -34,12 +34,12 @@ namespace EqualityGeneratorSample
             return GetUniversal(input, nameof(GetHashCode));
         }
 
-        public override X GetRelationalComparerExpression(BinaryExpressionDelegateArgs input)
+        public override ExpressionWithObjectInstance GetRelationalComparerExpression(BinaryExpressionDelegateArgs input)
         {
             var method = input.DataType == typeof(DateTime)
                 ? nameof(DateOnlyComparer.Compare)
                 : nameof(DateOnlyComparer.CompareNullable);
-            return new X(GetUniversal(input, method));
+            return new ExpressionWithObjectInstance(GetUniversal(input, method));
         }
 
         public override Auto.GetHashCodeOptions GetGetHashCodeOption()

@@ -10,14 +10,14 @@ namespace EqualityGeneratorSample
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other is null) return 1;
-            var comparer1 = StringComparer.OrdinalIgnoreCase;
-            var lastNameComparison = comparer1.Compare(LastName, other.LastName);
-            if (lastNameComparison != 0) return lastNameComparison;
+            var comparer = StringComparer.OrdinalIgnoreCase;
+            var comparisonResult = comparer.Compare(LastName, other.LastName);
+            if (comparisonResult != 0) return comparisonResult;
             var comparer2 = StringComparer.CurrentCultureIgnoreCase;
-            var firstNameComparison = comparer2.Compare(FirstName, other.FirstName);
-            if (firstNameComparison != 0) return firstNameComparison;
-            var birthDateComparison = DateOnlyComparer.CompareNullable(BirthDate, other.BirthDate);
-            if (birthDateComparison != 0) return birthDateComparison;
+            comparisonResult = comparer2.Compare(FirstName, other.FirstName);
+            if (comparisonResult != 0) return comparisonResult;
+            comparisonResult = DateOnlyComparer.CompareNullable(BirthDate, other.BirthDate);
+            if (comparisonResult != 0) return comparisonResult;
             return StringComparer.Ordinal.Compare(Code, other.Code);
         }
 
@@ -107,15 +107,14 @@ namespace EqualityGeneratorSample
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other is null) return 1;
-            var comparer1 = System.Collections.Generic.Comparer<int?>.Default;
-            var normalComparison = comparer1.Compare(Normal, other.Normal);
-            if (normalComparison != 0) return normalComparison;
-            var nullAreEqualComparison = comparer1.Compare(NullAreEqual, other.NullAreEqual);
-            if (nullAreEqualComparison != 0) return nullAreEqualComparison;
-            var comparer2 = System.Collections.Generic.Comparer<int>.Default;
-            var nullLikeEmptyComparison = comparer2.Compare(NullLikeEmpty ?? 0, other.NullLikeEmpty ?? 0);
-            if (nullLikeEmptyComparison != 0) return nullLikeEmptyComparison;
-            return comparer2.Compare(Both ?? 0, other.Both ?? 0);
+            var comparer = System.Collections.Generic.Comparer<int?>.Default;
+            var comparisonResult = comparer.Compare(Normal, other.Normal);
+            if (comparisonResult != 0) return comparisonResult;
+            comparisonResult = comparer.Compare(NullAreEqual, other.NullAreEqual);
+            if (comparisonResult != 0) return comparisonResult;
+            comparisonResult = (NullLikeEmpty ?? 0).CompareTo(other.NullLikeEmpty ?? 0);
+            if (comparisonResult != 0) return comparisonResult;
+            return (Both ?? 0).CompareTo(other.Both ?? 0);
         }
 
         public int CompareTo(object obj)
@@ -204,12 +203,12 @@ namespace EqualityGeneratorSample
         {
             if (ReferenceEquals(this, other)) return 0;
             if (other is null) return 1;
-            var normalComparison = StringComparer.Ordinal.Compare(Normal, other.Normal);
-            if (normalComparison != 0) return normalComparison;
-            var nullAreEqualComparison = StringComparer.Ordinal.Compare(NullAreEqual, other.NullAreEqual);
-            if (nullAreEqualComparison != 0) return nullAreEqualComparison;
-            var nullLikeEmptyComparison = StringComparer.Ordinal.Compare(NullLikeEmpty ?? string.Empty, other.NullLikeEmpty ?? string.Empty);
-            if (nullLikeEmptyComparison != 0) return nullLikeEmptyComparison;
+            var comparisonResult = StringComparer.Ordinal.Compare(Normal, other.Normal);
+            if (comparisonResult != 0) return comparisonResult;
+            comparisonResult = StringComparer.Ordinal.Compare(NullAreEqual, other.NullAreEqual);
+            if (comparisonResult != 0) return comparisonResult;
+            comparisonResult = StringComparer.Ordinal.Compare(NullLikeEmpty ?? string.Empty, other.NullLikeEmpty ?? string.Empty);
+            if (comparisonResult != 0) return comparisonResult;
             return StringComparer.Ordinal.Compare(Both ?? string.Empty, other.Both ?? string.Empty);
         }
 
