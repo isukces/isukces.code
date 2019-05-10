@@ -25,11 +25,29 @@ namespace isukces.code.AutoCode
             return string.Format("{0}.{1}({2})", instance, method, string.Join(", ", holder.GetArguments()));
         }
 
-        public static string DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
+        public struct MyStruct
+        {
+            public MyStruct(string expressionTemplate, string instance=null)
+            {
+                Instance = instance;
+                ExpressionTemplate = expressionTemplate;
+            }
+
+            public string Instance { get; }
+            public string ExpressionTemplate { get; }
+
+            public string GetCode()
+            {
+                if (string.IsNullOrEmpty(Instance))
+                    return ExpressionTemplate;
+                return string.Format(ExpressionTemplate, Instance);
+            }
+        }
+        public static MyStruct DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
         {
             var comparer     = typeof(Comparer<>).MakeGenericType(type);
             var comparerName = resolver.TypeName(comparer);
-            return $"{comparerName}.Default.Compare";
+            return new MyStruct("{0}.Compare", $"{comparerName}.Default");
         }
 
         public static string FieldName(string x)

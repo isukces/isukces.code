@@ -335,7 +335,8 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            private string GetCompareCode(string name)
+           
+            private X GetCompareCode(string name)
             {
                 BinaryExpressionDelegateArgs CoalesceInput(EqualityGeneratorPropertyInfo info,
                     BinaryExpressionDelegateArgs binaryExpressionDelegateArgs)
@@ -377,7 +378,7 @@ namespace isukces.code.AutoCode
                 }
 
                 if (!property.CanBeNull)
-                    return $"{name}.CompareTo(other.{name})";
+                    return new X($"{name}.CompareTo(other.{name})");
 
                 {
                     var info = CreateInfo(property);
@@ -401,7 +402,7 @@ namespace isukces.code.AutoCode
                             }
                         }
                     }
-                    return GeneratorsHelper.CallMethod(m, input); 
+                    return new X(GeneratorsHelper.CallMethod(m.ExpressionTemplate, input), m.Instance);
                 }
             }
 
@@ -414,7 +415,8 @@ namespace isukces.code.AutoCode
                 {
                     var fieldName         = fields2[index];
                     var compareExpression = GetCompareCode(fieldName);
-                    yield return new CompareToExpressionData(fieldName, compareExpression);
+                    yield return new CompareToExpressionData(fieldName, compareExpression.Expression,
+                        compareExpression.ComparerInstance);
                 }
             }
 
@@ -472,4 +474,16 @@ namespace isukces.code.AutoCode
     public interface IAutoComparable<in T> : IComparable<T>, IComparable
     {
     }
+
+    public struct X
+    {
+        public X(string expression, string comparerInstance=null)
+        {
+            Expression = expression;
+            ComparerInstance   = comparerInstance;
+        }
+
+        public string Expression { get; }
+        public string ComparerInstance   { get; }
+    } 
 }

@@ -72,7 +72,8 @@ namespace isukces.code.AutoCode
             var hasEqualityGeneratorAttribute = ImplementFeatures.HasFlag(Features.Equality);
             if (methodName is null)
             {
-                methodName = GeneratorsHelper.DefaultComparerMethodName(_type, _class);
+                var tmp =  GeneratorsHelper.DefaultComparerMethodName(_type, _class);
+                methodName = tmp.GetCode();
                 foreach (var oper in CompareOperators)
                 {
                     var resultIfEqual = oper.Length == 2 ? "true" : "false";
@@ -119,17 +120,29 @@ namespace isukces.code.AutoCode
                 cs.WriteLine("if (ReferenceEquals(this, other)) return 0;")
                     .WriteLine("if (other is null) return 1;");
 
+            Dictionary<string, string> comparers = new Dictionary<string, string>();
             for (var index = 0; index < CompareToExpressions.Count; index++)
             {
                 var c1 = CompareToExpressions[index];
+                var expr = c1.CompareExpression;
+                if (!string.IsNullOrEmpty(c1.ComparerInstance))
+                {
+                    if (!comparers.TryGetValue(c1.ComparerInstance, out var variableName))
+                    {
+                        comparers[c1.ComparerInstance] = variableName = "comparer" + (comparers.Count + 1);
+                        cs.WriteLine("var " + variableName + " = " + c1.ComparerInstance + ";");
+                    }
+
+                    expr = string.Format(expr, variableName);
+                }
                 if (index + 1 == CompareToExpressions.Count)
                 {
-                    cs.WriteLine($"return {c1.CompareExpression};");
+                    cs.WriteLine($"return {expr};");
                 }
                 else
                 {
                     var compar = c1.FieldName.FirstLower() + "Comparison";
-                    cs.WriteLine($"var {compar} = {c1.CompareExpression};")
+                    cs.WriteLine($"var {compar} = {expr};")
                         .WriteLine($"if ({compar} != 0) return {compar};");
                 }
             }

@@ -45,9 +45,9 @@ namespace isukces.code.AutoCode
                 return Call(nameof(GetHashCode), input);
             }
 
-            string DefaultGetCompareTo(BinaryExpressionDelegateArgs input)
+            X DefaultGetCompareTo(BinaryExpressionDelegateArgs input)
             {
-                return Call("Compare", input);
+                return new X(Call("Compare", input));
             }
 
             var a = new EqualityGeneratorPropertyInfo(typeof(string))
@@ -82,7 +82,7 @@ namespace isukces.code.AutoCode
 
         public EqualsExpressionData EqualsCode(string left, string right, ITypeNameResolver resolver)
         {
-            var leftSource = left;
+            var leftSource  = left;
             var rightSource = right;
             if (NullToEmpty && !PropertyValueIsNotNull)
             {
@@ -178,14 +178,14 @@ namespace isukces.code.AutoCode
         public bool NullsAreEqual { get; set; }
 
 
-        public Func<ITypeNameResolver, string> GetCoalesceExpression           { get; set; }
-        public bool                            PropertyValueIsNotNull          { get; set; }
-        public bool                            NullToEmpty                     { get; protected set; }
-        public BinaryExpressionDelegate        GetEqualsExpression             { get; set; }
-        public BinaryExpressionDelegate        GetRelationalComparerExpression { get; protected set; }
-        public UnaryExpressionDelegate         GetHashCodeExpression           { get; protected set; }
-        public Auto.GetHashCodeOptions         GetHashCodeOption               { get; set; }
-        public  Type ResultType { get; }
+        public Func<ITypeNameResolver, string>  GetCoalesceExpression           { get; set; }
+        public bool                             PropertyValueIsNotNull          { get; set; }
+        public bool                             NullToEmpty                     { get; protected set; }
+        public BinaryExpressionDelegate<string> GetEqualsExpression             { get; set; }
+        public BinaryExpressionDelegate<X>      GetRelationalComparerExpression { get; protected set; }
+        public UnaryExpressionDelegate          GetHashCodeExpression           { get; protected set; }
+        public Auto.GetHashCodeOptions          GetHashCodeOption               { get; set; }
+        public Type                             ResultType                      { get; }
     }
 
     public struct GetHashCodeExpressionData
@@ -207,7 +207,7 @@ namespace isukces.code.AutoCode
         public bool   NeedBracketsWhenInExpression { get; }
     }
 
-    public delegate string BinaryExpressionDelegate(BinaryExpressionDelegateArgs input);
+    public delegate T BinaryExpressionDelegate<out T>(BinaryExpressionDelegateArgs input);
 
     public delegate string UnaryExpressionDelegate(UnaryExpressionDelegateArgs input);
 
@@ -226,20 +226,20 @@ namespace isukces.code.AutoCode
             return new[] {Left, Right};
         }
 
-        public string            Left     { get; }
-        public string            Right    { get; }
-        public ITypeNameResolver Resolver { get; }
-        public Type              DataType { get; }
-
-        public BinaryExpressionDelegateArgs WithLeftRight(string newLeft, string newRight)
-        {
-            return new BinaryExpressionDelegateArgs(newLeft,newRight,Resolver,DataType);
-        }
-
         public BinaryExpressionDelegateArgs Transform(Func<string, string> map)
         {
             return new BinaryExpressionDelegateArgs(map(Left), map(Right), Resolver, DataType);
         }
+
+        public BinaryExpressionDelegateArgs WithLeftRight(string newLeft, string newRight)
+        {
+            return new BinaryExpressionDelegateArgs(newLeft, newRight, Resolver, DataType);
+        }
+
+        public string            Left     { get; }
+        public string            Right    { get; }
+        public ITypeNameResolver Resolver { get; }
+        public Type              DataType { get; }
     }
 
     public struct UnaryExpressionDelegateArgs : IExpressionDelegateArgs
