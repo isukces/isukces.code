@@ -254,7 +254,12 @@ namespace isukces.code.AutoCode
                     cw.WriteLine("return 0;");
                     break;
                 case 1:
-                    cw.WriteLine($"return {GetHashCodeExpressions[0]};");
+                    cw.WriteLine($"return {GetHashCodeExpressions[0].Code};");
+                    break;
+                case 2:
+                    cw.Open("unchecked");
+                    cw.WriteLine($"return ({GetHashCodeExpressions[0].BracketsCode} * 397) ^ {GetHashCodeExpressions[1].BracketsCode};");
+                    cw.Close();
                     break;
                 default:
                 {
@@ -264,8 +269,8 @@ namespace isukces.code.AutoCode
                         {
                             var hc = GetHashCodeExpressions[i];
                             cw.WriteLine(i == 0
-                                ? $"var hashCode = {hc};"
-                                : $"hashCode = (hashCode * 397) ^ {hc};");
+                                ? $"var hashCode = {hc.Code};"
+                                : $"hashCode = (hashCode * 397) ^ {hc.BracketsCode};");
                         }
 
                         cw.WriteLine("return hashCode;");
@@ -283,7 +288,7 @@ namespace isukces.code.AutoCode
 
         public List<CodePieceWithComputeCost> EqualityExpressions { get; set; } = new List<CodePieceWithComputeCost>();
         public List<C1> CompareToExpressions { get; set; } = new List<C1>();
-        public List<string> GetHashCodeExpressions { get; set; } = new List<string>();
+        public List<GetHashCodeExpressionData> GetHashCodeExpressions { get; set; } = new List<GetHashCodeExpressionData>();
         
         public Features ImplementFeatures { get; set; }
 
@@ -328,10 +333,10 @@ namespace isukces.code.AutoCode
             public string CompareExpression { get; }
         }
 
-        public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<string> expressions)
+        public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<GetHashCodeExpressionData> expressions)
         {
             if (GetHashCodeExpressions == null)
-                GetHashCodeExpressions = new List<string>();
+                GetHashCodeExpressions = new List<GetHashCodeExpressionData>();
             else
                 GetHashCodeExpressions.Clear();
             GetHashCodeExpressions.AddRange(expressions);

@@ -267,7 +267,7 @@ namespace isukces.code.AutoCode
             }
 
 
-            private string FindHashCode(PropertyOrFieldInfo prop)
+            private GetHashCodeExpressionData FindHashCode(PropertyOrFieldInfo prop)
             {
                 var type     = prop.ValueType;
                 var propName = prop.Name;
@@ -286,18 +286,18 @@ namespace isukces.code.AutoCode
                 {
                     var ut = Enum.GetUnderlyingType(type);
                     if (ut == typeof(int))
-                        return "(int)" + propName;
+                        return new GetHashCodeExpressionData("(int)" + propName);
                 }
 
-                if (type == typeof(int)) return propName;
-                if (type == typeof(bool)) return "(" + propName + " ? 1 : 0)";
-                if (type == typeof(bool?)) return "(" + propName + " == true ? 1 : 0)";
+                if (type == typeof(int)) return new GetHashCodeExpressionData(propName);
+                if (type == typeof(bool)) return new GetHashCodeExpressionData( propName + " ? 1 : 0", true);
+                if (type == typeof(bool?)) return new GetHashCodeExpressionData(propName + " == true ? 1 : 0", true);
                 
 
                 var hc = NullChecker.ReturnValueAlwaysNotNull(prop.Member)
                     ? $"{propName}.GetHashCode()"
                     : $"{propName}?.GetHashCode()  ?? 0";
-                return hc;
+                return new GetHashCodeExpressionData(hc);
             }
 
             private string GetCompareCode(string name)
@@ -360,7 +360,7 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            private IEnumerable<string> GetGetHashCodeExpressions()
+            private IEnumerable<GetHashCodeExpressionData> GetGetHashCodeExpressions()
             {
                 HashSet<string> filter = null;
                 if (!string.IsNullOrEmpty(_attEq?.GetHashCodeProperties))

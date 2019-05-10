@@ -87,11 +87,37 @@ namespace isukces.code.AutoCode
         }
 
 
-        public string GetHash(string propName, ITypeNameResolver resolver)
+        public GetHashCodeExpressionData GetHash(string propertyName, ITypeNameResolver resolver)
         {
+            var argumentExpression = propertyName;
             if (!PropertyValueIsNotNull)
-                propName = Coalesce(propName, resolver);
-            return GetHashCodeExpression(new UnaryExpressionDelegateArgs(propName, resolver, _resultType));
+                switch (GetHashCodeOption)
+                {
+                    case Auto.GetHashCodeOptions.CoalesceArgumentIfNullable:
+                        argumentExpression = Coalesce(argumentExpression, resolver);
+                        break;
+
+                    case Auto.GetHashCodeOptions.NullValueGivesZero:
+                        if (_resultType.IsNullable())
+                            argumentExpression += ".Value";
+                        break;
+                    case Auto.GetHashCodeOptions.MethodAcceptNulls:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+            var result =
+                GetHashCodeExpression(new UnaryExpressionDelegateArgs(argumentExpression, resolver, _resultType));
+            if (PropertyValueIsNotNull)
+                return new GetHashCodeExpressionData(result);
+            if (GetHashCodeOption == Auto.GetHashCodeOptions.NullValueGivesZero)
+            {
+                result = $"{propertyName} is null ? 0 : {result}";
+                return new GetHashCodeExpressionData(result, true);
+            }
+
+            return new GetHashCodeExpressionData(result);
         }
 
         private EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute sca)
@@ -102,6 +128,7 @@ namespace isukces.code.AutoCode
             GetEqualsExpression             = sca.GetEqualsExpression;
             GetHashCodeExpression           = sca.GetHashCodeExpression;
             GetRelationalComparerExpression = sca.GetRelationalComparerExpression;
+            GetHashCodeOption               = sca.GetGetHashCodeOption();
             return this;
         }
 
@@ -118,7 +145,27 @@ namespace isukces.code.AutoCode
         public BinaryExpressionDelegate        GetEqualsExpression             { get; protected set; }
         public BinaryExpressionDelegate        GetRelationalComparerExpression { get; protected set; }
         public UnaryExpressionDelegate         GetHashCodeExpression           { get; protected set; }
+        public Auto.GetHashCodeOptions         GetHashCodeOption               { get; set; }
         private readonly Type _resultType;
+    }
+
+    public struct GetHashCodeExpressionData
+    {
+        public GetHashCodeExpressionData(string code, bool needBracketsWhenInExpression = false)
+        {
+            Code                         = code;
+            NeedBracketsWhenInExpression = needBracketsWhenInExpression;
+        }
+
+        public string GetCode(bool addBrackets)
+        {
+            return addBrackets ? BracketsCode : Code;
+        }
+
+        public string BracketsCode => NeedBracketsWhenInExpression ? $"({Code})" : Code;
+
+        public string Code                         { get; }
+        public bool   NeedBracketsWhenInExpression { get; }
     }
 
     public delegate string BinaryExpressionDelegate(BinaryExpressionDelegateArgs input);

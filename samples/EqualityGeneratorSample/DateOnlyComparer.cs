@@ -41,6 +41,11 @@ namespace EqualityGeneratorSample
                 : nameof(DateOnlyComparer.CompareNullable);
             return GetUniversal(input, method);
         }
+
+        public override Auto.GetHashCodeOptions GetGetHashCodeOption()
+        {
+            return Auto.GetHashCodeOptions.NullValueGivesZero;
+        }
     }
 
     public static class DateOnlyComparer
@@ -79,6 +84,13 @@ namespace EqualityGeneratorSample
         public static int GetHashCode(DateTime obj)
         {
             return obj.Date.GetHashCode();
+        }
+        
+        public static int GetHashCode(DateTime? obj)
+        {
+            if (obj == null)
+                return 0;
+            return obj.Value.Date.GetHashCode();
         }
     }
 }

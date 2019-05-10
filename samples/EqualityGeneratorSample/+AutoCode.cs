@@ -50,7 +50,7 @@ namespace EqualityGeneratorSample
                 var hashCode = StringComparer.CurrentCultureIgnoreCase.GetHashCode(FirstName ?? string.Empty);
                 hashCode = (hashCode * 397) ^ StringComparer.OrdinalIgnoreCase.GetHashCode(LastName ?? string.Empty);
                 hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(Code ?? string.Empty);
-                hashCode = (hashCode * 397) ^ DateOnlyComparer.GetHashCode(BirthDate ?? DateTime.MinValue);
+                hashCode = (hashCode * 397) ^ (BirthDate is null ? 0 : DateOnlyComparer.GetHashCode(BirthDate.Value));
                 return hashCode;
             }
         }

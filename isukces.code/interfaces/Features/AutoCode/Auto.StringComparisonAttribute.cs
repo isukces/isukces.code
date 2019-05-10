@@ -5,6 +5,12 @@ namespace isukces.code.interfaces
 {
     public partial class Auto
     {
+        public enum GetHashCodeOptions
+        {
+            CoalesceArgumentIfNullable,
+            NullValueGivesZero,
+            MethodAcceptNulls
+        }
         [AttributeUsage(AttributeTargets.Property)]
         public abstract class AbstractEqualityComparisonAttribute : Attribute
         {
@@ -12,6 +18,11 @@ namespace isukces.code.interfaces
             public abstract string GetEqualsExpression(BinaryExpressionDelegateArgs input);
             public abstract string GetHashCodeExpression(UnaryExpressionDelegateArgs input);
             public abstract string GetRelationalComparerExpression(BinaryExpressionDelegateArgs input);
+
+            public virtual GetHashCodeOptions GetGetHashCodeOption()
+            {
+                return GetHashCodeOptions.CoalesceArgumentIfNullable;
+            }
         }
 
         [AttributeUsage(AttributeTargets.Property)]

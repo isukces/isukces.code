@@ -17,9 +17,23 @@ namespace isukces.code
             return CsNamespaceMemberKind.Class;
         }
 
+        public static bool IsNullable(this Type type)
+        {
+#if COREFX
+            var typeInfo = type.GetTypeInfo();
+#else
+            var typeInfo = type;
+#endif
+            return typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
         public static Type StripNullable(this Type type)
         {
+#if COREFX
             var typeInfo = type.GetTypeInfo();
+#else
+            var typeInfo = type;
+#endif
             if (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return typeInfo.GetGenericArguments()[0];
             return type;
