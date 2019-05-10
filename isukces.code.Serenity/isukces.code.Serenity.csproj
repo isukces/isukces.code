@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.19129.42</AssemblyVersion>
-    <Version>1.0.19129.42</Version>
-    <FileVersion>1.0.19129.42</FileVersion>
+    <AssemblyVersion>1.0.19130.43</AssemblyVersion>
+    <Version>1.0.19130.43</Version>
+    <FileVersion>1.0.19130.43</FileVersion>
     <Description>Serenity extension for iSukces.Code</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
