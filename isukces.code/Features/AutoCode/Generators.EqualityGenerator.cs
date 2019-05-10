@@ -54,6 +54,13 @@ namespace isukces.code.AutoCode
                 }).ToArray();
             }
 
+            private static string GetCoalesceExpressionForType(Type type)
+            {
+                if (type == typeof(int?))
+                    return "0";
+                return "default";
+            }
+
             private static bool IsFloatNumber(Type type)
             {
                 return type == typeof(double) || type == typeof(decimal) || type == typeof(float);
@@ -126,7 +133,7 @@ namespace isukces.code.AutoCode
                         {
                             var template = GetEqualityCodeForMember(a);
                             var code     = string.Format(template.Code, a.Name, otherName);
-                            return new CodePieceWithComputeCost(code, template.Cost, template.Brackets);
+                            return new EqualsExpressionData(code, template.Cost, template.Brackets);
                         })
                         .OrderBy(a => a.Cost);
                     implementer = implementer
@@ -161,6 +168,25 @@ namespace isukces.code.AutoCode
                 return false;
             }
 
+            protected EqualityGeneratorPropertyInfo CreateInfo(PropertyOrFieldInfo prop)
+            {
+                // tworzę i wypełniam implementacje to ręcznie
+                var info = new EqualityGeneratorPropertyInfo(prop.ValueType)
+                    .WithMemberAttributes(prop.Member);
+                info.PropertyValueIsNotNull = NullChecker.ReturnValueAlwaysNotNull(prop.Member);
+                info.GetCoalesceExpression  = q => GetCoalesceExpressionForType(info.ResultType);
+                if (info.ResultType.IsNullable())
+                    info.GetEqualsExpression = input =>
+                    {
+                        if (info.PropertyValueIsNotNull)
+                            return $"Equals({input.Left}.Value, {input.Right}.Value)";
+                        if (info.NullToEmpty)
+                            return $"({input.Left}).Equals({input.Right})";
+                        return $"Equals({input.Left}, {input.Right})";
+                    };
+                return info;
+            }
+
             protected virtual int GetCost(Type type, bool nullable)
             {
                 var offset = nullable ? 5 : 0;
@@ -185,7 +211,7 @@ namespace isukces.code.AutoCode
             }
 
 
-            protected virtual CodePieceWithComputeCost GetEqualityCodeForMember(PropertyOrFieldInfo property)
+            protected virtual EqualsExpressionData GetEqualityCodeForMember(PropertyOrFieldInfo property)
             {
                 const string twoArgs = "({0}, {1}.{0})";
 
@@ -199,7 +225,7 @@ namespace isukces.code.AutoCode
                 {
                     var info = EqualityGeneratorPropertyInfo.FindForString(property.Member, NullChecker);
                     var code = info.EqualsCode("{0}", "{1}.{0}", _class);
-                    return new CodePieceWithComputeCost(code, Auto.EqualityCostAttribute.String);
+                    return code.WithCost(Auto.EqualityCostAttribute.String);
                 }
 
                 {
@@ -207,14 +233,14 @@ namespace isukces.code.AutoCode
                     if (info != null)
                     {
                         var code = info.EqualsCode("{0}", "{1}.{0}", _class);
-                        return new CodePieceWithComputeCost(code, Auto.EqualityCostAttribute.String);
+                        return code.WithCost(Auto.EqualityCostAttribute.String);
                     }
                 }
                 if (!IsFloatNumber(type) && IsSimpleType(type))
-                    return new CodePieceWithComputeCost("{0} == {1}.{0}", GetCost(type, false));
+                    return new EqualsExpressionData("{0} == {1}.{0}", GetCost(type, false));
 
                 if (property.CanBeNull && property.IsCompareByReference)
-                    return new CodePieceWithComputeCost(nameof(ReferenceEquals) + twoArgs, 1);
+                    return new EqualsExpressionData(nameof(ReferenceEquals) + twoArgs, 1);
                 var typeInfo = type.GetTypeInfo();
                 if (typeInfo.IsGenericType)
                 {
@@ -225,10 +251,11 @@ namespace isukces.code.AutoCode
                         throw new NotSupportedException(type.ToString());
                     {
                         // nullable jako Nazwa is null ? other.Nazwa is null : Nazwa.Value.Equals(other.Nazwa)
-                        var          arg  = types[0];
-                        var          cost = GetCost(arg, true);
-                        const string code = "{0} is null ? {1}.{0} is null : {0}.Value.Equals({1}.{0})";
-                        return new CodePieceWithComputeCost(code, cost, true);
+                        var arg   = types[0];
+                        var cost  = GetCost(arg, true);
+                        var info2 = CreateInfo(property);
+                        var code  = info2.EqualsCode("{0}", "{1}.{0}", _class);
+                        return code.WithCost(cost);
                     }
                 }
 
@@ -237,7 +264,7 @@ namespace isukces.code.AutoCode
                         "Unable to create equality code for type {0}. Override method {1} or {2}",
                         type, nameof(CanBeCompared), nameof(GetEqualityCodeForMember)));
 
-                return new CodePieceWithComputeCost(CallMethod("Equals"), GetCost(type, false));
+                return new EqualsExpressionData(CallMethod("Equals"), GetCost(type, false));
             }
 
             protected virtual bool ToHeavyToGetHashCode(Type type)
@@ -290,64 +317,95 @@ namespace isukces.code.AutoCode
                 }
 
                 if (type == typeof(int)) return new GetHashCodeExpressionData(propName);
-                if (type == typeof(bool)) return new GetHashCodeExpressionData( propName + " ? 1 : 0", true);
+                if (type == typeof(bool)) return new GetHashCodeExpressionData(propName + " ? 1 : 0", true);
                 if (type == typeof(bool?)) return new GetHashCodeExpressionData(propName + " == true ? 1 : 0", true);
-                
 
-                var hc = NullChecker.ReturnValueAlwaysNotNull(prop.Member)
-                    ? $"{propName}.GetHashCode()"
-                    : $"{propName}?.GetHashCode()  ?? 0";
-                return new GetHashCodeExpressionData(hc);
+                {
+                    var info = CreateInfo(prop);
+                    if (info.NullToEmpty && !info.PropertyValueIsNotNull)
+                    {
+                        propName = info.Coalesce(propName, _class, true);
+                        return new GetHashCodeExpressionData($"{propName}.GetHashCode()");
+                    }
+
+                    var hc = info.PropertyValueIsNotNull
+                        ? $"{propName}.GetHashCode()"
+                        : $"{propName}?.GetHashCode() ?? 0";
+                    return new GetHashCodeExpressionData(hc);
+                }
             }
 
             private string GetCompareCode(string name)
             {
-                var                 p = _props.Where(a => a.Name == name).ToArray();
-                PropertyOrFieldInfo property;
-                if (p.Length == 1)
-                    property = p[0];
-                else
+                BinaryExpressionDelegateArgs CoalesceInput(EqualityGeneratorPropertyInfo info,
+                    BinaryExpressionDelegateArgs binaryExpressionDelegateArgs)
                 {
-                    var pi = _type.GetTypeInfo().GetProperty(name, GeneratorsHelper.AllInstance);
-                    if (pi is null)
-                    {
-                        var fi = _type.GetTypeInfo().GetField(name, GeneratorsHelper.AllInstance);
-                        if (fi is null)
-                            throw new Exception("Unable to find field nor property " + name);
-                        property = PropertyOrFieldInfo.FromField(fi);
-                    }
-                    else
-                    {
-                        property = PropertyOrFieldInfo.FromProperty(pi);
-                    }
+                    return binaryExpressionDelegateArgs.Transform(a => info.Coalesce(a, _class));
                 }
 
-                var type = property.ValueType;
+                PropertyOrFieldInfo FindPropertyOrFieldInfo()
+                {
+                    var p = _props.Where(a => a.Name == name).ToArray();
+                    if (p.Length == 1)
+                        return p[0];
+
+                    var pi = _type.GetTypeInfo().GetProperty(name, GeneratorsHelper.AllInstance);
+                    if (!(pi is null))
+                        return PropertyOrFieldInfo.FromProperty(pi);
+                    var fi = _type.GetTypeInfo().GetField(name, GeneratorsHelper.AllInstance);
+                    if (fi is null)
+                        throw new Exception("Unable to find field nor property " + name);
+                    return PropertyOrFieldInfo.FromField(fi);
+                }
+
+                var property = FindPropertyOrFieldInfo();
+
+                var type  = property.ValueType;
                 var input = new BinaryExpressionDelegateArgs(name, "other." + name, _class, property.ValueType);
                 if (type == typeof(string))
                 {
                     var info = EqualityGeneratorPropertyInfo.FindForString(property.Member, NullChecker);
-                    // name, "other." + name, _class,property.ValueType
-                    
+                    // nulls are always equal for comparable for string 
+                    if (info.NullToEmpty)
+                        input = CoalesceInput(info, input);
                     return info.GetRelationalComparerExpression(input);
                 }
                 else
                 {
                     var info = EqualityGeneratorPropertyInfo.Find(property.Member, NullChecker);
-                    if (info != null)
-                    {
-                        return info.GetRelationalComparerExpression(input);
-                    }
+                    if (info != null) return info.GetRelationalComparerExpression(input);
                 }
- 
+
                 if (!property.CanBeNull)
                     return $"{name}.CompareTo(other.{name})";
 
-                var m = GeneratorsHelper.DefaultComparerMethodName(type, _class);
-                return GeneratorsHelper.CallMethod(m, input);// $"{m}({input.Left}, other.{input.Right})";
+                {
+                    var info = CreateInfo(property);
+                    var m    = GeneratorsHelper.DefaultComparerMethodName(type, _class);
+                    {
+                        if (info.PropertyValueIsNotNull)
+                        {
+                            if (info.ResultType.IsNullable())
+                            {
+                                // nullable but not null
+                                m     = GeneratorsHelper.DefaultComparerMethodName(type.StripNullable(), _class);
+                                input = input.Transform(a => a + ".Value");
+                            }
+                        }
+                        else
+                        {
+                            if (info.NullToEmpty)
+                            {
+                                input = CoalesceInput(info, input);
+                                m     = GeneratorsHelper.DefaultComparerMethodName(type.StripNullable(), _class);
+                            }
+                        }
+                    }
+                    return GeneratorsHelper.CallMethod(m, input); 
+                }
             }
 
-            private IEnumerable<EqualityFeatureImplementer.C1> GetCompareToExpressions()
+            private IEnumerable<CompareToExpressionData> GetCompareToExpressions()
             {
                 var fields2 = _attComp?.Fields;
                 if (fields2 is null || fields2.Length == 0) yield break;
@@ -356,7 +414,7 @@ namespace isukces.code.AutoCode
                 {
                     var fieldName         = fields2[index];
                     var compareExpression = GetCompareCode(fieldName);
-                    yield return new EqualityFeatureImplementer.C1(fieldName, compareExpression);
+                    yield return new CompareToExpressionData(fieldName, compareExpression);
                 }
             }
 

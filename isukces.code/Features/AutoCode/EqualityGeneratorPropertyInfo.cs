@@ -7,9 +7,9 @@ namespace isukces.code.AutoCode
 {
     public class EqualityGeneratorPropertyInfo
     {
-        private EqualityGeneratorPropertyInfo(Type resultType)
+        public EqualityGeneratorPropertyInfo(Type resultType)
         {
-            _resultType = resultType;
+            ResultType = resultType;
         }
 
         [CanBeNull]
@@ -20,8 +20,7 @@ namespace isukces.code.AutoCode
             if (sca == null)
                 return null;
             var info = new EqualityGeneratorPropertyInfo(GeneratorsHelper.GetMemberResultType(member))
-                .With(sca)
-                .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
+                .WithMemberAttributes(member);
             info.PropertyValueIsNotNull = checker.ReturnValueAlwaysNotNull(member);
             return info;
         }
@@ -58,10 +57,16 @@ namespace isukces.code.AutoCode
                     GetHashCodeExpression           = DefaultGetHashCode,
                     GetCoalesceExpression           = _ => GeneratorsHelper.StringEmpty
                 }
-                .With(member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>())
-                .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
+                .WithMemberAttributes(member);
             a.PropertyValueIsNotNull = checker.ReturnValueAlwaysNotNull(member);
             return a;
+        }
+
+        public string CheckNull(string expr, bool orEmpty)
+        {
+            if (orEmpty && ResultType == typeof(string))
+                return $"string.IsNullOrEmpty({expr})";
+            return $"ReferenceEquals({expr}, null)";
         }
 
         public string Coalesce(string expr, ITypeNameResolver resolver, bool addBracketsOutside = false)
@@ -71,19 +76,33 @@ namespace isukces.code.AutoCode
                 throw new Exception("CoalesceExpression is empty");
             var tmp = expr + " ?? " + GetCoalesceExpression(resolver);
             if (addBracketsOutside)
-                tmp = "(" + expr + ")";
+                tmp = "(" + tmp + ")";
             return tmp;
         }
 
-        public string EqualsCode(string left, string right, ITypeNameResolver resolver)
+        public EqualsExpressionData EqualsCode(string left, string right, ITypeNameResolver resolver)
         {
+            var leftSource = left;
+            var rightSource = right;
             if (NullToEmpty && !PropertyValueIsNotNull)
             {
                 left  = Coalesce(left, resolver);
                 right = Coalesce(right, resolver);
             }
 
-            return GetEqualsExpression(new BinaryExpressionDelegateArgs(left, right, resolver, _resultType));
+            if (GetEqualsExpression is null)
+                throw new NullReferenceException(nameof(GetEqualsExpression));
+            var expr = GetEqualsExpression(new BinaryExpressionDelegateArgs(left, right, resolver, ResultType));
+            if (NullsAreEqual)
+            {
+                var isString = ResultType == typeof(string);
+                expr = string.Format("{0} && {1} || {2}",
+                    CheckNull(isString ? leftSource : left, NullToEmpty),
+                    CheckNull(isString ? rightSource : right, NullToEmpty), expr);
+                return new EqualsExpressionData(expr, true);
+            }
+
+            return new EqualsExpressionData(expr);
         }
 
 
@@ -91,24 +110,29 @@ namespace isukces.code.AutoCode
         {
             var argumentExpression = propertyName;
             if (!PropertyValueIsNotNull)
-                switch (GetHashCodeOption)
-                {
-                    case Auto.GetHashCodeOptions.CoalesceArgumentIfNullable:
-                        argumentExpression = Coalesce(argumentExpression, resolver);
-                        break;
+            {
+                if (NullToEmpty)
+                    argumentExpression = Coalesce(argumentExpression, resolver);
+                else
+                    switch (GetHashCodeOption)
+                    {
+                        case Auto.GetHashCodeOptions.CoalesceArgumentIfNullable:
+                            argumentExpression = Coalesce(argumentExpression, resolver);
+                            break;
 
-                    case Auto.GetHashCodeOptions.NullValueGivesZero:
-                        if (_resultType.IsNullable())
-                            argumentExpression += ".Value";
-                        break;
-                    case Auto.GetHashCodeOptions.MethodAcceptNulls:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                        case Auto.GetHashCodeOptions.NullValueGivesZero:
+                            if (ResultType.IsNullable())
+                                argumentExpression += ".Value";
+                            break;
+                        case Auto.GetHashCodeOptions.MethodAcceptNulls:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+            }
 
             var result =
-                GetHashCodeExpression(new UnaryExpressionDelegateArgs(argumentExpression, resolver, _resultType));
+                GetHashCodeExpression(new UnaryExpressionDelegateArgs(argumentExpression, resolver, ResultType));
             if (PropertyValueIsNotNull)
                 return new GetHashCodeExpressionData(result);
             if (GetHashCodeOption == Auto.GetHashCodeOptions.NullValueGivesZero)
@@ -120,7 +144,7 @@ namespace isukces.code.AutoCode
             return new GetHashCodeExpressionData(result);
         }
 
-        private EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute sca)
+        public EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute sca)
         {
             if (sca == null)
                 return this;
@@ -132,21 +156,36 @@ namespace isukces.code.AutoCode
             return this;
         }
 
-        private EqualityGeneratorPropertyInfo WithNullToEmpty(bool nullToEmpty)
+        public EqualityGeneratorPropertyInfo WithMemberAttributes(MemberInfo member)
+        {
+            return With(member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>())
+                .WithNullAreEqual(member.GetCustomAttribute<Auto.NullAreEqualAttribute>() != null)
+                .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
+        }
+
+        public EqualityGeneratorPropertyInfo WithNullAreEqual(bool nullsAreEqual)
+        {
+            NullsAreEqual = nullsAreEqual;
+            return this;
+        }
+
+        public EqualityGeneratorPropertyInfo WithNullToEmpty(bool nullToEmpty)
         {
             NullToEmpty = nullToEmpty;
             return this;
         }
 
+        public bool NullsAreEqual { get; set; }
+
 
         public Func<ITypeNameResolver, string> GetCoalesceExpression           { get; set; }
         public bool                            PropertyValueIsNotNull          { get; set; }
         public bool                            NullToEmpty                     { get; protected set; }
-        public BinaryExpressionDelegate        GetEqualsExpression             { get; protected set; }
+        public BinaryExpressionDelegate        GetEqualsExpression             { get; set; }
         public BinaryExpressionDelegate        GetRelationalComparerExpression { get; protected set; }
         public UnaryExpressionDelegate         GetHashCodeExpression           { get; protected set; }
         public Auto.GetHashCodeOptions         GetHashCodeOption               { get; set; }
-        private readonly Type _resultType;
+        public  Type ResultType { get; }
     }
 
     public struct GetHashCodeExpressionData
@@ -191,6 +230,16 @@ namespace isukces.code.AutoCode
         public string            Right    { get; }
         public ITypeNameResolver Resolver { get; }
         public Type              DataType { get; }
+
+        public BinaryExpressionDelegateArgs WithLeftRight(string newLeft, string newRight)
+        {
+            return new BinaryExpressionDelegateArgs(newLeft,newRight,Resolver,DataType);
+        }
+
+        public BinaryExpressionDelegateArgs Transform(Func<string, string> map)
+        {
+            return new BinaryExpressionDelegateArgs(map(Left), map(Right), Resolver, DataType);
+        }
     }
 
     public struct UnaryExpressionDelegateArgs : IExpressionDelegateArgs

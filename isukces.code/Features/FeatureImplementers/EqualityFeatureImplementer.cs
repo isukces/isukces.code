@@ -33,20 +33,20 @@ namespace isukces.code.AutoCode
             }
         }
 
-        public EqualityFeatureImplementer WithCompareToExpressions(IEnumerable<C1> expressions)
+        public EqualityFeatureImplementer WithCompareToExpressions(IEnumerable<CompareToExpressionData> expressions)
         {
             if (CompareToExpressions == null)
-                CompareToExpressions = new List<C1>();
+                CompareToExpressions = new List<CompareToExpressionData>();
             else
                 CompareToExpressions.Clear();
             CompareToExpressions.AddRange(expressions);
             return this;
         }
 
-        public EqualityFeatureImplementer WithEqualityExpressions(IEnumerable<CodePieceWithComputeCost> expressions)
+        public EqualityFeatureImplementer WithEqualityExpressions(IEnumerable<EqualsExpressionData> expressions)
         {
             if (EqualityExpressions == null)
-                EqualityExpressions = new List<CodePieceWithComputeCost>();
+                EqualityExpressions = new List<EqualsExpressionData>();
             else
                 EqualityExpressions.Clear();
             EqualityExpressions.AddRange(expressions);
@@ -286,8 +286,8 @@ namespace isukces.code.AutoCode
             return m;
         }
 
-        public List<CodePieceWithComputeCost> EqualityExpressions { get; set; } = new List<CodePieceWithComputeCost>();
-        public List<C1> CompareToExpressions { get; set; } = new List<C1>();
+        public List<EqualsExpressionData> EqualityExpressions { get; set; } = new List<EqualsExpressionData>();
+        public List<CompareToExpressionData> CompareToExpressions { get; set; } = new List<CompareToExpressionData>();
         public List<GetHashCodeExpressionData> GetHashCodeExpressions { get; set; } = new List<GetHashCodeExpressionData>();
         
         public Features ImplementFeatures { get; set; }
@@ -319,18 +319,6 @@ namespace isukces.code.AutoCode
             CompareTo = 2,
             CompareOperators = 4,
             All = Equality | CompareTo | CompareOperators
-        }
-
-        public struct C1
-        {
-            public C1(string fieldName, string compareExpression)
-            {
-                FieldName         = fieldName;
-                CompareExpression = compareExpression;
-            }
-
-            public string FieldName         { get; }
-            public string CompareExpression { get; }
         }
 
         public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<GetHashCodeExpressionData> expressions)
