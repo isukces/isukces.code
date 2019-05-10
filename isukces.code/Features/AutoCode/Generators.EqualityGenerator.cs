@@ -307,8 +307,20 @@ namespace isukces.code.AutoCode
                 if (p.Length == 1)
                     property = p[0];
                 else
-                    property = PropertyOrFieldInfo.FromProperty(_type.GetTypeInfo()
-                        .GetProperty(name, GeneratorsHelper.AllInstance));
+                {
+                    var pi = _type.GetTypeInfo().GetProperty(name, GeneratorsHelper.AllInstance);
+                    if (pi is null)
+                    {
+                        var fi = _type.GetTypeInfo().GetField(name, GeneratorsHelper.AllInstance);
+                        if (fi is null)
+                            throw new Exception("Unable to find field nor property " + name);
+                        property = PropertyOrFieldInfo.FromField(fi);
+                    }
+                    else
+                    {
+                        property = PropertyOrFieldInfo.FromProperty(pi);
+                    }
+                }
 
                 var type = property.ValueType;
                 var input = new BinaryExpressionDelegateArgs(name, "other." + name, _class, property.ValueType);
