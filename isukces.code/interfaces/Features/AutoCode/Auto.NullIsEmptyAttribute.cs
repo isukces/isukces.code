@@ -12,13 +12,5 @@ namespace isukces.code.interfaces
         
         }
         
-        
-        /// <summary>
-        /// when both a.X and b.X are null then a.X is equal to b.X
-        /// </summary>
-        public class NullAreEqualAttribute : Attribute
-        {
-        
-        }
     }
 }

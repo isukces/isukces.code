@@ -48,37 +48,40 @@ namespace EqualityGeneratorSample
     }
 
     [Auto.EqualityGeneratorAttribute]
-    [Auto.ComparerGeneratorAttribute(nameof(Normal), nameof(NullAreEqual), nameof(NullLikeEmpty), nameof(Both))]
+    [Auto.ComparerGeneratorAttribute(nameof(Normal), nameof(NullLikeEmpty))]
     public partial class ClassWithStrings
     {
         public string Normal { get; set; }
 
-        [Auto.NullAreEqualAttribute]
-        public string NullAreEqual { get; set; }
 
         [Auto.NullIsEmptyAttribute]
         public string NullLikeEmpty { get; set; }
-
-        [Auto.NullAreEqualAttribute]
-        [Auto.NullIsEmptyAttribute]
-        public string Both { get; set; }
     }
 
 
     [Auto.EqualityGeneratorAttribute]
-    [Auto.ComparerGeneratorAttribute(nameof(Normal), nameof(NullAreEqual), nameof(NullLikeEmpty), nameof(Both))]
+    [Auto.ComparerGeneratorAttribute(nameof(Normal), nameof(NullLikeEmpty))]
     public partial class ClassWithNullables
     {
         public int? Normal { get; set; }
 
-        [Auto.NullAreEqualAttribute]
-        public int? NullAreEqual { get; set; }
 
         [Auto.NullIsEmptyAttribute]
         public int? NullLikeEmpty { get; set; }
 
-        [Auto.NullAreEqualAttribute]
-        [Auto.NullIsEmptyAttribute]
-        public int? Both { get; set; }
+    }
+
+    public class Sample1
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
+    [Auto.EqualityGeneratorAttribute]
+    public partial class Sample1Owner
+    {
+        public Sample1            A { get; set; }
+        public ClassWithNullables B { get; set; }
+
     }
 }

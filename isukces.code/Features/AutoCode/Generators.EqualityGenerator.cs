@@ -18,20 +18,6 @@ namespace isukces.code.AutoCode
             {
                 NullChecker = nullChecker ?? throw new ArgumentNullException(nameof(nullChecker));
             }
-            /*
-            private static bool CanBeNull(PropertyOrFieldInfo prop)
-            {
-#if DEBUGx
-            if (prop.Member is PropertyInfo pi)
-                if (pi.PropertyType == typeof(Vector?))
-                    Debug.Write("");
-#endif
-                if (prop.Member.GetCustomAttribute<NotNullAttribute>() != null)
-                    return false;
-                return prop.CanBeNull;
-            }
-            */
-
 
             private static PropertyOrFieldInfo[] FilterProperties(PropertyOrFieldInfo[] props,
                 [CanBeNull] Auto.EqualityGeneratorAttribute att)
@@ -131,7 +117,7 @@ namespace isukces.code.AutoCode
                     var equalityExpressions = _props
                         .Select(a =>
                         {
-                            var template = GetEqualityCodeForMember(a);
+                            var template = FindEqualsCode(a);
                             var code     = string.Format(template.Code, a.Name, otherName);
                             return new EqualsExpressionData(code, template.Cost, template.Brackets);
                         })
@@ -146,29 +132,7 @@ namespace isukces.code.AutoCode
                 _class = null;
             }
 
-            protected virtual bool CanBeCompared(Type type)
-            {
-                type = type.StripNullable();
-                if (IsSimpleType(type)) return true;
-                //if (type == typeof(Point)) return true;
-                //if (type == typeof(Vector)) return true;
-                //if (type == typeof(IPerson)) return true;
-                //if (type == typeof(ICompany)) return true;
-
-                bool IsIequatable(Type t)
-                {
-                    return t.GetTypeInfo().IsGenericType && t.GetGenericTypeDefinition() == typeof(IEquatable<>);
-                }
-
-                if (IsIequatable(type))
-                    return true;
-                foreach (var i in type.GetTypeInfo().GetInterfaces())
-                    if (IsIequatable(i))
-                        return true;
-                return false;
-            }
-
-            protected EqualityGeneratorPropertyInfo CreateInfo(PropertyOrFieldInfo prop)
+            protected virtual EqualityGeneratorPropertyInfo CreatePropertyInfo(PropertyOrFieldInfo prop)
             {
                 // tworzę i wypełniam implementacje to ręcznie
                 var info = new EqualityGeneratorPropertyInfo(prop.ValueType)
@@ -184,159 +148,12 @@ namespace isukces.code.AutoCode
                             return $"({input.Left}).Equals({input.Right})";
                         return $"Equals({input.Left}, {input.Right})";
                     };
+                else
+                    info.GetEqualsExpression = input => { return $"Equals({input.Left}, {input.Right})"; };
                 return info;
             }
 
-            protected virtual int GetCost(Type type, bool nullable)
-            {
-                var offset = nullable ? 5 : 0;
-
-                if (type == typeof(bool)) return Auto.EqualityCostAttribute.Bool + offset;
-                if (type == typeof(int)) return Auto.EqualityCostAttribute.Int + offset;
-                if (type == typeof(uint)) return Auto.EqualityCostAttribute.Int + offset;
-                if (type == typeof(long)) return Auto.EqualityCostAttribute.Int + offset;
-                if (type == typeof(ulong)) return Auto.EqualityCostAttribute.Int + offset;
-                if (type == typeof(byte)) return Auto.EqualityCostAttribute.Int + offset;
-                if (type == typeof(sbyte)) return Auto.EqualityCostAttribute.Int + offset;
-                if (type == typeof(double)) return Auto.EqualityCostAttribute.Float + offset;
-                if (type == typeof(decimal)) return Auto.EqualityCostAttribute.Decimal + offset;
-                if (type == typeof(float)) return Auto.EqualityCostAttribute.Float + offset;
-                var typeInfo = type.GetTypeInfo();
-                if (typeInfo.IsEnum)
-                    return Auto.EqualityCostAttribute.Int + offset;
-                var at = typeInfo.GetCustomAttribute<Auto.EqualityCostAttribute>();
-                if (at != null)
-                    return at.Cost;
-                return 100;
-            }
-
-
-            protected virtual EqualsExpressionData GetEqualityCodeForMember(PropertyOrFieldInfo property)
-            {
-                const string twoArgs = "({0}, {1}.{0})";
-
-                string CallMethod(string mn, string otherArgs = null)
-                {
-                    return $"{{0}}.{mn}({{1}}.{{0}}{otherArgs})";
-                }
-
-                var type = property.ValueType;
-                if (type == typeof(string))
-                {
-                    var info = EqualityGeneratorPropertyInfo.FindForString(property.Member, NullChecker);
-                    var code = info.EqualsCode("{0}", "{1}.{0}", _class);
-                    return code.WithCost(Auto.EqualityCostAttribute.String);
-                }
-
-                {
-                    var info = EqualityGeneratorPropertyInfo.Find(property.Member, NullChecker);
-                    if (info != null)
-                    {
-                        var code = info.EqualsCode("{0}", "{1}.{0}", _class);
-                        return code.WithCost(Auto.EqualityCostAttribute.String);
-                    }
-                }
-                if (!IsFloatNumber(type) && IsSimpleType(type))
-                    return new EqualsExpressionData("{0} == {1}.{0}", GetCost(type, false));
-
-                if (property.CanBeNull && property.IsCompareByReference)
-                    return new EqualsExpressionData(nameof(ReferenceEquals) + twoArgs, 1);
-                var typeInfo = type.GetTypeInfo();
-                if (typeInfo.IsGenericType)
-                {
-                    var gtt   = type.GetGenericTypeDefinition();
-                    var types = typeInfo.GetGenericArguments();
-
-                    if (gtt != typeof(Nullable<>))
-                        throw new NotSupportedException(type.ToString());
-                    {
-                        // nullable jako Nazwa is null ? other.Nazwa is null : Nazwa.Value.Equals(other.Nazwa)
-                        var arg   = types[0];
-                        var cost  = GetCost(arg, true);
-                        var info2 = CreateInfo(property);
-                        var code  = info2.EqualsCode("{0}", "{1}.{0}", _class);
-                        return code.WithCost(cost);
-                    }
-                }
-
-                if (!CanBeCompared(type))
-                    throw new Exception(string.Format(
-                        "Unable to create equality code for type {0}. Override method {1} or {2}",
-                        type, nameof(CanBeCompared), nameof(GetEqualityCodeForMember)));
-
-                return new EqualsExpressionData(CallMethod("Equals"), GetCost(type, false));
-            }
-
-            protected virtual bool ToHeavyToGetHashCode(Type type)
-            {
-                bool CheckInterface(Type gt)
-                {
-                    return gt == typeof(IReadOnlyList<>) || gt == typeof(IEnumerable<>);
-                }
-
-                type = type.StripNullable();
-                if (IsSimpleType(type))
-                    return false;
-                if (type.IsArray)
-                    return true;
-
-                var typeInfo = type.GetTypeInfo();
-
-                if (typeInfo.IsGenericType)
-
-                    type = type.GetGenericTypeDefinition();
-                if (CheckInterface(type))
-                    return true;
-                foreach (var i in typeInfo.GetInterfaces())
-                    if (CheckInterface(i))
-                        return true;
-                return false;
-            }
-
-
-            private GetHashCodeExpressionData FindHashCode(PropertyOrFieldInfo prop)
-            {
-                var type     = prop.ValueType;
-                var propName = prop.Name;
-                if (type == typeof(string))
-                {
-                    var info = EqualityGeneratorPropertyInfo.FindForString(prop.Member, NullChecker);
-                    return info.GetHash(propName, _class);
-                }
-
-                {
-                    var info = EqualityGeneratorPropertyInfo.Find(prop.Member, NullChecker);
-                    if (info != null)
-                        return info.GetHash(propName, _class);
-                }
-                if (type.GetTypeInfo().IsEnum)
-                {
-                    var ut = Enum.GetUnderlyingType(type);
-                    if (ut == typeof(int))
-                        return new GetHashCodeExpressionData("(int)" + propName);
-                }
-
-                if (type == typeof(int)) return new GetHashCodeExpressionData(propName);
-                if (type == typeof(bool)) return new GetHashCodeExpressionData(propName + " ? 1 : 0", true);
-                if (type == typeof(bool?)) return new GetHashCodeExpressionData(propName + " == true ? 1 : 0", true);
-
-                {
-                    var info = CreateInfo(prop);
-                    if (info.NullToEmpty && !info.PropertyValueIsNotNull)
-                    {
-                        propName = info.Coalesce(propName, _class, true);
-                        return new GetHashCodeExpressionData($"{propName}.GetHashCode()");
-                    }
-
-                    var hc = info.PropertyValueIsNotNull
-                        ? $"{propName}.GetHashCode()"
-                        : $"{propName}?.GetHashCode() ?? 0";
-                    return new GetHashCodeExpressionData(hc);
-                }
-            }
-
-           
-            private ExpressionWithObjectInstance GetCompareCode(string name)
+            protected virtual ExpressionWithObjectInstance FindCompareToCode(string name)
             {
                 BinaryExpressionDelegateArgs CoalesceInput(EqualityGeneratorPropertyInfo info,
                     BinaryExpressionDelegateArgs binaryExpressionDelegateArgs)
@@ -379,9 +196,9 @@ namespace isukces.code.AutoCode
 
                 if (!property.CanBeNull)
                     return new ExpressionWithObjectInstance($"{name}.CompareTo(other.{name})");
-                
+
                 {
-                    var info = CreateInfo(property);
+                    var info = CreatePropertyInfo(property);
                     var m    = GeneratorsHelper.DefaultComparerMethodName(type, _class);
                     {
                         if (info.PropertyValueIsNotNull)
@@ -398,7 +215,7 @@ namespace isukces.code.AutoCode
                             if (info.NullToEmpty)
                             {
                                 input = CoalesceInput(info, input);
-                                var sType = type.StripNullable();
+                                var sType  = type.StripNullable();
                                 var interf = typeof(IComparable<>).MakeGenericType(sType);
                                 if (interf.GetTypeInfo().IsAssignableFrom(sType))
                                     return new ExpressionWithObjectInstance($"({input.Left}).CompareTo({input.Right})");
@@ -406,8 +223,156 @@ namespace isukces.code.AutoCode
                             }
                         }
                     }
-                    return new ExpressionWithObjectInstance(GeneratorsHelper.CallMethod(m.ExpressionTemplate, input), m.Instance);
+                    return new ExpressionWithObjectInstance(GeneratorsHelper.CallMethod(m.ExpressionTemplate, input),
+                        m.Instance);
                 }
+            }
+
+            protected virtual EqualsExpressionData FindEqualsCode(PropertyOrFieldInfo property)
+            {
+                const string twoArgs = "({0}, {1}.{0})";
+
+                string CallMethod(string mn, string otherArgs = null)
+                {
+                    return $"{{0}}.{mn}({{1}}.{{0}}{otherArgs})";
+                }
+
+                var type = property.ValueType;
+                if (type == typeof(string))
+                {
+                    var info = EqualityGeneratorPropertyInfo.FindForString(property.Member, NullChecker);
+                    var code = info.EqualsCode("{0}", "{1}.{0}", _class);
+                    return code.WithCost(Auto.EqualityCostAttribute.String);
+                }
+
+                {
+                    var info = EqualityGeneratorPropertyInfo.Find(property.Member, NullChecker);
+                    if (info != null)
+                    {
+                        var code = info.EqualsCode("{0}", "{1}.{0}", _class);
+                        return code.WithCost(Auto.EqualityCostAttribute.String);
+                    }
+                }
+                if (!IsFloatNumber(type) && IsSimpleType(type))
+                    return new EqualsExpressionData("{0} == {1}.{0}", GetEqualsCost(type, false));
+
+                if (property.CanBeNull && property.IsCompareByReference)
+                    return new EqualsExpressionData(nameof(ReferenceEquals) + twoArgs, 1);
+                var typeInfo = type.GetTypeInfo();
+                if (typeInfo.IsGenericType)
+                {
+                    var gtt   = type.GetGenericTypeDefinition();
+                    var types = typeInfo.GetGenericArguments();
+
+                    if (gtt != typeof(Nullable<>))
+                        throw new NotSupportedException(type.ToString());
+                    {
+                        // nullable jako Nazwa is null ? other.Nazwa is null : Nazwa.Value.Equals(other.Nazwa)
+                        var arg   = types[0];
+                        var cost  = GetEqualsCost(arg, true);
+                        var info = CreatePropertyInfo(property);
+                        var code  = info.EqualsCode("{0}", "{1}.{0}", _class);
+                        return code.WithCost(cost);
+                    }
+                }
+
+                {
+                    var info = CreatePropertyInfo(property);
+                    var code = info.EqualsCode("{0}", "{1}.{0}", _class);
+                    var cost = GetEqualsCost(property.ValueType, true);
+                    return code.WithCost(cost);
+                }
+                // return new EqualsExpressionData(CallMethod("Equals"), GetEqualsCost(type, false));
+            }
+
+            protected virtual GetHashCodeExpressionData FindGetHashCode(PropertyOrFieldInfo prop)
+            {
+                var type     = prop.ValueType;
+                var propName = prop.Name;
+                if (type == typeof(string))
+                {
+                    var info = EqualityGeneratorPropertyInfo.FindForString(prop.Member, NullChecker);
+                    return info.GetHash(propName, _class);
+                }
+
+                {
+                    var info = EqualityGeneratorPropertyInfo.Find(prop.Member, NullChecker);
+                    if (info != null)
+                        return info.GetHash(propName, _class);
+                }
+                if (type.GetTypeInfo().IsEnum)
+                {
+                    var ut = Enum.GetUnderlyingType(type);
+                    if (ut == typeof(int))
+                        return new GetHashCodeExpressionData("(int)" + propName);
+                }
+
+                if (type == typeof(int)) return new GetHashCodeExpressionData(propName);
+                if (type == typeof(bool)) return new GetHashCodeExpressionData(propName + " ? 1 : 0", true);
+                if (type == typeof(bool?)) return new GetHashCodeExpressionData(propName + " == true ? 1 : 0", true);
+
+                {
+                    var info = CreatePropertyInfo(prop);
+                    if (info.NullToEmpty && !info.PropertyValueIsNotNull)
+                    {
+                        propName = info.Coalesce(propName, _class, true);
+                        return new GetHashCodeExpressionData($"{propName}.GetHashCode()");
+                    }
+
+                    var hc = info.PropertyValueIsNotNull
+                        ? $"{propName}.GetHashCode()"
+                        : $"{propName}?.GetHashCode() ?? 0";
+                    return new GetHashCodeExpressionData(hc);
+                }
+            }
+
+            protected virtual int GetEqualsCost(Type type, bool nullable)
+            {
+                var offset = nullable ? 5 : 0;
+
+                if (type == typeof(bool)) return Auto.EqualityCostAttribute.Bool + offset;
+                if (type == typeof(int)) return Auto.EqualityCostAttribute.Int + offset;
+                if (type == typeof(uint)) return Auto.EqualityCostAttribute.Int + offset;
+                if (type == typeof(long)) return Auto.EqualityCostAttribute.Int + offset;
+                if (type == typeof(ulong)) return Auto.EqualityCostAttribute.Int + offset;
+                if (type == typeof(byte)) return Auto.EqualityCostAttribute.Int + offset;
+                if (type == typeof(sbyte)) return Auto.EqualityCostAttribute.Int + offset;
+                if (type == typeof(double)) return Auto.EqualityCostAttribute.Float + offset;
+                if (type == typeof(decimal)) return Auto.EqualityCostAttribute.Decimal + offset;
+                if (type == typeof(float)) return Auto.EqualityCostAttribute.Float + offset;
+                var typeInfo = type.GetTypeInfo();
+                if (typeInfo.IsEnum)
+                    return Auto.EqualityCostAttribute.Int + offset;
+                var at = typeInfo.GetCustomAttribute<Auto.EqualityCostAttribute>();
+                if (at != null)
+                    return at.Cost;
+                return 100;
+            }
+
+            protected virtual bool IsToHeavyToGetHashCode(Type type)
+            {
+                bool CheckInterface(Type gt)
+                {
+                    return gt == typeof(IReadOnlyList<>) || gt == typeof(IEnumerable<>);
+                }
+
+                type = type.StripNullable();
+                if (IsSimpleType(type))
+                    return false;
+                if (type.IsArray)
+                    return true;
+
+                var typeInfo = type.GetTypeInfo();
+
+                if (typeInfo.IsGenericType)
+
+                    type = type.GetGenericTypeDefinition();
+                if (CheckInterface(type))
+                    return true;
+                foreach (var i in typeInfo.GetInterfaces())
+                    if (CheckInterface(i))
+                        return true;
+                return false;
             }
 
             private IEnumerable<CompareToExpressionData> GetCompareToExpressions()
@@ -418,7 +383,7 @@ namespace isukces.code.AutoCode
                 for (var index = 0; index < fields2.Length; index++)
                 {
                     var fieldName         = fields2[index];
-                    var compareExpression = GetCompareCode(fieldName);
+                    var compareExpression = FindCompareToCode(fieldName);
                     yield return new CompareToExpressionData(fieldName, compareExpression.ExpressionTemplate,
                         compareExpression.Instance);
                 }
@@ -434,13 +399,12 @@ namespace isukces.code.AutoCode
                     var prop = _props[i];
                     if (filter != null && !filter.Contains(prop.Name))
                         continue;
-                    if (ToHeavyToGetHashCode(prop.ValueType))
+                    if (IsToHeavyToGetHashCode(prop.ValueType))
                         continue;
-                    var hc = FindHashCode(prop);
+                    var hc = FindGetHashCode(prop);
                     yield return hc;
                 }
             }
-
 
             private EqualityFeatureImplementer.Features GetImplementFeatures()
             {
@@ -453,11 +417,9 @@ namespace isukces.code.AutoCode
                       EqualityFeatureImplementer.Features.CompareOperators;
             }
 
-
             protected IMemberNullValueChecker NullChecker { get; }
 
             private string IsEmptyObjectPropertyName => _attEq?.IsEmptyProperty;
-
 
             [CanBeNull] private Auto.ComparerGeneratorAttribute _attComp;
 
@@ -478,6 +440,4 @@ namespace isukces.code.AutoCode
     public interface IAutoComparable<in T> : IComparable<T>, IComparable
     {
     }
-
-   
 }

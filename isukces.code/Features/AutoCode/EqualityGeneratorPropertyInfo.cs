@@ -82,8 +82,6 @@ namespace isukces.code.AutoCode
 
         public EqualsExpressionData EqualsCode(string left, string right, ITypeNameResolver resolver)
         {
-            var leftSource  = left;
-            var rightSource = right;
             if (NullToEmpty && !PropertyValueIsNotNull)
             {
                 left  = Coalesce(left, resolver);
@@ -93,15 +91,6 @@ namespace isukces.code.AutoCode
             if (GetEqualsExpression is null)
                 throw new NullReferenceException(nameof(GetEqualsExpression));
             var expr = GetEqualsExpression(new BinaryExpressionDelegateArgs(left, right, resolver, ResultType));
-            if (NullsAreEqual)
-            {
-                var isString = ResultType == typeof(string);
-                expr = string.Format("{0} && {1} || {2}",
-                    CheckNull(isString ? leftSource : left, NullToEmpty),
-                    CheckNull(isString ? rightSource : right, NullToEmpty), expr);
-                return new EqualsExpressionData(expr, true);
-            }
-
             return new EqualsExpressionData(expr);
         }
 
@@ -159,23 +148,15 @@ namespace isukces.code.AutoCode
         public EqualityGeneratorPropertyInfo WithMemberAttributes(MemberInfo member)
         {
             return With(member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>())
-                .WithNullAreEqual(member.GetCustomAttribute<Auto.NullAreEqualAttribute>() != null)
                 .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
         }
 
-        public EqualityGeneratorPropertyInfo WithNullAreEqual(bool nullsAreEqual)
-        {
-            NullsAreEqual = nullsAreEqual;
-            return this;
-        }
 
         public EqualityGeneratorPropertyInfo WithNullToEmpty(bool nullToEmpty)
         {
             NullToEmpty = nullToEmpty;
             return this;
         }
-
-        public bool NullsAreEqual { get; set; }
 
 
         public Func<ITypeNameResolver, string>  GetCoalesceExpression           { get; set; }

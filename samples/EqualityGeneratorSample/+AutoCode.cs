@@ -110,11 +110,7 @@ namespace EqualityGeneratorSample
             var comparer = System.Collections.Generic.Comparer<int?>.Default;
             var comparisonResult = comparer.Compare(Normal, other.Normal);
             if (comparisonResult != 0) return comparisonResult;
-            comparisonResult = comparer.Compare(NullAreEqual, other.NullAreEqual);
-            if (comparisonResult != 0) return comparisonResult;
-            comparisonResult = (NullLikeEmpty ?? 0).CompareTo(other.NullLikeEmpty ?? 0);
-            if (comparisonResult != 0) return comparisonResult;
-            return (Both ?? 0).CompareTo(other.Both ?? 0);
+            return (NullLikeEmpty ?? 0).CompareTo(other.NullLikeEmpty ?? 0);
         }
 
         public int CompareTo(object obj)
@@ -136,20 +132,14 @@ namespace EqualityGeneratorSample
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return Equals(Normal, other.Normal)
-                && (ReferenceEquals(NullAreEqual, null) && ReferenceEquals(other.NullAreEqual, null) || Equals(NullAreEqual, other.NullAreEqual))
-                && (NullLikeEmpty ?? 0).Equals(other.NullLikeEmpty ?? 0)
-                && (ReferenceEquals(Both ?? 0, null) && ReferenceEquals(other.Both ?? 0, null) || (Both ?? 0).Equals(other.Both ?? 0));
+                && (NullLikeEmpty ?? 0).Equals(other.NullLikeEmpty ?? 0);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = Normal?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ NullAreEqual?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ (NullLikeEmpty ?? 0).GetHashCode();
-                hashCode = (hashCode * 397) ^ (Both ?? 0).GetHashCode();
-                return hashCode;
+                return (Normal?.GetHashCode() ?? 0 * 397) ^ (NullLikeEmpty ?? 0).GetHashCode();
             }
         }
 
@@ -205,11 +195,7 @@ namespace EqualityGeneratorSample
             if (other is null) return 1;
             var comparisonResult = StringComparer.Ordinal.Compare(Normal, other.Normal);
             if (comparisonResult != 0) return comparisonResult;
-            comparisonResult = StringComparer.Ordinal.Compare(NullAreEqual, other.NullAreEqual);
-            if (comparisonResult != 0) return comparisonResult;
-            comparisonResult = StringComparer.Ordinal.Compare(NullLikeEmpty ?? string.Empty, other.NullLikeEmpty ?? string.Empty);
-            if (comparisonResult != 0) return comparisonResult;
-            return StringComparer.Ordinal.Compare(Both ?? string.Empty, other.Both ?? string.Empty);
+            return StringComparer.Ordinal.Compare(NullLikeEmpty ?? string.Empty, other.NullLikeEmpty ?? string.Empty);
         }
 
         public int CompareTo(object obj)
@@ -231,20 +217,14 @@ namespace EqualityGeneratorSample
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return StringComparer.Ordinal.Equals(Normal, other.Normal)
-                && (ReferenceEquals(NullAreEqual, null) && ReferenceEquals(other.NullAreEqual, null) || StringComparer.Ordinal.Equals(NullAreEqual, other.NullAreEqual))
-                && StringComparer.Ordinal.Equals(NullLikeEmpty ?? string.Empty, other.NullLikeEmpty ?? string.Empty)
-                && (string.IsNullOrEmpty(Both) && string.IsNullOrEmpty(other.Both) || StringComparer.Ordinal.Equals(Both ?? string.Empty, other.Both ?? string.Empty));
+                && StringComparer.Ordinal.Equals(NullLikeEmpty ?? string.Empty, other.NullLikeEmpty ?? string.Empty);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                var hashCode = StringComparer.Ordinal.GetHashCode(Normal ?? string.Empty);
-                hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(NullAreEqual ?? string.Empty);
-                hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(NullLikeEmpty ?? string.Empty);
-                hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(Both ?? string.Empty);
-                return hashCode;
+                return (StringComparer.Ordinal.GetHashCode(Normal ?? string.Empty) * 397) ^ StringComparer.Ordinal.GetHashCode(NullLikeEmpty ?? string.Empty);
             }
         }
 
@@ -292,6 +272,43 @@ namespace EqualityGeneratorSample
 
     }
 
+    partial class Sample1Owner : isukces.code.AutoCode.IAutoEquatable<Sample1Owner>
+    {
+        public override bool Equals(object other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other is Sample1Owner otherCasted && Equals(otherCasted);
+        }
+
+        public bool Equals(Sample1Owner other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(A, other.A)
+                && Equals(B, other.B);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (A?.GetHashCode() ?? 0 * 397) ^ B?.GetHashCode() ?? 0;
+            }
+        }
+
+        public static bool operator !=(Sample1Owner left, Sample1Owner right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(Sample1Owner left, Sample1Owner right)
+        {
+            return Equals(left, right);
+        }
+
+    }
+
     partial class SampleClass : isukces.code.AutoCode.IAutoEquatable<SampleClass>
     {
         public override bool Equals(object other)
@@ -307,7 +324,7 @@ namespace EqualityGeneratorSample
             if (ReferenceEquals(this, other)) return true;
             return StringComparer.Ordinal.Equals(FirstName, other.FirstName)
                 && StringComparer.Ordinal.Equals(LastName, other.LastName)
-                && BirthDate.Equals(other.BirthDate)
+                && Equals(BirthDate, other.BirthDate)
                 && Equals(OtherDate, other.OtherDate);
         }
 
