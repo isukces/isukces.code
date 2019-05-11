@@ -1,5 +1,6 @@
 using System;
 using isukces.code.interfaces;
+using JetBrains.Annotations;
 
 namespace EqualityGeneratorSample
 {
@@ -83,5 +84,9 @@ namespace EqualityGeneratorSample
         public Sample1            A { get; set; }
         public ClassWithNullables B { get; set; }
 
+        [NotNull]
+        public Sample1            ANotNull { get; set; }
+        [NotNull]
+        public ClassWithNullables BNotNull { get; set; }
     }
 }

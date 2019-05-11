@@ -149,7 +149,12 @@ namespace isukces.code.AutoCode
                         return $"Equals({input.Left}, {input.Right})";
                     };
                 else
-                    info.GetEqualsExpression = input => { return $"Equals({input.Left}, {input.Right})"; };
+                    info.GetEqualsExpression = input =>
+                    {
+                        if (info.PropertyValueIsNotNull)
+                            return $"{input.Left}.Equals({input.Right})";
+                        return $"Equals({input.Left}, {input.Right})";
+                    };
                 return info;
             }
 

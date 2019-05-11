@@ -286,14 +286,20 @@ namespace EqualityGeneratorSample
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return Equals(A, other.A)
-                && Equals(B, other.B);
+                && Equals(B, other.B)
+                && ANotNull.Equals(other.ANotNull)
+                && BNotNull.Equals(other.BNotNull);
         }
 
         public override int GetHashCode()
         {
             unchecked
             {
-                return (A?.GetHashCode() ?? 0 * 397) ^ B?.GetHashCode() ?? 0;
+                var hashCode = A?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ B?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ ANotNull.GetHashCode();
+                hashCode = (hashCode * 397) ^ BNotNull.GetHashCode();
+                return hashCode;
             }
         }
 
@@ -324,7 +330,7 @@ namespace EqualityGeneratorSample
             if (ReferenceEquals(this, other)) return true;
             return StringComparer.Ordinal.Equals(FirstName, other.FirstName)
                 && StringComparer.Ordinal.Equals(LastName, other.LastName)
-                && Equals(BirthDate, other.BirthDate)
+                && BirthDate.Equals(other.BirthDate)
                 && Equals(OtherDate, other.OtherDate);
         }
 
