@@ -5,7 +5,16 @@ using JetBrains.Annotations;
 
 namespace isukces.code.AutoCode
 {
-    public class EqualityGeneratorPropertyInfo
+    public interface IEqualityGeneratorPropertyInfo
+    {
+        bool PropertyValueIsNotNull { get; }
+        bool NullToEmpty            { get; }
+        Type ResultType             { get; }
+        EqualsExpressionData EqualsCode(string left, string right, ITypeNameResolver resolver);
+        string Coalesce(string expr, ITypeNameResolver resolver, bool addBracketsOutside = false);
+    }
+
+    public class EqualityGeneratorPropertyInfo:IEqualityGeneratorPropertyInfo
     {
         public EqualityGeneratorPropertyInfo(Type resultType)
         {
@@ -164,7 +173,7 @@ namespace isukces.code.AutoCode
         public bool                             NullToEmpty                     { get; protected set; }
         public BinaryExpressionDelegate<string> GetEqualsExpression             { get; set; }
         public BinaryExpressionDelegate<ExpressionWithObjectInstance>      GetRelationalComparerExpression { get; protected set; }
-        public UnaryExpressionDelegate          GetHashCodeExpression           { get; protected set; }
+        public UnaryExpressionDelegate          GetHashCodeExpression           { get; set; }
         public Auto.GetHashCodeOptions          GetHashCodeOption               { get; set; }
         public Type                             ResultType                      { get; }
     }

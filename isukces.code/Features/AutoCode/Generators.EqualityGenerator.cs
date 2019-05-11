@@ -132,7 +132,7 @@ namespace isukces.code.AutoCode
                 _class = null;
             }
 
-            protected virtual EqualityGeneratorPropertyInfo CreatePropertyInfo(PropertyOrFieldInfo prop)
+            protected virtual IEqualityGeneratorPropertyInfo CreatePropertyInfo(PropertyOrFieldInfo prop)
             {
                 // tworzę i wypełniam implementacje to ręcznie
                 var info = new EqualityGeneratorPropertyInfo(prop.ValueType)
@@ -155,12 +155,13 @@ namespace isukces.code.AutoCode
                             return $"{input.Left}.Equals({input.Right})";
                         return $"Equals({input.Left}, {input.Right})";
                     };
+                info.GetHashCodeExpression = input => "{0}.GetHashCode()";
                 return info;
             }
 
             protected virtual ExpressionWithObjectInstance FindCompareToCode(string name)
             {
-                BinaryExpressionDelegateArgs CoalesceInput(EqualityGeneratorPropertyInfo info,
+                BinaryExpressionDelegateArgs CoalesceInput(IEqualityGeneratorPropertyInfo info,
                     BinaryExpressionDelegateArgs binaryExpressionDelegateArgs)
                 {
                     return binaryExpressionDelegateArgs.Transform(a => info.Coalesce(a, _class));
@@ -287,7 +288,6 @@ namespace isukces.code.AutoCode
                     var cost = GetEqualsCost(property.ValueType, true);
                     return code.WithCost(cost);
                 }
-                // return new EqualsExpressionData(CallMethod("Equals"), GetEqualsCost(type, false));
             }
 
             protected virtual GetHashCodeExpressionData FindGetHashCode(PropertyOrFieldInfo prop)
@@ -313,6 +313,7 @@ namespace isukces.code.AutoCode
                 }
 
                 if (type == typeof(int)) return new GetHashCodeExpressionData(propName);
+                if (type == typeof(int?)) return new GetHashCodeExpressionData(propName + " ?? 0");
                 if (type == typeof(bool)) return new GetHashCodeExpressionData(propName + " ? 1 : 0", true);
                 if (type == typeof(bool?)) return new GetHashCodeExpressionData(propName + " == true ? 1 : 0", true);
 

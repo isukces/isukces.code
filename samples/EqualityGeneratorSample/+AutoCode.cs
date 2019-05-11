@@ -139,7 +139,7 @@ namespace EqualityGeneratorSample
         {
             unchecked
             {
-                return (Normal?.GetHashCode() ?? 0 * 397) ^ (NullLikeEmpty ?? 0).GetHashCode();
+                return (Normal ?? 0 * 397) ^ NullLikeEmpty ?? 0;
             }
         }
 
