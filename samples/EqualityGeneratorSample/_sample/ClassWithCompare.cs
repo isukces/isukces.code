@@ -3,11 +3,11 @@ using isukces.code.interfaces;
 
 namespace EqualityGeneratorSample
 {
-    [Auto.EqualityGeneratorAttribute(null, nameof(FullName))]
+    [Auto.EqualityGeneratorAttribute]
     [Auto.ComparerGeneratorAttribute(nameof(LastName), nameof(FirstName), nameof(BirthDate), nameof(Code))]
     public partial class ClassWithCompare
     {
-        [Auto.StringComparison.CurrentCultureIgnoreCaseAttribute]
+        [Auto.StringComparison.CurrentCultureIgnoreCase]
         public string FirstName { get; set; }
 
         [Auto.StringComparison.OrdinalIgnoreCaseAttribute]
@@ -15,6 +15,7 @@ namespace EqualityGeneratorSample
 
         public string Code { get; set; }
 
+        [Auto.EqualityGeneratorSkip]
         public string FullName => FirstName + " " + LastName;
 
 

@@ -9,18 +9,10 @@ namespace isukces.code.interfaces
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
         public class EqualityGeneratorAttribute : Attribute
         {
-            public EqualityGeneratorAttribute()
-            {
-                SkipProperties = new HashSet<string>();
-            }
-
-            public EqualityGeneratorAttribute(string isEmptyProperty, params string[] skipProperties)
+            public EqualityGeneratorAttribute(string isEmptyProperty=null)
             {
                 IsEmptyProperty = isEmptyProperty;
-                SkipProperties  = skipProperties.ToHashSet();
             }
-
-            public HashSet<string> SkipProperties { get; }
 
             /// <summary>
             /// Name of property that denotes if object is empty.

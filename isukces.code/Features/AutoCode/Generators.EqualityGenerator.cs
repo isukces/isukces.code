@@ -36,7 +36,7 @@ namespace isukces.code.AutoCode
                             return false;
                     if (useOnly != null)
                         return useOnly.Contains(a.Name);
-                    return !att.SkipProperties.Contains(a.Name);
+                    return !a.IsEqualityGeneratorSkip;
                 }).ToArray();
             }
 
