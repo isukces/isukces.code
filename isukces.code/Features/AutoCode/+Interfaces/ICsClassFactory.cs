@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 
 namespace isukces.code.AutoCode
@@ -12,5 +13,10 @@ namespace isukces.code.AutoCode
     {
         void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context);
         void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context);
+    }
+
+    public interface IAssemblyBaseDirectoryProvider
+    {
+        DirectoryInfo GetBaseDirectory(Assembly assembly);
     }
 }
