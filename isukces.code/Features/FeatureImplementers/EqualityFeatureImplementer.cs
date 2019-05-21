@@ -249,29 +249,50 @@ namespace isukces.code.AutoCode
 
         private void WriteGetHashCode()
         {
+            if (CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Custom)
+                return;
             const string fieldName         = "_cachedHashCode";
-            const string fieldName2        = "_isCachedHashCodeCalculated";
+            const string flagFieldName        = "_isCachedHashCodeCalculated";
             const string calculateHashCode = "CalculateHashCode";
 
-            if (CachedGetHashCodeImplementation)
+            var hasBoolField = CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Cached;
+            var hasIntField = hasBoolField
+                              || CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Precomputed;
+
+            if (hasBoolField)
+            {
+                var field = _class.AddField(flagFieldName, "bool");
+                AddNeverBrowsable(field);
+            }
+
+            if (hasIntField)
             {
                 var field = _class.AddField(fieldName, "int");
                 AddNeverBrowsable(field);
-                field = _class.AddField(fieldName2, "bool");
-                AddNeverBrowsable(field);
-
-                var cw1 = new CsCodeWriter()
-                    .WriteLine($"if ({fieldName2}) return {fieldName};")
-                    .WriteLine($"{fieldName} = {calculateHashCode}();")
-                    .WriteLine($"{fieldName2} = true;")
-                    .WriteLine($"return {fieldName};");
-                _class.AddMethod("GetHashCode", "int")
-                    .WithOverride()
-                    .WithBody(cw1);
+            }
+            
+            switch (CachedGetHashCodeImplementation)
+            {
+                case GetHashCodeImplementationKind.Cached:
+                    var cw1 = new CsCodeWriter()
+                        .WriteLine($"if ({flagFieldName}) return {fieldName};")
+                        .WriteLine($"{fieldName} = {calculateHashCode}();")
+                        .WriteLine($"{flagFieldName} = true;")
+                        .WriteLine($"return {fieldName};");
+                    _class.AddMethod("GetHashCode", "int")
+                        .WithOverride()
+                        .WithBody(cw1);
+                    break;
+                case GetHashCodeImplementationKind.Precomputed:
+                    _class.AddMethod("GetHashCode", "int")
+                        .WithOverride()
+                        .WithBody($"return {fieldName};");
+                    break;
             }
 
-            var m = WriteGetHashCode(CachedGetHashCodeImplementation ? calculateHashCode : nameof(GetHashCode));
-            if (CachedGetHashCodeImplementation)
+            var useCalcMetod = hasIntField;
+            var m = WriteGetHashCode(useCalcMetod ? calculateHashCode : nameof(GetHashCode));
+            if (useCalcMetod)
                 m.Visibility = Visibilities.Private;
             else
                 m.IsOverride = true;
@@ -340,7 +361,7 @@ namespace isukces.code.AutoCode
         /// </summary>
         public string IsEmptyObjectPropertyName { get; set; }
 
-        public bool CachedGetHashCodeImplementation { get; set; }
+        public GetHashCodeImplementationKind CachedGetHashCodeImplementation { get; set; }
         public bool CanBeNull                       { get; set; }
 
 

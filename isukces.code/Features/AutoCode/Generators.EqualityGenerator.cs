@@ -107,7 +107,7 @@ namespace isukces.code.AutoCode
                 var implementer = new EqualityFeatureImplementer(_class, type)
                 {
                     IsEmptyObjectPropertyName       = IsEmptyObjectPropertyName,
-                    CachedGetHashCodeImplementation = _attEq?.CachedGetHashCodeImplementation ?? false,
+                    CachedGetHashCodeImplementation = _attEq?.CachedGetHashCodeImplementation ?? GetHashCodeImplementationKind.Normal,
                     CanBeNull                       = _canBeNull,
                     ImplementFeatures               = GetImplementFeatures()
                 }.WithCompareToExpressions(GetCompareToExpressions());
@@ -237,12 +237,6 @@ namespace isukces.code.AutoCode
             protected virtual EqualsExpressionData FindEqualsCode(PropertyOrFieldInfo property)
             {
                 const string twoArgs = "({0}, {1}.{0})";
-
-                string CallMethod(string mn, string otherArgs = null)
-                {
-                    return $"{{0}}.{mn}({{1}}.{{0}}{otherArgs})";
-                }
-
                 var type = property.ValueType;
                 if (type == typeof(string))
                 {
@@ -397,13 +391,11 @@ namespace isukces.code.AutoCode
 
             private IEnumerable<GetHashCodeExpressionData> GetGetHashCodeExpressions()
             {
-                HashSet<string> filter = null;
-                if (!string.IsNullOrEmpty(_attEq?.GetHashCodeProperties))
-                    filter = _attEq.GetHashCodeProperties.Split(',').ToHashSet();
+                var filter = _attEq?.GetHashCodeProperties.ToHashSet();
                 for (var i = 0; i < _props.Length; i++)
                 {
                     var prop = _props[i];
-                    if (filter != null && !filter.Contains(prop.Name))
+                    if (filter != null && filter.Any() && !filter.Contains(prop.Name))
                         continue;
                     if (IsToHeavyToGetHashCode(prop.ValueType))
                         continue;

@@ -101,6 +101,37 @@ namespace EqualityGeneratorSample
 
     }
 
+    partial class ClassWithCustomGetHashCode : isukces.code.AutoCode.IAutoEquatable<ClassWithCustomGetHashCode>
+    {
+        public override bool Equals(object other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other is ClassWithCustomGetHashCode otherCasted && Equals(otherCasted);
+        }
+
+        public bool Equals(ClassWithCustomGetHashCode other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return StringComparer.Ordinal.Equals(FirstName, other.FirstName)
+                && StringComparer.Ordinal.Equals(LastName, other.LastName)
+                && BirthDate.Equals(other.BirthDate)
+                && Equals(OtherDate, other.OtherDate);
+        }
+
+        public static bool operator !=(ClassWithCustomGetHashCode left, ClassWithCustomGetHashCode right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(ClassWithCustomGetHashCode left, ClassWithCustomGetHashCode right)
+        {
+            return Equals(left, right);
+        }
+
+    }
+
     partial class ClassWithNullables : isukces.code.AutoCode.IAutoEquatable<ClassWithNullables>, isukces.code.AutoCode.IAutoComparable<ClassWithNullables>
     {
         public int CompareTo(ClassWithNullables other)
@@ -184,6 +215,57 @@ namespace EqualityGeneratorSample
                 return false;
             return left.CompareTo(right) >= 0;
         }
+
+    }
+
+    partial class ClassWithPrecomputedGetHashCode : isukces.code.AutoCode.IAutoEquatable<ClassWithPrecomputedGetHashCode>
+    {
+        public override bool Equals(object other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other is ClassWithPrecomputedGetHashCode otherCasted && Equals(otherCasted);
+        }
+
+        public bool Equals(ClassWithPrecomputedGetHashCode other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return StringComparer.Ordinal.Equals(FirstName, other.FirstName)
+                && StringComparer.Ordinal.Equals(LastName, other.LastName)
+                && BirthDate.Equals(other.BirthDate)
+                && Equals(OtherDate, other.OtherDate);
+        }
+
+        public override int GetHashCode()
+        {
+            return _cachedHashCode;
+        }
+
+        private int CalculateHashCode()
+        {
+            unchecked
+            {
+                var hashCode = StringComparer.Ordinal.GetHashCode(FirstName ?? string.Empty);
+                hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(LastName ?? string.Empty);
+                hashCode = (hashCode * 397) ^ BirthDate.GetHashCode();
+                hashCode = (hashCode * 397) ^ OtherDate?.GetHashCode() ?? 0;
+                return hashCode;
+            }
+        }
+
+        public static bool operator !=(ClassWithPrecomputedGetHashCode left, ClassWithPrecomputedGetHashCode right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(ClassWithPrecomputedGetHashCode left, ClassWithPrecomputedGetHashCode right)
+        {
+            return Equals(left, right);
+        }
+
+        [System.Diagnostics.DebuggerBrowsableAttribute(System.Diagnostics.DebuggerBrowsableState.Never)]
+        public int _cachedHashCode;
 
     }
 
@@ -272,59 +354,16 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class Sample1Owner : isukces.code.AutoCode.IAutoEquatable<Sample1Owner>
+    partial class SimpleClass : isukces.code.AutoCode.IAutoEquatable<SimpleClass>
     {
         public override bool Equals(object other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
-            return other is Sample1Owner otherCasted && Equals(otherCasted);
+            return other is SimpleClass otherCasted && Equals(otherCasted);
         }
 
-        public bool Equals(Sample1Owner other)
-        {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Equals(A, other.A)
-                && Equals(B, other.B)
-                && ANotNull.Equals(other.ANotNull)
-                && BNotNull.Equals(other.BNotNull);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = A?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ B?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ ANotNull.GetHashCode();
-                hashCode = (hashCode * 397) ^ BNotNull.GetHashCode();
-                return hashCode;
-            }
-        }
-
-        public static bool operator !=(Sample1Owner left, Sample1Owner right)
-        {
-            return !Equals(left, right);
-        }
-
-        public static bool operator ==(Sample1Owner left, Sample1Owner right)
-        {
-            return Equals(left, right);
-        }
-
-    }
-
-    partial class SampleClass : isukces.code.AutoCode.IAutoEquatable<SampleClass>
-    {
-        public override bool Equals(object other)
-        {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return other is SampleClass otherCasted && Equals(otherCasted);
-        }
-
-        public bool Equals(SampleClass other)
+        public bool Equals(SimpleClass other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -346,28 +385,28 @@ namespace EqualityGeneratorSample
             }
         }
 
-        public static bool operator !=(SampleClass left, SampleClass right)
+        public static bool operator !=(SimpleClass left, SimpleClass right)
         {
             return !Equals(left, right);
         }
 
-        public static bool operator ==(SampleClass left, SampleClass right)
+        public static bool operator ==(SimpleClass left, SimpleClass right)
         {
             return Equals(left, right);
         }
 
     }
 
-    partial struct SampleStruct : isukces.code.AutoCode.IAutoEquatable<SampleStruct>
+    partial struct SimpleStruct : isukces.code.AutoCode.IAutoEquatable<SimpleStruct>
     {
         public override bool Equals(object other)
         {
             if (other is null) return false;
-            if (other.GetType() != typeof(SampleStruct)) return false;
-            return Equals((SampleStruct)other);
+            if (other.GetType() != typeof(SimpleStruct)) return false;
+            return Equals((SimpleStruct)other);
         }
 
-        public bool Equals(SampleStruct other)
+        public bool Equals(SimpleStruct other)
         {
             return StringComparer.CurrentCultureIgnoreCase.Equals(FirstName, other.FirstName)
                 && StringComparer.OrdinalIgnoreCase.Equals(LastName, other.LastName)
@@ -387,12 +426,55 @@ namespace EqualityGeneratorSample
             }
         }
 
-        public static bool operator !=(SampleStruct left, SampleStruct right)
+        public static bool operator !=(SimpleStruct left, SimpleStruct right)
         {
             return !Equals(left, right);
         }
 
-        public static bool operator ==(SampleStruct left, SampleStruct right)
+        public static bool operator ==(SimpleStruct left, SimpleStruct right)
+        {
+            return Equals(left, right);
+        }
+
+    }
+
+    partial class VerySimpleClassOwner : isukces.code.AutoCode.IAutoEquatable<VerySimpleClassOwner>
+    {
+        public override bool Equals(object other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other is VerySimpleClassOwner otherCasted && Equals(otherCasted);
+        }
+
+        public bool Equals(VerySimpleClassOwner other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(A, other.A)
+                && Equals(B, other.B)
+                && ANotNull.Equals(other.ANotNull)
+                && BNotNull.Equals(other.BNotNull);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = A?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ B?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ ANotNull.GetHashCode();
+                hashCode = (hashCode * 397) ^ BNotNull.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        public static bool operator !=(VerySimpleClassOwner left, VerySimpleClassOwner right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(VerySimpleClassOwner left, VerySimpleClassOwner right)
         {
             return Equals(left, right);
         }
