@@ -66,11 +66,7 @@ namespace isukces.code.Ammy
         {
             CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
             _writer   = new AmmyCodeWriter();
-            StartAssembly?.Invoke(this, new StartAssemblyEventArgs
-            {
-                Assembly   = assembly,
-                CodeWriter = _writer
-            });
+            AfterStartAssembly(assembly, _writer);
         }
 
         public virtual void Generate(Type type, IAutoCodeGeneratorContext context)
@@ -78,6 +74,10 @@ namespace isukces.code.Ammy
             var methods = type.GetTypeInfo().GetMethods(BindingFlags.Static | BindingFlags.Public);
             foreach (var method in methods)
                 UseAmmyBuilderAttribute(type, method);
+        }
+
+        protected virtual void AfterStartAssembly(Assembly assembly, AmmyCodeWriter writer)
+        {
         }
 
         private void UseAmmyBuilderAttribute(Type type, MethodInfo method)
@@ -112,13 +112,7 @@ namespace isukces.code.Ammy
 
         public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         public event EventHandler<CreateMixinPrefixEventArgs>                  CreateMixinPrefix;
-        public event EventHandler<StartAssemblyEventArgs>                      StartAssembly;
 
-        public class StartAssemblyEventArgs
-        {
-            public Assembly       Assembly   { get; set; }
-            public AmmyCodeWriter CodeWriter { get; set; }
-        }
 
         public class CreateMixinPrefixEventArgs : EventArgs
         {
