@@ -202,6 +202,16 @@ namespace isukces.code.AutoCode
                 cw.WriteLine($"if (ReferenceEquals(this, {OtherArgName})) return true;");
             }
 
+            if (UseGetHashCodeInEqualityChecking)
+            {
+                var getHashCodeExpression = CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Precomputed
+                    ? getHashCodeFieldName
+                    : nameof(GetHashCode) + "()";
+                
+                cw.WriteLine(
+                    $"if ({getHashCodeExpression} != {OtherArgName}.{getHashCodeExpression}) return false;");
+            }
+            
             if (!string.IsNullOrEmpty(IsEmptyObjectPropertyName))
             {
                 cw.WriteLine(
@@ -247,12 +257,13 @@ namespace isukces.code.AutoCode
             m.AddParam(OtherArgName, "object");
         }
 
+        const string getHashCodeFieldName         = "_cachedHashCode";
+
         private void WriteGetHashCode()
         {
             if (CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Custom)
                 return;
-            const string fieldName         = "_cachedHashCode";
-            const string flagFieldName        = "_isCachedHashCodeCalculated";
+            const string flagFieldName     = "_isCachedHashCodeCalculated";
             const string calculateHashCode = "CalculateHashCode";
 
             var hasBoolField = CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Cached;
@@ -267,18 +278,18 @@ namespace isukces.code.AutoCode
 
             if (hasIntField)
             {
-                var field = _class.AddField(fieldName, "int");
+                var field = _class.AddField(getHashCodeFieldName, "int");
                 AddNeverBrowsable(field);
             }
-            
+
             switch (CachedGetHashCodeImplementation)
             {
                 case GetHashCodeImplementationKind.Cached:
                     var cw1 = new CsCodeWriter()
-                        .WriteLine($"if ({flagFieldName}) return {fieldName};")
-                        .WriteLine($"{fieldName} = {calculateHashCode}();")
+                        .WriteLine($"if ({flagFieldName}) return {getHashCodeFieldName};")
+                        .WriteLine($"{getHashCodeFieldName} = {calculateHashCode}();")
                         .WriteLine($"{flagFieldName} = true;")
-                        .WriteLine($"return {fieldName};");
+                        .WriteLine($"return {getHashCodeFieldName};");
                     _class.AddMethod("GetHashCode", "int")
                         .WithOverride()
                         .WithBody(cw1);
@@ -286,12 +297,12 @@ namespace isukces.code.AutoCode
                 case GetHashCodeImplementationKind.Precomputed:
                     _class.AddMethod("GetHashCode", "int")
                         .WithOverride()
-                        .WithBody($"return {fieldName};");
+                        .WithBody($"return {getHashCodeFieldName};");
                     break;
             }
 
             var useCalcMetod = hasIntField;
-            var m = WriteGetHashCode(useCalcMetod ? calculateHashCode : nameof(GetHashCode));
+            var m            = WriteGetHashCode(useCalcMetod ? calculateHashCode : nameof(GetHashCode));
             if (useCalcMetod)
                 m.Visibility = Visibilities.Private;
             else
@@ -360,9 +371,10 @@ namespace isukces.code.AutoCode
         ///     Name of property that denotes if object is empty. If true then no other properties will be compared.
         /// </summary>
         public string IsEmptyObjectPropertyName { get; set; }
+        public bool UseGetHashCodeInEqualityChecking { get; set; }
 
-        public GetHashCodeImplementationKind CachedGetHashCodeImplementation { get; set; }
-        public bool CanBeNull                       { get; set; }
+        public GetHashCodeImplementationKind CachedGetHashCodeImplementation  { get; set; }
+        public bool                          CanBeNull                        { get; set; }
 
 
         public static IReadOnlyList<string> CompareOperators = "> < >= <=".Split(' ');

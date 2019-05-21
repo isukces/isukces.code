@@ -32,13 +32,16 @@ namespace isukces.code.interfaces
             public string[] GetHashCodeProperties { get; }
 
             /// <summary>
-            ///     Użyj tych własności zamiast skanować
+            ///    Use this properties or fields instead of all properties
             /// </summary>
             public string UseOnlyPropertiesOrFields { get; set; }
 
             public GetHashCodeImplementationKind CachedGetHashCodeImplementation { get; set; }
+
+            public bool UseGetHashCodeInEqualityChecking { get; set; }
         }
     }
+    
     public enum GetHashCodeImplementationKind {
         /// <summary>
         /// Value is calculated in GetHashCode method

@@ -108,6 +108,7 @@ namespace isukces.code.AutoCode
                 {
                     IsEmptyObjectPropertyName       = IsEmptyObjectPropertyName,
                     CachedGetHashCodeImplementation = _attEq?.CachedGetHashCodeImplementation ?? GetHashCodeImplementationKind.Normal,
+                    UseGetHashCodeInEqualityChecking = _attEq?.UseGetHashCodeInEqualityChecking ?? false,
                     CanBeNull                       = _canBeNull,
                     ImplementFeatures               = GetImplementFeatures()
                 }.WithCompareToExpressions(GetCompareToExpressions());

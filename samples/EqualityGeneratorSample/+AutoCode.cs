@@ -354,6 +354,116 @@ namespace EqualityGeneratorSample
 
     }
 
+    partial class ClassWithUseCachedGetHashCodeInEqualityChecking : isukces.code.AutoCode.IAutoEquatable<ClassWithUseCachedGetHashCodeInEqualityChecking>
+    {
+        public override bool Equals(object other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other is ClassWithUseCachedGetHashCodeInEqualityChecking otherCasted && Equals(otherCasted);
+        }
+
+        public bool Equals(ClassWithUseCachedGetHashCodeInEqualityChecking other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            if (GetHashCode() != other.GetHashCode()) return false;
+            return StringComparer.Ordinal.Equals(FirstName, other.FirstName)
+                && StringComparer.Ordinal.Equals(LastName, other.LastName)
+                && BirthDate.Equals(other.BirthDate)
+                && Equals(OtherDate, other.OtherDate);
+        }
+
+        public override int GetHashCode()
+        {
+            if (_isCachedHashCodeCalculated) return _cachedHashCode;
+            _cachedHashCode = CalculateHashCode();
+            _isCachedHashCodeCalculated = true;
+            return _cachedHashCode;
+        }
+
+        private int CalculateHashCode()
+        {
+            unchecked
+            {
+                var hashCode = StringComparer.Ordinal.GetHashCode(FirstName ?? string.Empty);
+                hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(LastName ?? string.Empty);
+                hashCode = (hashCode * 397) ^ BirthDate.GetHashCode();
+                hashCode = (hashCode * 397) ^ OtherDate?.GetHashCode() ?? 0;
+                return hashCode;
+            }
+        }
+
+        public static bool operator !=(ClassWithUseCachedGetHashCodeInEqualityChecking left, ClassWithUseCachedGetHashCodeInEqualityChecking right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(ClassWithUseCachedGetHashCodeInEqualityChecking left, ClassWithUseCachedGetHashCodeInEqualityChecking right)
+        {
+            return Equals(left, right);
+        }
+
+        [System.Diagnostics.DebuggerBrowsableAttribute(System.Diagnostics.DebuggerBrowsableState.Never)]
+        public bool _isCachedHashCodeCalculated;
+
+        [System.Diagnostics.DebuggerBrowsableAttribute(System.Diagnostics.DebuggerBrowsableState.Never)]
+        public int _cachedHashCode;
+
+    }
+
+    partial class ClassWithUsePrecomputedGetHashCodeInEqualityChecking : isukces.code.AutoCode.IAutoEquatable<ClassWithUsePrecomputedGetHashCodeInEqualityChecking>
+    {
+        public override bool Equals(object other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return other is ClassWithUsePrecomputedGetHashCodeInEqualityChecking otherCasted && Equals(otherCasted);
+        }
+
+        public bool Equals(ClassWithUsePrecomputedGetHashCodeInEqualityChecking other)
+        {
+            if (other is null) return false;
+            if (ReferenceEquals(this, other)) return true;
+            if (_cachedHashCode != other._cachedHashCode) return false;
+            return StringComparer.Ordinal.Equals(FirstName, other.FirstName)
+                && StringComparer.Ordinal.Equals(LastName, other.LastName)
+                && BirthDate.Equals(other.BirthDate)
+                && Equals(OtherDate, other.OtherDate);
+        }
+
+        public override int GetHashCode()
+        {
+            return _cachedHashCode;
+        }
+
+        private int CalculateHashCode()
+        {
+            unchecked
+            {
+                var hashCode = StringComparer.Ordinal.GetHashCode(FirstName ?? string.Empty);
+                hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(LastName ?? string.Empty);
+                hashCode = (hashCode * 397) ^ BirthDate.GetHashCode();
+                hashCode = (hashCode * 397) ^ OtherDate?.GetHashCode() ?? 0;
+                return hashCode;
+            }
+        }
+
+        public static bool operator !=(ClassWithUsePrecomputedGetHashCodeInEqualityChecking left, ClassWithUsePrecomputedGetHashCodeInEqualityChecking right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(ClassWithUsePrecomputedGetHashCodeInEqualityChecking left, ClassWithUsePrecomputedGetHashCodeInEqualityChecking right)
+        {
+            return Equals(left, right);
+        }
+
+        [System.Diagnostics.DebuggerBrowsableAttribute(System.Diagnostics.DebuggerBrowsableState.Never)]
+        public int _cachedHashCode;
+
+    }
+
     partial class SimpleClass : isukces.code.AutoCode.IAutoEquatable<SimpleClass>
     {
         public override bool Equals(object other)
