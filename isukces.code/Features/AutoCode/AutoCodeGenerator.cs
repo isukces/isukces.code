@@ -40,7 +40,9 @@ namespace isukces.code.AutoCode
             yield return new Generators.ReactiveCommandGenerator();
         }
 
-        public void Make(Assembly assembly, string outFileName, ref bool saved)
+        public bool AnyFileSaved { get; set; }
+        
+        public void Make(Assembly assembly, string outFileName)
         {
             if (BaseDir == null)
                 throw new NullReferenceException(nameof(BaseDir));
@@ -50,34 +52,22 @@ namespace isukces.code.AutoCode
             _classes = new Dictionary<TypeProvider, CsClass>();
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
-            {
-                IAutoCodeGeneratorContext context = new SimpleAutoCodeGeneratorContext(
-                    GetOrCreateClass,
-                    ns => _csFile.AddImportNamespace(ns),
-                    ResolveConfigInternal);
-                foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
-                    i.AssemblyStart(assembly, context);
-            }
+            var context = new SimpleAutoCodeGeneratorContext(
+                GetOrCreateClass,
+                ns => _csFile.AddImportNamespace(ns),
+                ResolveConfigInternal);
+            foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
+                i.AssemblyStart(assembly, context);
 
             for (int index = 0, length = types.Length; index < length; index++)
             {
                 var type = types[index];
-                IAutoCodeGeneratorContext context = new SimpleAutoCodeGeneratorContext(
-                    GetOrCreateClass,
-                    ns => _csFile.AddImportNamespace(ns),
-                    ResolveConfigInternal
-                );
                 foreach (var i in CodeGenerators)
                     i.Generate(type, context);
             }
 
-            {
-                IAutoCodeGeneratorContext context = new SimpleAutoCodeGeneratorContext(
-                    GetOrCreateClass,
-                    ns => _csFile.AddImportNamespace(ns),
-                    ResolveConfigInternal);
-                foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>()) i.AssemblyEnd(assembly, context);
-            }
+            foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
+                i.AssemblyEnd(assembly, context);
             var fileName = Path.Combine(BaseDir.FullName, outFileName);
             var h        = BeforeSave;
             if (h != null)
@@ -92,7 +82,9 @@ namespace isukces.code.AutoCode
             }
 
             if (_csFile.SaveIfDifferent(fileName))
-                saved = true;
+                AnyFileSaved = true;
+            if (context.AnyFileSaved)
+                AnyFileSaved = true;
         }
 
         public TConfig ResolveConfig<TConfig>() where TConfig : class, IAutoCodeConfiguration, new()
@@ -105,8 +97,7 @@ namespace isukces.code.AutoCode
             CodeGenerators.Add(generator);
             return this;
         }
-
-
+        
         private CsClass GetOrCreateClass(TypeProvider type)
         {
             return _csFile.GetOrCreateClass(type, _classes);
@@ -124,8 +115,7 @@ namespace isukces.code.AutoCode
         public List<IAutoCodeGenerator> CodeGenerators { get; } = new List<IAutoCodeGenerator>();
 
         public DirectoryInfo BaseDir { get; set; }
-
-
+        
         public ISet<string> FileNamespaces { get; } = new HashSet<string>();
 
         private readonly Dictionary<Type, object> _configs = new Dictionary<Type, object>();

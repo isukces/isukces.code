@@ -18,12 +18,18 @@ namespace isukces.code.Ammy
 
         public void AddMixin(AmmyMixin mixin)
         {
-            CodeParts["b MIXIN:" + mixin.Name] = mixin;
+            CodeParts[AmmyCodePartsKey.Mixin(mixin.Name)] = mixin;
         }
 
         public void AddVariable(string name, string value)
         {
             AddVariable(new AmmyVariableDefinition(name, value));
+        }
+
+        public void AddVariable(AmmyVariableDefinition variableDefinition)
+        {
+            CodeParts[new AmmyCodePartsKey(AmmyCodePartsKeyKind.Variable, variableDefinition.Name)] =
+                variableDefinition;
         }
 
         public void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
@@ -47,14 +53,18 @@ namespace isukces.code.Ammy
 
             var txt = _writer.FullCode;
             if (CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false))
+            {
+                context.FileSaved(fi);
                 AfterSave?.Invoke(this, EventArgs.Empty);
+            }
+
             CodeParts = null;
             _writer   = null;
         }
 
         public void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
         {
-            CodeParts = new Dictionary<string, IAmmyCodePieceConvertible>();
+            CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
             _writer   = new AmmyCodeWriter();
             StartAssembly?.Invoke(this, new StartAssemblyEventArgs
             {
@@ -68,11 +78,6 @@ namespace isukces.code.Ammy
             var methods = type.GetTypeInfo().GetMethods(BindingFlags.Static | BindingFlags.Public);
             foreach (var method in methods)
                 UseAmmyBuilderAttribute(type, method);
-        }
-
-        public void AddVariable(AmmyVariableDefinition variableDefinition)
-        {
-            CodeParts["a VARIABLE " + variableDefinition.Name] = variableDefinition;
         }
 
         private void UseAmmyBuilderAttribute(Type type, MethodInfo method)
@@ -97,7 +102,7 @@ namespace isukces.code.Ammy
         }
 
 
-        protected Dictionary<string, IAmmyCodePieceConvertible> CodeParts { get; private set; }
+        protected Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; private set; }
 
         private AmmyCodeWriter _writer;
 
@@ -119,5 +124,92 @@ namespace isukces.code.Ammy
         {
             public string Prefix { get; set; }
         }
+    }
+
+    public struct AmmyCodePartsKey : IEquatable<AmmyCodePartsKey>, IComparable<AmmyCodePartsKey>, IComparable
+    {
+        public AmmyCodePartsKey(AmmyCodePartsKeyKind kind, string name)
+        {
+            Kind = kind;
+            Name = name;
+        }
+
+        public static AmmyCodePartsKey Mixin(string mixinName)
+        {
+            return new AmmyCodePartsKey(AmmyCodePartsKeyKind.Mixin, mixinName);
+        }
+
+        public static bool operator ==(AmmyCodePartsKey left, AmmyCodePartsKey right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator >(AmmyCodePartsKey left, AmmyCodePartsKey right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(AmmyCodePartsKey left, AmmyCodePartsKey right)
+        {
+            return left.CompareTo(right) >= 0;
+        }
+
+        public static bool operator !=(AmmyCodePartsKey left, AmmyCodePartsKey right)
+        {
+            return !left.Equals(right);
+        }
+
+        public static bool operator <(AmmyCodePartsKey left, AmmyCodePartsKey right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(AmmyCodePartsKey left, AmmyCodePartsKey right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public int CompareTo(AmmyCodePartsKey other)
+        {
+            var kindComparison = Kind.CompareTo(other.Kind);
+            if (kindComparison != 0) return kindComparison;
+            return string.Compare(Name, other.Name, StringComparison.Ordinal);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return 1;
+            return obj is AmmyCodePartsKey other
+                ? CompareTo(other)
+                : throw new ArgumentException($"Object must be of type {nameof(AmmyCodePartsKey)}");
+        }
+
+        public bool Equals(AmmyCodePartsKey other)
+        {
+            return Kind == other.Kind && string.Equals(Name, other.Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AmmyCodePartsKey other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((int)Kind * 397) ^ (Name != null ? Name.GetHashCode() : 0);
+            }
+        }
+
+        public AmmyCodePartsKeyKind Kind { get; }
+        public string               Name { get; }
+    }
+
+    public enum AmmyCodePartsKeyKind
+    {
+        Variable,
+        Mixin,
+        Alias
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using isukces.code.interfaces;
 using JetBrains.Annotations;
 
@@ -11,7 +12,9 @@ namespace isukces.code.AutoCode
         CsClass GetOrCreateClass(TypeProvider type);
         
         [NotNull]
-        IList<object> Tags { get; } 
+        IList<object> Tags { get; }
+
+        void FileSaved(FileInfo fileInfo);
     }
 
     public static class AutoCodeGeneratorContextExtensions

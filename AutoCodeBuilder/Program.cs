@@ -29,7 +29,7 @@ namespace AutoCodeBuilder
             
             var saved        = false;
             var scanAssembly = typeof(CsLangInfo).Assembly;
-            autoCodeGenerator.Make(scanAssembly, "isukces.code\\+AutoCode.cs", ref saved);
+            autoCodeGenerator.Make(scanAssembly, "isukces.code\\+AutoCode.cs");
         }
     }
 }

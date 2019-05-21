@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
@@ -21,6 +22,11 @@ namespace isukces.code.AutoCode
                 AddNamespaceAction(namepace);
             }
 
+            public void FileSaved(FileInfo fileInfo)
+            {
+                AnyFileSaved = true;
+            }
+
             public CsClass GetOrCreateClass(TypeProvider type)
             {
                 return GetOrCreateClassFunc(type);
@@ -36,6 +42,7 @@ namespace isukces.code.AutoCode
             public Func<Type, object>          ResolveConfigFunc    { get; }
             public Func<TypeProvider, CsClass> GetOrCreateClassFunc { get; }
             public Action<string>              AddNamespaceAction   { get; }
+            public bool                        AnyFileSaved         { get; set; }
         }
     }
 }

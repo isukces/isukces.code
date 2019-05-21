@@ -26,10 +26,9 @@ namespace EqualityGeneratorSample
             }.WithGenerator(new Generators.EqualityGenerator(nullChecker));
             acg.BeforeSave += (a, eventArgs) => { eventArgs.File.BeginContent = "// ReSharper disable All"; };
 
-            var anyFileSaved = false;
-            acg.Make(typeof(Program).Assembly, "EqualityGeneratorSample\\+AutoCode.cs", ref anyFileSaved);
+            acg.Make(typeof(Program).Assembly, "EqualityGeneratorSample\\+AutoCode.cs");
             
-            if (anyFileSaved)
+            if (acg.AnyFileSaved)
                 throw new RecompileException();
         }
     }
