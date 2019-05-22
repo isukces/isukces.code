@@ -14,14 +14,18 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.19142.100</AssemblyVersion>
-    <Version>1.0.19142.100</Version>
-    <FileVersion>1.0.19142.100</FileVersion>
+    <AssemblyVersion>1.0.19142.101</AssemblyVersion>
+    <Version>1.0.19142.101</Version>
+    <FileVersion>1.0.19142.101</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageTags>C#</PackageTags>
+    <Title>Source code generators</Title>
+    <PackageProjectUrl>https://github.com/isukces/isukces.code</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/isukces/isukces.code/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/isukces/isukces.code</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

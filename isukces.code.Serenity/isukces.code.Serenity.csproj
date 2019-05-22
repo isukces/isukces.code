@@ -14,14 +14,18 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.19142.47</AssemblyVersion>
-    <Version>1.0.19142.47</Version>
-    <FileVersion>1.0.19142.47</FileVersion>
+    <AssemblyVersion>1.0.19142.48</AssemblyVersion>
+    <Version>1.0.19142.48</Version>
+    <FileVersion>1.0.19142.48</FileVersion>
     <Description>Serenity extension for iSukces.Code</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageTags>C#</PackageTags>
+    <Title>Source code generators</Title>
+    <PackageProjectUrl>https://github.com/isukces/isukces.code</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/isukces/isukces.code/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/isukces/isukces.code</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
