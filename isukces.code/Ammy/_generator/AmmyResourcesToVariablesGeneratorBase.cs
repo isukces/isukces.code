@@ -7,9 +7,16 @@ using JetBrains.Annotations;
 
 namespace isukces.code.Ammy
 {
-    public abstract class AppAmmyAutocodeGeneratorBase : AmmyAutocodeGenerator
+    /// <summary>
+    /// Use commented 'GetResourceNames' method
+    /// from  
+    /// https://github.com/isukces/isukces.code/blob/master/isukces.code/Ammy/_generator/AmmyResourcesToVariablesGeneratorBase.cs
+    /// in derived class.
+    /// It requires reference to PresentationCore.
+    /// </summary>
+    public abstract class AmmyResourcesToVariablesGeneratorBase : AmmyAutocodeGenerator
     {
-        protected AppAmmyAutocodeGeneratorBase(IAssemblyFilenameProvider filenameProvider) : base(filenameProvider)
+        protected AmmyResourcesToVariablesGeneratorBase(IAssemblyFilenameProvider filenameProvider) : base(filenameProvider)
         {
         }
 
@@ -50,7 +57,6 @@ namespace isukces.code.Ammy
             return resourceUris;
         }
        
-
         public static string[] GetResourceNames(Assembly assembly)
         {
             try
