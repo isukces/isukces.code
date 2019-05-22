@@ -21,7 +21,7 @@ namespace isukces.code.interfaces
             public string IsEmptyProperty { get; set; }
 
             [NotNull]
-            public string[] GetHashCodeProperties { get; }
+            public string[] GetHashCodeProperties { get; set; }
 
             /// <summary>
             ///    Use this properties or fields instead of all properties
