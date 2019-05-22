@@ -13,9 +13,7 @@ namespace isukces.code.AutoCode
 
         public FileInfo GetFilename(Assembly assembly)
         {
-            var dir      = _provider.GetBaseDirectory(assembly);
-            var fileName = Path.Combine(dir.FullName, _localFileName);
-            return new FileInfo(fileName);
+            return new FileInfo(_provider.GetFileName(assembly, _localFileName));
         }
 
         private readonly IAssemblyBaseDirectoryProvider _provider;
