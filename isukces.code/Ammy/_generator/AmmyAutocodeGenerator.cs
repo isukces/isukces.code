@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using isukces.code.AutoCode;
@@ -11,9 +10,9 @@ namespace isukces.code.Ammy
 {
     public class AmmyAutocodeGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
     {
-        public AmmyAutocodeGenerator(Func<Assembly, FileInfo> getFileLocation)
+        public AmmyAutocodeGenerator(IAssemblyFilenameProvider filenameProvider)
         {
-            _getFileLocation = getFileLocation;
+            _filenameProvider = filenameProvider;
         }
 
         public void AddMixin(AmmyMixin mixin)
@@ -40,8 +39,7 @@ namespace isukces.code.Ammy
                 return;
             }
 
-            var fi = _getFileLocation(assembly);
-
+            var fi  = _filenameProvider.GetFilename(assembly);
             var ctx = new ConversionCtx(_writer);
             {
                 var h = ResolveSeparateLines;
@@ -52,11 +50,8 @@ namespace isukces.code.Ammy
                 i.Value.WriteLineTo(_writer, ctx);
 
             var txt = _writer.FullCode;
-            if (CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false))
-            {
+            if (CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false)) 
                 context.FileSaved(fi);
-                AfterSave?.Invoke(this, EventArgs.Empty);
-            }
 
             CodeParts = null;
             _writer   = null;
@@ -66,7 +61,7 @@ namespace isukces.code.Ammy
         {
             CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
             _writer   = new AmmyCodeWriter();
-            AfterStartAssembly(assembly, _writer);
+            AfterStartAssembly(assembly, _writer, context);
         }
 
         public virtual void Generate(Type type, IAutoCodeGeneratorContext context)
@@ -76,7 +71,8 @@ namespace isukces.code.Ammy
                 UseAmmyBuilderAttribute(type, method);
         }
 
-        protected virtual void AfterStartAssembly(Assembly assembly, AmmyCodeWriter writer)
+        protected virtual void AfterStartAssembly(Assembly assembly, AmmyCodeWriter writer,
+            IAutoCodeGeneratorContext context)
         {
         }
 
@@ -101,18 +97,11 @@ namespace isukces.code.Ammy
                 AddVariable(variableDefinition);
         }
 
-
         protected Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; private set; }
-
         private AmmyCodeWriter _writer;
-
-        private readonly Func<Assembly, FileInfo> _getFileLocation;
-
-        public event EventHandler AfterSave;
-
+        private readonly IAssemblyFilenameProvider _filenameProvider;
         public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         public event EventHandler<CreateMixinPrefixEventArgs>                  CreateMixinPrefix;
-
 
         public class CreateMixinPrefixEventArgs : EventArgs
         {

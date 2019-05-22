@@ -12,10 +12,9 @@ namespace AutoCodeBuilder
             var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "isukces.code.sln");
             if (solutionDir == null)
                 return;
-            var autoCodeGenerator = new AutoCodeGenerator
-            {
-                BaseDir = solutionDir
-            };
+            var dirProvider = SlnAssemblyBaseDirectoryProvider.Make<Program>("isukces.code.sln"); 
+            IAssemblyFilenameProvider provider= new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
+            var autoCodeGenerator = new AutoCodeGenerator(provider);
             autoCodeGenerator.FileNamespaces.Add("isukces.code");
             var ammyPropertyContainerMethodGenerator = new AmmyPropertyContainerMethodGenerator()
                 .WithSkip<AmmyContainerBase>()
@@ -26,10 +25,8 @@ namespace AutoCodeBuilder
             // autoCodeGenerator.CodeGenerators.Add(new AmmyBindSourceHostGenerator());
             autoCodeGenerator.CodeGenerators.Add(new FluentBindGenerator());
             
-            
-            var saved        = false;
             var scanAssembly = typeof(CsLangInfo).Assembly;
-            autoCodeGenerator.Make(scanAssembly, "isukces.code\\+AutoCode.cs");
+            autoCodeGenerator.Make(scanAssembly);
         }
     }
 }

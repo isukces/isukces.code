@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using isukces.code.CodeWrite;
@@ -10,8 +9,9 @@ namespace isukces.code.AutoCode
 {
     public partial class AutoCodeGenerator : IConfigResolver
     {
-        public AutoCodeGenerator()
+        public AutoCodeGenerator(IAssemblyFilenameProvider filenameProvider)
         {
+            _filenameProvider = filenameProvider;
             CodeGenerators.AddRange(GetStandardGenerators());
         }
 
@@ -40,12 +40,18 @@ namespace isukces.code.AutoCode
             yield return new Generators.ReactiveCommandGenerator();
         }
 
-        public bool AnyFileSaved { get; set; }
-        
-        public void Make(Assembly assembly, string outFileName)
+        public void Make<T>()
         {
-            if (BaseDir == null)
-                throw new NullReferenceException(nameof(BaseDir));
+            var assembly = typeof(T)
+#if COREFX
+                .GetTypeInfo()
+#endif
+                .Assembly;
+            Make(assembly);
+        }
+
+        public void Make(Assembly assembly)
+        {
             _csFile = new CsFile();
             foreach (var i in FileNamespaces)
                 _csFile.AddImportNamespace(i);
@@ -68,16 +74,17 @@ namespace isukces.code.AutoCode
 
             foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
                 i.AssemblyEnd(assembly, context);
-            var fileName = Path.Combine(BaseDir.FullName, outFileName);
-            var h        = BeforeSave;
-            if (h != null)
+
+            var fileName     = _filenameProvider.GetFilename(assembly).FullName;
+            var eventHandler = BeforeSave;
+            if (eventHandler != null)
             {
                 var args = new BeforeSaveEventArgs
                 {
                     File     = _csFile,
                     FileName = fileName
                 };
-                h(this, args);
+                eventHandler(this, args);
                 fileName = args.FileName;
             }
 
@@ -97,7 +104,7 @@ namespace isukces.code.AutoCode
             CodeGenerators.Add(generator);
             return this;
         }
-        
+
         private CsClass GetOrCreateClass(TypeProvider type)
         {
             return _csFile.GetOrCreateClass(type, _classes);
@@ -112,11 +119,12 @@ namespace isukces.code.AutoCode
             return value;
         }
 
+        public bool AnyFileSaved { get; set; }
+
         public List<IAutoCodeGenerator> CodeGenerators { get; } = new List<IAutoCodeGenerator>();
 
-        public DirectoryInfo BaseDir { get; set; }
-        
         public ISet<string> FileNamespaces { get; } = new HashSet<string>();
+        private readonly IAssemblyFilenameProvider _filenameProvider;
 
         private readonly Dictionary<Type, object> _configs = new Dictionary<Type, object>();
 

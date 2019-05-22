@@ -19,4 +19,9 @@ namespace isukces.code.AutoCode
     {
         DirectoryInfo GetBaseDirectory(Assembly assembly);
     }
+
+    public interface IAssemblyFilenameProvider
+    {
+        FileInfo GetFilename(Assembly assembly);
+    }
 }

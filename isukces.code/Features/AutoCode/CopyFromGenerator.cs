@@ -12,9 +12,6 @@ namespace isukces.code.AutoCode
 {
     public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGenerator
     {
-        // private readonly AutoCodeGeneratorConfiguration _configuration;
-
-
         private void CloneWithValuesProcessor(PropertyInfo pi, ICsCodeWriter writer, ITypeNameResolver resolver)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
@@ -69,8 +66,7 @@ namespace isukces.code.AutoCode
                 pi.Name, wm);
             writer.WriteLine("}");
         }
-
-
+        
         private static void GenerateMethodClone(Type type, CsClass csClass)
         {
             csClass.ImplementedInterfaces.Add("ICloneable");
@@ -108,8 +104,7 @@ namespace isukces.code.AutoCode
             if (_doCloneable)
                 GenerateMethodClone(Type, Class);
         }
-
-
+        
         protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeWriter writer)
         {
             ITypeNameResolver resolver = Class;
@@ -300,7 +295,5 @@ namespace isukces.code.AutoCode
         private Auto.CopyFromAttribute         _copyFromAttribute;
         private bool                           _doCloneable;
         private CopyFromGeneratorConfiguration _configuration;
-
-        
     }
 }

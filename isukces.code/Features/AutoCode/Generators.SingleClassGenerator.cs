@@ -38,8 +38,7 @@ namespace isukces.code.AutoCode
 
             protected TAttribute[] Attributes { get; private set; }
         }
-
-
+        
         public abstract class SingleClassGenerator : IAutoCodeGenerator
         {
             protected void Setup(Type type, IAutoCodeGeneratorContext context)

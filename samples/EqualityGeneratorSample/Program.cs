@@ -17,17 +17,14 @@ namespace EqualityGeneratorSample
 
         private static void WriteAutoCode()
         {
-            var solutionDir =
-                typeof(Program).FindFileHereOrInParentDirectories("EqualityGenerator.sln");
             IMemberNullValueChecker nullChecker = new MyNullChecker();
-            var acg = new AutoCodeGenerator
-            {
-                BaseDir = solutionDir
-            }.WithGenerator(new Generators.EqualityGenerator(nullChecker));
-            acg.BeforeSave += (a, eventArgs) => { eventArgs.File.BeginContent = "// ReSharper disable All"; };
+            var dirProvider = SlnAssemblyBaseDirectoryProvider.Make<Program>("EqualityGenerator.sln");
+            IAssemblyFilenameProvider provider = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
 
-            acg.Make(typeof(Program).Assembly, "EqualityGeneratorSample\\+AutoCode.cs");
-            
+            var acg = new AutoCodeGenerator(provider)
+                .WithGenerator(new Generators.EqualityGenerator(nullChecker));
+            acg.BeforeSave += (a, eventArgs) => { eventArgs.File.BeginContent = "// ReSharper disable All"; };
+            acg.Make<Program>();
             if (acg.AnyFileSaved)
                 throw new RecompileException();
         }
