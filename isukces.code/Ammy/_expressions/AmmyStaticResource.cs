@@ -11,8 +11,15 @@ namespace isukces.code.Ammy
 
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
-            return new SimpleAmmyCodePiece("resource \"" + ResourceName + "\"");
+            return new SimpleAmmyCodePiece(Code);
         }
+
+        public override string ToString()
+        {
+            return Code;
+        }
+
+        private string Code => $"resource \"{ResourceName}\"";
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public string ResourceName { get; set; }
