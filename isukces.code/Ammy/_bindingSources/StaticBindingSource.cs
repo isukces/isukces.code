@@ -17,6 +17,11 @@ namespace isukces.code.Ammy
             return new SimpleAmmyCodePiece(code);
         }
 
+        public override string ToString()
+        {
+            return $"StaticBindingSource {_type}.{_property}";
+        }
+
         private readonly Type _type;
         private readonly string _property;
     }
