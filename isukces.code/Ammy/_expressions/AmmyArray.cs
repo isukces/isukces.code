@@ -1,11 +1,17 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
     public class AmmyArray : IAmmyCodePieceConvertible
     {
+        private static AmmyArray FromItems(params object[] items)
+        {
+            var ammyArray = new AmmyArray();
+            ammyArray.Items.AddRange(items);
+            return ammyArray;
+        }
+
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
             var converted = new IAmmyCodePiece[Items.Count];
