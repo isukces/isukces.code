@@ -280,7 +280,7 @@ namespace isukces.code.AutoCode
                 {
                     var info = CreatePropertyInfo(property);
                     var code = info.EqualsCode("{0}", "{1}.{0}", _class);
-                    var cost = GetEqualsCost(property.ValueType, true);
+                    var cost = GetEqualsCost(property.ValueType, false);
                     return code.WithCost(cost);
                 }
             }
