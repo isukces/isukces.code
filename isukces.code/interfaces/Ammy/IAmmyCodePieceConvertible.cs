@@ -2,6 +2,11 @@ using System;
 
 namespace isukces.code.interfaces.Ammy
 {
+    public interface IAmmySpecialBindCode
+    {
+        IComplexAmmyCodePiece GetObjectSyntaxCode(IConversionCtx ctx);
+    }
+
     public interface IAmmyCodePieceConvertible
     {
         IAmmyCodePiece ToAmmyCode(IConversionCtx ctx);

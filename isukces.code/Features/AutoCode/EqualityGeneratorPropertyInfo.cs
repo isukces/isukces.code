@@ -119,7 +119,7 @@ namespace isukces.code.AutoCode
                             break;
 
                         case Auto.GetHashCodeOptions.NullValueGivesZero:
-                            if (ResultType.IsNullable())
+                            if (ResultType.IsNullableType())
                                 argumentExpression += ".Value";
                             break;
                         case Auto.GetHashCodeOptions.MethodAcceptNulls:

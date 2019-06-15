@@ -140,7 +140,7 @@ namespace isukces.code.AutoCode
                     .WithMemberAttributes(prop.Member);
                 info.PropertyValueIsNotNull = NullChecker.ReturnValueAlwaysNotNull(prop.Member);
                 info.GetCoalesceExpression  = q => GetCoalesceExpressionForType(info.ResultType);
-                if (info.ResultType.IsNullable())
+                if (info.ResultType.IsNullableType())
                     info.GetEqualsExpression = input =>
                     {
                         if (info.PropertyValueIsNotNull)
@@ -210,7 +210,7 @@ namespace isukces.code.AutoCode
                     {
                         if (info.PropertyValueIsNotNull)
                         {
-                            if (info.ResultType.IsNullable())
+                            if (info.ResultType.IsNullableType())
                             {
                                 // nullable but not null
                                 m     = GeneratorsHelper.DefaultComparerMethodName(type.StripNullable(), _class);

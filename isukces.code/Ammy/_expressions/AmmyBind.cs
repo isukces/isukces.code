@@ -8,7 +8,7 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>        
+    public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>, IAmmySpecialBindCode
     {
         public AmmyBind(string path, DataBindingMode? mode = null)
         {
@@ -139,6 +139,61 @@ namespace isukces.code.Ammy
             return ToOneLineCode(new ConversionCtx(new AmmyNamespaceProvider()));
         }
 
+        public IComplexAmmyCodePiece GetObjectSyntaxCode(IConversionCtx ctx)
+        {
+            var aaa = new AmmyContainerBase();
+
+
+
+            void Add(string name, object value)
+            {
+                while (true)
+                {
+                    switch (value)
+                    {
+                        case null:
+                            return;
+                        case string txt:
+                            value = new SimpleAmmyCodePiece(txt.CsEncode());
+                            break;
+                        case AmmyBind ammyBind:
+                            value = ammyBind.ToAmmyCode(ctx);
+                            break;
+                        case IAmmyCodePiece cp:
+                            aaa.Properties[name] = cp;
+                            return;
+                        case IRelativeBindingSource rel:
+                            value = rel.GetObjectSyntaxCode(ctx);
+                            break;
+                        case IAmmyCodePieceConvertible conv:
+                            value = conv.ToAmmyCode(ctx);
+                            continue;
+                        default:
+                            throw new NotImplementedException(value.GetType().ToString());
+                    }
+                }
+            }
+
+
+
+            Add("Path", Path);
+            if (From is IRelativeBindingSource r)
+                Add("RelativeSource", From);
+            else
+                Add("Source", From);
+            var oi = GetOrderedItems(SetItems);
+            foreach (var i in oi)
+            {
+                if (i.Value is null)
+                    continue;
+                var code = ctx.AnyToCodePiece(i.Value);
+                Add(i.Key, code);
+            }
+
+            return aaa.ToComplexAmmyCode(ctx, "Bind");
+        }
+
+
         public AmmyBind WithSetParameter(string key, object value)
         {
             if (!string.IsNullOrEmpty(key))
@@ -166,8 +221,9 @@ namespace isukces.code.Ammy
         public string Path { get; set; }
 
         // public DataBindingMode? Mode        { get; set; }
-        public object                             From     { get; set; }
-        public List<KeyValuePair<string, object>> SetItems { get; } = new List<KeyValuePair<string, object>>();
+        public object                             From         { get; set; }
+        public List<KeyValuePair<string, object>> SetItems     { get; } = new List<KeyValuePair<string, object>>();
+      
 
         // used only for resolving new lines 
         public class SetCollection : IAmmyCodePiece
@@ -190,11 +246,12 @@ namespace isukces.code.Ammy
         OneWayToSource,
         Default
     }
+
     public enum DataUpdateSourceTrigger
     {
         Default,
         PropertyChanged,
         LostFocus,
-        Explicit,
+        Explicit
     }
 }

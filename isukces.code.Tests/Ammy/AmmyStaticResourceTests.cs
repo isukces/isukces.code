@@ -1,4 +1,5 @@
 using isukces.code.Ammy;
+using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 using Xunit;
 
@@ -20,10 +21,12 @@ namespace isukces.code.Tests.Ammy
         [Fact]
         public void T02_Should_create_complex()
         {
-            var            a      = new AmmyStaticResource("Bla") {EmitAsObject = true};
-            var            writer = new AmmyCodeWriter();
-            IConversionCtx ctx    = new ConversionCtx(writer);
-            a.AppendTo(writer, ctx);
+            var writer = new AmmyCodeWriter();
+            IConversionCtx ctx = new ConversionCtx(writer);
+
+            var a1 = new AmmyStaticResource("Bla");
+            var a = a1.GetObjectSyntaxCode(ctx);
+            writer.AppendComplex(a);
             const string expected = @"StaticResource { ResourceKey: ""Bla"" }";
             Assert.Equal(expected, writer.Code);
         }

@@ -2,7 +2,7 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public class AmmyStaticResource : IAmmyCodePieceConvertible
+    public class AmmyStaticResource : IAmmyCodePieceConvertible, IAmmySpecialBindCode
     {
         public AmmyStaticResource(string resourceName)
         {
@@ -11,11 +11,6 @@ namespace isukces.code.Ammy
 
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
-            if (EmitAsObject)
-                return new ComplexAmmyCodePiece(new[]
-                {
-                    new SimpleAmmyCodePiece(ResourceName.CsEncode()).WithPropertyNameBefore("ResourceKey"),
-                }, "StaticResource");
             return new SimpleAmmyCodePiece(Code);
         }
 
@@ -24,11 +19,17 @@ namespace isukces.code.Ammy
             return Code;
         }
 
+        public IComplexAmmyCodePiece GetObjectSyntaxCode(IConversionCtx ctx)
+        {
+            return new ComplexAmmyCodePiece(new[]
+            {
+                new SimpleAmmyCodePiece(ResourceName.CsEncode()).WithPropertyNameBefore("ResourceKey"),
+            }, "StaticResource");
+        }
+
         private string Code => $"resource \"{ResourceName}\"";
 
         // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
         public string ResourceName { get; set; }
-        
-        public bool EmitAsObject { get; set; }
     }
 }

@@ -17,7 +17,7 @@ namespace isukces.code
             return CsNamespaceMemberKind.Class;
         }
 
-        public static bool IsNullable(this Type type)
+        public static bool IsNullableType(this Type type)
         {
 #if COREFX
             var typeInfo = type.GetTypeInfo();
@@ -36,6 +36,23 @@ namespace isukces.code
 #endif
             if (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
                 return typeInfo.GetGenericArguments()[0];
+            return type;
+        }
+        
+        public static Type StripNullable(this Type type, out bool wasNullable)
+        {
+#if COREFX
+            var typeInfo = type.GetTypeInfo();
+#else
+            var typeInfo = type;
+#endif
+            if (typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                wasNullable = true;
+                return typeInfo.GetGenericArguments()[0];
+            }
+
+            wasNullable = false;
             return type;
         }
     }
