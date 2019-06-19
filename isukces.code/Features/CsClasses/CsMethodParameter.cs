@@ -9,30 +9,10 @@ namespace isukces.code
         /// <summary>
         ///     Tworzy instancję obiektu
         ///     <param name="name">nazwa parametru</param>
-        /// </summary>
-        public CsMethodParameter(string name)
-        {
-            Name = name;
-        }
-
-        /// <summary>
-        ///     Tworzy instancję obiektu
-        ///     <param name="name">nazwa parametru</param>
-        ///     <param name="type">typ parametru</param>
-        /// </summary>
-        public CsMethodParameter(string name, string type)
-        {
-            Name = name;
-            Type = type;
-        }
-
-        /// <summary>
-        ///     Tworzy instancję obiektu
-        ///     <param name="name">nazwa parametru</param>
         ///     <param name="type">typ parametru</param>
         ///     <param name="description">Opis</param>
         /// </summary>
-        public CsMethodParameter(string name, string type, string description)
+        public CsMethodParameter(string name, string type=null, string description=null)
         {
             Name        = name;
             Type        = type;

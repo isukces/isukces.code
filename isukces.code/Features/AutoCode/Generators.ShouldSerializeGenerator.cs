@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using isukces.code.interfaces;
+using JetBrains.Annotations;
 
 namespace isukces.code.AutoCode
 {
@@ -21,7 +22,7 @@ namespace isukces.code.AutoCode
                 };
             }
 
-            public static string MakeShouldSerializeCondition(PropertyInfo pi)
+            public string MakeShouldSerializeCondition(PropertyInfo pi)
             {
                 var type       = pi.PropertyType;
                 var isNullable = false;
@@ -39,22 +40,22 @@ namespace isukces.code.AutoCode
                     }
                 }
 
-                var template = GetTypeTemplate(type);
+                var template = GetTypeTemplate(type)?.Trim();
+                if (string.IsNullOrEmpty(template))
+                    throw new Exception(string.Format("Unable to get condition for {0}.", type));
                 if (isNullable)
                     return string.Format("{0} != null && ", pi.Name)
                            + string.Format(template, pi.Name + ".Value");
                 return string.Format(template, pi.Name);
             }
 
-            private static string GetTypeTemplate(Type type)
+            [CanBeNull]
+            protected virtual string GetTypeTemplate(Type type)
             {
                 if (Templates.TryGetValue(type, out var template))
                     return template;
-
                 var infoAttribute = type.GetTypeInfo().GetCustomAttribute<Auto.ShouldSerializeInfoAttribute>();
-                if (infoAttribute != null)
-                    return infoAttribute.CodeTemplate;
-                throw new Exception("Unable to get condition for " + type);
+                return infoAttribute?.CodeTemplate;
             }
 
 
