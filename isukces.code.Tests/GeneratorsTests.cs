@@ -60,12 +60,12 @@ namespace isukces.code.Tests
         public void T05_ShouldSerializeGenerator_tests(string propertyName, string expectedCode)
         {
             var pi   = typeof(ShouldSerializeGeneratorTestClass).GetProperty(propertyName);
-            var code = Generators.ShouldSerializeGenerator.MakeShouldSerializeCondition(pi);
+            var code = new Generators.ShouldSerializeGenerator().MakeShouldSerializeCondition(pi);
             Assert.Equal(expectedCode, code);
 
             pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(
                 nameof(ShouldSerializeGeneratorTestClass.OtherValue));
-            code = Generators.ShouldSerializeGenerator.MakeShouldSerializeCondition(pi);
+            code = new Generators.ShouldSerializeGenerator().MakeShouldSerializeCondition(pi);
             Assert.Equal("!OtherValue.Equals(Foo)", code);
         }
 
@@ -73,7 +73,7 @@ namespace isukces.code.Tests
         public void T06_Should_convert_generic_type_name()
         {
             var t  = typeof(AmmyObjectBuilder<>);
-            var tn = new CsFile().TypeName(t);
+            var tn = new CsFile().GetTypeName(t);
             Assert.Equal("isukces.code.Ammy.AmmyObjectBuilder<TPropertyBrowser>", tn);
         }
 
