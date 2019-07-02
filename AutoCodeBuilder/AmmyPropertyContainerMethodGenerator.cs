@@ -28,8 +28,8 @@ namespace AutoCodeBuilder
             var cl = context.GetOrCreateClass(type);
             {
                 var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator), "G2")
-                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
-                    .WriteLine("this.WithProperty(mi.Member.Name, value);")
+                    .WriteLine("var name = CodeUtils.GetMemberPath(func);")
+                    .WriteLine("this.WithProperty(name, value);")
                     .WriteLine("return this;");
 
                 var m = CreateMethod("WithProperty<TValue>", type, cl, cf);
@@ -38,8 +38,8 @@ namespace AutoCodeBuilder
             }
             {
                 var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator), "G3")
-                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
-                    .WriteLine("this.WithProperty(mi.Member.Name, value);")
+                    .WriteLine("var name = CodeUtils.GetMemberPath(func);")
+                    .WriteLine("this.WithProperty(name, value);")
                     .WriteLine("return this;");
 
                 var m = CreateMethod("WithPropertyGeneric<TValue>", type, cl, cf);
@@ -50,8 +50,8 @@ namespace AutoCodeBuilder
             {
                 // ======== WithPropertyNotNull
                 var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator), "G4")
-                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
-                    .WriteLine("return this.WithPropertyNotNull(mi.Member.Name, value);");
+                    .WriteLine("var name = CodeUtils.GetMemberPath(func);")
+                    .WriteLine("return this.WithPropertyNotNull(name, value);");
 
                 var m = CreateMethod("WithPropertyNotNull<TValue>", type, cl, cf);
                 m.AddParam("func", "Expression<Func<TPropertyBrowser, TValue>>");
@@ -60,8 +60,8 @@ namespace AutoCodeBuilder
             {
                 // ======== WithPropertyGenericNotNull
                 var cf = CreateCode(nameof(AmmyPropertyContainerMethodGenerator),"G5")
-                    .WriteLine("var mi = AmmyHelper.GetMemberInfo(func);")
-                    .WriteLine("return this.WithPropertyNotNull(mi.Member.Name, value);");
+                    .WriteLine("var name = CodeUtils.GetMemberPath(func);")
+                    .WriteLine("return this.WithPropertyNotNull(name, value);");
 
                 var m = CreateMethod("WithPropertyGenericNotNull<TValue>", type, cl, cf);
                 m.AddParam("func", "Expression<Func<TPropertyBrowser, TValue>>");

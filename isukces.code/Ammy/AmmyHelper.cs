@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 using JetBrains.Annotations;
@@ -95,23 +96,6 @@ namespace isukces.code.Ammy
             var res = new IAmmyCodePiece[take];
             Array.Copy(result, res, take);
             return res;
-        }
-
-        public static MemberExpression GetMemberInfo(Expression method)
-        {
-            if (!(method is LambdaExpression lambda))
-                throw new ArgumentNullException(nameof(method));
-
-            MemberExpression memberExpr = null;
-            if (lambda.Body.NodeType == ExpressionType.Convert)
-                memberExpr =
-                    ((UnaryExpression)lambda.Body).Operand as MemberExpression;
-            else if (lambda.Body.NodeType == ExpressionType.MemberAccess) memberExpr = lambda.Body as MemberExpression;
-
-            if (memberExpr == null)
-                throw new ArgumentException("method");
-
-            return memberExpr;
         }
 
         [NotNull]

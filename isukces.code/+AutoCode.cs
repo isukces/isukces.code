@@ -530,8 +530,8 @@ namespace isukces.code.Ammy
         public AmmyObjectBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G2
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            this.WithProperty(name, value);
             return this;
         }
 
@@ -575,8 +575,8 @@ namespace isukces.code.Ammy
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G3
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            this.WithProperty(name, value);
             return this;
         }
 
@@ -584,16 +584,16 @@ namespace isukces.code.Ammy
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G5
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            return this.WithPropertyNotNull(name, value);
         }
 
         [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public AmmyObjectBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G4
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            return this.WithPropertyNotNull(name, value);
         }
 
         [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
@@ -619,8 +619,8 @@ namespace isukces.code.Ammy
         public MixinBuilder<TPropertyBrowser> WithProperty<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G2
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            this.WithProperty(name, value);
             return this;
         }
 
@@ -664,8 +664,8 @@ namespace isukces.code.Ammy
         public MixinBuilder<TPropertyBrowser> WithPropertyGeneric<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G3
-            var mi = AmmyHelper.GetMemberInfo(func);
-            this.WithProperty(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            this.WithProperty(name, value);
             return this;
         }
 
@@ -673,16 +673,16 @@ namespace isukces.code.Ammy
         public MixinBuilder<TPropertyBrowser> WithPropertyGenericNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, TValue value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G5
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            return this.WithPropertyNotNull(name, value);
         }
 
         [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]
         public MixinBuilder<TPropertyBrowser> WithPropertyNotNull<TValue>(Expression<Func<TPropertyBrowser, TValue>> func, object value)
         {
             // generator : AmmyPropertyContainerMethodGenerator G4
-            var mi = AmmyHelper.GetMemberInfo(func);
-            return this.WithPropertyNotNull(mi.Member.Name, value);
+            var name = CodeUtils.GetMemberPath(func);
+            return this.WithPropertyNotNull(name, value);
         }
 
         [AutocodeGeneratedAttribute("AmmyPropertyContainerMethodGenerator")]

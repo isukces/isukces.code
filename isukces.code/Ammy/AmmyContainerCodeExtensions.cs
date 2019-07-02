@@ -62,7 +62,7 @@ namespace isukces.code.Ammy
             Expression<Func<T, TValue>> func, object v)
             where T : IAmmyPropertyContainer
         {
-            var mi = AmmyHelper.GetMemberInfo(func);
+            var mi = CodeUtils.GetMemberInfo(func);
             return self.WithPropertyNotNull(mi.Member.Name, v);
         }
         
