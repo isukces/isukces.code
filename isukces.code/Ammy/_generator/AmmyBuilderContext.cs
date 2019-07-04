@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace isukces.code.Ammy
 {
@@ -43,14 +45,49 @@ namespace isukces.code.Ammy
             return this;
         }
 
+
+        public bool EmbedInRelativeFile(string shortFileName, [CallerFilePath] string csFile = null)
+        {
+            if (string.IsNullOrEmpty(csFile))
+                return false;
+            var fi = new FileInfo(csFile);
+            if (string.IsNullOrEmpty(shortFileName))
+            {
+                var shortName = fi.Name;
+                shortFileName = shortName.Substring(0, shortName.Length - fi.Extension.Length);
+                shortFileName = shortFileName.Split('.')[0];
+            }
+
+            var fi2 = new FileInfo(Path.Combine(fi.Directory.FullName, shortFileName));
+            EmbedFileName = fi2.FullName;
+            if (string.IsNullOrEmpty(fi2.Extension))
+                EmbedFileName += ".ammy";
+            return true;
+        }
+
+        public bool EmbedInRelativeFile([CallerFilePath] string csFile = null)
+        {
+            return EmbedInRelativeFile(null, csFile);
+        }
+
         public override string ToString()
         {
             return $"{nameof(AmmyBuilderContext)} {Variables.Count} variable(s), {Mixins.Count} mixin(s)";
         }
 
-        public IReadOnlyList<AmmyMixin>              Mixins          => _mixins;
-        public IReadOnlyList<AmmyVariableDefinition> Variables       => _variables;
-        public string                                MixinNamePrefix { get; }
+        public IReadOnlyList<AmmyMixin> Mixins
+        {
+            get { return _mixins; }
+        }
+
+        public IReadOnlyList<AmmyVariableDefinition> Variables
+        {
+            get { return _variables; }
+        }
+
+        public string MixinNamePrefix { get; }
+
+        public string EmbedFileName { get; set; }
 
         private readonly List<AmmyMixin> _mixins = new List<AmmyMixin>();
         private readonly List<AmmyVariableDefinition> _variables = new List<AmmyVariableDefinition>();

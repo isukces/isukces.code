@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using isukces.code.AutoCode;
@@ -50,7 +51,7 @@ namespace isukces.code.Ammy
                 i.Value.WriteLineTo(_writer, ctx);
 
             var txt = _writer.FullCode;
-            if (CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false)) 
+            if (CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false))
                 context.FileSaved(fi);
 
             CodeParts = null;
@@ -74,6 +75,32 @@ namespace isukces.code.Ammy
         protected virtual void AfterStartAssembly(Assembly assembly, AmmyCodeWriter writer,
             IAutoCodeGeneratorContext context)
         {
+            _context = context;
+        }
+
+        private void Embed(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, string ctxEmbedFileName)
+        {
+            var readedFromFile = File.Exists(ctxEmbedFileName)
+                ? File.ReadAllText(ctxEmbedFileName)
+                : string.Empty;
+
+            var writer = new AmmyCodeWriter();
+            var ctx    = new ConversionCtx(writer);
+            {
+                var h = ResolveSeparateLines;
+                if (h != null)
+                    ctx.OnResolveSeparateLines += (a, b) => h.Invoke(this, b);
+            }
+            foreach (var i in cp.OrderBy(a => a.Key))
+                i.Value.WriteLineTo(_writer, ctx);
+
+            var code = _writer.FullCode;
+
+            var result = CodeEmbeder.Embed(readedFromFile, code);
+
+            var fi = new FileInfo(ctxEmbedFileName);
+            if (CodeFileUtils.SaveIfDifferent(result, fi.FullName, false))
+                _context.FileSaved(fi);
         }
 
         private void UseAmmyBuilderAttribute(Type type, MethodInfo method)
@@ -91,15 +118,29 @@ namespace isukces.code.Ammy
 
             var ctx = new AmmyBuilderContext(prefix);
             method.Invoke(null, new object[] {ctx});
-            foreach (var mixin in ctx.Mixins)
-                AddMixin(mixin);
-            foreach (var variableDefinition in ctx.Variables)
-                AddVariable(variableDefinition);
+            if (string.IsNullOrEmpty(ctx.EmbedFileName))
+            {
+                foreach (var mixin in ctx.Mixins)
+                    AddMixin(mixin);
+                foreach (var variableDefinition in ctx.Variables)
+                    AddVariable(variableDefinition);
+            }
+            else
+            {
+                var cp = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
+                foreach (var mixin in ctx.Mixins)
+                    cp[AmmyCodePartsKey.Mixin(mixin.Name)] = mixin;
+                foreach (var variableDefinition in ctx.Variables)
+                    cp[new AmmyCodePartsKey(AmmyCodePartsKeyKind.Variable, variableDefinition.Name)] =
+                        variableDefinition;
+                Embed(cp, ctx.EmbedFileName);
+            }
         }
 
         protected Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; private set; }
         private AmmyCodeWriter _writer;
         private readonly IAssemblyFilenameProvider _filenameProvider;
+        private IAutoCodeGeneratorContext _context;
         public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         public event EventHandler<CreateMixinPrefixEventArgs>                  CreateMixinPrefix;
 
