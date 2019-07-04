@@ -32,6 +32,8 @@ namespace isukces.code.Ammy
 
         IDictionary<string, object> IAmmyPropertyContainer.Properties => WrappedMixin.Properties;
 
+        private IDictionary<string, object> CustomData { get; } = new Dictionary<string, object>();
+
         IList<object> IAmmyContentItemsContainer.ContentItems => WrappedMixin.ContentItems;
     } 
 }

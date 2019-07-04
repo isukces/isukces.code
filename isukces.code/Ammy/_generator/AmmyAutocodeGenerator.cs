@@ -94,7 +94,7 @@ namespace isukces.code.Ammy
                 prefix = args.Prefix;
             }
 
-            var ctx = new AmmyBuilderContext(prefix);
+            var ctx = CreateAmmyBuilderContext(prefix);
             method.Invoke(null, new object[] {ctx});
             var cp = CodeParts;
             if (!string.IsNullOrEmpty(ctx.EmbedFileName))
@@ -108,6 +108,11 @@ namespace isukces.code.Ammy
                 cp.AddMixin(mixin);
             foreach (var variableDefinition in ctx.Variables)
                 cp.AddVariable(variableDefinition);
+        }
+
+        protected virtual AmmyBuilderContext CreateAmmyBuilderContext(string prefix)
+        {
+            return new AmmyBuilderContext(prefix);
         }
 
         protected Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; private set; }
