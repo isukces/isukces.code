@@ -18,12 +18,6 @@ namespace isukces.code.Ammy
 
         public void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
         {
-            if (CodeParts.Count == 0)
-            {
-                CodeParts = null;
-                return;
-            }
-
             var fi   = _filenameProvider.GetFilename(assembly);
             var code = EmitCode(CodeParts, _writer);
             if (CodeFileUtils.SaveIfDifferent(code, fi.FullName, false))
@@ -33,10 +27,12 @@ namespace isukces.code.Ammy
 
             CodeParts = null;
             _writer   = null;
+            _context = null;
         }
 
         public void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
         {
+            _context = context;
             CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
             _writer   = new AmmyCodeWriter();
             AfterStartAssembly(assembly, _writer, context);
@@ -52,7 +48,6 @@ namespace isukces.code.Ammy
         protected virtual void AfterStartAssembly(Assembly assembly, AmmyCodeWriter writer,
             IAutoCodeGeneratorContext context)
         {
-            _context = context;
         }
 
         private void Embed(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, string ctxEmbedFileName)
@@ -70,18 +65,20 @@ namespace isukces.code.Ammy
                 _context.FileSaved(fi);
         }
 
-        private string EmitCode(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, IAmmyNamespaceProvider namespaceProvider)
+        private string EmitCode(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, AmmyCodeWriter writer)
         {
-            var ctx = new ConversionCtx(namespaceProvider);
+            if (cp == null || cp.Count == 0)
+                return string.Empty;
+            var ctx = new ConversionCtx(writer);
             {
                 var h = ResolveSeparateLines;
                 if (h != null)
                     ctx.OnResolveSeparateLines += (a, b) => h.Invoke(this, b);
             }
             foreach (var i in cp.OrderBy(a => a.Key))
-                i.Value.WriteLineTo(_writer, ctx);
+                i.Value.WriteLineTo(writer, ctx);
 
-            return _writer.FullCode;
+            return writer.FullCode;
         }
 
         private void UseAmmyBuilderAttribute(Type type, MethodInfo method)
