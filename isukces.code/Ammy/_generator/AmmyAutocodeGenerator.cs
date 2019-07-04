@@ -16,22 +16,6 @@ namespace isukces.code.Ammy
             _filenameProvider = filenameProvider;
         }
 
-        public void AddMixin(AmmyMixin mixin)
-        {
-            CodeParts[AmmyCodePartsKey.Mixin(mixin.Name)] = mixin;
-        }
-
-        public void AddVariable(string name, string value)
-        {
-            AddVariable(new AmmyVariableDefinition(name, value));
-        }
-
-        public void AddVariable(AmmyVariableDefinition variableDefinition)
-        {
-            CodeParts[new AmmyCodePartsKey(AmmyCodePartsKeyKind.Variable, variableDefinition.Name)] =
-                variableDefinition;
-        }
-
         public void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
         {
             if (CodeParts.Count == 0)
@@ -40,19 +24,12 @@ namespace isukces.code.Ammy
                 return;
             }
 
-            var fi  = _filenameProvider.GetFilename(assembly);
-            var ctx = new ConversionCtx(_writer);
-            {
-                var h = ResolveSeparateLines;
-                if (h != null)
-                    ctx.OnResolveSeparateLines += (a, b) => h.Invoke(this, b);
-            }
-            foreach (var i in CodeParts.OrderBy(a => a.Key))
-                i.Value.WriteLineTo(_writer, ctx);
-
-            var txt = _writer.FullCode;
-            if (CodeFileUtils.SaveIfDifferent(txt, fi.FullName, false))
+            var fi   = _filenameProvider.GetFilename(assembly);
+            var code = EmitCode(CodeParts, _writer);
+            if (CodeFileUtils.SaveIfDifferent(code, fi.FullName, false))
                 context.FileSaved(fi);
+
+            foreach (var pair in _otherFiles) Embed(pair.Value.CodeParts, pair.Key);
 
             CodeParts = null;
             _writer   = null;
@@ -84,8 +61,18 @@ namespace isukces.code.Ammy
                 ? File.ReadAllText(ctxEmbedFileName)
                 : string.Empty;
 
-            var writer = new AmmyCodeWriter();
-            var ctx    = new ConversionCtx(writer);
+            var code = EmitCode(cp, new AmmyCodeWriter());
+
+            var result = CodeEmbeder.Embed(readedFromFile, code);
+
+            var fi = new FileInfo(ctxEmbedFileName);
+            if (CodeFileUtils.SaveIfDifferent(result, fi.FullName, false))
+                _context.FileSaved(fi);
+        }
+
+        private string EmitCode(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, IAmmyNamespaceProvider namespaceProvider)
+        {
+            var ctx = new ConversionCtx(namespaceProvider);
             {
                 var h = ResolveSeparateLines;
                 if (h != null)
@@ -94,13 +81,7 @@ namespace isukces.code.Ammy
             foreach (var i in cp.OrderBy(a => a.Key))
                 i.Value.WriteLineTo(_writer, ctx);
 
-            var code = _writer.FullCode;
-
-            var result = CodeEmbeder.Embed(readedFromFile, code);
-
-            var fi = new FileInfo(ctxEmbedFileName);
-            if (CodeFileUtils.SaveIfDifferent(result, fi.FullName, false))
-                _context.FileSaved(fi);
+            return _writer.FullCode;
         }
 
         private void UseAmmyBuilderAttribute(Type type, MethodInfo method)
@@ -118,31 +99,40 @@ namespace isukces.code.Ammy
 
             var ctx = new AmmyBuilderContext(prefix);
             method.Invoke(null, new object[] {ctx});
-            if (string.IsNullOrEmpty(ctx.EmbedFileName))
+            var cp = CodeParts;
+            if (!string.IsNullOrEmpty(ctx.EmbedFileName))
             {
-                foreach (var mixin in ctx.Mixins)
-                    AddMixin(mixin);
-                foreach (var variableDefinition in ctx.Variables)
-                    AddVariable(variableDefinition);
+                if (!_otherFiles.TryGetValue(ctx.EmbedFileName, out var info))
+                    _otherFiles[ctx.EmbedFileName] = info = new EmbeddedInfo();
+                cp = info.CodeParts;
             }
-            else
-            {
-                var cp = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
-                foreach (var mixin in ctx.Mixins)
-                    cp[AmmyCodePartsKey.Mixin(mixin.Name)] = mixin;
-                foreach (var variableDefinition in ctx.Variables)
-                    cp[new AmmyCodePartsKey(AmmyCodePartsKeyKind.Variable, variableDefinition.Name)] =
-                        variableDefinition;
-                Embed(cp, ctx.EmbedFileName);
-            }
+
+            foreach (var mixin in ctx.Mixins)
+                cp.AddMixin(mixin);
+            foreach (var variableDefinition in ctx.Variables)
+                cp.AddVariable(variableDefinition);
         }
 
         protected Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; private set; }
+
+        private readonly Dictionary<string, EmbeddedInfo> _otherFiles =
+            new Dictionary<string, EmbeddedInfo>(StringComparer.OrdinalIgnoreCase);
+
         private AmmyCodeWriter _writer;
         private readonly IAssemblyFilenameProvider _filenameProvider;
         private IAutoCodeGeneratorContext _context;
         public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         public event EventHandler<CreateMixinPrefixEventArgs>                  CreateMixinPrefix;
+
+        private class EmbeddedInfo
+        {
+            public EmbeddedInfo()
+            {
+                CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
+            }
+
+            public Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; }
+        }
 
         public class CreateMixinPrefixEventArgs : EventArgs
         {
@@ -150,85 +140,6 @@ namespace isukces.code.Ammy
         }
     }
 
-    public struct AmmyCodePartsKey : IEquatable<AmmyCodePartsKey>, IComparable<AmmyCodePartsKey>, IComparable
-    {
-        public AmmyCodePartsKey(AmmyCodePartsKeyKind kind, string name)
-        {
-            Kind = kind;
-            Name = name;
-        }
-
-        public static AmmyCodePartsKey Mixin(string mixinName)
-        {
-            return new AmmyCodePartsKey(AmmyCodePartsKeyKind.Mixin, mixinName);
-        }
-
-        public static bool operator ==(AmmyCodePartsKey left, AmmyCodePartsKey right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator >(AmmyCodePartsKey left, AmmyCodePartsKey right)
-        {
-            return left.CompareTo(right) > 0;
-        }
-
-        public static bool operator >=(AmmyCodePartsKey left, AmmyCodePartsKey right)
-        {
-            return left.CompareTo(right) >= 0;
-        }
-
-        public static bool operator !=(AmmyCodePartsKey left, AmmyCodePartsKey right)
-        {
-            return !left.Equals(right);
-        }
-
-        public static bool operator <(AmmyCodePartsKey left, AmmyCodePartsKey right)
-        {
-            return left.CompareTo(right) < 0;
-        }
-
-        public static bool operator <=(AmmyCodePartsKey left, AmmyCodePartsKey right)
-        {
-            return left.CompareTo(right) <= 0;
-        }
-
-        public int CompareTo(AmmyCodePartsKey other)
-        {
-            var kindComparison = Kind.CompareTo(other.Kind);
-            if (kindComparison != 0) return kindComparison;
-            return string.Compare(Name, other.Name, StringComparison.Ordinal);
-        }
-
-        public int CompareTo(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return 1;
-            return obj is AmmyCodePartsKey other
-                ? CompareTo(other)
-                : throw new ArgumentException($"Object must be of type {nameof(AmmyCodePartsKey)}");
-        }
-
-        public bool Equals(AmmyCodePartsKey other)
-        {
-            return Kind == other.Kind && string.Equals(Name, other.Name);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is AmmyCodePartsKey other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return ((int)Kind * 397) ^ (Name != null ? Name.GetHashCode() : 0);
-            }
-        }
-
-        public AmmyCodePartsKeyKind Kind { get; }
-        public string               Name { get; }
-    }
 
     public enum AmmyCodePartsKeyKind
     {

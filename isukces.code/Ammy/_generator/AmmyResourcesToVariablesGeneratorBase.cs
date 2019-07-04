@@ -131,7 +131,7 @@ namespace isukces.code.Ammy
                 var varName      = GetUriVariableName(localUriPath);
                 if (varName == null)
                     continue;
-                AddVariable(varName, prefix + localUriPath);
+                CodeParts.AddVariable(varName, prefix + localUriPath);
             }
         }
     }
