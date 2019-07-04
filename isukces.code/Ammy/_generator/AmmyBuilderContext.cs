@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -46,10 +47,12 @@ namespace isukces.code.Ammy
         }
 
 
-        public bool EmbedInRelativeFile(string shortFileName, [CallerFilePath] string csFile = null)
+        public void EmbedInRelativeFile(string shortFileName, [CallerFilePath] string csFile = null)
         {
+            if (csFile is null)
+                throw new ArgumentNullException(nameof(csFile));
             if (string.IsNullOrEmpty(csFile))
-                return false;
+                throw new ArgumentException(nameof(csFile));
             var fi = new FileInfo(csFile);
             if (string.IsNullOrEmpty(shortFileName))
             {
@@ -62,12 +65,11 @@ namespace isukces.code.Ammy
             EmbedFileName = fi2.FullName;
             if (string.IsNullOrEmpty(fi2.Extension))
                 EmbedFileName += ".ammy";
-            return true;
         }
 
-        public bool EmbedInRelativeFile([CallerFilePath] string csFile = null)
+        public void EmbedInRelativeFile([CallerFilePath] string csFile = null)
         {
-            return EmbedInRelativeFile(null, csFile);
+            EmbedInRelativeFile(null, csFile);
         }
 
         public override string ToString()
