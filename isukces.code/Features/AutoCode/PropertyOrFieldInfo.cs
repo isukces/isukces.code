@@ -33,13 +33,27 @@ namespace isukces.code.AutoCode
         public Type       ValueType { get; }
         public MemberInfo Member    { get; }
 
-        public bool IsCompareByReference => Member.GetCustomAttribute<CompareByReferenceAttribute>() != null;
+        public bool IsCompareByReference
+        {
+            get
+            {
+                var typeInfo = ValueType.GetTypeInfo();
+                if (Member.GetCustomAttribute<CompareByReferenceAttribute>() is null) 
+                    return false;
+                if (typeInfo.IsClass || typeInfo.IsInterface)
+                    return true;
+                throw new Exception($"Use {nameof(CompareByReferenceAttribute)} only for classes and interfaces");
+
+            }
+        }
 
         public bool IsNullIsEmpty => Member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null;
 
         public bool IsEqualityGeneratorSkip => Member.GetCustomAttribute<Auto.EqualityGeneratorSkipAttribute>() != null;
 
-        public bool CanBeNull
+        
+        
+        public bool PropertyValueCanBeNull
         {
             get
             {

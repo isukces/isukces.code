@@ -201,7 +201,7 @@ namespace isukces.code.AutoCode
                     if (info != null) return info.GetRelationalComparerExpression(input);
                 }
 
-                if (!property.CanBeNull)
+                if (!property.PropertyValueCanBeNull)
                     return new ExpressionWithObjectInstance($"{name}.CompareTo(other.{name})");
 
                 {
@@ -257,7 +257,7 @@ namespace isukces.code.AutoCode
                 if (!IsFloatNumber(type) && IsSimpleType(type))
                     return new EqualsExpressionData("{0} == {1}.{0}", GetEqualsCost(type, false));
 
-                if (property.CanBeNull && property.IsCompareByReference)
+                if (property.IsCompareByReference)
                     return new EqualsExpressionData(nameof(ReferenceEquals) + twoArgs, 1);
                 var typeInfo = type.GetTypeInfo();
                 if (typeInfo.IsGenericType)
