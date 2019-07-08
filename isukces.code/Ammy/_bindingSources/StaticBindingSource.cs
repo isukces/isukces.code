@@ -11,6 +11,11 @@ namespace isukces.code.Ammy
             _property = property;
         }
 
+        public static StaticBindingSource Make<T>(string property)
+        {
+            return new StaticBindingSource(typeof(T), property);
+        }
+
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
             var code = ctx.TypeName(_type) + "." + _property;

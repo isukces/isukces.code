@@ -5,7 +5,7 @@ namespace isukces.code.Ammy
 {
     public class AmmyArray : IAmmyCodePieceConvertible
     {
-        private static AmmyArray FromItems(params object[] items)
+        public static AmmyArray FromItems(params object[] items)
         {
             var ammyArray = new AmmyArray();
             ammyArray.Items.AddRange(items);
@@ -22,6 +22,12 @@ namespace isukces.code.Ammy
             }
 
             return new ComplexAmmyCodePiece(converted, null, AmmyBracketKind.Square);
+        }
+
+        public AmmyArray WithItem(object o)
+        {
+            Items.Add(o);
+            return this;
         }
 
         public List<object> Items { get; } = new List<object>();
