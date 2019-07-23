@@ -13,39 +13,6 @@ namespace isukces.code.Ammy
             MixinNamePrefix = mixinNamePrefix;
         }
 
-        public string GetFullMixinName(string shortName)
-        {
-            return MixinNamePrefix + shortName;
-        }
-
-        public MixinBuilder<T> RegisterMixin<T>(string name, bool globalName = false)
-        {
-            if (!globalName)
-                name = GetFullMixinName(name);
-            var m = new MixinBuilder<T>(name);
-            _mixins.Add(m.WrappedMixin);
-            return m;
-        }
-
-        public AmmyBuilderContext RegisterVariable(string name, int value, bool globalName = false)
-        {
-            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
-        }
-
-        public AmmyBuilderContext RegisterVariable(string name, double value, bool globalName = false)
-        {
-            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
-        }
-
-        public AmmyBuilderContext RegisterVariable(string name, string value, bool globalName = false)
-        {
-            if (!globalName)
-                name = GetFullMixinName(name);
-            var v = new AmmyVariableDefinition(name, value);
-            _variables.Add(v);
-            return this;
-        }
-
 
         public void EmbedInRelativeFile(string shortFileName, [CallerFilePath] string csFile = null)
         {
@@ -72,9 +39,47 @@ namespace isukces.code.Ammy
             EmbedInRelativeFile(null, csFile);
         }
 
+        public string GetFullMixinName(string shortName)
+        {
+            return MixinNamePrefix + shortName;
+        }
+
+        public MixinBuilder<T> RegisterMixin<T>(string name, bool globalName = false)
+        {
+            if (!globalName)
+                name = GetFullMixinName(name);
+            var mixinBuilder = new MixinBuilder<T>(name);
+            _mixins.Add(mixinBuilder.WrappedMixin);
+            AfterAddMixin(mixinBuilder);
+            return mixinBuilder;
+        }
+
+        public AmmyBuilderContext RegisterVariable(string name, int value, bool globalName = false)
+        {
+            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
+        }
+
+        public AmmyBuilderContext RegisterVariable(string name, double value, bool globalName = false)
+        {
+            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
+        }
+
+        public AmmyBuilderContext RegisterVariable(string name, string value, bool globalName = false)
+        {
+            if (!globalName)
+                name = GetFullMixinName(name);
+            var v = new AmmyVariableDefinition(name, value);
+            _variables.Add(v);
+            return this;
+        }
+
         public override string ToString()
         {
             return $"{nameof(AmmyBuilderContext)} {Variables.Count} variable(s), {Mixins.Count} mixin(s)";
+        }
+
+        protected virtual void AfterAddMixin<T>(MixinBuilder<T> mixinBuilder)
+        {
         }
 
         public IReadOnlyList<AmmyMixin> Mixins
