@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
@@ -17,14 +18,21 @@ namespace isukces.code.Ammy
                 WithMode(mode);
         }
 
-        public static AmmyBind FromAncestor(string path, Type ancestorType, int? level = null)
+        public static AmmyBind FromAncestor(string path, Type ancestorType)
         {
             return new AmmyBind(path).WithBindFromAncestor(ancestorType);
         }
 
         public static AmmyBind FromAncestor<T>(string path, int? level = null)
         {
-            return FromAncestor(path, typeof(T), level);
+            return FromAncestor(path, typeof(T));
+        }
+        
+        public static AmmyBind FromAncestor<T>(Expression<Func<T, object>> func, object mode)
+        {
+            var path  = CodeUtils.GetMemberPath(func);
+            var tmp = new AmmyBindBuilder(path).WithBindFromAncestor(typeof(T));
+            return tmp.Build();
         }
 
         private static int GetKeywordOrder(string a)
