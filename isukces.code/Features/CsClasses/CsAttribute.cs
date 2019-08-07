@@ -71,9 +71,13 @@ namespace isukces.code
         public override string ToString()
         {
             var values = _list.Select(KeyValuePairToString).ToArray();
+            var name   = Name;
+            if (name.EndsWith(AttributeSuffix, StringComparison.Ordinal))
+                if (!name.Contains('.'))
+                    name = name.Substring(0, name.Length - AttributeSuffixLength);
             if (values.Length == 0)
-                return Name;
-            return string.Format("{0}({1})", Name, string.Join(", ", values));
+                return name;
+            return string.Format("{0}({1})", name, string.Join(", ", values));
             // [PrimaryKey("Id", autoIncrement = false)]
         }
 
@@ -89,11 +93,9 @@ namespace isukces.code
             _list.Add(new KeyValuePair<string, string>(name, sValue));
             return this;
         }
-
-
+        
         public string Name { get; set; }
-
-
+        
         public string Code
         {
             get
@@ -106,7 +108,11 @@ namespace isukces.code
             }
         }
 
+        private static readonly int AttributeSuffixLength = AttributeSuffix.Length;
+
 
         private readonly List<KeyValuePair<string, string>> _list = new List<KeyValuePair<string, string>>();
+
+        private const string AttributeSuffix = "Attribute";
     }
 }
