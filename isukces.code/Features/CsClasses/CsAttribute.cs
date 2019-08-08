@@ -13,6 +13,11 @@ namespace isukces.code
             Name = name;
         }
 
+        public static CsAttribute Make<T>(ITypeNameResolver typeNameResolver)
+        {
+            return new CsAttribute(typeNameResolver.GetTypeName(typeof(T)));
+        }
+
         public static implicit operator string(CsAttribute a)
         {
             return a.ToString();
@@ -88,14 +93,24 @@ namespace isukces.code
 
         public CsAttribute WithArgument(string name, object value)
         {
-            name = (name ?? "").Trim();
             var sValue = Encode(value);
-            _list.Add(new KeyValuePair<string, string>(name, sValue));
+            return WithArgumentCode(name, sValue);
+        }
+
+        public CsAttribute WithArgumentCode(string valueCode)
+        {
+            return WithArgumentCode("", valueCode);
+        }
+
+        public CsAttribute WithArgumentCode(string name, string valueCode)
+        {
+            name = (name ?? "").Trim();
+            _list.Add(new KeyValuePair<string, string>(name, valueCode));
             return this;
         }
-        
+
         public string Name { get; set; }
-        
+
         public string Code
         {
             get
@@ -109,7 +124,6 @@ namespace isukces.code
         }
 
         private static readonly int AttributeSuffixLength = AttributeSuffix.Length;
-
 
         private readonly List<KeyValuePair<string, string>> _list = new List<KeyValuePair<string, string>>();
 
