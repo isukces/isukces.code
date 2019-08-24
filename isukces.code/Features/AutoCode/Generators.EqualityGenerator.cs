@@ -40,11 +40,12 @@ namespace isukces.code.AutoCode
                 }).ToArray();
             }
 
-            private static string GetCoalesceExpressionForType(Type type)
+            private static CsExpression GetCoalesceExpressionForType(Type type)
             {
-                if (type == typeof(int?))
-                    return "0";
-                return "default";
+                if (type == typeof(int?) || type == typeof(int) ||
+                    type == typeof(double?) || type == typeof(double))
+                    return 0;
+                return new CsExpression("default");
             }
 
             private static bool IsFloatNumber(Type type)
@@ -119,8 +120,8 @@ namespace isukces.code.AutoCode
                         .Select(a =>
                         {
                             var template = FindEqualsCode(a);
-                            var code     = string.Format(template.Code, a.Name, otherName);
-                            return new EqualsExpressionData(code, template.Cost, template.Brackets);
+                            var code = template.Code.Format(a.Name, otherName);
+                            return new EqualsExpressionData(code, template.Cost);
                         })
                         .OrderBy(a => a.Cost);
                     implementer = implementer
@@ -144,24 +145,28 @@ namespace isukces.code.AutoCode
                     info.GetEqualsExpression = input =>
                     {
                         if (info.PropertyValueIsNotNull)
-                            return $"Equals({input.Left}.Value, {input.Right}.Value)";
+                            return GeneratorsHelper.CallMethod("Equals",
+                                input.Left.CallProperty("Value"),
+                                input.Right.CallProperty("Value"));
                         if (info.NullToEmpty)
-                            return $"({input.Left}).Equals({input.Right})";
-                        return $"Equals({input.Left}, {input.Right})";
+                            input.Left.CallMethod("Equals", input.Right);
+                        return (CsExpression)$"Equals({input.Left}, {input.Right})";
                     };
                 else
                     info.GetEqualsExpression = input =>
                     {
                         if (info.PropertyValueIsNotNull)
-                            return $"{input.Left}.Equals({input.Right})";
-                        return $"Equals({input.Left}, {input.Right})";
+                            return input.Left.CallMethod("Equals", input.Right);
+                        return GeneratorsHelper.CallMethod("Equals", input.Left, input.Right);
                     };
-                info.GetHashCodeExpression = input => "{0}.GetHashCode()";
+                info.GetHashCodeExpression = input => (CsExpression)"{0}.GetHashCode()";
                 return info;
             }
 
-            protected virtual ExpressionWithObjectInstance FindCompareToCode(string name)
+            protected virtual ExpressionWithObjectInstance FindCompareToCode(string fieldOrPropertyName)
             {
+                var me1 = (CsExpression)fieldOrPropertyName;
+                var oth1 = (CsExpression)("other." + fieldOrPropertyName);
                 BinaryExpressionDelegateArgs CoalesceInput(IEqualityGeneratorPropertyInfo info,
                     BinaryExpressionDelegateArgs binaryExpressionDelegateArgs)
                 {
@@ -170,23 +175,24 @@ namespace isukces.code.AutoCode
 
                 PropertyOrFieldInfo FindPropertyOrFieldInfo()
                 {
-                    var p = _props.Where(a => a.Name == name).ToArray();
+                    var p = _props.Where(a => a.Name == fieldOrPropertyName).ToArray();
                     if (p.Length == 1)
                         return p[0];
 
-                    var pi = _type.GetTypeInfo().GetProperty(name, GeneratorsHelper.AllInstance);
+                    var pi = _type.GetTypeInfo().GetProperty(fieldOrPropertyName, GeneratorsHelper.AllInstance);
                     if (!(pi is null))
                         return PropertyOrFieldInfo.FromProperty(pi);
-                    var fi = _type.GetTypeInfo().GetField(name, GeneratorsHelper.AllInstance);
+                    var fi = _type.GetTypeInfo().GetField(fieldOrPropertyName, GeneratorsHelper.AllInstance);
                     if (fi is null)
-                        throw new Exception("Unable to find field nor property " + name);
+                        throw new Exception("Unable to find field nor property " + fieldOrPropertyName);
                     return PropertyOrFieldInfo.FromField(fi);
                 }
 
                 var property = FindPropertyOrFieldInfo();
 
                 var type  = property.ValueType;
-                var input = new BinaryExpressionDelegateArgs(name, "other." + name, _class, property.ValueType);
+                var input = new BinaryExpressionDelegateArgs(me1, oth1,
+                    _class, property.ValueType);
                 if (type == typeof(string))
                 {
                     var info = EqualityGeneratorPropertyInfo.FindForString(property.Member, NullChecker);
@@ -202,7 +208,11 @@ namespace isukces.code.AutoCode
                 }
 
                 if (!property.PropertyValueCanBeNull)
-                    return new ExpressionWithObjectInstance($"{name}.CompareTo(other.{name})");
+                {
+                    //return me1.CallMethod("CompareTo", oth1);
+                    return new ExpressionWithObjectInstance(me1.CallMethod("CompareTo", oth1));
+                    //   $"{fieldOrPropertyName}.CompareTo(other.{fieldOrPropertyName})");
+                }
 
                 {
                     var info = CreatePropertyInfo(property);
@@ -214,7 +224,7 @@ namespace isukces.code.AutoCode
                             {
                                 // nullable but not null
                                 m     = GeneratorsHelper.DefaultComparerMethodName(type.StripNullable(), _class);
-                                input = input.Transform(a => a + ".Value");
+                                input = input.Transform(a => a.CallProperty("Value"));
                             }
                         }
                         else
@@ -225,7 +235,8 @@ namespace isukces.code.AutoCode
                                 var sType  = type.StripNullable();
                                 var interf = typeof(IComparable<>).MakeGenericType(sType);
                                 if (interf.GetTypeInfo().IsAssignableFrom(sType))
-                                    return new ExpressionWithObjectInstance($"({input.Left}).CompareTo({input.Right})");
+                                    // $"({input.Left}).CompareTo({input.Right})"
+                                    return new ExpressionWithObjectInstance(input.Left.CallMethod("CompareTo", input.Right));
                                 m = GeneratorsHelper.DefaultComparerMethodName(sType, _class);
                             }
                         }
@@ -242,7 +253,7 @@ namespace isukces.code.AutoCode
                 if (type == typeof(string))
                 {
                     var info = EqualityGeneratorPropertyInfo.FindForString(property.Member, NullChecker);
-                    var code = info.EqualsCode("{0}", "{1}.{0}", _class);
+                    var code = info.EqualsCode1(_class);
                     return code.WithCost(Auto.EqualityCostAttribute.String);
                 }
 
@@ -250,15 +261,17 @@ namespace isukces.code.AutoCode
                     var info = EqualityGeneratorPropertyInfo.Find(property.Member, NullChecker);
                     if (info != null)
                     {
-                        var code = info.EqualsCode("{0}", "{1}.{0}", _class);
+                        var code = info.EqualsCode1(_class);
                         return code.WithCost(Auto.EqualityCostAttribute.String);
                     }
                 }
                 if (!IsFloatNumber(type) && IsSimpleType(type))
-                    return new EqualsExpressionData("{0} == {1}.{0}", GetEqualsCost(type, false));
+                    return new EqualsExpressionData(
+                        new CsExpression("{0} == {1}.{0}", CsOperatorPrecendence.Equality), 
+                        GetEqualsCost(type, false));
 
                 if (property.IsCompareByReference)
-                    return new EqualsExpressionData(nameof(ReferenceEquals) + twoArgs, 1);
+                    return new EqualsExpressionData((CsExpression)(nameof(ReferenceEquals) + twoArgs), 1);
                 var typeInfo = type.GetTypeInfo();
                 if (typeInfo.IsGenericType)
                 {
@@ -272,14 +285,14 @@ namespace isukces.code.AutoCode
                         var arg   = types[0];
                         var cost  = GetEqualsCost(arg, true);
                         var info = CreatePropertyInfo(property);
-                        var code  = info.EqualsCode("{0}", "{1}.{0}", _class);
+                        var code  = info.EqualsCode1(_class);
                         return code.WithCost(cost);
                     }
                 }
 
                 {
                     var info = CreatePropertyInfo(property);
-                    var code = info.EqualsCode("{0}", "{1}.{0}", _class);
+                    var code = info.EqualsCode1(_class);
                     var cost = GetEqualsCost(property.ValueType, false);
                     return code.WithCost(cost);
                 }
@@ -288,41 +301,48 @@ namespace isukces.code.AutoCode
             protected virtual GetHashCodeExpressionData FindGetHashCode(PropertyOrFieldInfo prop)
             {
                 var type     = prop.ValueType;
-                var propName = prop.Name;
+                string propName = prop.Name;
+                var propNameExpression = (CsExpression)propName;
                 if (type == typeof(string))
                 {
                     var info = EqualityGeneratorPropertyInfo.FindForString(prop.Member, NullChecker);
-                    return info.GetHash(propName, _class);
+                    return info.GetHash(propNameExpression, _class);
                 }
 
                 {
                     var info = EqualityGeneratorPropertyInfo.Find(prop.Member, NullChecker);
                     if (info != null)
-                        return info.GetHash(propName, _class);
+                        return info.GetHash(propNameExpression, _class);
                 }
                 if (type.GetTypeInfo().IsEnum)
                 {
                     var ut = Enum.GetUnderlyingType(type);
                     if (ut == typeof(int))
-                        return new GetHashCodeExpressionData("(int)" + propName);
+                        return new GetHashCodeExpressionData(CsExpression.TypeCast("int", propNameExpression));
                 }
 
-                if (type == typeof(int)) return new GetHashCodeExpressionData(propName);
-                if (type == typeof(int?)) return new GetHashCodeExpressionData(propName + " ?? 0");
-                if (type == typeof(bool)) return new GetHashCodeExpressionData(propName + " ? 1 : 0", true);
-                if (type == typeof(bool?)) return new GetHashCodeExpressionData(propName + " == true ? 1 : 0", true);
+                if (type == typeof(int)) return propNameExpression;
+                if (type == typeof(int?)) return propNameExpression.Coalesce((CsExpression)"0");
+                if (type == typeof(bool)) return propNameExpression.Conditional(1, 0);
+                if (type == typeof(bool?))  
+                {
+                    var condition = new CsExpression.Binary(
+                        propNameExpression, true,
+                        CsOperatorPrecendence.Equality, "==");
+                    return condition.Conditional(1, 0);
+                }
 
                 {
                     var info = CreatePropertyInfo(prop);
                     if (info.NullToEmpty && !info.PropertyValueIsNotNull)
                     {
-                        propName = info.Coalesce(propName, _class, true);
-                        return new GetHashCodeExpressionData($"{propName}.GetHashCode()");
+                        var result = info.Coalesce(propNameExpression, _class).CallMethod("GetHashCode");
+                        return result;
                     }
 
                     var hc = info.PropertyValueIsNotNull
-                        ? $"{propName}.GetHashCode()"
-                        : $"{propName}?.GetHashCode() ?? 0";
+                        ? propNameExpression.CallMethod("GetHashCode")
+                        : propNameExpression.OptionalNull().CallMethod("GetHashCode").Coalesce(0);
                     return new GetHashCodeExpressionData(hc);
                 }
             }

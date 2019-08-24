@@ -27,7 +27,7 @@ namespace isukces.code.Ammy
                             value = new SimpleAmmyCodePiece(txt.CsEncode());
                             break;
                         case int l:
-                            value = new SimpleAmmyCodePiece(l.ToString(CultureInfo.InvariantCulture));
+                            value = new SimpleAmmyCodePiece(l.ToCsString());
                             break;
                         case IAmmyCodePiece cp:
                             aaa.Properties[name] = cp;
@@ -49,7 +49,7 @@ namespace isukces.code.Ammy
         {
             var txt = "$ancestor<" + ctx.TypeName(_ancestorType) + ">";
             if (_level != null)
-                txt += "(" + _level.Value.ToString(CultureInfo.InvariantCulture) + ")";
+                txt += "(" + _level.Value.ToCsString() + ")";
             return new SimpleAmmyCodePiece(txt);
         }
 

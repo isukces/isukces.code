@@ -127,7 +127,7 @@ namespace isukces.code.AutoCode
                 private string GetDefaultValueAsString(string propertyTypeName)
                 {
                     if (DefaultValue == null) return null;
-                    if (DefaultValue is bool boolValue && (PropetyType == typeof(bool)))
+                    if (DefaultValue is bool boolValue && PropetyType == typeof(bool))
                         return boolValue ? "true" : "false";
                     var initStr = DefaultValue.ToString().Trim();
                     initStr = initStr == "*"

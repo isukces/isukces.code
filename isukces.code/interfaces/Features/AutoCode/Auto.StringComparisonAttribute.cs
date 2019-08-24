@@ -14,9 +14,9 @@ namespace isukces.code.interfaces
         [AttributeUsage(AttributeTargets.Property)]
         public abstract class AbstractEqualityComparisonAttribute : Attribute
         {
-            public abstract string GetCoalesceExpression(ITypeNameResolver resolver);
-            public abstract string GetEqualsExpression(BinaryExpressionDelegateArgs input);
-            public abstract string GetHashCodeExpression(UnaryExpressionDelegateArgs input);
+            public abstract CsExpression GetCoalesceExpression(ITypeNameResolver resolver);
+            public abstract CsExpression GetEqualsExpression(BinaryExpressionDelegateArgs input);
+            public abstract CsExpression GetHashCodeExpression(UnaryExpressionDelegateArgs input);
             public abstract ExpressionWithObjectInstance GetRelationalComparerExpression(BinaryExpressionDelegateArgs input);
 
             public virtual GetHashCodeOptions GetGetHashCodeOption()
@@ -33,17 +33,17 @@ namespace isukces.code.interfaces
                 Comparison = comparison;
             }
 
-            public override string GetCoalesceExpression(ITypeNameResolver resolver)
+            public override CsExpression GetCoalesceExpression(ITypeNameResolver resolver)
             {
-                return GeneratorsHelper.StringEmpty;
+                return (CsExpression)GeneratorsHelper.StringEmpty;
             }
 
-            public override string GetEqualsExpression(BinaryExpressionDelegateArgs input)
+            public override CsExpression GetEqualsExpression(BinaryExpressionDelegateArgs input)
             {
                 return GetUniversal(input, nameof(Equals));
             }
 
-            public override string GetHashCodeExpression(UnaryExpressionDelegateArgs input)
+            public override CsExpression GetHashCodeExpression(UnaryExpressionDelegateArgs input)
             {
                 return GetUniversal(input, nameof(GetHashCode));
             }
@@ -55,7 +55,7 @@ namespace isukces.code.interfaces
                 return new ExpressionWithObjectInstance(code, comparerInstance);
             }
 
-            private string GetUniversal(IExpressionDelegateArgs input, string methodName)
+            private CsExpression GetUniversal(IExpressionDelegateArgs input, string methodName)
             {
                 var comparerInstance = input.Resolver.GetMemeberName<StringComparer>(Comparison.ToString());
                 return GeneratorsHelper.CallMethod(comparerInstance, methodName, input);

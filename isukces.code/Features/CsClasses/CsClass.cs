@@ -163,7 +163,8 @@ namespace isukces.code
 
         public CsClassField AddConstInt(string name, int encodedValue)
         {
-            return AddConst(name, "int", encodedValue.ToString(CultureInfo.InvariantCulture));
+            
+            return AddConst(name, "int", encodedValue.ToCsString());
         }
 
         public CsMethod AddConstructor(string description = null)

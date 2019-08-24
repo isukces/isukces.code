@@ -2,33 +2,26 @@ namespace isukces.code.AutoCode
 {
     public struct EqualsExpressionData
     {
-        public EqualsExpressionData(string code, int cost = 999, bool brackets = false)
+        public EqualsExpressionData(CsExpression code, int cost = 999)
         {
-            Code     = code;
-            Cost     = cost;
-            Brackets = brackets;
+            Code = code;
+            Cost = cost;
         }
 
-        public EqualsExpressionData(string code, bool brackets)
+        public EqualsExpressionData(CsExpression code)
         {
-            Code     = code;
-            Cost     = 0;
-            Brackets = brackets;
+            Code = code;
+            Cost = 0;
         }
 
 
-        public string GetCode()
-        {
-            return Brackets ? $"({Code})" : Code;
-        }
 
         public EqualsExpressionData WithCost(int cost)
         {
-            return new EqualsExpressionData(Code, cost, Brackets);
+            return new EqualsExpressionData(Code, cost);
         }
 
-        public string Code     { get; }
-        public int    Cost     { get; }
-        public bool   Brackets { get; }
+        public CsExpression Code { get; }
+        public int          Cost { get; }
     }
 }

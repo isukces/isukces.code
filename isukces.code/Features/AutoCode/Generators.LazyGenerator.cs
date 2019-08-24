@@ -33,14 +33,14 @@ namespace isukces.code.AutoCode
                 n = mi.Name;
                 foreach (var i in "lazyinternal,internallazy,lazy,internal".Split(','))
                 {
-                    if (n.ToLower().StartsWith(i))
+                    if (n.ToLower().StartsWith(i, StringComparison.Ordinal))
                     {
                         n = n.Substring(i.Length);
                         if (!string.IsNullOrEmpty(n))
                             return n;
                     }
 
-                    if (n.ToLower().EndsWith(i))
+                    if (n.ToLower().EndsWith(i, StringComparison.Ordinal))
                     {
                         n = n.Substring(0, n.Length - i.Length);
                         if (!string.IsNullOrEmpty(n))
@@ -159,6 +159,10 @@ namespace isukces.code.AutoCode
 
             private void WriteSingle(MemberInfo mi, Auto.LazyAttribute at)
             {
+                var canUseLazy = at.UseLazyObject 
+                                 && string.IsNullOrEmpty(at.SyncObjectName)
+                                 && string.IsNullOrEmpty(at.ClearMethodName);
+                
                 var used = new HashSet<string>();
                 // nazwa własności/metody
                 var baseName = GetBaseName(mi, at);

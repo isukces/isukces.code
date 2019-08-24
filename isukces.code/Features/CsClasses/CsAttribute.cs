@@ -37,23 +37,23 @@ namespace isukces.code
                 case bool aBool:
                     return aBool ? "true" : "false";
                 case int intValue:
-                    return intValue.ToString(CultureInfo.InvariantCulture);
+                    return intValue.ToCsString();
                 case uint uintValue:
-                    return uintValue.ToString(CultureInfo.InvariantCulture) + "u";
+                    return uintValue.ToCsString() + "u";
                 case long longValue:
-                    return longValue.ToString(CultureInfo.InvariantCulture) + "l";
+                    return longValue.ToCsString() + "l";
                 case ulong ulongValue:
-                    return ulongValue.ToString(CultureInfo.InvariantCulture) + "ul";
+                    return ulongValue.ToCsString() + "ul";
                 case byte byteValue:
-                    return "(byte)" + byteValue.ToString(CultureInfo.InvariantCulture);
+                    return "(byte)" + byteValue.ToCsString();
                 case sbyte sbyteValue:
-                    return "(sbyte)" + sbyteValue.ToString(CultureInfo.InvariantCulture);
+                    return "(sbyte)" + sbyteValue.ToCsString();
                 case double doubleValue:
-                    return doubleValue.ToString(CultureInfo.InvariantCulture) + "d";
+                    return doubleValue.ToCsString() + "d";
                 case decimal decimalValue:
-                    return decimalValue.ToString(CultureInfo.InvariantCulture) + "m";
+                    return decimalValue.ToCsString() + "m";
                 case float floatValue:
-                    return floatValue.ToString(CultureInfo.InvariantCulture) + "f";
+                    return floatValue.ToCsString() + "f";
                 case Guid gValue:
                     if (gValue.Equals(Guid.Empty))
                         return "System.Guid.Empty";

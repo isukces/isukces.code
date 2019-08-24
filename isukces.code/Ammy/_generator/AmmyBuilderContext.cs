@@ -56,12 +56,12 @@ namespace isukces.code.Ammy
 
         public AmmyBuilderContext RegisterVariable(string name, int value, bool globalName = false)
         {
-            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
+            return RegisterVariable(name, value.ToCsString(), globalName);
         }
 
         public AmmyBuilderContext RegisterVariable(string name, double value, bool globalName = false)
         {
-            return RegisterVariable(name, value.ToString(CultureInfo.InvariantCulture), globalName);
+            return RegisterVariable(name, value.ToCsString(), globalName);
         }
 
         public AmmyBuilderContext RegisterVariable(string name, string value, bool globalName = false)

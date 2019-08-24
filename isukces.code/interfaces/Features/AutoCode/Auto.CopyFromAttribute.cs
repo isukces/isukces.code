@@ -55,13 +55,13 @@ namespace isukces.code.interfaces
 
             public bool HasCopyByReference(string name)
             {
-                return (_copyByReferenceHash != null) && _copyByReferenceHash.Contains(name);
+                return _copyByReferenceHash != null && _copyByReferenceHash.Contains(name);
             }
 
 
             public bool HasSkip(string name)
             {
-                return (_skipHash != null) && _skipHash.Contains(name);
+                return _skipHash != null && _skipHash.Contains(name);
             }
 
             #endregion Methods 

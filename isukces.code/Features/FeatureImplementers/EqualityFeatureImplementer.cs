@@ -20,7 +20,7 @@ namespace isukces.code.AutoCode
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string GetSuffix(int cnt)
         {
-            return cnt == 0 ? "" : (cnt + 1).ToString(CultureInfo.InvariantCulture);
+            return cnt == 0 ? "" : (cnt + 1).ToCsString();
         }
 
         public void CreateCode()
@@ -151,7 +151,7 @@ namespace isukces.code.AutoCode
                         cs.WriteLine("var " + variableName + " = " + c1.Instance + ";");
                     }
 
-                    expr = string.Format(expr, variableName);
+                    expr = expr.Format(variableName);
                 }
 
                 if (index + 1 == CompareToExpressions.Count)
@@ -221,10 +221,13 @@ namespace isukces.code.AutoCode
 
             for (var i = 0; i < EqualityExpressions.Count; i++)
             {
-                var code = (i == 0 ? "return " : "    && ") + EqualityExpressions[i].GetCode();
+                var code = i == 0
+                    ? EqualityExpressions[i].Code.GetCode(CsOperatorPrecendence.LogicalAnd, ExpressionAppend.Before)
+                    : EqualityExpressions[i].Code.GetCode(CsOperatorPrecendence.LogicalAnd, ExpressionAppend.After);
+                var codeLine = (i == 0 ? "return " : "    && ") + code;
                 if (i + 1 == EqualityExpressions.Count)
-                    code += ";";
-                cw.WriteLine(code); // +" // cost "+code[i].co);
+                    codeLine += ";";
+                cw.WriteLine(codeLine); // +" // cost "+code[i].co);
             }
 
             var m = _class.AddMethod("Equals", "bool")
@@ -316,6 +319,7 @@ namespace isukces.code.AutoCode
             if (!string.IsNullOrEmpty(IsEmptyObjectPropertyName))
                 cw.WriteLine($"if ({IsEmptyObjectPropertyName}) return 0;");
 
+            int multiply;
             switch (GetHashCodeExpressions.Count)
             {
                 case 0:
@@ -326,20 +330,31 @@ namespace isukces.code.AutoCode
                     break;
                 case 2:
                     cw.Open("unchecked");
-                    cw.WriteLine(
-                        $"return ({GetHashCodeExpressions[0].BracketsCode} * 397) ^ {GetHashCodeExpressions[1].BracketsCode};");
+                    multiply = GetHashCodeExpressions[1].GetGethashcodeMultiply(DefaultGethashcodeMultiply);
+                    var q        = (GetHashCodeExpressions[0].Code * multiply) ^ GetHashCodeExpressions[1].Code;
+                    cw.WriteLine($"return {q};");
                     cw.Close();
                     break;
                 default:
                 {
+                    multiply = DefaultGethashcodeMultiply;
                     cw.Open("unchecked");
                     {
                         for (var i = 0; i < GetHashCodeExpressions.Count; i++)
                         {
-                            var hc = GetHashCodeExpressions[i];
-                            cw.WriteLine(i == 0
-                                ? $"var hashCode = {hc.Code};"
-                                : $"hashCode = (hashCode * 397) ^ {hc.BracketsCode};");
+                            var    hc = GetHashCodeExpressions[i];
+                            string code;
+                            if (i == 0)
+                                code = $"var hashCode = {hc.Code};";
+                            else
+                            {
+                                var e = new CsExpression("hashCode") * multiply;
+                                e    ^= hc.Code;
+                                code =  $"hashcode = {e.Code};";
+                            }
+
+                            cw.WriteLine(code);
+                            multiply = hc.GetGethashcodeMultiply(DefaultGethashcodeMultiply);
                         }
 
                         cw.WriteLine("return hashCode;");
@@ -354,6 +369,8 @@ namespace isukces.code.AutoCode
 
             return m;
         }
+
+        public static int DefaultGethashcodeMultiply = 397;
 
         public List<EqualsExpressionData>    EqualityExpressions  { get; set; } = new List<EqualsExpressionData>();
         public List<CompareToExpressionData> CompareToExpressions { get; set; } = new List<CompareToExpressionData>();

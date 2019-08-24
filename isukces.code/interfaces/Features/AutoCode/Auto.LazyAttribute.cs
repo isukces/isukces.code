@@ -17,6 +17,10 @@ namespace isukces.code.interfaces
             public string FieldName { get; set; }
 
             public string ClearMethodName { get; set; }
+            /// <summary>
+            /// Implement with Lazy<> if possible
+            /// </summary>
+            public bool UseLazyObject { get; set; } = true;
 
 
 

@@ -9,20 +9,25 @@ namespace isukces.code.AutoCode
 {
     public static class GeneratorsHelper
     {
-        public static string CallMethod(string instance, string method, params string[] arguments)
+        public static CsExpression CallMethod(string instance, string method, params string[] arguments)
         {
-            return string.Format("{0}.{1}({2})", instance, method, string.Join(", ", arguments));
+            return (CsExpression)string.Format("{0}.{1}({2})", instance, method, string.Join(", ", arguments));
+        }
+        
+        public static CsExpression CallMethod(string method, params CsExpression[] arguments)
+        {
+            return (CsExpression)string.Format("{0}({1})", method, string.Join(", ", arguments.Select(a => a.Code)));
+        }
+        
+        public static CsExpression CallMethod(string method, IArgumentsHolder holder)
+        {
+            return (CsExpression)string.Format("{0}({1})", method, string.Join(", ", holder.GetArguments()));
         }
 
-
-        public static string CallMethod(string method, IArgumentsHolder holder)
+        public static CsExpression CallMethod(string instance, string method, IArgumentsHolder holder)
         {
-            return string.Format("{0}({1})", method, string.Join(", ", holder.GetArguments()));
-        }
-
-        public static string CallMethod(string instance, string method, IArgumentsHolder holder)
-        {
-            return string.Format("{0}.{1}({2})", instance, method, string.Join(", ", holder.GetArguments()));
+            return (CsExpression)string.Format("{0}.{1}({2})", instance, method,
+                string.Join(", ", holder.GetArguments()));
         }
 
         public struct MyStruct
@@ -90,6 +95,7 @@ namespace isukces.code.AutoCode
             var simple = type.SimpleTypeName();
             if (!string.IsNullOrEmpty(simple))
                 return simple;
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (type.DeclaringType != null)
                 return GetTypeName(container, type.DeclaringType) + "." + type.Name;
 

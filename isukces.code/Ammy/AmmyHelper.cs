@@ -23,17 +23,17 @@ namespace isukces.code.Ammy
                     case null: return "null";
                     case bool boolValue: return boolValue ? "true" : "false";
                     case string stringValue: return stringValue.CsEncode();
-                    case int intValue: return intValue.ToString(CultureInfo.InvariantCulture);
-                    case long longValue: return longValue.ToString(CultureInfo.InvariantCulture);
-                    case short shortValue: return shortValue.ToString(CultureInfo.InvariantCulture);
-                    case byte byteValue: return byteValue.ToString(CultureInfo.InvariantCulture);
-                    case uint uintValue: return uintValue.ToString(CultureInfo.InvariantCulture);
-                    case ulong ulongValue: return ulongValue.ToString(CultureInfo.InvariantCulture);
-                    case ushort ushortValue: return ushortValue.ToString(CultureInfo.InvariantCulture);
-                    case sbyte sbyteValue: return sbyteValue.ToString(CultureInfo.InvariantCulture);
-                    case double doubleValue: return doubleValue.ToString(CultureInfo.InvariantCulture);
-                    case float floatValue: return floatValue.ToString(CultureInfo.InvariantCulture);
-                    case decimal decimalValue: return decimalValue.ToString(CultureInfo.InvariantCulture);
+                    case int intValue: return intValue.ToCsString();
+                    case long longValue: return longValue.ToCsString();
+                    case short shortValue: return shortValue.ToCsString();
+                    case byte byteValue: return byteValue.ToCsString();
+                    case uint uintValue: return uintValue.ToCsString();
+                    case ulong ulongValue: return ulongValue.ToCsString();
+                    case ushort ushortValue: return ushortValue.ToCsString();
+                    case sbyte sbyteValue: return sbyteValue.ToCsString();
+                    case double doubleValue: return doubleValue.ToCsString();
+                    case float floatValue: return floatValue.ToCsString();
+                    case decimal decimalValue: return decimalValue.ToCsString();
                 }
 
                 var t = src.GetType();

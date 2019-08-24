@@ -10,11 +10,19 @@ namespace isukces.code.AutoCode
         bool PropertyValueIsNotNull { get; }
         bool NullToEmpty            { get; }
         Type ResultType             { get; }
-        EqualsExpressionData EqualsCode(string left, string right, ITypeNameResolver resolver);
-        string Coalesce(string expr, ITypeNameResolver resolver, bool addBracketsOutside = false);
+        EqualsExpressionData EqualsCode(CsExpression left, CsExpression right, ITypeNameResolver resolver);
+        CsExpression Coalesce(CsExpression expression, ITypeNameResolver resolver);
     }
 
-    public class EqualityGeneratorPropertyInfo:IEqualityGeneratorPropertyInfo
+    public static class EqualityGeneratorPropertyInfoExt
+    {
+        public static EqualsExpressionData EqualsCode1(this IEqualityGeneratorPropertyInfo info, ITypeNameResolver resolver)
+        {
+            return info.EqualsCode((CsExpression)"{0}", (CsExpression)"{1}.{0}", resolver);
+        }
+    }
+
+    public class EqualityGeneratorPropertyInfo : IEqualityGeneratorPropertyInfo
     {
         public EqualityGeneratorPropertyInfo(Type resultType)
         {
@@ -38,18 +46,18 @@ namespace isukces.code.AutoCode
         public static EqualityGeneratorPropertyInfo FindForString(MemberInfo member,
             IMemberNullValueChecker checker)
         {
-            string Call(string name, IExpressionDelegateArgs args)
+            CsExpression Call(string name, IExpressionDelegateArgs args)
             {
                 var instance = args.Resolver.GetMemeberName<StringComparer>(nameof(StringComparer.Ordinal));
                 return GeneratorsHelper.CallMethod(instance, name, args);
             }
 
-            string DefaultEquals(BinaryExpressionDelegateArgs input)
+            CsExpression DefaultEquals(BinaryExpressionDelegateArgs input)
             {
                 return Call(nameof(Equals), input);
             }
 
-            string DefaultGetHashCode(UnaryExpressionDelegateArgs input)
+            CsExpression DefaultGetHashCode(UnaryExpressionDelegateArgs input)
             {
                 return Call(nameof(GetHashCode), input);
             }
@@ -64,7 +72,7 @@ namespace isukces.code.AutoCode
                     GetEqualsExpression             = DefaultEquals,
                     GetRelationalComparerExpression = DefaultGetCompareTo,
                     GetHashCodeExpression           = DefaultGetHashCode,
-                    GetCoalesceExpression           = _ => GeneratorsHelper.StringEmpty
+                    GetCoalesceExpression           = _ => (CsExpression)GeneratorsHelper.StringEmpty
                 }
                 .WithMemberAttributes(member);
             a.PropertyValueIsNotNull = checker.ReturnValueAlwaysNotNull(member);
@@ -78,18 +86,13 @@ namespace isukces.code.AutoCode
             return $"ReferenceEquals({expr}, null)";
         }
 
-        public string Coalesce(string expr, ITypeNameResolver resolver, bool addBracketsOutside = false)
+        public CsExpression Coalesce(CsExpression expression, ITypeNameResolver resolver)
         {
             var co = GetCoalesceExpression(resolver);
-            if (string.IsNullOrEmpty(co))
-                throw new Exception("CoalesceExpression is empty");
-            var tmp = expr + " ?? " + GetCoalesceExpression(resolver);
-            if (addBracketsOutside)
-                tmp = "(" + tmp + ")";
-            return tmp;
+            return expression.Coalesce(co);
         }
 
-        public EqualsExpressionData EqualsCode(string left, string right, ITypeNameResolver resolver)
+        public EqualsExpressionData EqualsCode(CsExpression left, CsExpression right, ITypeNameResolver resolver)
         {
             if (NullToEmpty && !PropertyValueIsNotNull)
             {
@@ -103,8 +106,10 @@ namespace isukces.code.AutoCode
             return new EqualsExpressionData(expr);
         }
 
+        
 
-        public GetHashCodeExpressionData GetHash(string propertyName, ITypeNameResolver resolver)
+
+        public GetHashCodeExpressionData GetHash(CsExpression propertyName, ITypeNameResolver resolver)
         {
             var argumentExpression = propertyName;
             if (!PropertyValueIsNotNull)
@@ -120,7 +125,7 @@ namespace isukces.code.AutoCode
 
                         case Auto.GetHashCodeOptions.NullValueGivesZero:
                             if (ResultType.IsNullableType())
-                                argumentExpression += ".Value";
+                                argumentExpression = argumentExpression.CallProperty("Value");
                             break;
                         case Auto.GetHashCodeOptions.MethodAcceptNulls:
                             break;
@@ -129,17 +134,21 @@ namespace isukces.code.AutoCode
                     }
             }
 
-            var result =
+            CsExpression result =
                 GetHashCodeExpression(new UnaryExpressionDelegateArgs(argumentExpression, resolver, ResultType));
             if (PropertyValueIsNotNull)
                 return new GetHashCodeExpressionData(result);
             if (GetHashCodeOption == Auto.GetHashCodeOptions.NullValueGivesZero)
             {
-                result = $"{propertyName} is null ? 0 : {result}";
-                return new GetHashCodeExpressionData(result, true);
+                result = propertyName.Is("null").Conditional(0, result);
+                return result;
             }
 
             return new GetHashCodeExpressionData(result);
+        }
+        public static bool Is1<T>(int a, int b)
+        {
+            return a >> b is T;
         }
 
         public EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute sca)
@@ -168,42 +177,29 @@ namespace isukces.code.AutoCode
         }
 
 
-        public Func<ITypeNameResolver, string>  GetCoalesceExpression           { get; set; }
-        public bool                             PropertyValueIsNotNull          { get; set; }
-        public bool                             NullToEmpty                     { get; protected set; }
-        public BinaryExpressionDelegate<string> GetEqualsExpression             { get; set; }
-        public BinaryExpressionDelegate<ExpressionWithObjectInstance>      GetRelationalComparerExpression { get; protected set; }
-        public UnaryExpressionDelegate          GetHashCodeExpression           { get; set; }
-        public Auto.GetHashCodeOptions          GetHashCodeOption               { get; set; }
-        public Type                             ResultType                      { get; }
-    }
+        public Func<ITypeNameResolver, CsExpression>  GetCoalesceExpression  { get; set; }
+        public bool                                   PropertyValueIsNotNull { get; set; }
+        public bool                                   NullToEmpty            { get; protected set; }
+        public BinaryExpressionDelegate<CsExpression> GetEqualsExpression    { get; set; }
 
-    public struct GetHashCodeExpressionData
-    {
-        public GetHashCodeExpressionData(string code, bool needBracketsWhenInExpression = false)
+        public BinaryExpressionDelegate<ExpressionWithObjectInstance> GetRelationalComparerExpression
         {
-            Code                         = code;
-            NeedBracketsWhenInExpression = needBracketsWhenInExpression;
+            get;
+            protected set;
         }
 
-        public string GetCode(bool addBrackets)
-        {
-            return addBrackets ? BracketsCode : Code;
-        }
-
-        public string BracketsCode => NeedBracketsWhenInExpression ? $"({Code})" : Code;
-
-        public string Code                         { get; }
-        public bool   NeedBracketsWhenInExpression { get; }
+        public UnaryExpressionDelegate GetHashCodeExpression { get; set; }
+        public Auto.GetHashCodeOptions GetHashCodeOption     { get; set; }
+        public Type                    ResultType            { get; }
     }
 
     public delegate T BinaryExpressionDelegate<out T>(BinaryExpressionDelegateArgs input);
 
-    public delegate string UnaryExpressionDelegate(UnaryExpressionDelegateArgs input);
+    public delegate CsExpression UnaryExpressionDelegate(UnaryExpressionDelegateArgs input);
 
     public struct BinaryExpressionDelegateArgs : IExpressionDelegateArgs
     {
-        public BinaryExpressionDelegateArgs(string left, string right, ITypeNameResolver resolver, Type dataType)
+        public BinaryExpressionDelegateArgs(CsExpression left, CsExpression right, ITypeNameResolver resolver, Type dataType)
         {
             Left     = left;
             Right    = right;
@@ -213,28 +209,29 @@ namespace isukces.code.AutoCode
 
         public string[] GetArguments()
         {
-            return new[] {Left, Right};
+            return new[] {Left.Code, Right.Code};
         }
 
-        public BinaryExpressionDelegateArgs Transform(Func<string, string> map)
+        public BinaryExpressionDelegateArgs Transform(Func<CsExpression, CsExpression> map)
         {
             return new BinaryExpressionDelegateArgs(map(Left), map(Right), Resolver, DataType);
         }
 
-        public BinaryExpressionDelegateArgs WithLeftRight(string newLeft, string newRight)
+        public BinaryExpressionDelegateArgs WithLeftRight(CsExpression newLeft, CsExpression newRight)
         {
             return new BinaryExpressionDelegateArgs(newLeft, newRight, Resolver, DataType);
         }
 
-        public string            Left     { get; }
-        public string            Right    { get; }
+        public CsExpression      Left     { get; }
+        public CsExpression      Right    { get; }
         public ITypeNameResolver Resolver { get; }
         public Type              DataType { get; }
+
     }
 
     public struct UnaryExpressionDelegateArgs : IExpressionDelegateArgs
     {
-        public UnaryExpressionDelegateArgs(string argument, ITypeNameResolver resolver, Type dataType)
+        public UnaryExpressionDelegateArgs(CsExpression argument, ITypeNameResolver resolver, Type dataType)
         {
             Argument = argument;
             Resolver = resolver;
@@ -243,10 +240,10 @@ namespace isukces.code.AutoCode
 
         public string[] GetArguments()
         {
-            return new[] {Argument};
+            return new[] {Argument.Code};
         }
 
-        public string            Argument { get; }
+        public CsExpression      Argument { get; }
         public ITypeNameResolver Resolver { get; }
         public Type              DataType { get; }
     }

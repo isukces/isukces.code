@@ -29,7 +29,7 @@ namespace isukces.code.Ammy
         private SimpleAmmyCodePiece ToAmmyCode()
         {
             var args    = new[] {Row, Column, RowSpan, ColumnSpan};
-            var encoded = args.Select(a => a is null ? "none" : a.Value.ToString(CultureInfo.InvariantCulture));
+            var encoded = args.Select(a => a is null ? "none" : a.Value.ToCsString());
             var q       = new AmmyCallBuilder("Cell");
             q.Arguments.AddRange(encoded);
             q.WithTrimLastNones();
