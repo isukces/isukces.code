@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using isukces.code.FeatureImplementers;
 using isukces.code.interfaces;
 using JetBrains.Annotations;
 
@@ -315,11 +316,8 @@ namespace isukces.code.AutoCode
                         return info.GetHash(propNameExpression, _class);
                 }
                 if (type.GetTypeInfo().IsEnum)
-                {
-                    var ut = Enum.GetUnderlyingType(type);
-                    if (ut == typeof(int))
-                        return new GetHashCodeExpressionData(CsExpression.TypeCast("int", propNameExpression));
-                }
+                    if (GetGetHashCodeForEnumType(type, propNameExpression, out var getHashCodeExpressionData))
+                        return getHashCodeExpressionData;
 
                 if (type == typeof(int)) return propNameExpression;
                 if (type == typeof(int?)) return propNameExpression.Coalesce((CsExpression)"0");
@@ -345,6 +343,34 @@ namespace isukces.code.AutoCode
                         : propNameExpression.OptionalNull().CallMethod("GetHashCode").Coalesce(0);
                     return new GetHashCodeExpressionData(hc);
                 }
+            }
+
+            private static bool GetGetHashCodeForEnumType(Type type, CsExpression propNameExpression,
+                out GetHashCodeExpressionData getHashCodeExpressionData)
+            {
+                var ut = Enum.GetUnderlyingType(type);
+                if (ut == typeof(int))
+                {
+                    var expr   = CsExpression.TypeCast("int", propNameExpression);
+                    var values = Enum.GetValues(type).Cast<int>().ToArray();
+                    if (values.Length == 0)
+                    {
+                        getHashCodeExpressionData = expr;
+                        return true;
+                    }
+
+                    var  min = values.Min();
+                    int? max = values.Max();
+                    if (min.Equals(max))
+                        max = null;
+                    {
+                        getHashCodeExpressionData = new GetHashCodeExpressionData(expr, min, max);
+                        return true;
+                    }
+                }
+
+                getHashCodeExpressionData = null;
+                return false;
             }
 
             protected virtual int GetEqualsCost(Type type, bool nullable)
@@ -410,7 +436,7 @@ namespace isukces.code.AutoCode
                 }
             }
 
-            private IEnumerable<GetHashCodeExpressionData> GetGetHashCodeExpressions()
+            private IEnumerable<GetHashCodeExpressionDataWithMemberInfo> GetGetHashCodeExpressions()
             {
                 var filter = _attEq?.GetHashCodeProperties.ToHashSet();
                 for (var i = 0; i < _props.Length; i++)
@@ -421,7 +447,7 @@ namespace isukces.code.AutoCode
                     if (IsToHeavyToGetHashCode(prop.ValueType))
                         continue;
                     var hc = FindGetHashCode(prop);
-                    yield return hc;
+                    yield return new GetHashCodeExpressionDataWithMemberInfo(prop.Member, hc);
                 }
             }
 

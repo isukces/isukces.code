@@ -1,5 +1,6 @@
 using System;
 using isukces.code.AutoCode;
+using isukces.code.FeatureImplementers;
 
 namespace isukces.code.interfaces
 {

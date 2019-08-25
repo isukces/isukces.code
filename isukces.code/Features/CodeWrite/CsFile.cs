@@ -202,7 +202,7 @@ namespace isukces.code.CodeWrite
             return GeneratorsHelper.GetTypeName(this, type);
         }
 
-        private string GetCode()
+        public string GetCode()
         {
             var writer = new CsCodeWriter();
             MakeCode(writer);

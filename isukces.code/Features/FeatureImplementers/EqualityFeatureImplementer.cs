@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using isukces.code.AutoCode;
 using isukces.code.interfaces;
 
-namespace isukces.code.AutoCode
+namespace isukces.code.FeatureImplementers
 {
-    public class EqualityFeatureImplementer
+    public partial class EqualityFeatureImplementer
     {
         public EqualityFeatureImplementer(CsClass @class, Type type)
         {
@@ -61,12 +62,13 @@ namespace isukces.code.AutoCode
             return this;
         }
 
-        public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<GetHashCodeExpressionData> expressions)
+        public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<GetHashCodeExpressionDataWithMemberInfo> expressions)
         {
             if (GetHashCodeExpressions == null)
-                GetHashCodeExpressions = new List<GetHashCodeExpressionData>();
+                GetHashCodeExpressions = new List<GetHashCodeExpressionDataWithMemberInfo>();
             else
                 GetHashCodeExpressions.Clear();
+            expressions = expressions.OrderBy(a => a);
             GetHashCodeExpressions.AddRange(expressions);
             return this;
         }
@@ -319,51 +321,8 @@ namespace isukces.code.AutoCode
             if (!string.IsNullOrEmpty(IsEmptyObjectPropertyName))
                 cw.WriteLine($"if ({IsEmptyObjectPropertyName}) return 0;");
 
-            int multiply;
-            switch (GetHashCodeExpressions.Count)
-            {
-                case 0:
-                    cw.WriteLine("return 0;");
-                    break;
-                case 1:
-                    cw.WriteLine($"return {GetHashCodeExpressions[0].Code};");
-                    break;
-                case 2:
-                    cw.Open("unchecked");
-                    multiply = GetHashCodeExpressions[1].GetGethashcodeMultiply(DefaultGethashcodeMultiply);
-                    var q        = (GetHashCodeExpressions[0].Code * multiply) ^ GetHashCodeExpressions[1].Code;
-                    cw.WriteLine($"return {q};");
-                    cw.Close();
-                    break;
-                default:
-                {
-                    multiply = DefaultGethashcodeMultiply;
-                    cw.Open("unchecked");
-                    {
-                        for (var i = 0; i < GetHashCodeExpressions.Count; i++)
-                        {
-                            var    hc = GetHashCodeExpressions[i];
-                            string code;
-                            if (i == 0)
-                                code = $"var hashCode = {hc.Code};";
-                            else
-                            {
-                                var e = new CsExpression("hashCode") * multiply;
-                                e    ^= hc.Code;
-                                code =  $"hashcode = {e.Code};";
-                            }
-
-                            cw.WriteLine(code);
-                            multiply = hc.GetGethashcodeMultiply(DefaultGethashcodeMultiply);
-                        }
-
-                        cw.WriteLine("return hashCode;");
-                    }
-                    cw.Close();
-                    break;
-                }
-            }
-
+            GetHashCodeEmiter.Write(GetHashCodeExpressions, cw);
+          
             var m = _class.AddMethod(methodName, "int")
                 .WithBody(cw);
 
@@ -375,8 +334,7 @@ namespace isukces.code.AutoCode
         public List<EqualsExpressionData>    EqualityExpressions  { get; set; } = new List<EqualsExpressionData>();
         public List<CompareToExpressionData> CompareToExpressions { get; set; } = new List<CompareToExpressionData>();
 
-        public List<GetHashCodeExpressionData> GetHashCodeExpressions { get; set; } =
-            new List<GetHashCodeExpressionData>();
+        public List<GetHashCodeExpressionDataWithMemberInfo> GetHashCodeExpressions { get; set; } = new List<GetHashCodeExpressionDataWithMemberInfo>();
 
         public Features ImplementFeatures { get; set; }
 

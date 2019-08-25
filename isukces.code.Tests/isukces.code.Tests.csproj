@@ -24,4 +24,9 @@
     <ProjectReference Include="..\isukces.code.Serenity\isukces.code.Serenity.csproj" />
     <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EqualityGenerator\*.txt" />
+    <Compile Remove="EqualityGenerator\*_resXXX.cs" />
+    <EmbeddedResource Include="EqualityGenerator\*_res.cs" />
+  </ItemGroup>
 </Project>

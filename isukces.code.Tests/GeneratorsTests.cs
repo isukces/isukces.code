@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
 using isukces.code.CodeWrite;
@@ -107,35 +105,6 @@ namespace isukces.code.Tests
             {
                 throw new NotImplementedException();
             }
-        }
-
-        public class TestContext : IAutoCodeGeneratorContext
-        {
-            public void AddNamespace(string namepace)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void FileSaved(FileInfo fileInfo)
-            {
-            }
-
-
-            public CsClass GetOrCreateClass(TypeProvider type)
-            {
-                if (_file == null)
-                    _file = new CsFile();
-                return _file.GetOrCreateClass(type, new Dictionary<TypeProvider, CsClass>());
-            }
-
-            public T ResolveConfig<T>() where T : class, IAutoCodeConfiguration, new()
-            {
-                throw new NotImplementedException();
-            }
-
-            public IList<object> Tags { get; } = new List<object>();
-
-            private CsFile _file;
         }
     }
 }

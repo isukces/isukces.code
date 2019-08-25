@@ -1,9 +1,10 @@
 using System;
 using System.Reflection;
+using isukces.code.AutoCode;
 using isukces.code.interfaces;
 using JetBrains.Annotations;
 
-namespace isukces.code.AutoCode
+namespace isukces.code.FeatureImplementers
 {
     public interface IEqualityGeneratorPropertyInfo
     {

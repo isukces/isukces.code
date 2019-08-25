@@ -1,4 +1,6 @@
-namespace isukces.code.AutoCode
+using isukces.code.AutoCode;
+
+namespace isukces.code.FeatureImplementers
 {
     public interface IExpressionWithObjectInstance
     {
