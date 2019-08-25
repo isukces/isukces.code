@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using isukces.code.AutoCode;
 using isukces.code.interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -30,10 +28,7 @@ namespace isukces.code
             BaseClass = baseClass;
         }
 
-        public static CsAttribute MkAttribute(string attributeName)
-        {
-            return new CsAttribute(attributeName);
-        }
+        public static CsAttribute MkAttribute(string attributeName) => new CsAttribute(attributeName);
 
         private static void Emit_single_field(ICsCodeWriter writer, CsClassField field)
         {
@@ -161,11 +156,8 @@ namespace isukces.code
             return constValue;
         }
 
-        public CsClassField AddConstInt(string name, int encodedValue)
-        {
-            
-            return AddConst(name, "int", encodedValue.ToCsString());
-        }
+        public CsClassField AddConstInt(string name, int encodedValue) =>
+            AddConst(name, "int", encodedValue.ToCsString());
 
         public CsMethod AddConstructor(string description = null)
         {
@@ -185,10 +177,7 @@ namespace isukces.code
             return AddConst(name, "string", encodedValue);
         }
 
-        public CsClassField AddField(string fieldName, Type type)
-        {
-            return AddField(fieldName, GetTypeName(type));
-        }
+        public CsClassField AddField(string fieldName, Type type) => AddField(fieldName, GetTypeName(type));
 
         public CsClassField AddField(string fieldName, string type)
         {
@@ -211,10 +200,7 @@ namespace isukces.code
             return m;
         }
 
-        public CsProperty AddProperty(string propertyName, Type type)
-        {
-            return AddProperty(propertyName, GetTypeName(type));
-        }
+        public CsProperty AddProperty(string propertyName, Type type) => AddProperty(propertyName, GetTypeName(type));
 
         public CsProperty AddProperty(string propertyName, string type)
         {
@@ -228,7 +214,7 @@ namespace isukces.code
             Properties.Add(property);
             return property;
         }
-     
+
         public CsClass GetOrCreateNested(string typeName)
         {
             var existing = _nestedClasses
@@ -241,6 +227,20 @@ namespace isukces.code
             _nestedClasses.Add(existing);
             return existing;
         }
+
+        public string GetTypeName(Type type)
+        {
+            if (Owner == null)
+                throw new NullReferenceException(nameof(Owner));
+            var result = Owner.GetTypeName(type);
+            if (!(Owner is CsClass cl)) return result;
+            var cutBegin = cl.Name + ".";
+            if (result.StartsWith(cutBegin, StringComparison.Ordinal))
+                result = result.Substring(cutBegin.Length);
+            return result;
+        }
+
+        public bool IsKnownNamespace(string namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
 
         public void MakeCode(ICsCodeWriter writer)
         {
@@ -283,22 +283,7 @@ namespace isukces.code
         }
 
 
-        public override string ToString()
-        {
-            return "csClass " + _name;
-        }
-
-        public bool IsKnownNamespace(string namespaceName)
-        {
-            return Owner?.IsKnownNamespace(namespaceName) ?? false;
-        }
-        
-        public string GetTypeName(Type type)
-        {
-            if (Owner == null)
-                throw new NullReferenceException(nameof(Owner));
-            return Owner.GetTypeName(type);
-        }
+        public override string ToString() => "csClass " + _name;
 
         public CsClass WithBaseClass(string baseClass)
         {
@@ -519,8 +504,8 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get => _name;
-            private set => _name = value?.Trim() ?? string.Empty;
+            get { return _name; }
+            private set { _name = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
@@ -528,8 +513,8 @@ namespace isukces.code
         /// </summary>
         public string BaseClass
         {
-            get => _baseClass;
-            set => _baseClass = value?.Trim() ?? string.Empty;
+            get { return _baseClass; }
+            set { _baseClass = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
@@ -544,16 +529,16 @@ namespace isukces.code
         /// </summary>
         public List<CsProperty> Properties
         {
-            get => _properties;
-            set => _properties = value ?? new List<CsProperty>();
+            get { return _properties; }
+            set { _properties = value ?? new List<CsProperty>(); }
         }
 
         /// <summary>
         /// </summary>
         public List<CsClassField> Fields
         {
-            get => _fields;
-            set => _fields = value ?? new List<CsClassField>();
+            get { return _fields; }
+            set { _fields = value ?? new List<CsClassField>(); }
         }
 
         /// <summary>
@@ -574,7 +559,10 @@ namespace isukces.code
         /// <summary>
         ///     emit as interface
         /// </summary>
-        public bool IsInterface => Kind == CsNamespaceMemberKind.Interface;
+        public bool IsInterface
+        {
+            get { return Kind == CsNamespaceMemberKind.Interface; }
+        }
 
         public CsNamespaceMemberKind Kind { get; set; }
 

@@ -10,11 +10,11 @@ namespace isukces.code.Tests.EqualityGenerator
             public override bool Equals(object other)
             {
                 if (other is null) return false;
-                if (other.GetType() != typeof(EqualityGeneratorTests.OnePropertyStruct)) return false;
-                return Equals((EqualityGeneratorTests.OnePropertyStruct)other);
+                if (other.GetType() != typeof(OnePropertyStruct)) return false;
+                return Equals((OnePropertyStruct)other);
             }
 
-            public bool Equals(EqualityGeneratorTests.OnePropertyStruct other)
+            public bool Equals(OnePropertyStruct other)
             {
                 return IntValue == other.IntValue;
             }
@@ -24,12 +24,12 @@ namespace isukces.code.Tests.EqualityGenerator
                 return IntValue;
             }
 
-            public static bool operator !=(EqualityGeneratorTests.OnePropertyStruct left, EqualityGeneratorTests.OnePropertyStruct right)
+            public static bool operator !=(OnePropertyStruct left, OnePropertyStruct right)
             {
                 return !Equals(left, right);
             }
 
-            public static bool operator ==(EqualityGeneratorTests.OnePropertyStruct left, EqualityGeneratorTests.OnePropertyStruct right)
+            public static bool operator ==(OnePropertyStruct left, OnePropertyStruct right)
             {
                 return Equals(left, right);
             }

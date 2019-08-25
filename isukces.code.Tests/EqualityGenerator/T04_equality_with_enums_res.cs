@@ -11,10 +11,10 @@ namespace isukces.code.Tests.EqualityGenerator
             {
                 if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return other is EqualityGeneratorTests.ClassWithEnumProperties2 otherCasted && Equals(otherCasted);
+                return other is ClassWithEnumProperties2 otherCasted && Equals(otherCasted);
             }
 
-            public bool Equals(EqualityGeneratorTests.ClassWithEnumProperties2 other)
+            public bool Equals(ClassWithEnumProperties2 other)
             {
                 if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
@@ -30,12 +30,12 @@ namespace isukces.code.Tests.EqualityGenerator
                 }
             }
 
-            public static bool operator !=(EqualityGeneratorTests.ClassWithEnumProperties2 left, EqualityGeneratorTests.ClassWithEnumProperties2 right)
+            public static bool operator !=(ClassWithEnumProperties2 left, ClassWithEnumProperties2 right)
             {
                 return !Equals(left, right);
             }
 
-            public static bool operator ==(EqualityGeneratorTests.ClassWithEnumProperties2 left, EqualityGeneratorTests.ClassWithEnumProperties2 right)
+            public static bool operator ==(ClassWithEnumProperties2 left, ClassWithEnumProperties2 right)
             {
                 return Equals(left, right);
             }
