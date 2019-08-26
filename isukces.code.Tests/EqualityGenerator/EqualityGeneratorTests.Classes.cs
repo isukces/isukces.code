@@ -88,6 +88,14 @@ namespace isukces.code.Tests.EqualityGenerator
         {
             public EnumWithOffset? EnumNullable { get; set; }
             public int?            IntNullable  { get; set; }
+            
+            public  int GetHashCode2()
+            {
+                unchecked
+                {
+                    return (IntNullable ?? 0) * 8 + ((int?)EnumNullable ?? 5) - 5;
+                }
+            }
         }
 
 

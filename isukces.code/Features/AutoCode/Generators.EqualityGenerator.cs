@@ -302,6 +302,7 @@ namespace isukces.code.AutoCode
             protected virtual GetHashCodeExpressionData FindGetHashCode(PropertyOrFieldInfo prop)
             {
                 var type     = prop.ValueType;
+                var typeStripped = type.StripNullable();
                 string propName = prop.Name;
                 var propNameExpression = (CsExpression)propName;
                 if (type == typeof(string))
@@ -315,9 +316,12 @@ namespace isukces.code.AutoCode
                     if (info != null)
                         return info.GetHash(propNameExpression, _class);
                 }
-                if (type.GetTypeInfo().IsEnum)
+                if (typeStripped.GetTypeInfo().IsEnum)
+                {
                     if (GetGetHashCodeForEnumType(type, propNameExpression, out var getHashCodeExpressionData))
                         return getHashCodeExpressionData;
+                }
+                
 
                 if (type == typeof(int)) return propNameExpression;
                 if (type == typeof(int?)) return propNameExpression.Coalesce((CsExpression)"0");
@@ -349,11 +353,27 @@ namespace isukces.code.AutoCode
             private static bool GetGetHashCodeForEnumType(Type type, CsExpression propNameExpression,
                 out GetHashCodeExpressionData getHashCodeExpressionData)
             {
-                var ut = Enum.GetUnderlyingType(type);
+                
+                var stripped = type.StripNullable();
+                var ut = Enum.GetUnderlyingType(stripped);
                 if (ut == typeof(int))
                 {
+                    
+                    var values = Enum.GetValues(stripped).Cast<int>().ToArray();
+                    
                     var expr   = CsExpression.TypeCast("int", propNameExpression);
-                    var values = Enum.GetValues(type).Cast<int>().ToArray();
+                    if (type != stripped)
+                    {
+                        //    expr = propNameExpression.Is("null")
+                        //       .Conditional(0, CsExpression.TypeCast("int", propNameExpression.CallProperty("Value")));
+                        var c = 0;
+                        if (values.Any())
+                            c = values.Min();
+                        expr = CsExpression.TypeCast("int?", propNameExpression).Coalesce(c);
+                    }
+
+                    // var qq = q is null ? 0 : (int)q.Value;
+                    
                     if (values.Length == 0)
                     {
                         getHashCodeExpressionData = expr;

@@ -76,12 +76,15 @@ namespace isukces.code.Tests.EqualityGenerator
         public void T08_Should_create_equality_with_nullables()
         {
             DoTest<ClassWithNullable>();
+            var a = new ClassWithNullable();
+            Assert.Equal(0, a.GetHashCode2());
         }
         
         [Fact]
         public void T09_Should_create_equality_with_bools()
         {
             DoTest<ClassWithBools>();
+         
         }
 
         public class MyValueChecker : AbstractMemberNullValueChecker
