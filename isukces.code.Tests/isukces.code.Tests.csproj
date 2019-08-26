@@ -29,5 +29,8 @@
     <Compile Remove="EqualityGenerator\*_resXXX.cs" />
     <EmbeddedResource Include="EqualityGenerator\*_res.cs" />
     <EmbeddedResource Include="LazyGenerator\*_res.cs" />
+    <Compile Update="EqualityGenerator\EqualityGeneratorTests.Classes.cs">
+      <DependentUpon>EqualityGeneratorTests.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

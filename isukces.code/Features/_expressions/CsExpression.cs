@@ -154,10 +154,10 @@ namespace isukces.code.AutoCode
 
         public CsExpression OptionalNull()
         {
-            // todo I don't know if it's Unary but seems to be
-            // 
-            const CsOperatorPrecendence resultPrecedence = CsOperatorPrecendence.Unary;
-            var                         code             = GetCode(resultPrecedence, ExpressionAppend.After);
+            // todo I don't know if it's Expression but seems to be
+            // I've checked Unary and it's wrong
+            const CsOperatorPrecendence resultPrecedence = CsOperatorPrecendence.Expression;
+            var                         code             = GetCode(resultPrecedence, ExpressionAppend.Before);
             return new CsExpression(code + "?", resultPrecedence);
         }
 
