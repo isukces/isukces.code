@@ -12,8 +12,6 @@ namespace isukces.code.interfaces
 
     public static class CsClassMemberExtensions
     {
-        
-
         public static T WithStatic<T>(this T member, bool isStatic = true)
             where T : ICsClassMember
         {

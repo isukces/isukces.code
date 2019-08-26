@@ -8,8 +8,10 @@ namespace isukces.code.AutoCode
 {
     public partial class Generators
     {
-        internal class LazyGenerator : SingleClassGenerator, IAutoCodeGenerator
+        public class LazyGenerator : SingleClassGenerator, IAutoCodeGenerator
         {
+            private CsMethod _initLazyMethod;
+
             private static string CoalesceNotEmpty(ISet<string> accept, params string[] items)
             {
                 if (items == null || items.Length == 0) return null;
@@ -48,7 +50,7 @@ namespace isukces.code.AutoCode
                     }
                 }
 
-                return mi.Name + "UNKNOWNNAME";
+                return $"{mi.Name}UNKNOWNNAME";
             }
 
             private static string GetCalculatedValue(MemberInfo mi)
@@ -65,6 +67,32 @@ namespace isukces.code.AutoCode
                 }
             }
 
+            private static string GetFullPropertyGetterImplementation(string fieldName, string syncName,
+                AssignStrategy assignS, string callCalulatedValue)
+            {
+                ICsCodeWriter writer = new CsCodeWriter();
+                writer.WriteLine("var result = {0};", fieldName);
+                // writer.WriteLine("// ReSharper disable once InvertIf");
+                writer.WriteLine("if (result == null)");
+                writer.IncIndent();
+                {
+                    writer.WriteLine("lock({0})", syncName);
+                    writer.IncIndent();
+                    {
+                        // writer.WriteLine("// ReSharper disable once ConditionIsAlwaysTrueOrFalse");
+                        writer.WriteLine("if (result == null)");
+                        writer.Indent++;
+                        writer.WriteLine("{0} = result = {1};", fieldName,
+                            assignS.Assign1(callCalulatedValue));
+                        writer.Indent--;
+                    }
+                    writer.DecIndent();
+                }
+                writer.DecIndent();
+                writer.WriteLine("return {0};", assignS.Assign2("result"));
+                return writer.Code;
+            }
+
             private static bool GetIsProperty(MemberInfo mi, Auto.LazyAttribute at)
             {
                 var type = at.Target;
@@ -75,11 +103,15 @@ namespace isukces.code.AutoCode
 
             private static Type GetResultType(MemberInfo mi)
             {
-                if (mi is PropertyInfo)
-                    return ((PropertyInfo)mi).PropertyType;
-                if (mi is MethodInfo)
-                    return ((MethodInfo)mi).ReturnType;
-                throw new NotSupportedException(mi?.GetType().Name ?? "empty");
+                switch (mi)
+                {
+                    case PropertyInfo info:
+                        return info.PropertyType;
+                    case MethodInfo info:
+                        return info.ReturnType;
+                    default:
+                        throw new NotSupportedException(mi?.GetType().Name ?? "empty");
+                }
             }
 
             private static List<Tuple<MethodInfo, Auto.LazyAttribute>> ScanMethods(Type type)
@@ -131,10 +163,43 @@ namespace isukces.code.AutoCode
                 if (properties.Any())
                     foreach (var i in properties)
                         WriteSingle(i.Item1, i.Item2);
+                _initLazyMethod = null;
             }
 
-            private AssignStrategy GetAssignStrategy(Type t)
+            private void AddSyncField(Auto.LazyAttribute at, string fieldName)
             {
+                if (!at.DeclareAndCreateSyncObject) return;
+                var existing = Class.Fields.FirstOrDefault(a => a.Name == fieldName);
+                if (existing != null)
+                {
+                    if (existing.IsStatic == at.StaticSyncObject)
+                        return;
+                    throw new Exception($"Sync object {fieldName} can't be both static and instance");
+                }
+
+                var f = Class.AddField(fieldName, typeof(object))
+                    .WithStatic(at.StaticSyncObject)
+                    .WithIsReadOnly()
+                    .WithVisibility(Visibilities.Private)
+                    .WithConstValue("new object()");
+            }
+
+            private AssignStrategy GetAssignStrategy(Type t, bool canUseLazy)
+            {
+                if (canUseLazy)
+                {
+
+                    var ft  = typeof(Lazy<>).MakeGenericType(t);
+                    var ftn = Class.GetTypeName(ft);
+                    return new AssignStrategy
+                    {
+                        FieldType = ft,
+                        Format1   = $"new {ftn}({{0}}) /*a*/",
+                        Format2   = "{0}.Item1 *b*/"
+                    };
+
+                }
+
                 if (t
 #if COREFX
                     .GetTypeInfo()
@@ -146,7 +211,7 @@ namespace isukces.code.AutoCode
                     return new AssignStrategy
                     {
                         FieldType = ft,
-                        Format1   = "new " + ftn + "({0})",
+                        Format1   = $"new {ftn}({{0}})",
                         Format2   = "{0}.Item1"
                     };
                 }
@@ -157,82 +222,91 @@ namespace isukces.code.AutoCode
                 };
             }
 
+            const string ErrorMessageConstName = "LazyNotInitializedMessage";
+
             private void WriteSingle(MemberInfo mi, Auto.LazyAttribute at)
             {
-                var canUseLazy = at.UseLazyObject 
-                                 && string.IsNullOrEmpty(at.SyncObjectName)
-                                 && string.IsNullOrEmpty(at.ClearMethodName);
-                
+                var useSystemLazy = at.UseLazyObject
+                                    && string.IsNullOrEmpty(at.SyncObjectName)
+                                    && string.IsNullOrEmpty(at.ClearMethodName);
+
                 var used = new HashSet<string>();
                 // nazwa własności/metody
                 var baseName = GetBaseName(mi, at);
                 var syncName = CoalesceNotEmpty(used,
-                    at.SyncObjectName, GeneratorsHelper.FieldName(baseName + "Sync"));
+                    at.SyncObjectName, GeneratorsHelper.FieldName($"{baseName}Sync"));
                 var fieldName = CoalesceNotEmpty(used,
-                    at.FieldName, GeneratorsHelper.FieldName(baseName), GeneratorsHelper.FieldName(baseName + "Data"));
+                    at.FieldName, GeneratorsHelper.FieldName(baseName), GeneratorsHelper.FieldName($"{baseName}Data"));
+
                 var resultType         = GetResultType(mi);
-                var assignS            = GetAssignStrategy(resultType);
                 var isProperty         = GetIsProperty(mi, at);
                 var callCalulatedValue = GetCalculatedValue(mi);
 
-                // sync field
-                if (at.DeclareAndCreateSyncObject)
-                {
-                    var f = Class.AddField(syncName, typeof(object));
-                    f.IsStatic   = at.StaticSyncObject;
-                    f.IsReadOnly = true;
-                    f.ConstValue = "new object()";
-                    f.Visibility = Visibilities.Private;
+                if (!useSystemLazy)
+                    AddSyncField(at, syncName);
 
-                    f            = Class.AddField(fieldName, assignS.FieldType);
-                    f.IsVolatile = true;
-                    f.Visibility = Visibilities.Private;
+                var assignS = GetAssignStrategy(resultType, useSystemLazy);
+                var fieldType = useSystemLazy
+                    ? typeof(Lazy<>).MakeGenericType(resultType)
+                    : assignS.FieldType;
+                var f = Class.AddField(fieldName, fieldType)
+                    .WithVisibility(Visibilities.Private)
+                    .WithIsVolatile(!useSystemLazy);
+                if (useSystemLazy)
+                {
+                    f.IsReadOnly = true;
+                    var init = $"new {Class.GetTypeName(assignS.FieldType)}({mi.Name})";
+                    if (mi.IsMemberStatic())
+                        f.ConstValue = init;
+                    else
+                    {
+                        f.IsReadOnly = false;
+                        GeneratorsHelper.AddInitCode(Class, $"{f.Name} = {init};");
+                    }
                 }
 
+                string code;
+                if (useSystemLazy)
+                {
+                    
+
+                    if (Class.Fields.All(a => a.Name != ErrorMessageConstName))
+                    {
+                        var msg = $"Lazy not initialized. Call {GeneratorsHelper.AutoCodeInitMethodName} method in constructor.";
+                        Class.AddField(ErrorMessageConstName, "string")
+                            .WithVisibility(Visibilities.Private)
+                            .WithConstValue(msg.CsEncode()).IsConst = true;
+                    }
+
+                    var exception = Class.GetTypeName<Exception>();
+                    var cw = new CsCodeWriter()
+                        //.WritelineNoIndent("#if DEBUG")
+                        .WriteLine($"if (ReferenceEquals({fieldName}, null)) throw new {exception}({ErrorMessageConstName});")
+                        // .WritelineNoIndent("#endif")
+                        .WriteLine($"return {fieldName}.Value;");
+                    code = cw.Code;
+                }
+                else
+                    code = GetFullPropertyGetterImplementation(fieldName, syncName, assignS, callCalulatedValue);
                 if (isProperty)
                 {
                     var prop = Class.AddProperty(baseName, resultType);
                     prop.IsStatic           = mi.IsMemberStatic();
                     prop.IsPropertyReadOnly = true;
                     prop.EmitField          = false;
-                    ICsCodeWriter writer = new CsCodeWriter();
-                    {
-                        writer.WriteLine("var result = {0};", fieldName);
-                        writer.WriteLine("// ReSharper disable once InvertIf");
-                        writer.WriteLine("if (result == null)");
-                        writer.OpenBrackets();
-                        {
-                            writer.WriteLine("lock({0})", syncName);
-                            writer.OpenBrackets();
-                            {
-                                writer.WriteLine("// ReSharper disable once ConditionIsAlwaysTrueOrFalse");
-                                writer.WriteLine("if (result == null)");
-                                writer.Indent++;
-                                writer.WriteLine("{0} = result = {1};", fieldName,
-                                    assignS.Assign1(callCalulatedValue));
-                                writer.Indent--;
-                            }
-                            writer.CloseBrackets();
-                        }
-                        writer.CloseBrackets();
-                        writer.WriteLine("return {0};", assignS.Assign2("result"));
-                    }
-                    prop.OwnGetter = writer.Code;
+                    prop.OwnGetter          = code;
                 }
+                else
+                    Class.AddMethod(baseName, resultType)
+                        .WithStatic(mi.IsMemberStatic())
+                        .WithBody(code);
             }
-
 
             private class AssignStrategy
             {
-                public string Assign1(string x)
-                {
-                    return string.Format(Format1, x);
-                }
+                public string Assign1(string x) => string.Format(Format1, x);
 
-                public string Assign2(string x)
-                {
-                    return string.Format(Format2, x);
-                }
+                public string Assign2(string x) => string.Format(Format2, x);
 
                 public Type   FieldType { get; set; }
                 public string Format1   { get; set; } = "{0}";

@@ -166,9 +166,9 @@ public class Src1
 
             var w = new CsCodeWriter();
             f.MakeCode(w);
-            const string expected = @"using System.Alpha;
+            const string expected = @"// ReSharper disable All
+using System.Alpha;
 
-// ReSharper disable once CheckNamespace
 namespace Custom.Beta
 {
     using Custom.Private;

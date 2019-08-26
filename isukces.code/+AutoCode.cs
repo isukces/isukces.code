@@ -1,3 +1,4 @@
+// ReSharper disable All
 using isukces.code;
 using isukces.code.Ammy;
 using isukces.code.interfaces.Ammy;
@@ -6,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-// ReSharper disable once CheckNamespace
 namespace isukces.code.Ammy
 {
     partial class AmmyBind

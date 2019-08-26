@@ -207,7 +207,7 @@ namespace isukces.code.FeatureImplementers
             if (UseGetHashCodeInEqualityChecking)
             {
                 var getHashCodeExpression = CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Precomputed
-                    ? getHashCodeFieldName
+                    ? GetHashCodeFieldName
                     : nameof(GetHashCode) + "()";
                 
                 cw.WriteLine(
@@ -262,7 +262,7 @@ namespace isukces.code.FeatureImplementers
             m.AddParam(OtherArgName, "object");
         }
 
-        const string getHashCodeFieldName         = "_cachedHashCode";
+        const string GetHashCodeFieldName         = "_cachedHashCode";
 
         private void WriteGetHashCode()
         {
@@ -283,7 +283,7 @@ namespace isukces.code.FeatureImplementers
 
             if (hasIntField)
             {
-                var field = _class.AddField(getHashCodeFieldName, "int");
+                var field = _class.AddField(GetHashCodeFieldName, "int");
                 AddNeverBrowsable(field);
             }
 
@@ -291,10 +291,10 @@ namespace isukces.code.FeatureImplementers
             {
                 case GetHashCodeImplementationKind.Cached:
                     var cw1 = new CsCodeWriter()
-                        .WriteLine($"if ({flagFieldName}) return {getHashCodeFieldName};")
-                        .WriteLine($"{getHashCodeFieldName} = {calculateHashCode}();")
+                        .WriteLine($"if ({flagFieldName}) return {GetHashCodeFieldName};")
+                        .WriteLine($"{GetHashCodeFieldName} = {calculateHashCode}();")
                         .WriteLine($"{flagFieldName} = true;")
-                        .WriteLine($"return {getHashCodeFieldName};");
+                        .WriteLine($"return {GetHashCodeFieldName};");
                     _class.AddMethod("GetHashCode", "int")
                         .WithOverride()
                         .WithBody(cw1);
@@ -302,7 +302,7 @@ namespace isukces.code.FeatureImplementers
                 case GetHashCodeImplementationKind.Precomputed:
                     _class.AddMethod("GetHashCode", "int")
                         .WithOverride()
-                        .WithBody($"return {getHashCodeFieldName};");
+                        .WithBody($"return {GetHashCodeFieldName};");
                     break;
             }
 

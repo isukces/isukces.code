@@ -64,9 +64,9 @@ namespace isukces.code.Tests.Serenity
             ICsCodeWriter w = new CsCodeWriter();
             file.MakeCode(w);
             var newExpected = Encode(w.Code);
-            const string expected = @"using isukces.code.Tests.Serenity;
+          var expected=  @"// ReSharper disable All
+using isukces.code.Tests.Serenity;
 
-// ReSharper disable once CheckNamespace
 namespace Cloud.Common
 {
     using Serenity.Data;

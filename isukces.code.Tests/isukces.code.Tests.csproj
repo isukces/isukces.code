@@ -28,5 +28,6 @@
     <EmbeddedResource Include="EqualityGenerator\*.txt" />
     <Compile Remove="EqualityGenerator\*_resXXX.cs" />
     <EmbeddedResource Include="EqualityGenerator\*_res.cs" />
+    <EmbeddedResource Include="LazyGenerator\*_res.cs" />
   </ItemGroup>
 </Project>

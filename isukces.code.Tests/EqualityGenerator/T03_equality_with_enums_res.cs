@@ -1,6 +1,6 @@
+// ReSharper disable All
 using System;
 
-// ReSharper disable once CheckNamespace
 namespace isukces.code.Tests.EqualityGenerator
 {
     partial class EqualityGeneratorTests

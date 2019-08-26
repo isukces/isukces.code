@@ -125,6 +125,7 @@ namespace isukces.code.CodeWrite
         {
             if (Namespaces == null || Namespaces.Count == 0)
                 return;
+            writer.WriteLine("// ReSharper disable All");
             const string emptyNamespace = "";
             if (!string.IsNullOrEmpty(BeginContent))
                 writer.WriteLine(BeginContent);
@@ -147,7 +148,6 @@ namespace isukces.code.CodeWrite
                     continue; // should never occurs
                 directiveByNamespace.TryGetValue(ns, out var compilerDirective);
                 {
-                    writer.WriteLine("// ReSharper disable once CheckNamespace");
                     writer.OpenCompilerIf(compilerDirective);
                     writer.Open("namespace {0}", ns);
                     var ns1 = Namespaces.FirstOrDefault(a => a.Name == ns)?.ImportNamespaces;

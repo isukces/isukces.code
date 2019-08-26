@@ -9,45 +9,32 @@ namespace isukces.code.AutoCode
 {
     public static class GeneratorsHelper
     {
-        public static CsExpression CallMethod(string instance, string method, params string[] arguments)
+        public static void AddInitCode(CsClass cl, string codeLine)
         {
-            return (CsExpression)string.Format("{0}.{1}({2})", instance, method, string.Join(", ", arguments));
+            var method = cl.Methods.FirstOrDefault(a => a.Name == AutoCodeInitMethodName);
+
+            if (method is null)
+                method = cl.AddMethod(AutoCodeInitMethodName, "void")
+                    .WithVisibility(Visibilities.Private);
+
+            method.Body += "\r\n" + codeLine;
         }
-        
+
+        public static CsExpression CallMethod(string instance, string method, params string[] arguments) =>
+            (CsExpression)string.Format("{0}.{1}({2})", instance, method, string.Join(", ", arguments));
+
         public static CsExpression CallMethod(string method, params CsExpression[] arguments)
         {
             return (CsExpression)string.Format("{0}({1})", method, string.Join(", ", arguments.Select(a => a.Code)));
         }
-        
-        public static CsExpression CallMethod(string method, IArgumentsHolder holder)
-        {
-            return (CsExpression)string.Format("{0}({1})", method, string.Join(", ", holder.GetArguments()));
-        }
 
-        public static CsExpression CallMethod(string instance, string method, IArgumentsHolder holder)
-        {
-            return (CsExpression)string.Format("{0}.{1}({2})", instance, method,
+        public static CsExpression CallMethod(string method, IArgumentsHolder holder) =>
+            (CsExpression)string.Format("{0}({1})", method, string.Join(", ", holder.GetArguments()));
+
+        public static CsExpression CallMethod(string instance, string method, IArgumentsHolder holder) =>
+            (CsExpression)string.Format("{0}.{1}({2})", instance, method,
                 string.Join(", ", holder.GetArguments()));
-        }
 
-        public struct MyStruct
-        {
-            public MyStruct(string expressionTemplate, string instance=null)
-            {
-                Instance = instance;
-                ExpressionTemplate = expressionTemplate;
-            }
-
-            public string Instance { get; }
-            public string ExpressionTemplate { get; }
-
-            public string GetCode()
-            {
-                if (string.IsNullOrEmpty(Instance))
-                    return ExpressionTemplate;
-                return string.Format(ExpressionTemplate, Instance);
-            }
-        }
         public static MyStruct DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
         {
             var comparer     = typeof(Comparer<>).MakeGenericType(type);
@@ -55,10 +42,7 @@ namespace isukces.code.AutoCode
             return new MyStruct("{0}.Compare", $"{comparerName}.Default");
         }
 
-        public static string FieldName(string x)
-        {
-            return "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
-        }
+        public static string FieldName(string x) => "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
 
 
         public static Type GetMemberResultType([NotNull] MemberInfo mi)
@@ -157,11 +141,31 @@ namespace isukces.code.AutoCode
             return s;
         }
 
+        public struct MyStruct
+        {
+            public MyStruct(string expressionTemplate, string instance = null)
+            {
+                Instance           = instance;
+                ExpressionTemplate = expressionTemplate;
+            }
+
+            public string GetCode()
+            {
+                if (string.IsNullOrEmpty(Instance))
+                    return ExpressionTemplate;
+                return string.Format(ExpressionTemplate, Instance);
+            }
+
+            public string Instance           { get; }
+            public string ExpressionTemplate { get; }
+        }
+
         public const BindingFlags AllVisibility = BindingFlags.NonPublic | BindingFlags.Public;
         public const BindingFlags AllInstance = BindingFlags.Instance | AllVisibility;
         public const BindingFlags All = AllInstance | BindingFlags.Static;
         public const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
 
         public const string StringEmpty = "string.Empty";
+        public const string AutoCodeInitMethodName = "AutocodeInit";
     }
 }

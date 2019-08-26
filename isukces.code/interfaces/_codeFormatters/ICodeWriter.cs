@@ -54,7 +54,7 @@ namespace isukces.code.interfaces
         }
 
 
-         
+
 
         public static void DoWithKeepingIndent(this ICodeWriter _this, Action action)
         {
@@ -72,7 +72,7 @@ namespace isukces.code.interfaces
             return writer.Code.Trim();
         }
 
-        
+
         public static void Open(this ICodeWriter src, string x)
         {
 #if AutoCloseText
@@ -116,6 +116,7 @@ namespace isukces.code.interfaces
             _this.Open(text);
             return _this;
         }
+
         public static T WithClose<T>(this T _this)
             where T : ICodeWriter
         {
@@ -158,12 +159,14 @@ namespace isukces.code.interfaces
             return src.WriteLine(text);
         }
 
-        public static void WritelineNoIndent(this ICodeWriter _this, string compilerCode)
+        public static T WritelineNoIndent<T>(this T _this, string compilerCode)
+            where T : ICodeWriter
         {
             var indentBefore = _this.Indent;
             _this.Indent = 0;
             _this.WriteLine(compilerCode);
             _this.Indent = indentBefore;
+            return _this;
         }
     }
 }

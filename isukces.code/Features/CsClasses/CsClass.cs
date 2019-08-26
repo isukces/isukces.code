@@ -186,6 +186,9 @@ namespace isukces.code
             return field;
         }
 
+        public CsMethod AddMethod(string name, Type type, string description = null) =>
+            AddMethod(name, GetTypeName(type), description);
+
         public CsMethod AddMethod(string name, string type, string description = null)
         {
             var isConstructor = string.IsNullOrEmpty(name) || name == _name;
@@ -200,7 +203,8 @@ namespace isukces.code
             return m;
         }
 
-        public CsProperty AddProperty(string propertyName, Type type) => AddProperty(propertyName, GetTypeName(type));
+        public CsProperty AddProperty(string propertyName, Type type)
+            => AddProperty(propertyName, GetTypeName(type));
 
         public CsProperty AddProperty(string propertyName, string type)
         {
@@ -332,7 +336,7 @@ namespace isukces.code
                 if (emitField)
                     writer
                         .EmptyLine()
-                        .WriteLine("// ReSharper disable once InconsistentNaming")
+                        //.WriteLine("// ReSharper disable once InconsistentNaming")
                         .WriteLine($"{prop.FieldVisibility.ToString().ToLower()} {prop.Type} {fieldName};");
             }
             finally
@@ -578,6 +582,11 @@ namespace isukces.code
         ///     obiekt, na podstawie którego wygenerowano klasę, przydatne przy dalszej obróbce
         /// </summary>
         public object GeneratorSource { get; set; }
+
+        public IReadOnlyList<CsMethod> Methods
+        {
+            get { return _methods; }
+        }
 
         /// <summary>
         /// </summary>

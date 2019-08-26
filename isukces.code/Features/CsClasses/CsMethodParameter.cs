@@ -12,7 +12,7 @@ namespace isukces.code
         ///     <param name="type">typ parametru</param>
         ///     <param name="description">Opis</param>
         /// </summary>
-        public CsMethodParameter(string name, string type=null, string description=null)
+        public CsMethodParameter(string name, string type = null, string description = null)
         {
             Name        = name;
             Type        = type;
@@ -25,22 +25,14 @@ namespace isukces.code
         /// <param name="left">lewa strona porównania</param>
         /// <param name="right">prawa strona porównania</param>
         /// <returns><c>true</c> jeśli obiekty są równe</returns>
-        public static bool operator ==(CsMethodParameter left, CsMethodParameter right)
-        {
-            return ReferenceEquals(left, null)
+        public static bool operator ==(CsMethodParameter left, CsMethodParameter right) =>
+            ReferenceEquals(left, null)
                 ? ReferenceEquals(right, null)
                 : !ReferenceEquals(right, null) && left.Name == right.Name && left.Type == right.Type;
-        }
 
-        public static bool operator >(CsMethodParameter left, CsMethodParameter right)
-        {
-            return left.CompareTo(right) > 0;
-        }
+        public static bool operator >(CsMethodParameter left, CsMethodParameter right) => left.CompareTo(right) > 0;
 
-        public static bool operator >=(CsMethodParameter left, CsMethodParameter right)
-        {
-            return left.CompareTo(right) >= 0;
-        }
+        public static bool operator >=(CsMethodParameter left, CsMethodParameter right) => left.CompareTo(right) >= 0;
 
         /// <summary>
         ///     Realizuje operator !=
@@ -48,20 +40,11 @@ namespace isukces.code
         /// <param name="left">lewa strona porównania</param>
         /// <param name="right">prawa strona porównania</param>
         /// <returns><c>true</c> jeśli obiekty są różne</returns>
-        public static bool operator !=(CsMethodParameter left, CsMethodParameter right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(CsMethodParameter left, CsMethodParameter right) => !(left == right);
 
-        public static bool operator <(CsMethodParameter left, CsMethodParameter right)
-        {
-            return left.CompareTo(right) < 0;
-        }
+        public static bool operator <(CsMethodParameter left, CsMethodParameter right) => left.CompareTo(right) < 0;
 
-        public static bool operator <=(CsMethodParameter left, CsMethodParameter right)
-        {
-            return left.CompareTo(right) <= 0;
-        }
+        public static bool operator <=(CsMethodParameter left, CsMethodParameter right) => left.CompareTo(right) <= 0;
 
         /// <summary>
         ///     Realizuje interfejs IComparable
@@ -81,20 +64,14 @@ namespace isukces.code
         /// </summary>
         /// <param name="other">obiekt do porównania z obiektem bieżącym</param>
         /// <returns><c>true</c> jeśli wskazany obiekt jest równy bieżącemu; w przeciwnym wypadku<c>false</c></returns>
-        public bool Equals(CsMethodParameter other)
-        {
-            return other == this;
-        }
+        public bool Equals(CsMethodParameter other) => other == this;
 
         /// <summary>
         ///     Sprawdza, czy wskazany obiekt jest równy bieżącemu
         /// </summary>
         /// <param name="other">obiekt do porównania z obiektem bieżącym</param>
         /// <returns><c>true</c> jeśli wskazany obiekt jest równy bieżącemu; w przeciwnym wypadku<c>false</c></returns>
-        public override bool Equals(object other)
-        {
-            return other is CsMethodParameter && Equals((CsMethodParameter)other);
-        }
+        public override bool Equals(object other) => other is CsMethodParameter && Equals((CsMethodParameter)other);
 
         /// <summary>
         ///     Zwraca kod HASH obiektu
@@ -117,29 +94,6 @@ namespace isukces.code
             return string.Format("{0} {1} {2}", Visibility.ToString().ToLower(), Type, Name);
         }
 
-        public CsMethodParameter WithConstValue(string constValue)
-        {
-            ConstValue = constValue;
-            return this;
-        }
-
-        public CsMethodParameter WithConstValueNull()
-        {
-            ConstValue = "null";
-            return this;
-        }
-
-        public CsMethodParameter WithDescription(string description)
-        {
-            Description = description;
-            return this;
-        }
-
-        public CsMethodParameter WithIsReadOnly(bool isReadOnly = true)
-        {
-            IsReadOnly = isReadOnly;
-            return this;
-        }
 
         /// <summary>
         ///     Realizuje interfejs IComparable
@@ -155,8 +109,8 @@ namespace isukces.code
         /// </summary>
         public string ConstValue
         {
-            get => _constValue;
-            set => _constValue = value?.Trim();
+            get { return _constValue; }
+            set { _constValue = value?.Trim(); }
         }
 
         public bool IsConst { get; set; }
@@ -180,8 +134,8 @@ namespace isukces.code
         /// </summary>
         public string Description
         {
-            get => _description;
-            set => _description = value?.Trim() ?? string.Empty;
+            get { return _description; }
+            set { _description = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
@@ -189,8 +143,8 @@ namespace isukces.code
         /// </summary>
         public IList<ICsAttribute> Attributes
         {
-            get => _attributes;
-            set => _attributes = value ?? new List<ICsAttribute>();
+            get { return _attributes; }
+            set { _attributes = value ?? new List<ICsAttribute>(); }
         }
 
         /// <summary>
@@ -214,5 +168,41 @@ namespace isukces.code
         private string _constValue = string.Empty;
         private string _description = string.Empty;
         private IList<ICsAttribute> _attributes = new List<ICsAttribute>();
+    }
+
+    public static class CsMethodParameterExt
+    {
+        public static T WithConstValue<T>(this T src, string constValue)
+            where T : CsMethodParameter
+        {
+            src.ConstValue = constValue;
+            return src;
+        }
+
+        public static T WithConstValueNull<T>(this T src) where T : CsMethodParameter
+        {
+            src.ConstValue = "null";
+            return src;
+        }
+
+        public static T WithDescription<T>(this T src, string description) where T : CsMethodParameter
+        {
+            src.Description = description;
+            return src;
+        }
+
+        public static T WithIsReadOnly<T>(this T src, bool isReadOnly = true)
+            where T : CsMethodParameter
+        {
+            src.IsReadOnly = isReadOnly;
+            return src;
+        }
+        
+        public static T WithIsVolatile<T>(this T src, bool isVolatile = true)
+            where T : CsMethodParameter
+        {
+            src.IsVolatile = isVolatile;
+            return src;
+        }
     }
 }
