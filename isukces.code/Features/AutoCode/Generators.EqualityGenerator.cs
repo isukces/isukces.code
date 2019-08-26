@@ -321,13 +321,14 @@ namespace isukces.code.AutoCode
 
                 if (type == typeof(int)) return propNameExpression;
                 if (type == typeof(int?)) return propNameExpression.Coalesce((CsExpression)"0");
-                if (type == typeof(bool)) return propNameExpression.Conditional(1, 0);
-                if (type == typeof(bool?))  
+                if (type == typeof(bool) || type == typeof(bool?))
                 {
-                    var condition = new CsExpression.Binary(
-                        propNameExpression, true,
-                        CsOperatorPrecendence.Equality, "==");
-                    return condition.Conditional(1, 0);
+                    var e = propNameExpression;
+                    if (type == typeof(bool?))
+                        e = new CsExpression.Binary(e, true, CsOperatorPrecendence.Equality, "==");
+                    e = e.Conditional(1, 0);
+                    return new GetHashCodeExpressionData(e, 0, 1);
+
                 }
 
                 {

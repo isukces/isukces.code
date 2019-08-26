@@ -91,6 +91,17 @@ namespace isukces.code.Tests.EqualityGenerator
         }
 
 
-       
+        [Auto.EqualityGeneratorAttribute]
+        public partial class ClassWithBools
+        {
+            public int            Value1       { get; set; }
+            public EnumWithOffset EnumNullable { get; set; }
+            public int            Value2       { get; set; }
+            public bool           BoolNormal   { get; set; }
+            public int            Value3       { get; set; }
+            public bool?          BoolNullable { get; set; }
+            public int            Value4       { get; set; }
+        }
+
     }
 }

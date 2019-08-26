@@ -26,7 +26,7 @@ namespace isukces.code.Tests.EqualityGenerator
             {
                 unchecked
                 {
-                    return (EnumNullable?.GetHashCode() ?? 0) * 397 ^ (IntNullable ?? 0);
+                    return (IntNullable ?? 0) * 397 ^ (EnumNullable?.GetHashCode() ?? 0);
                 }
             }
 

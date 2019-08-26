@@ -26,9 +26,23 @@ namespace isukces.code.FeatureImplementers
 
         public int CompareTo(GetHashCodeExpressionDataWithMemberInfo other)
         {
-            var enum1 = GetMemberType().GetTypeInfo().IsEnum;
-            var enum2 = other.GetMemberType().GetTypeInfo().IsEnum;
-            return enum1.CompareTo(enum2);
+            int GetGroup(GetHashCodeExpressionDataWithMemberInfo x)
+            {
+                var type = x.GetMemberType().StripNullable();
+                if (type == typeof(bool))
+                    return 3;
+                    
+#if COREFX
+                if (type.GetTypeInfo().IsEnum) return 2;
+#else
+                if (type.IsEnum) return 2;    
+#endif
+                return 1;
+            }
+
+            var g1 = GetGroup(this);
+            var g2 = GetGroup(other);
+            return g1.CompareTo(g2);
         }
 
         public int CompareTo(object obj)

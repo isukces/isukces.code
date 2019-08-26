@@ -78,6 +78,12 @@ namespace isukces.code.Tests.EqualityGenerator
             DoTest<ClassWithNullable>();
         }
         
+        [Fact]
+        public void T09_Should_create_equality_with_bools()
+        {
+            DoTest<ClassWithBools>();
+        }
+
         public class MyValueChecker : AbstractMemberNullValueChecker
         {
             protected override bool HasMemberNotNullAttribute(MemberInfo mi) => mi.Name.Contains("NotNull");
