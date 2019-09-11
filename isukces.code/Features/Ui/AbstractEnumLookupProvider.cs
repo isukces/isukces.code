@@ -19,6 +19,7 @@ namespace isukces.code.Ui
         public Tuple<Type, string> GetSourceStaticProperty()
         {
             const string enumvalues = "EnumValues";
+            const string Sample = "https://github.com/isukces/isukces.code/blob/master/isukces.code.Tests/Ui/SampleEnumLookupProvider.cs"
             var          type       = GetType();
             var pi = type
 #if COREFX
@@ -26,7 +27,7 @@ namespace isukces.code.Ui
 #endif
                 .GetProperty(enumvalues, BindingFlags.Public | BindingFlags.Static);
             if (pi is null)
-                throw new Exception($"Type {type} has no static property {enumvalues}.");
+                throw new Exception($"Type {type} has no static property {enumvalues}. See {Sample} for more info.");
             return new Tuple<Type, string>(type, enumvalues);
         }
 
