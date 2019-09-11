@@ -19,8 +19,9 @@ namespace isukces.code.Ui
         public Tuple<Type, string> GetSourceStaticProperty()
         {
             const string enumvalues = "EnumValues";
-            const string Sample = "https://github.com/isukces/isukces.code/blob/master/isukces.code.Tests/Ui/SampleEnumLookupProvider.cs"
-            var          type       = GetType();
+            const string Sample =
+                "https://github.com/isukces/isukces.code/blob/master/isukces.code.Tests/Ui/SampleEnumLookupProvider.cs";
+            var type = GetType();
             var pi = type
 #if COREFX
                 .GetTypeInfo()

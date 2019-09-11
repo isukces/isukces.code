@@ -1,4 +1,5 @@
 using isukces.code.Ammy;
+using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.interfaces.Ammy;
 using Xunit;
 
@@ -26,7 +27,7 @@ namespace isukces.code.Tests.Ammy
             ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
 
             var text = new AmmyBindBuilder("CustomHeight")
-                .WithMode(DataBindingMode.TwoWay)
+                .WithMode(XBindingMode.TwoWay)
                 .WithValidationRule(MekeDoubleValidation("Custom height", false, 500, 6200))
                 .Build();
 
@@ -52,7 +53,7 @@ namespace isukces.code.Tests.Ammy
             ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
 
             var text = new AmmyBindBuilder("CustomHeight")
-                .WithMode(DataBindingMode.TwoWay)
+                .WithMode(XBindingMode.TwoWay)
                 .WithConverterFromResource("MyConverter")
                 .WithValidationRule(MekeDoubleValidation("Custom height", false, 500, 6200))
                 .Build();
@@ -80,7 +81,7 @@ namespace isukces.code.Tests.Ammy
             ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
 
             var text = new AmmyBindBuilder("CustomHeight")
-                .WithMode(DataBindingMode.TwoWay)
+                .WithMode(XBindingMode.TwoWay)
                 .WithConverterFromResource("MyConverter")
                 .Build();
 

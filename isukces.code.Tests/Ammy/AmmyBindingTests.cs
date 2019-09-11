@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using isukces.code.Ammy;
+using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 using Xunit;
@@ -32,7 +33,7 @@ namespace isukces.code.Tests.Ammy
         public void T02_should_create_simple_binding_with_mode()
         {
             var a = new AmmyBindBuilder("PropName")
-                .WithMode(DataBindingMode.OneTime)
+                .WithMode(XBindingMode.OneTime)
                 .Build();
             var            writer = new AmmyCodeWriter();
             IConversionCtx ctx    = new ConversionCtx(writer);
@@ -45,7 +46,7 @@ namespace isukces.code.Tests.Ammy
         public void T03_should_create_simple_binding_with_mode_and_converter()
         {
             var a = new AmmyBindBuilder("PropName")
-                .WithMode(DataBindingMode.OneTime)
+                .WithMode(XBindingMode.OneTime)
                 .WithConverterFromResource("MyConverter")
                 .Build();
             var            writer = new AmmyCodeWriter();

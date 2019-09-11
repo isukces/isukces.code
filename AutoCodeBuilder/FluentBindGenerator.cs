@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using isukces.code;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
+using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.interfaces;
 
 namespace AutoCodeBuilder
@@ -16,7 +17,7 @@ namespace AutoCodeBuilder
                 BindingParams.Add(new BindingParamInfo(typeof(T), name, addStatic, isNormalProperty));
             }
 
-            Add<DataBindingMode>("Mode");
+            Add<XBindingMode>("Mode");
             Add<object>(ValidationRules);
             Add<string>("BindingGroupName");
             Add<bool>("BindsDirectlyToSource");
@@ -34,7 +35,7 @@ namespace AutoCodeBuilder
             Add<string>("StringFormat");
             Add<object>("TargetNullValue");
 
-            Add<DataUpdateSourceTrigger>("UpdateSourceTrigger");
+            Add<XUpdateSourceTrigger>("UpdateSourceTrigger");
 
             Add<bool>("ValidatesOnDataErrors");
             Add<bool>("ValidatesOnExceptions");

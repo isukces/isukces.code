@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
@@ -11,7 +12,7 @@ namespace isukces.code.Ammy
 {
     public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>, IAmmySpecialBindCode
     {
-        public AmmyBind(string path, DataBindingMode? mode = null)
+        public AmmyBind(string path, XBindingMode? mode = null)
         {
             Path = path;
             if (mode != null)
@@ -246,20 +247,5 @@ namespace isukces.code.Ammy
         }
     }
 
-    public enum DataBindingMode
-    {
-        TwoWay,
-        OneWay,
-        OneTime,
-        OneWayToSource,
-        Default
-    }
 
-    public enum DataUpdateSourceTrigger
-    {
-        Default,
-        PropertyChanged,
-        LostFocus,
-        Explicit
-    }
 }

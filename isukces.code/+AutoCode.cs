@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using isukces.code.Compatibility.System.Windows.Data;
 
 namespace isukces.code.Ammy
 {
@@ -124,7 +125,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBind WithMode(DataBindingMode mode)
+        public AmmyBind WithMode(XBindingMode mode)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("Mode", mode);
@@ -208,7 +209,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBind WithUpdateSourceTrigger(DataUpdateSourceTrigger updateSourceTrigger)
+        public AmmyBind WithUpdateSourceTrigger(XUpdateSourceTrigger updateSourceTrigger)
         {
             // generator : FluentBindGenerator G1
             return WithSetParameter("UpdateSourceTrigger", updateSourceTrigger);
@@ -366,7 +367,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBindBuilder WithMode(DataBindingMode? mode)
+        public AmmyBindBuilder WithMode(XBindingMode? mode)
         {
             // generator : FluentBindGenerator G1
             Mode = mode; return this;
@@ -415,7 +416,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBindBuilder WithUpdateSourceTrigger(DataUpdateSourceTrigger? updateSourceTrigger)
+        public AmmyBindBuilder WithUpdateSourceTrigger(XUpdateSourceTrigger? updateSourceTrigger)
         {
             // generator : FluentBindGenerator G1
             UpdateSourceTrigger = updateSourceTrigger; return this;
@@ -484,7 +485,7 @@ namespace isukces.code.Ammy
                 bind.WithPath(Path);
         }
 
-        public DataBindingMode? Mode { get; set; }
+        public XBindingMode? Mode { get; set; }
 
         public System.Collections.Generic.List<object> ValidationRules { get; } = new System.Collections.Generic.List<object>();
 
@@ -510,7 +511,7 @@ namespace isukces.code.Ammy
 
         public object TargetNullValue { get; set; }
 
-        public DataUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
+        public XUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
 
         public bool? ValidatesOnDataErrors { get; set; }
 
@@ -545,7 +546,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator G9 ver2
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
@@ -563,7 +564,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated("AmmyPropertyContainerMethodGenerator")]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator G6 ver2
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
@@ -634,7 +635,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator G9 ver2
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
@@ -652,7 +653,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated("AmmyPropertyContainerMethodGenerator")]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, DataBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator G6 ver2
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);

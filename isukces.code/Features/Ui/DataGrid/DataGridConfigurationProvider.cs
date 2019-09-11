@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using isukces.code.Ammy;
+using isukces.code.Compatibility.System.Windows.Data;
 
 namespace isukces.code.Ui.DataGrid
 {
@@ -14,7 +15,7 @@ namespace isukces.code.Ui.DataGrid
 
     public abstract class DataGridConfigurationProvider<TRow> : DataGridConfigurationProvider
     {
-        protected AmmyBind BindToModel<TValue>(Expression<Func<TRow, TValue>> func, DataBindingMode? mode = null)
+        protected AmmyBind BindToModel<TValue>(Expression<Func<TRow, TValue>> func, XBindingMode? mode = null)
         {
             var name = CodeUtils.GetMemberPath(func);
             return new AmmyBind(name, mode);

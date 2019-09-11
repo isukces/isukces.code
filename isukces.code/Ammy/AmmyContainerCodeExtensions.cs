@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.interfaces.Ammy;
 using JetBrains.Annotations;
 
@@ -43,7 +44,7 @@ namespace isukces.code.Ammy
             string propertyName, 
             string path,
             [NotNull] Type ancestorType,
-            DataBindingMode mode,
+            XBindingMode mode,
             [CanBeNull] Action<AmmyBind> bindingSettings = null)
             where T : IAmmyPropertyContainer
         {

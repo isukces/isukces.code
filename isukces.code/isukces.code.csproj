@@ -33,6 +33,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Ammy\_extension" />
+    <Folder Include="Features\Ui\FakeTelerik" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />

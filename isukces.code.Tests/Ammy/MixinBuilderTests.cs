@@ -1,4 +1,5 @@
 using isukces.code.Ammy;
+using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.interfaces.Ammy;
 using Xunit;
 
@@ -32,7 +33,7 @@ namespace isukces.code.Tests.Ammy
         {
             var m = new MixinBuilder<TextBox>("MyMixin")
                 .WithPropertyAncestorBind<SampleDataModel>(a => a.Text, a => a.Name,
-                    bind => { bind.WithMode(DataBindingMode.TwoWay); });
+                    bind => { bind.WithMode(XBindingMode.TwoWay); });
             var code = GenCode(m.WrappedMixin);
 
             var expected =
