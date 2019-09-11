@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using isukces.code.Ui;
 
-namespace isukces.code.Ammy.Ui
+namespace isukces.code.Tests.Ui
 {
     // ========= JUST EXAMPLE CODE =========
 
