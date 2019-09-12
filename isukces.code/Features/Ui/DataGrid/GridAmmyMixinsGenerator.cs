@@ -8,7 +8,7 @@ using isukces.code.IO;
 
 namespace isukces.code.Ui.DataGrid
 {
-    public partial class GridAmmyMixinsGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
+    public abstract partial class GridAmmyMixinsGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
     {
         static GridAmmyMixinsGenerator()
         {
@@ -24,8 +24,16 @@ namespace isukces.code.Ui.DataGrid
         }
 
         public GridAmmyMixinsGenerator(IAssemblyBaseDirectoryProvider directoryProvider) =>
-            _directoryProvider = directoryProvider;
+            DirectoryProvider = directoryProvider;
 
+
+        protected static AmmyBind ToBind(string x)
+        {
+            var dataMemberBinding = string.IsNullOrEmpty(x)
+                ? null
+                : new AmmyBind(x);
+            return dataMemberBinding;
+        }
 
 
         private static PropertyInfo[] GetProperties(Type attModelType)
@@ -62,20 +70,11 @@ namespace isukces.code.Ui.DataGrid
             return null;
         }
 
-
-        protected static AmmyBind ToBind(string x)
-        {
-            var dataMemberBinding = string.IsNullOrEmpty(x)
-                ? null
-                : new AmmyBind(x);
-            return dataMemberBinding;
-        }
-
         public void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
         {
-            var dir      = _directoryProvider.GetBaseDirectory(assembly);
+            var dir      = DirectoryProvider.GetBaseDirectory(assembly);
             var filename = Path.Combine(dir.FullName, "+grid.Auto.ammy");
-            var code     = _mixins.FullCode;
+            var code     = Mixins.FullCode;
             var saved    = CodeFileUtils.SaveIfDifferent(code, filename, false);
             if (saved)
                 context.FileSaved(new FileInfo(filename));
@@ -83,7 +82,7 @@ namespace isukces.code.Ui.DataGrid
 
         public void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
         {
-            _mixins = new AmmyCodeWriter();
+            Mixins = new AmmyCodeWriter();
         }
 
         public void Generate(Type type, IAutoCodeGeneratorContext context)
@@ -132,56 +131,10 @@ namespace isukces.code.Ui.DataGrid
             throw new NotSupportedException(t.ToString());
         }
 
-        protected virtual void WriteAmmyMixin(string name, Model model)
-        {
-#if TELERIK
-            _mixins.AddNamespace<GridViewColumnGroup>();
-            _mixins.AddNamespace<GridViewToggleRowDetailsColumn>();
-            _mixins.AddNamespace<Enums>();
-
-            var ctx = new ConversionCtx(_mixins);
-            ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
-            _mixins.Open($"mixin {name}() for {ctx.TypeName<RadGridView>()}");
-
-            if (model.Categories.Any())
-            {
-                _mixins.OpenArray("combine ColumnGroups:");
-                foreach (var col in model.Categories)
-                {
-                    var q = new AmmyObjectBuilder<GridViewColumnGroup>().WithProperty<>(a => a.Name, col.Name)
-                        .WithPropertyGeneric(a => a.Header, col.Header);
-                    q.WriteLineTo(_mixins, ctx);
-                }
-
-                _mixins.CloseArray();
-            }
-
-            if (model.Columns.Any())
-            {
-                _mixins.OpenArray("combine Columns:");
-                if (model.AddExpandColumn)
-                {
-                    var obj =
- new AmmyObjectBuilder<GridViewToggleRowDetailsColumn>().WithProperty<>(a => a.ExpandMode, GridViewToggleRowDetailsColumnExpandMode.Single);
-                    obj.WriteLineTo(_mixins, ctx);
-                }
-
-                foreach (var col in model.Columns)
-                {
-                    var expression = ConvertColumn(col);
-                    expression.WriteLineTo(_mixins, ctx);
-                }
-
-                _mixins.CloseArray();
-            }
-
-            _mixins.CloseNl();
-#endif
-        }
-
+        protected abstract void WriteAmmyMixin(string name, Model model);
+        protected IAssemblyBaseDirectoryProvider DirectoryProvider { get; }
+        protected AmmyCodeWriter                 Mixins            { get; private set; }
 
         private static readonly HashSet<Type> RightAligned;
-        private readonly IAssemblyBaseDirectoryProvider _directoryProvider;
-        private AmmyCodeWriter _mixins;
     }
 }

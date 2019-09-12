@@ -1,8 +1,10 @@
+using System.Linq;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
 using isukces.code.Compatibility.System.Windows;
 using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.Compatibility.Telerik;
+using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ui.DataGrid
@@ -34,6 +36,59 @@ namespace isukces.code.Ui.DataGrid
             if (col.AlignRight)
                 obj = obj.WithPropertyGeneric(a => a.TextAlignment, TextAlignment.Right);
             return obj;
+        }
+
+        protected virtual IConversionCtx CreateConversionContext()
+        {
+            var ctx = new ConversionCtx(Mixins);
+            return ctx;
+        }
+
+
+        protected override void WriteAmmyMixin(string name, Model model)
+        {
+            /*_mixins.AddNamespace<GridViewColumnGroup>();
+            _mixins.AddNamespace<GridViewToggleRowDetailsColumn>();
+            _mixins.AddNamespace<Enums>();*/
+
+            var ctx = CreateConversionContext();
+            // ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
+            Mixins.Open($"mixin {name}() for {ctx.TypeName<RadGridView>()}");
+
+            if (model.Categories.Any())
+            {
+                Mixins.OpenArray("combine ColumnGroups:");
+                foreach (var col in model.Categories)
+                {
+                    var q = new AmmyObjectBuilder<GridViewColumnGroup>().WithProperty(a => a.Name, col.Name)
+                        .WithPropertyGeneric(a => a.Header, col.Header);
+                    q.WriteLineTo(Mixins, ctx);
+                }
+
+                Mixins.CloseArray();
+            }
+
+            if (model.Columns.Any())
+            {
+                Mixins.OpenArray("combine Columns:");
+                if (model.AddExpandColumn)
+                {
+                    var obj =
+                        new AmmyObjectBuilder<GridViewToggleRowDetailsColumn>()
+                            .WithProperty(a => a.ExpandMode, GridViewToggleRowDetailsColumnExpandMode.Single);
+                    obj.WriteLineTo(Mixins, ctx);
+                }
+
+                foreach (var col in model.Columns)
+                {
+                    var expression = ConvertColumn(col);
+                    expression.WriteLineTo(Mixins, ctx);
+                }
+
+                Mixins.CloseArray();
+            }
+
+            Mixins.CloseNl();
         }
 
         private AmmyObjectBuilder<T> AddTemplates<T>(AmmyObjectBuilder<T> obj, ColumnInfo col)

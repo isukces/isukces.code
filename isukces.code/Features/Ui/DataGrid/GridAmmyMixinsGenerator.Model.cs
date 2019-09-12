@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace isukces.code.Ui.DataGrid
 {
-    public partial class GridAmmyMixinsGenerator
+    public abstract partial class GridAmmyMixinsGenerator
     {
         protected class Model
         {
