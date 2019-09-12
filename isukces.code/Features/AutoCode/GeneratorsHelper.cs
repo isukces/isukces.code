@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using isukces.code.interfaces;
+using isukces.code.interfaces.Ammy;
 using JetBrains.Annotations;
 
 namespace isukces.code.AutoCode
@@ -57,18 +58,13 @@ namespace isukces.code.AutoCode
             throw new NotSupportedException(mi.GetType().ToString());
         }
 
-        /*public static string TypeName<T>(this INamespaceContainer container)
-        {
-            return TypeName(container, typeof(T));
-        }*/
-
         public static string GetTypeName(this INamespaceContainer container, Type type)
         {
             var emitTypeAttribute = EmitTypeAttribute.GetAttribute(type);
             if (emitTypeAttribute != null)
             {
                 var namespaceName = emitTypeAttribute.Namespace ?? type.Namespace;
-                var shortName = emitTypeAttribute.TypeName ?? type.Name;
+                var shortName     = emitTypeAttribute.TypeName ?? type.Name;
                 if (container?.IsKnownNamespace(namespaceName) ?? false)
                     return shortName;
                 return namespaceName + "." + shortName;
@@ -177,5 +173,10 @@ namespace isukces.code.AutoCode
 
         public const string StringEmpty = "string.Empty";
         public const string AutoCodeInitMethodName = "AutocodeInit";
+
+        /*public static string TypeName<T>(this INamespaceContainer container)
+        {
+            return TypeName(container, typeof(T));
+        }*/
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using isukces.code.AutoCode;
 using JetBrains.Annotations;
 
 namespace isukces.code.interfaces.Ammy
@@ -16,11 +17,7 @@ namespace isukces.code.interfaces.Ammy
     {
         public static string TypeName(this IConversionCtx ctx, Type t)
         {
-            if (t.DeclaringType != null)
-                return TypeName(ctx, t.DeclaringType) + "." + t.Name;
-            if (!ctx.FullNamespaces && ctx.NamespaceProvider.Namespaces.Contains(t.Namespace))
-                return t.Name;
-            return t.FullName;
+            return ctx.NamespaceProvider.GetTypeName(t);
         }
 
         public static string TypeName<T>(this IConversionCtx ctx)
