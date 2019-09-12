@@ -17,6 +17,7 @@ namespace isukces.code.interfaces.Ammy
         {
             if (src == null) throw new ArgumentNullException(nameof(src));
             if (type == null) throw new ArgumentNullException(nameof(type));
+            
             var ns = type.Namespace;
             if (!string.IsNullOrEmpty(ns))
                 src.Namespaces.Add(ns);

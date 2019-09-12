@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using isukces.code.interfaces;
 using JetBrains.Annotations;
 
@@ -35,9 +36,15 @@ namespace isukces.code.AutoCode
     {
         public static void AddNamespace(this IAutoCodeGeneratorContext src, Type type)
         {
-            var ns = type.Namespace;
-            if (!string.IsNullOrEmpty(ns))
-                src.AddNamespace(ns);
+            var at = EmitTypeAttribute.GetAttribute(type);
+            if (at?.Namespace is null)
+            {
+                var ns = type.Namespace;
+                if (!string.IsNullOrEmpty(ns))
+                    src.AddNamespace(ns);
+            }
+            else
+                src.AddNamespace(at.Namespace);
         }
 
         public static void AddNamespace<T>(this IAutoCodeGeneratorContext src)

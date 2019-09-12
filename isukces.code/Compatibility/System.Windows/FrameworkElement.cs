@@ -1,5 +1,6 @@
 namespace isukces.code.Compatibility.System.Windows
 {
+    [EmitType("System.Windows")]
     public class FrameworkElement
     {
         public Thickness         Margin            { get; set; }

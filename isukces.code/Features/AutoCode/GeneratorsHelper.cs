@@ -64,6 +64,16 @@ namespace isukces.code.AutoCode
 
         public static string GetTypeName(this INamespaceContainer container, Type type)
         {
+            var emitTypeAttribute = EmitTypeAttribute.GetAttribute(type);
+            if (emitTypeAttribute != null)
+            {
+                var namespaceName = emitTypeAttribute.Namespace ?? type.Namespace;
+                var shortName = emitTypeAttribute.TypeName ?? type.Name;
+                if (container?.IsKnownNamespace(namespaceName) ?? false)
+                    return shortName;
+                return namespaceName + "." + shortName;
+            }
+
             //todo: Generic types
             if (type == null)
                 return null;

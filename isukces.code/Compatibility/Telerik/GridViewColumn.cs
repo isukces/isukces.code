@@ -6,6 +6,7 @@ namespace isukces.code.Compatibility.Telerik
     /// <summary>
     ///     Reflection only definition
     /// </summary>
+    [EmitType("Telerik.Windows.Controls")]
     public class GridViewColumn : ItemsControl
     {
         public DataTemplate CellTemplate     { get; set; }

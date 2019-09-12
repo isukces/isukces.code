@@ -3,6 +3,7 @@ namespace isukces.code.Compatibility.Telerik
     /// <summary>
     ///     Reflection only definition
     /// </summary>
+    [EmitType("Telerik.Windows.Controls")]
     public enum GridViewToggleRowDetailsColumnExpandMode
     {
         /// <summary>The user can expand multiple row details.</summary>

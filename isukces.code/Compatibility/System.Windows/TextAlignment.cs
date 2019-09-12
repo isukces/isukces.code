@@ -1,5 +1,6 @@
 namespace isukces.code.Compatibility.System.Windows
 {
+    [EmitType("System.Windows")]
     public enum TextAlignment
     {
         /// <summary>Default. Text is aligned to the left.</summary>

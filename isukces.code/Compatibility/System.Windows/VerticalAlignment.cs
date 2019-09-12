@@ -1,5 +1,6 @@
 namespace isukces.code.Compatibility.System.Windows
 {
+    [EmitType("System.Windows")]
     public enum VerticalAlignment
     {
         /// <summary>The child element is aligned to the top of the parent's layout slot. </summary>

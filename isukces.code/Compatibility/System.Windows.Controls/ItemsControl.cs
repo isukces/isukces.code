@@ -2,6 +2,7 @@ using System.Collections;
 
 namespace isukces.code.Compatibility.System.Windows.Controls
 {
+    [EmitType("System.Windows.Controls")]
     public class ItemsControl : Control
     {
         public IEnumerable ItemsSource       { get; set; }
