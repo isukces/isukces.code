@@ -15,5 +15,6 @@ namespace isukces.code.Compatibility.Telerik
         public GridViewLength Width             { get; set; }
         public string         ColumnGroupName   { get; set; }
         public TextAlignment  TextAlignment     { get; set; }
+        public string         DataFormatString  { get; set; }
     }
 }

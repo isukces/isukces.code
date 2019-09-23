@@ -35,6 +35,8 @@ namespace isukces.code.Ui.DataGrid
                 obj = obj.WithPropertyGeneric(a => a.ColumnGroupName, col.CategoryName);
             if (col.AlignRight)
                 obj = obj.WithPropertyGeneric(a => a.TextAlignment, TextAlignment.Right);
+            if (!string.IsNullOrEmpty(col.DataFormatString))
+                obj = obj.WithPropertyGeneric(a => a.DataFormatString, col.DataFormatString);
             return obj;
         }
 
