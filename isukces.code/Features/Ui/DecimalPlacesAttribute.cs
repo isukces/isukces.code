@@ -13,7 +13,7 @@ namespace isukces.code.Ui
         {
             get
             {
-                const string format = "#,#";
+                const string format = "#,0";
                 if (DecimalPlaces > 0)
                     return format + "." + new string('0', DecimalPlaces);
                 return format;
