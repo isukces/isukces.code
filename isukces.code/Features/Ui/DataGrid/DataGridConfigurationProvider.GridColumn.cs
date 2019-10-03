@@ -1,3 +1,5 @@
+using isukces.code.Compatibility.System.Windows.Data;
+
 namespace isukces.code.Ui.DataGrid
 {
     public abstract partial class DataGridConfigurationProvider
@@ -67,11 +69,15 @@ namespace isukces.code.Ui.DataGrid
             public string CategoryHeader { get; set; }
             public string CategoryName   { get; set; }
 
-            public LookupInfo Lookup            { get; set; }
-            public object     CellTemplate      { get; set; }
-            public object     EditTemplate      { get; set; }
-            public string     DataMemberBinding { get; set; }
-            public string     DataFormatString  { get; set; }
+            public LookupInfo            Lookup                               { get; set; }
+            public object                CellTemplate                         { get; set; }
+            public object                EditTemplate                         { get; set; }
+            public string                DataMemberBinding                    { get; set; }
+            public XBindingMode?         DataMemberBindingMode                { get; set; }
+            public XUpdateSourceTrigger? DataMemberBindingUpdateSourceTrigger { get; set; }
+
+
+            public string DataFormatString { get; set; }
 
             public bool IsReadOnly { get; set; }
         }

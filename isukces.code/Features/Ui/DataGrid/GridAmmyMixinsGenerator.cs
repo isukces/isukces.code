@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
+using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.IO;
 
 namespace isukces.code.Ui.DataGrid
@@ -27,11 +28,13 @@ namespace isukces.code.Ui.DataGrid
             DirectoryProvider = directoryProvider;
 
 
-        protected static AmmyBind ToBind(string x)
+        protected static AmmyBind ToBind(string x, XBindingMode? mode = null, XUpdateSourceTrigger? trigger=null)
         {
-            var dataMemberBinding = string.IsNullOrEmpty(x)
-                ? null
-                : new AmmyBind(x);
+            if (string.IsNullOrEmpty(x))
+                return null; 
+            var dataMemberBinding = new AmmyBind(x, mode);
+            if (trigger.HasValue)
+                dataMemberBinding.WithUpdateSourceTrigger(trigger.Value);
             return dataMemberBinding;
         }
 

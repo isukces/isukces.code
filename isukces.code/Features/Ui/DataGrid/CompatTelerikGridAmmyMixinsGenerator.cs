@@ -24,7 +24,7 @@ namespace isukces.code.Ui.DataGrid
             where T : GridViewBoundColumnBase
         {
             obj = obj
-                .WithPropertyNotNull(a => a.DataMemberBinding, ToBind(col.DataMemberBinding))
+                .WithPropertyNotNull(a => a.DataMemberBinding, ToBind(col.DataMemberBinding, col.DataMemberBindingMode, col.DataMemberBindingUpdateSourceTrigger))
                 .WithProperty(a => a.Header, col.Header);
             if (col.IsReadOnly)
                 obj = obj.WithPropertyGeneric(a => a.IsReadOnly, true);
