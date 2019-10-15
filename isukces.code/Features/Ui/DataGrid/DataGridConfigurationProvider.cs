@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using isukces.code.Ammy;
 using isukces.code.Compatibility.System.Windows.Data;
+using JetBrains.Annotations;
 
 namespace isukces.code.Ui.DataGrid
 {
@@ -21,22 +22,26 @@ namespace isukces.code.Ui.DataGrid
             return new AmmyBind(name, mode);
         }
 
+
         protected GridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, string header,
             int? width = null)
         {
             var name = CodeUtils.GetMemberPath(func);
-            var result = new GridColumn
-            {
-                Name              = name,
-                DataMemberBinding = name,
-                Header            = header ?? name,
-                Width             = width
-            };
+
             var prop = typeof(TRow)
 #if COREFX
                 .GetTypeInfo()
 #endif
                 .GetProperty(name);
+
+            var result = new GridColumn
+            {
+                Name              = name,
+                DataMemberBinding = name,
+                Header            = GetColumnHeader(name, header, prop),
+                Width             = width
+            };
+
             if (prop != null)
             {
                 var att = prop.GetCustomAttribute<DecimalPlacesAttribute>();
@@ -51,6 +56,21 @@ namespace isukces.code.Ui.DataGrid
         {
             var col = Col(func, null, width);
             return col;
+        }
+
+        protected string GetColumnHeader([CanBeNull] string propertyName, [CanBeNull] string suggestedHeader,
+            [CanBeNull] PropertyInfo property)
+        {
+            if (!string.IsNullOrEmpty(suggestedHeader))
+                return suggestedHeader;
+#if COREFX20 || FULLFX
+            var descriptionFromAttribute = property?
+                .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?
+                .Description;
+            if (!string.IsNullOrEmpty(descriptionFromAttribute))
+                return descriptionFromAttribute;
+#endif
+            return propertyName.Decamelize();
         }
     }
 }

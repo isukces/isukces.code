@@ -71,5 +71,25 @@ namespace isukces.code
             return name.Substring(0, 1).ToUpper() + name.Substring(1);
         }
 
+        public static string Decamelize(this string name)
+        {
+            if (name is null)
+                return null;
+            var s = new StringBuilder();
+            foreach (var i in name.Trim())
+            {
+                if (s.Length == 0)
+                    s.Append(i);
+                else if (char.ToUpper(i) == i)
+                {
+                    s.Append(" ");
+                    s.Append(char.ToLower(i));
+                }
+                else
+                    s.Append(i);
+            }
+            return s.ToString();
+        }
+
     }
 }
