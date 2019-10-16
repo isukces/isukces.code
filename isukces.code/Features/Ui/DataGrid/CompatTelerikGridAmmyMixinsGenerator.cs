@@ -20,30 +20,22 @@ namespace isukces.code.Ui.DataGrid
         {
         }
 
-        private static AmmyObjectBuilder<T> AddCommon<T>(AmmyObjectBuilder<T> obj, ColumnInfo col)
-            where T : GridViewBoundColumnBase
+        protected virtual void AfterConvertColumn(AmmyObjectBuilder<GridViewDataColumn> builder)
         {
-            obj = obj
-                .WithPropertyNotNull(a => a.DataMemberBinding, ToBind(col.DataMemberBinding, col.DataMemberBindingMode, col.DataMemberBindingUpdateSourceTrigger))
-                .WithProperty(a => a.Header, col.Header);
-            if (col.IsReadOnly)
-                obj = obj.WithPropertyGeneric(a => a.IsReadOnly, true);
-            if (col.Width.HasValue)
-                obj = obj.WithProperty(a => a.Width, col.Width);
-
-            if (!string.IsNullOrEmpty(col.CategoryName))
-                obj = obj.WithPropertyGeneric(a => a.ColumnGroupName, col.CategoryName);
-            if (col.AlignRight)
-                obj = obj.WithPropertyGeneric(a => a.TextAlignment, TextAlignment.Right);
-            if (!string.IsNullOrEmpty(col.DataFormatString))
-                obj = obj.WithPropertyGeneric(a => a.DataFormatString, col.DataFormatString);
-            return obj;
         }
 
         protected virtual IConversionCtx CreateConversionContext()
         {
             var ctx = new ConversionCtx(Mixins);
             return ctx;
+        }
+
+        protected virtual object GetDataMemberBinding(ColumnInfo col)
+        {
+            var binding = col.Binding;
+            if (string.IsNullOrEmpty(binding?.Path))
+                return null;
+            return binding.Build();
         }
 
 
@@ -91,6 +83,26 @@ namespace isukces.code.Ui.DataGrid
             }
 
             Mixins.CloseNl();
+        }
+
+        private AmmyObjectBuilder<T> AddCommon<T>(AmmyObjectBuilder<T> obj, ColumnInfo col)
+            where T : GridViewBoundColumnBase
+        {
+            obj = obj
+                .WithPropertyNotNull(a => a.DataMemberBinding, GetDataMemberBinding(col))
+                .WithProperty(a => a.Header, col.Header);
+            if (col.IsReadOnly)
+                obj = obj.WithPropertyGeneric(a => a.IsReadOnly, true);
+            if (col.Width.HasValue)
+                obj = obj.WithProperty(a => a.Width, col.Width);
+
+            if (!string.IsNullOrEmpty(col.CategoryName))
+                obj = obj.WithPropertyGeneric(a => a.ColumnGroupName, col.CategoryName);
+            if (col.AlignRight)
+                obj = obj.WithPropertyGeneric(a => a.TextAlignment, TextAlignment.Right);
+            if (!string.IsNullOrEmpty(col.DataFormatString))
+                obj = obj.WithPropertyGeneric(a => a.DataFormatString, col.DataFormatString);
+            return obj;
         }
 
         private AmmyObjectBuilder<T> AddTemplates<T>(AmmyObjectBuilder<T> obj, ColumnInfo col)
@@ -164,6 +176,7 @@ namespace isukces.code.Ui.DataGrid
                 var obj = new AmmyObjectBuilder<GridViewDataColumn>();
                 obj = AddCommon(obj, col);
                 obj = AddTemplates(obj, col);
+                AfterConvertColumn(obj);
                 return obj;
             }
         }

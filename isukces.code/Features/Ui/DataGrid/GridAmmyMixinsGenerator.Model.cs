@@ -29,19 +29,18 @@ namespace isukces.code.Ui.DataGrid
                         result.Categories.Add(new AttributeInfo(colDef.CategoryName, colDef.CategoryHeader));
                     var col = new ColumnInfo
                     {
-                        Name                                 = rowProperty?.Name ?? colDef.Name,
-                        DataMemberBinding                    = colDef.DataMemberBinding,
-                        DataMemberBindingMode                = colDef.DataMemberBindingMode,
-                        DataMemberBindingUpdateSourceTrigger = colDef.DataMemberBindingUpdateSourceTrigger,
-                        Header                               = colDef.Header ?? rowProperty?.Name,
-                        Width                                = colDef.Width,
-                        CategoryName                         = result.Categories.LastOrDefault()?.Name,
-                        Type                                 = rowProperty?.PropertyType ?? rowType,
-                        Lookup                               = colDef.Lookup,
-                        CellTemplate                         = colDef.CellTemplate,
-                        EditTemplate                         = colDef.EditTemplate,
-                        DataFormatString                     = colDef.DataFormatString,
-                        IsReadOnly                           = colDef.IsReadOnly
+                        Name             = rowProperty?.Name ?? colDef.Name,
+                        Binding          = colDef.Binding,
+                        Header           = colDef.Header ?? rowProperty?.Name,
+                        Width            = colDef.Width,
+                        CategoryName     = result.Categories.LastOrDefault()?.Name,
+                        Type             = rowProperty?.PropertyType ?? rowType,
+                        Lookup           = colDef.Lookup,
+                        CellTemplate     = colDef.CellTemplate,
+                        EditTemplate     = colDef.EditTemplate,
+                        DataFormatString = colDef.DataFormatString,
+                        IsReadOnly       = colDef.IsReadOnly,
+                        CustomValues     = colDef.CustomValues
                     };
 
                     col.AlignRight = RightAligned.Contains(col.Type);

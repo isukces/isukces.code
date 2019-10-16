@@ -37,7 +37,10 @@ namespace isukces.code.Ui.DataGrid
             var result = new GridColumn
             {
                 Name              = name,
-                DataMemberBinding = name,
+                Binding =
+                {
+                    Path = name
+                },
                 Header            = GetColumnHeader(name, header, prop),
                 Width             = width
             };

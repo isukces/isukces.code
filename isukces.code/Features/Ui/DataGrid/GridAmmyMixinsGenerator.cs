@@ -28,16 +28,7 @@ namespace isukces.code.Ui.DataGrid
             DirectoryProvider = directoryProvider;
 
 
-        protected static AmmyBind ToBind(string x, XBindingMode? mode = null, XUpdateSourceTrigger? trigger=null)
-        {
-            if (string.IsNullOrEmpty(x))
-                return null; 
-            var dataMemberBinding = new AmmyBind(x, mode);
-            if (trigger.HasValue)
-                dataMemberBinding.WithUpdateSourceTrigger(trigger.Value);
-            return dataMemberBinding;
-        }
-
+       
 
         private static PropertyInfo[] GetProperties(Type attModelType)
         {
