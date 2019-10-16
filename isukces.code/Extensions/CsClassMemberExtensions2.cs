@@ -20,7 +20,7 @@ namespace isukces.code
             return method.WithAttribute(csClass.GetTypeName(type));
         }
 
-        private static string CutAttributeSuffix(string name)
+        public static string CutAttributeSuffix(string name)
         {
             if (name.EndsWith(AttributeSuffix))
                 name = name.Substring(0, name.Length - AttributeSuffixLength);

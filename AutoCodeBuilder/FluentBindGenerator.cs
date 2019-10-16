@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using isukces.code;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
@@ -12,17 +13,19 @@ namespace AutoCodeBuilder
     {
         static FluentBindGenerator()
         {
-            void Add<T>(string name, bool addStatic = false, bool isNormalProperty = false)
+            void Add<T>(string name)
             {
-                BindingParams.Add(new BindingParamInfo(typeof(T), name, addStatic, isNormalProperty));
+                var a = new BindingParamInfo(typeof(T), name);
+                BindingParams.Add(a);
             }
 
             Add<XBindingMode>("Mode");
+
             Add<object>(ValidationRules);
             Add<string>("BindingGroupName");
             Add<bool>("BindsDirectlyToSource");
 
-            Add<object>("Converter", true);
+            Add<object>("Converter");
             Add<object>("ConverterCulture");
             Add<object>("ConverterParameter");
 
@@ -41,26 +44,46 @@ namespace AutoCodeBuilder
             Add<bool>("ValidatesOnExceptions");
             Add<string>("XPath");
 
-            Add<object>("From", true, true);
-            Add<string>("Path", false, true);
+            Add<object>("From");
+            Add<string>("Path");
+
+            var bindableToStaticOrResourceNames = @"XPath
+
+Converter
+ConverterParameter
+ConverterCulture
+
+
+From
+Source
+RelativeSource
+ElementName
+AsyncState
+UpdateSourceExceptionFilter";
+
+            var hs = new HashSet<string>(SplitEnumerable(bindableToStaticOrResourceNames));
+            foreach (var i in BindingParams)
+                if (hs.Contains(i.Name))
+                    i.BindableToStaticOrResource = true;
         }
 
-        public static bool IgnoreWithConverterStatic(Type type)
-        {
-            return type == typeof(AmmyBind) || type == typeof(AmmyBindBuilder);
-        }
+        public static bool IgnoreWithConverterStatic(Type type) =>
+            type == typeof(AmmyBind) || type == typeof(AmmyBindBuilder);
 
 
-        private static Type MakeNullable(Type type)
-        {
-            return type.IsValueType
+        private static Type MakeNullable(Type type) =>
+            type.IsValueType
                 ? typeof(Nullable<>).MakeGenericType(type)
                 : type;
-        }
 
-        private static string SetPropertyAndReturnThis(string propertyName, string value)
+        private static string SetPropertyAndReturnThis(string propertyName, string value) =>
+            $"{propertyName} = {value}; return this;";
+
+        private static IEnumerable<string> SplitEnumerable(string text)
         {
-            return $"{propertyName} = {value}; return this;";
+            if (string.IsNullOrEmpty(text))
+                return new string[0];
+            return text.Split('\r', '\n').Select(a => a.Trim()).Where(a => !string.IsNullOrEmpty(a));
         }
 
 
@@ -70,89 +93,116 @@ namespace AutoCodeBuilder
             {
                 _currentClass = context.GetOrCreateClass(type);
                 foreach (var i in BindingParams)
+                {
+                    var fl = i.GetFlags(type);
                     AddFluentMethod(
                         (paramName, argName) =>
                         {
-                            if (i.IsNormalProperty)
+                            if (i.HasProperty(type))
                                 return SetPropertyAndReturnThis(paramName, argName);
                             return $"return WithSetParameter({paramName.CsEncode()}, {argName});";
                         },
-                        i.Type, i.Name, i.AddStatic, !i.IsNormalProperty);
+                        i.Type, i.Name, fl);
+                }
             }
             else if (type == typeof(AmmyBindBuilder))
             {
-                BuildAmmyBindBuilder(context);
+                BuildAmmyBindBuilder(context, type);
             }
         }
 
-
-        private void AddFluentMethod(Func<string, string, string> creator, Type type, string paramName, bool addStatic,
-            bool addObjectOverload)
+        private void AddFluentMethod(Func<string, string, string> creator, Type type, string paramName,
+            Fl flags)
         {
-            var flu = new FluentMethodInfo(paramName);
+            void AddStaticAndResource(FluentMethodInfo mi)
+            {
+                {
+                    const string argName = "propertyName";
+                    var          value   = $"new StaticBindingSource(typeof(TStaticPropertyOwner), {argName})";
+                    var code = CreateCodeWriter()
+                        .WriteLine(creator(paramName, value));
+                    _currentClass.AddMethod(mi.Static + "<TStaticPropertyOwner>", _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass, /*code.Info*/"")
+                        .AddParam<string>(argName, _currentClass);
+                }
+                {
+                    const string argName = "staticResourceName";
+                    var          value   = $"new {nameof(AmmyStaticResource)}({argName})";
+                    var code = CreateCodeWriter()
+                        .WriteLine(creator(paramName, value));
+                    _currentClass.AddMethod(mi.StaticResource, _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass, ""/*code.Info*/)
+                        .AddParam<string>(argName, _currentClass);
+                }
 
-            {
-                var argName = paramName.FirstLower();
-                // var body       = $"return WithSetParameter({paramName.CsEncode()}, {argName});";
-                var body = CreateCode(nameof(FluentBindGenerator), "G1")
-                    .WriteLine(creator(paramName, argName));
-                var m = _currentClass.AddMethod(flu.FluentPrefix, _currentClass.Name)
-                    .WithBody(body);
-                m.AddParam(argName, _currentClass.TypeName(type));
-                m.WithAttribute(_currentClass, typeof(AutocodeGeneratedAttribute));
-                if (addObjectOverload && type != typeof(object))
-                    AddFluentMethod(creator, typeof(object), paramName, false, false);
+                {
+                    const string argName = "dynamicResourceName";
+                    var          value   = $"new {nameof(AmmyDynamicResource)}({argName})";
+                    var code = CreateCodeWriter()
+                        .WriteLine(creator(paramName, value));
+                    _currentClass.AddMethod(mi.DynamicResource, _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass, /*code.Info*/"")
+                        .AddParam<string>(argName, _currentClass);
+                }
             }
-            if (!addStatic) return;
-            {
-                const string argName = "propertyName";
-                var          value   = $"new StaticBindingSource(typeof(TStaticPropertyOwner), {argName})";
-                var code = CreateCode(nameof(FluentBindGenerator), "G2")
-                    .WriteLine(creator(paramName, value));
-                _currentClass.AddMethod(flu.Static+"<TStaticPropertyOwner>", _currentClass.Name)
-                    .WithBody(code)
-                    .WithAutocodeGeneratedAttribute(_currentClass)
-                    .AddParam<string>(argName, _currentClass);
-            }
-            {
-                const string argName = "resourceName";
-                var          value   = $"new AmmyStaticResource({argName})";
-                var code = CreateCode(nameof(FluentBindGenerator), "G3")
-                    .WriteLine(creator(paramName, value));
-                _currentClass.AddMethod(flu.StaticResource, _currentClass.Name)
-                    .WithBody(code)
-                    .WithAutocodeGeneratedAttribute(_currentClass)
-                    .AddParam<string>(argName, _currentClass);
-            }
-            if (flu.AllowAncestor)
+
+            void AddAncestor(FluentMethodInfo mi)
             {
                 {
                     const string value = "new AncestorBindingSource(ancestorType, level)";
-                    var code = CreateCode(nameof(FluentBindGenerator), "G4")
+                    var code = CreateCodeWriter()
                         .WriteLine(creator(paramName, value));
-                    var m = _currentClass.AddMethod(flu.Ancestor, _currentClass.Name)
+                    var m = _currentClass.AddMethod(mi.Ancestor, _currentClass.Name)
                         .WithBody(code)
-                        .WithAutocodeGeneratedAttribute(_currentClass);
+                        .WithAutocodeGeneratedAttribute(_currentClass, ""/*code.Info*/);
                     m.AddParam<Type>("ancestorType", _currentClass);
                     m.AddParam<int?>("level", _currentClass).WithConstValueNull();
                 }
                 {
-                    var          methodName = flu.Ancestor + "<TAncestor>";
+                    var          methodName = mi.Ancestor + "<TAncestor>";
                     const string value      = "new AncestorBindingSource(typeof(TAncestor),  level)";
-                    var code = CreateCode(nameof(FluentBindGenerator), "G5")
+                    var code = CreateCodeWriter()
                         .WriteLine(creator(paramName, value));
                     var m = _currentClass.AddMethod(methodName, _currentClass.Name)
                         .WithBody(code)
-                        .WithAutocodeGeneratedAttribute(_currentClass);
+                        .WithAutocodeGeneratedAttribute(_currentClass, ""/*code.Info*/);
                     m.AddParam<int?>("level", _currentClass).WithConstValueNull();
                 }
             }
+
+            void AddDirectValue(Type type1, FluentMethodInfo flu1)
+            {
+                var argName = paramName.FirstLower();
+                var body = CreateCodeWriter()
+                    .WriteLine(creator(paramName, argName));
+                var m = _currentClass.AddMethod(flu1.FluentPrefix, _currentClass.Name)
+                    .WithBody(body);
+                m.AddParam(argName, _currentClass.TypeName(type1));
+                m.WithAutocodeGeneratedAttribute(_currentClass, ""/*body.Info*/);
+            }
+
+            var flu = new FluentMethodInfo(paramName);
+
+            if ((flags & Fl.DirectValue) != 0)
+            {
+                AddDirectValue(type, flu);
+                if ((flags & Fl.AddObjectOverload) != 0 && type != typeof(object))
+                    AddDirectValue(typeof(object), flu);
+            }
+
+            if ((flags & Fl.AddStaticAndResource) != 0)
+                AddStaticAndResource(flu);
+            if (flu.AllowAncestor)
+                AddAncestor(flu);
         }
 
-        private void BuildAmmyBindBuilder(IAutoCodeGeneratorContext context)
+        private void BuildAmmyBindBuilder(IAutoCodeGeneratorContext context, Type ownerType)
         {
             _currentClass = context.GetOrCreateClass(typeof(AmmyBindBuilder));
-            var setupCode = CreateCode(nameof(FluentBindGenerator), "G11");
+            var setupCode = CreateCodeWriter();
             foreach (var i in BindingParams)
             {
                 var    flu        = new FluentMethodInfo(i.Name);
@@ -180,38 +230,81 @@ namespace AutoCodeBuilder
                 p.ConstValue = init;
 
                 if (!isReadOnly)
+                {
+                    var fl = i.GetFlags(ownerType);
                     AddFluentMethod(
                         SetPropertyAndReturnThis,
-                        type2, i.Name, i.AddStatic, false);
+                        type2, i.Name, fl);
+                }
             }
 
             _currentClass.AddMethod("SetupAmmyBind", "void")
                 .WithVisibility(Visibilities.Private)
                 .WithBody(setupCode)
-                .WithAutocodeGeneratedAttribute(_currentClass
-                )
+                .WithAutocodeGeneratedAttribute(_currentClass, "" /*setupCode.Info*/)
                 .AddParam<AmmyBind>("bind", _currentClass);
         }
 
         private static readonly List<BindingParamInfo> BindingParams = new List<BindingParamInfo>();
 
         private CsClass _currentClass;
+
+
+        [Flags]
+        private enum Fl
+        {
+            None = 0,
+            DirectValue = 1,
+            AddObjectOverload = 2,
+            AddStaticAndResource = 4
+        }
+
         private const string ValidationRules = "ValidationRules";
 
-        private struct BindingParamInfo
+        private class BindingParamInfo
         {
-            public BindingParamInfo(Type type, string name, bool addStatic, bool isNormalProperty)
+            public BindingParamInfo(Type type, string name)
             {
                 Type             = type;
                 Name             = name;
-                AddStatic        = addStatic;
-                IsNormalProperty = isNormalProperty;
             }
 
-            public Type   Type             { get; }
-            public string Name             { get; }
-            public bool   AddStatic        { get; }
-            public bool   IsNormalProperty { get; }
+            public Fl GetFlags(Type ownerType)
+            {
+                // var fl = BindableToStaticOrResource ? Fl.AddStaticAndResource : Fl.None;
+                var flags = Fl.DirectValue;
+                {
+                    var p = ownerType.GetProperty(Name);
+                    if (p is null)
+                    {
+                        flags |= Fl.AddObjectOverload;
+                        if (BindableToStaticOrResource)
+                            flags |= Fl.AddStaticAndResource;
+                    }
+                    else
+                    {
+                        if (p.PropertyType == typeof(object)) 
+                            flags |= Fl.AddObjectOverload | Fl.AddStaticAndResource;
+                    }
+                }
+                return flags;
+            }
+
+            public bool HasProperty(Type ownerType)
+            {
+                var p = ownerType.GetProperty(Name);
+                return p != null;
+            }
+
+            public override string ToString() => Name;
+
+            public Type   Type { get; }
+            public string Name { get; }
+
+            /// <summary>
+            ///     If Binding object has this property bindable
+            /// </summary>
+            public bool BindableToStaticOrResource { get; set; }
         }
     }
 }

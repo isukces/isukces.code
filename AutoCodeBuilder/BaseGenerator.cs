@@ -21,23 +21,16 @@ namespace AutoCodeBuilder
                    && (type.Attributes & TypeAttributes.NotPublic) == TypeAttributes.NotPublic;
         }
 
-        protected static CsCodeWriter CreateCode(string generator, string extraInfo)
+        protected static CsCodeWriter CreateCodeWriter(string generatorClassName,
+            [CallerFilePath] string callerFilePath = null,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memberName = null)
         {
-            var code = new CsCodeWriter();
-            code.WriteLine("// generator : " + (generator + " " + extraInfo).Trim());
-            return code;
+            var info = new SourceCodeLocation(lineNumber, memberName, callerFilePath)
+                .WithGeneratorClassName(generatorClassName);
+            return CsCodeWriter.Create(info);
         }
 
-        protected  CsMethod CreateMethod(string name, Type type, CsClass cl, CodeWriter cf)
-        {
-            var m = cl.AddMethod(name, cl.TypeName(type))
-                // .WithStatic()
-                .WithBody(cf);
-            m.Attributes.Add(new CsAttribute(cl.GetTypeName<AutocodeGeneratedAttribute>()).WithArgument(GetType().Name));
-            return m;
-        }
-
-       
 
         protected static bool NotImplements<TInterface>(Type type)
         {
@@ -51,6 +44,33 @@ namespace AutoCodeBuilder
             }
 
             return false;
+        }
+
+        protected CsCodeWriter CreateCodeWriter([CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memberName = null) =>
+            CsCodeWriter.Create(new SourceCodeLocation(lineNumber, memberName, filePath)
+                .WithGeneratorClass(GetType()));
+
+
+        protected static CsMethod CreateMethod(string name, Type type, CsClass cl, CodeWriter cf,
+            [CallerLineNumber] int lineNumber = 0, [CallerMemberName] string memberName = null)
+        {
+/*
+            var info = new SourceCodeInfo(lineNumber, memberName)
+                .WithGeneratorClass(GetType());
+*/
+
+            var m = cl.AddMethod(name, cl.TypeName(type))
+                .WithBody(cf);
+            /*
+            if (cf is CsCodeWriter ex)
+                ex.AddAutocodeGeneratedAttribute(m, cl);
+            else
+            */
+                // m.WithAutocodeGeneratedAttribute(cl, info.GetGenerator1());
+                m.WithAutocodeGeneratedAttribute(cl, "");
+            return m;
         }
 
         protected bool IgnoreType(Type type)

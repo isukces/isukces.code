@@ -8,6 +8,8 @@ namespace AutoCodeBuilder
     {
         private static void Main(string[] args)
         {
+            EmitTypeAttribute.IgnoreEmitTypeAttribute = true; 
+            
             var myAssembly  = typeof(Program).Assembly;
             var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "isukces.code.sln");
             if (solutionDir == null)

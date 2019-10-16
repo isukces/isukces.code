@@ -8,15 +8,16 @@ using JetBrains.Annotations;
 namespace isukces.code.Ammy
 {
     /// <summary>
-    /// Use commented 'GetResourceNames' method
-    /// from  
-    /// https://github.com/isukces/isukces.code/blob/master/isukces.code/Ammy/_generator/AmmyResourcesToVariablesGeneratorBase.cs
-    /// in derived class.
-    /// It requires reference to PresentationCore.
+    ///     Use commented 'GetResourceNames' method
+    ///     from
+    ///     https://github.com/isukces/isukces.code/blob/master/isukces.code/Ammy/_generator/AmmyResourcesToVariablesGeneratorBase.cs
+    ///     in derived class.
+    ///     It requires reference to PresentationCore.
     /// </summary>
     public abstract class AmmyResourcesToVariablesGeneratorBase : AmmyAutocodeGenerator
     {
-        protected AmmyResourcesToVariablesGeneratorBase(IAssemblyFilenameProvider filenameProvider) : base(filenameProvider)
+        protected AmmyResourcesToVariablesGeneratorBase(IAssemblyFilenameProvider filenameProvider) : base(
+            filenameProvider)
         {
         }
 
@@ -98,24 +99,25 @@ namespace isukces.code.Ammy
             }
         }
 
-        protected virtual bool IgnoreResourceByExtension(string ext)
-        {
-            return false;
-        }
+        protected virtual bool IgnoreResourceByExtension(string ext) => false;
 
         protected virtual string UriToVariableName(string x)
         {
             var sb    = new StringBuilder();
             var upper = true;
             foreach (var i in x)
-                if (i == '_' || char.IsWhiteSpace(i) || i == '-' || i == '.')
+                if (char.IsWhiteSpace(i) || UriForbiddenChars.IndexOf(i) >= 0)
                 {
                     upper = true;
                 }
+                else if (upper)
+                {
+                    sb.Append(char.ToUpperInvariant(i));
+                    upper = false;
+                }
                 else
                 {
-                    sb.Append(upper ? char.ToUpperInvariant(i) : i);
-                    upper = false;
+                    sb.Append(i);
                 }
 
             return sb.ToString();
@@ -134,5 +136,7 @@ namespace isukces.code.Ammy
                 CodeParts.AddVariable(varName, prefix + localUriPath);
             }
         }
+
+        public static string UriForbiddenChars = "_-./\\";
     }
 }

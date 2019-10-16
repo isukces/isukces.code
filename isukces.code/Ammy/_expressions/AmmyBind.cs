@@ -28,11 +28,11 @@ namespace isukces.code.Ammy
         {
             return FromAncestor(path, typeof(T));
         }
-        
+
         public static AmmyBind FromAncestor<T>(Expression<Func<T, object>> func, object mode)
         {
-            var path  = CodeUtils.GetMemberPath(func);
-            var tmp = new AmmyBindBuilder(path).WithBindFromAncestor(typeof(T));
+            var path = CodeUtils.GetMemberPath(func);
+            var tmp  = new AmmyBindBuilder(path).WithBindFromAncestor(typeof(T));
             return tmp.Build();
         }
 
@@ -148,11 +148,27 @@ namespace isukces.code.Ammy
             return ToOneLineCode(new ConversionCtx(new AmmyNamespaceProvider()));
         }
 
+
+        public AmmyBind WithConverterStaticBindingSource<T>(string staticPropertyName)
+        {
+            var src = new StaticBindingSource(typeof(T), staticPropertyName);
+            return WithConverter(src);
+        }
+        /*public   AmmyBind WithConverterFromResource(string staticPropertyName)
+        {
+            var src = new AmmyStaticResource(staticPropertyName);
+            return WithConverter(src);
+        }*/
+
+        public AmmyBind WithConverterStaticBindingSource(Type type, string staticPropertyName)
+        {
+            var src = new StaticBindingSource(type, staticPropertyName);
+            return WithConverter(src);
+        }
+
         public IComplexAmmyCodePiece GetObjectSyntaxCode(IConversionCtx ctx)
         {
             var aaa = new AmmyContainerBase();
-
-
 
             void Add(string name, object value)
             {
@@ -227,12 +243,10 @@ namespace isukces.code.Ammy
             return items.OrderBy(a => a.Key, this).ToList();
         }
 
-        public string Path { get; set; }
+        public string                             Path     { get; set; }
+        public object                             From     { get; set; }
+        public List<KeyValuePair<string, object>> SetItems { get; } = new List<KeyValuePair<string, object>>();
 
-        // public DataBindingMode? Mode        { get; set; }
-        public object                             From         { get; set; }
-        public List<KeyValuePair<string, object>> SetItems     { get; } = new List<KeyValuePair<string, object>>();
-      
 
         // used only for resolving new lines 
         public class SetCollection : IAmmyCodePiece
@@ -246,6 +260,4 @@ namespace isukces.code.Ammy
             public bool                          WriteInSeparateLines { get; set; }
         }
     }
-
-
 }

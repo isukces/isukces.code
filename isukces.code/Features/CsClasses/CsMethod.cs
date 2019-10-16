@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using isukces.code.interfaces;
 
@@ -125,10 +126,6 @@ namespace isukces.code
             writer.Close();            
         }
 
-        public CsMethod WithAutocodeGeneratedAttribute(CsClass csClass)
-        {
-            return this.WithAttribute(csClass, typeof(AutocodeGeneratedAttribute));
-        }
 
 
         private string[] GetMethodAttributes(bool inInterface)
