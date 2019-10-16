@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using isukces.code;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
@@ -13,62 +14,52 @@ namespace AutoCodeBuilder
     {
         static FluentBindGenerator()
         {
-            void Add<T>(string name)
-            {
-                var a = new BindingParamInfo(typeof(T), name);
-                BindingParams.Add(a);
-            }
-
-            Add<XBindingMode>("Mode");
-
-            Add<object>(ValidationRules);
-            Add<string>("BindingGroupName");
-            Add<bool>("BindsDirectlyToSource");
-
-            Add<object>("Converter");
-            Add<object>("ConverterCulture");
-            Add<object>("ConverterParameter");
-
-            Add<bool>("IsAsync");
-
-            Add<bool>("NotifyOnSourceUpdated");
-            Add<bool>("NotifyOnTargetUpdated");
-            Add<bool>("NotifyOnValidationError");
-
-            Add<string>("StringFormat");
-            Add<object>("TargetNullValue");
-
-            Add<XUpdateSourceTrigger>("UpdateSourceTrigger");
-
-            Add<bool>("ValidatesOnDataErrors");
-            Add<bool>("ValidatesOnExceptions");
-            Add<string>("XPath");
-
-            Add<object>("From");
-            Add<string>("Path");
-
-            var bindableToStaticOrResourceNames = @"XPath
-
-Converter
-ConverterParameter
-ConverterCulture
-
-
-From
-Source
-RelativeSource
-ElementName
-AsyncState
-UpdateSourceExceptionFilter";
-
-            var hs = new HashSet<string>(SplitEnumerable(bindableToStaticOrResourceNames));
-            foreach (var i in BindingParams)
-                if (hs.Contains(i.Name))
-                    i.BindableToStaticOrResource = true;
+            BindingParams      = CreateBindingParams();
+            MultiBindingParams = CreateMultiBindingParams();
         }
 
         public static bool IgnoreWithConverterStatic(Type type) =>
             type == typeof(AmmyBind) || type == typeof(AmmyBindBuilder);
+
+        private static BindingParamInfoCollection CreateBindingParams()
+        {
+            var result = new BindingParamInfoCollection();
+            AddCommon(result);
+
+            result.Add<bool>("BindsDirectlyToSource");
+            result.Add<bool>("IsAsync");
+            result.Add<string>("XPath", true);
+            result.Add<object>("From", true);
+            result.Add<string>("Path");
+            return result;
+        }
+
+        private static void AddCommon(BindingParamInfoCollection result)
+        {
+            result.Add<XBindingMode>("Mode");
+            result.Add<object>("Converter", true);
+            result.Add<object>("ConverterCulture", true);
+            result.Add<object>("ConverterParameter", true);
+            result.Add<XUpdateSourceTrigger>("UpdateSourceTrigger");
+            result.Add<bool>("NotifyOnSourceUpdated");
+            result.Add<bool>("NotifyOnTargetUpdated");
+            result.Add<bool>("NotifyOnValidationError");
+            result.Add<object>(ValidationRules);
+            result.Add<bool>("ValidatesOnExceptions");
+            result.Add<bool>("ValidatesOnDataErrors");
+            result.Add<bool>("ValidatesOnNotifyDataErrors");
+            result.Add<string>("StringFormat");
+            result.Add<string>("BindingGroupName");
+            result.Add<object>("TargetNullValue");
+        }
+
+        private static BindingParamInfoCollection CreateMultiBindingParams()
+        {
+            var result = new BindingParamInfoCollection();
+            AddCommon(result);
+            result.Add<List<object>>("Bindings");
+            return result;
+        }
 
 
         private static Type MakeNullable(Type type) =>
@@ -102,12 +93,24 @@ UpdateSourceExceptionFilter";
                                 return SetPropertyAndReturnThis(paramName, argName);
                             return $"return WithSetParameter({paramName.CsEncode()}, {argName});";
                         },
-                        i.Type, i.Name, fl);
+                        i.Type, i.PropertyName, fl);
                 }
             }
             else if (type == typeof(AmmyBindBuilder))
             {
-                BuildAmmyBindBuilder(context, type);
+                BuildPropertiesAndFluentMethods(context, type, BindingParams, typeof(AmmyBind));
+            }
+            else if (type == typeof(XMultiBinding))
+            {
+                BuildPropertiesAndFluentMethods(context, type, MultiBindingParams, null, false);
+            }
+            else if (type == typeof(AmmyMultiBindingBuilder))
+            {
+                BuildPropertiesAndFluentMethods(context, type, MultiBindingParams, typeof(AmmyMultiBind));
+            }
+            else if (type == typeof(AmmyMultiBind))
+            {
+                BuildPropertiesAndFluentMethods(context, type, MultiBindingParams, null);
             }
         }
 
@@ -123,7 +126,7 @@ UpdateSourceExceptionFilter";
                         .WriteLine(creator(paramName, value));
                     _currentClass.AddMethod(mi.Static + "<TStaticPropertyOwner>", _currentClass.Name)
                         .WithBody(code)
-                        .WithAutocodeGeneratedAttribute(_currentClass, /*code.Info*/"")
+                        .WithAutocodeGeneratedAttribute(_currentClass)
                         .AddParam<string>(argName, _currentClass);
                 }
                 {
@@ -133,7 +136,7 @@ UpdateSourceExceptionFilter";
                         .WriteLine(creator(paramName, value));
                     _currentClass.AddMethod(mi.StaticResource, _currentClass.Name)
                         .WithBody(code)
-                        .WithAutocodeGeneratedAttribute(_currentClass, ""/*code.Info*/)
+                        .WithAutocodeGeneratedAttribute(_currentClass /*code.Info*/)
                         .AddParam<string>(argName, _currentClass);
                 }
 
@@ -144,7 +147,7 @@ UpdateSourceExceptionFilter";
                         .WriteLine(creator(paramName, value));
                     _currentClass.AddMethod(mi.DynamicResource, _currentClass.Name)
                         .WithBody(code)
-                        .WithAutocodeGeneratedAttribute(_currentClass, /*code.Info*/"")
+                        .WithAutocodeGeneratedAttribute(_currentClass)
                         .AddParam<string>(argName, _currentClass);
                 }
             }
@@ -157,7 +160,7 @@ UpdateSourceExceptionFilter";
                         .WriteLine(creator(paramName, value));
                     var m = _currentClass.AddMethod(mi.Ancestor, _currentClass.Name)
                         .WithBody(code)
-                        .WithAutocodeGeneratedAttribute(_currentClass, ""/*code.Info*/);
+                        .WithAutocodeGeneratedAttribute(_currentClass /*code.Info*/);
                     m.AddParam<Type>("ancestorType", _currentClass);
                     m.AddParam<int?>("level", _currentClass).WithConstValueNull();
                 }
@@ -168,7 +171,7 @@ UpdateSourceExceptionFilter";
                         .WriteLine(creator(paramName, value));
                     var m = _currentClass.AddMethod(methodName, _currentClass.Name)
                         .WithBody(code)
-                        .WithAutocodeGeneratedAttribute(_currentClass, ""/*code.Info*/);
+                        .WithAutocodeGeneratedAttribute(_currentClass /*code.Info*/);
                     m.AddParam<int?>("level", _currentClass).WithConstValueNull();
                 }
             }
@@ -181,7 +184,7 @@ UpdateSourceExceptionFilter";
                 var m = _currentClass.AddMethod(flu1.FluentPrefix, _currentClass.Name)
                     .WithBody(body);
                 m.AddParam(argName, _currentClass.TypeName(type1));
-                m.WithAutocodeGeneratedAttribute(_currentClass, ""/*body.Info*/);
+                m.WithAutocodeGeneratedAttribute(_currentClass /*body.Info*/);
             }
 
             var flu = new FluentMethodInfo(paramName);
@@ -199,17 +202,18 @@ UpdateSourceExceptionFilter";
                 AddAncestor(flu);
         }
 
-        private void BuildAmmyBindBuilder(IAutoCodeGeneratorContext context, Type ownerType)
+        private void BuildPropertiesAndFluentMethods(IAutoCodeGeneratorContext context, Type ownerType,
+            List<BindingParamInfo> bindingParams, Type setup, bool addFluetMethods=true)
         {
-            _currentClass = context.GetOrCreateClass(typeof(AmmyBindBuilder));
+            _currentClass = context.GetOrCreateClass(ownerType);
             var setupCode = CreateCodeWriter();
-            foreach (var i in BindingParams)
+            foreach (var i in bindingParams)
             {
-                var    flu        = new FluentMethodInfo(i.Name);
+                var    flu        = new FluentMethodInfo(i.PropertyName);
                 var    type2      = i.Type;
                 string init       = null;
                 var    isReadOnly = false;
-                if (i.Name == ValidationRules)
+                if (i.PropertyName == ValidationRules)
                 {
                     type2      = typeof(List<object>);
                     init       = "new " + _currentClass.TypeName(type2) + "()";
@@ -219,33 +223,47 @@ UpdateSourceExceptionFilter";
                 {
                     type2 = MakeNullable(type2);
                     setupCode.SingleLineIf(
-                        $"{i.Name} != null",
-                        $"bind.{flu.FluentPrefix}({i.Name});");
+                        $"{i.PropertyName} != null",
+                        $"bind.{flu.FluentPrefix}({i.PropertyName});");
                 }
 
-                var p = _currentClass.AddProperty(i.Name, type2)
-                    .WithNoEmitField()
-                    .WithMakeAutoImplementIfPossible()
-                    .WithIsPropertyReadOnly(isReadOnly);
-                p.ConstValue = init;
+                bool CreateProperty()
+                {
+                    var pi = ownerType.GetProperty(i.PropertyName);
+                    if (pi is null)
+                        return true;
+                    return !(pi.GetCustomAttribute<AutocodeGeneratedAttribute>() is null);
+                }
 
-                if (!isReadOnly)
+                if (CreateProperty())
+                {
+                    var p = _currentClass.AddProperty(i.PropertyName, type2)
+                        .WithNoEmitField()
+                        .WithMakeAutoImplementIfPossible()
+                        .WithIsPropertyReadOnly(isReadOnly)
+                        .WithAutocodeGeneratedAttribute(_currentClass);
+                    p.ConstValue = init;
+                }
+
+                if (!isReadOnly && addFluetMethods)
                 {
                     var fl = i.GetFlags(ownerType);
                     AddFluentMethod(
                         SetPropertyAndReturnThis,
-                        type2, i.Name, fl);
+                        type2, i.PropertyName, fl);
                 }
             }
 
-            _currentClass.AddMethod("SetupAmmyBind", "void")
-                .WithVisibility(Visibilities.Private)
-                .WithBody(setupCode)
-                .WithAutocodeGeneratedAttribute(_currentClass, "" /*setupCode.Info*/)
-                .AddParam<AmmyBind>("bind", _currentClass);
+            if (setup != null)
+                _currentClass.AddMethod("SetupAmmyBind", "void")
+                    .WithVisibility(Visibilities.Private)
+                    .WithBody(setupCode)
+                    .WithAutocodeGeneratedAttribute(_currentClass /*setupCode.Info*/)
+                    .AddParam("bind", setup, _currentClass);
         }
 
-        private static readonly List<BindingParamInfo> BindingParams = new List<BindingParamInfo>();
+        private static readonly BindingParamInfoCollection BindingParams;
+        private static readonly BindingParamInfoCollection MultiBindingParams;
 
         private CsClass _currentClass;
 
@@ -261,12 +279,24 @@ UpdateSourceExceptionFilter";
 
         private const string ValidationRules = "ValidationRules";
 
+        private class BindingParamInfoCollection : List<BindingParamInfo>
+        {
+            public void Add<T>(string name, bool bindableToStaticOrResource = false)
+            {
+                var a = new BindingParamInfo(typeof(T), name, bindableToStaticOrResource);
+                Add(a);
+            }
+
+           
+        }
+
         private class BindingParamInfo
         {
-            public BindingParamInfo(Type type, string name)
+            public BindingParamInfo(Type type, string propertyName, bool bindableToStaticOrResource = false)
             {
-                Type             = type;
-                Name             = name;
+                Type                       = type;
+                PropertyName               = propertyName;
+                BindableToStaticOrResource = bindableToStaticOrResource;
             }
 
             public Fl GetFlags(Type ownerType)
@@ -274,7 +304,7 @@ UpdateSourceExceptionFilter";
                 // var fl = BindableToStaticOrResource ? Fl.AddStaticAndResource : Fl.None;
                 var flags = Fl.DirectValue;
                 {
-                    var p = ownerType.GetProperty(Name);
+                    var p = ownerType.GetProperty(PropertyName);
                     if (p is null)
                     {
                         flags |= Fl.AddObjectOverload;
@@ -283,7 +313,7 @@ UpdateSourceExceptionFilter";
                     }
                     else
                     {
-                        if (p.PropertyType == typeof(object)) 
+                        if (p.PropertyType == typeof(object))
                             flags |= Fl.AddObjectOverload | Fl.AddStaticAndResource;
                     }
                 }
@@ -292,19 +322,19 @@ UpdateSourceExceptionFilter";
 
             public bool HasProperty(Type ownerType)
             {
-                var p = ownerType.GetProperty(Name);
+                var p = ownerType.GetProperty(PropertyName);
                 return p != null;
             }
 
-            public override string ToString() => Name;
+            public override string ToString() => PropertyName;
 
-            public Type   Type { get; }
-            public string Name { get; }
+            public Type   Type         { get; }
+            public string PropertyName { get; }
 
             /// <summary>
             ///     If Binding object has this property bindable
             /// </summary>
-            public bool BindableToStaticOrResource { get; set; }
+            public bool BindableToStaticOrResource { get; }
         }
     }
 }
