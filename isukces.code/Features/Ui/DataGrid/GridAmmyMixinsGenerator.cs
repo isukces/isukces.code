@@ -17,6 +17,10 @@ namespace isukces.code.Ui.DataGrid
             {
                 typeof(int),
                 typeof(int?),
+                typeof(long),
+                typeof(long?),
+                typeof(short),
+                typeof(short?),
                 typeof(double),
                 typeof(double?),
                 typeof(decimal),
