@@ -59,6 +59,9 @@ namespace isukces.code.Ammy
                 return nested;
             }
 
+            if (src is AmmyBindBuilder builder)
+                return builder.Build().ToAmmyCode(ctx);
+
             throw new NotSupportedException("Unable to convert ToCodePiece " + src.GetType());
         }
 

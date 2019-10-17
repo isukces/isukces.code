@@ -5,7 +5,7 @@ using isukces.code.interfaces.Ammy;
 namespace isukces.code.Ammy
 {
     public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyContainerBase,
-        IAmmyObjectBuilder<TPropertyBrowser>
+        IAmmyObjectBuilder<TPropertyBrowser>, IAnnotableByUser
     {
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
@@ -37,7 +37,7 @@ namespace isukces.code.Ammy
         /// <summary>
         ///     Additional information used by custom generators
         /// </summary>
-        public Dictionary<string, object> UserFlags { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
         public string Name { get; set; }
 

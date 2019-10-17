@@ -10,7 +10,7 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>, IAmmySpecialBindCode
+    public partial class AmmyBind : IAmmyCodePieceConvertible, IComparer<string>, IAmmySpecialBindCode, IAnnotableByUser
     {
         public AmmyBind(string path, XBindingMode? mode = null)
         {
@@ -259,5 +259,7 @@ namespace isukces.code.Ammy
             public IReadOnlyList<IAmmyCodePiece> SetItems             { get; }
             public bool                          WriteInSeparateLines { get; set; }
         }
+
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
     }
 }

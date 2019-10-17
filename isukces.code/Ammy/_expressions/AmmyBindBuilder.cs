@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyBindBuilder 
+    public partial class AmmyBindBuilder:IAnnotableByUser 
     {
         public AmmyBindBuilder(string path)
         {
@@ -42,5 +44,6 @@ namespace isukces.code.Ammy
             return this;
         }
 
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
     }
 }

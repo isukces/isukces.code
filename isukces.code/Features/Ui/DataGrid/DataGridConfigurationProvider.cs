@@ -39,8 +39,9 @@ namespace isukces.code.Ui.DataGrid
                 Name              = name,
                 Binding =
                 {
-                    Path = name
+                    Path = name,
                 },
+                //DataMemberBinding = name,
                 Header            = GetColumnHeader(name, header, prop),
                 Width             = width
             };
