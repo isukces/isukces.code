@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using isukces.code.AutoCode;
 
-namespace isukces.code._dependsOnProperty
+namespace isukces.code
 {
     public class DependsOnPropertyGenerator : Generators.SingleClassGenerator
     {
