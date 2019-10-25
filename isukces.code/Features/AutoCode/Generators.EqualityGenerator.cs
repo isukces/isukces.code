@@ -30,15 +30,17 @@ namespace isukces.code.AutoCode
                     ? att.UseOnlyPropertiesOrFields.Split(',').ToHashSet()
                     : null;
 
-                return props.Where(a =>
-                {
-                    if (!string.IsNullOrEmpty(att.IsEmptyProperty))
-                        if (att.IsEmptyProperty == a.Name)
-                            return false;
-                    if (useOnly != null)
-                        return useOnly.Contains(a.Name);
-                    return !a.IsEqualityGeneratorSkip;
-                }).ToArray();
+                return props.Where(a => AcceptProperty(att, a, useOnly)).ToArray();
+            }
+
+            private static bool AcceptProperty(Auto.EqualityGeneratorAttribute att, PropertyOrFieldInfo prop, ISet<string> useOnly)
+            {
+                if (!string.IsNullOrEmpty(att.IsEmptyProperty))
+                    if (att.IsEmptyProperty == prop.Name)
+                        return false;
+                if (useOnly != null)
+                    return useOnly.Contains(prop.Name);
+                return !prop.IsEqualityGeneratorSkip;
             }
 
             private static CsExpression GetCoalesceExpressionForType(Type type)

@@ -77,13 +77,14 @@ namespace isukces.code.AutoCode
             writer.WriteLine("return a;");
             cm.Body = writer.Code;
         }
+        
+        public CopyFromGeneratorConfiguration Configuration { get; set; } 
 
         protected override void GenerateInternal()
         {
             _copyFromAttribute = GetCustomAttribute<Auto.CopyFromAttribute>();
             _doCloneable = GetCustomAttribute<Auto.Cloneable>() != null;
-            _configuration = Context.ResolveConfig<CopyFromGeneratorConfiguration>();
-            
+
             if (!_doCloneable && _copyFromAttribute == null)
                 return;
             {

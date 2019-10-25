@@ -32,11 +32,6 @@ namespace isukces.code.AutoCode
                 return GetOrCreateClassFunc(type);
             }
 
-            public T ResolveConfig<T>() where T : class, IAutoCodeConfiguration, new()
-            {
-                return (T)ResolveConfigFunc(typeof(T));
-            }
-
             public IList<object> Tags { get; } = new List<object>();
 
             public Func<Type, object>          ResolveConfigFunc    { get; }

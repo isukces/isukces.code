@@ -7,7 +7,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code.AutoCode
 {
-    public partial class AutoCodeGenerator : IConfigResolver
+    public partial class AutoCodeGenerator  
     {
         public AutoCodeGenerator(IAssemblyFilenameProvider filenameProvider)
         {
@@ -94,15 +94,23 @@ namespace isukces.code.AutoCode
                 AnyFileSaved = true;
         }
 
-        public TConfig ResolveConfig<TConfig>() where TConfig : class, IAutoCodeConfiguration, new()
+        /*public TConfig ResolveConfig<TConfig>() where TConfig : class, IAutoCodeConfiguration, new()
         {
             return (TConfig)ResolveConfigInternal(typeof(TConfig));
-        }
+        }*/
 
         public AutoCodeGenerator WithGenerator(IAutoCodeGenerator generator)
         {
             CodeGenerators.Add(generator);
             return this;
+        }
+
+        public AutoCodeGenerator WithGenerator<T>(Action<T> configure = null)
+            where T : IAutoCodeGenerator, new()
+        {
+            var generator = new T();
+            configure?.Invoke(generator);
+            return WithGenerator(generator);
         }
 
         private CsClass GetOrCreateClass(TypeProvider type)

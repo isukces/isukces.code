@@ -25,7 +25,7 @@ namespace isukces.code
             return code;
         }
 
-        protected static CsCodeWriter Create<T>([CallerLineNumber] int lineNumber = 0,
+        public static CsCodeWriter Create<T>([CallerLineNumber] int lineNumber = 0,
             [CallerMemberName] string memberName = null, [CallerFilePath] string filePath = null
         ) =>
             Create(new SourceCodeLocation(lineNumber, memberName, filePath)

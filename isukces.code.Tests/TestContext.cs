@@ -26,9 +26,6 @@ namespace isukces.code.Tests
             return _file.GetOrCreateClass(type, new Dictionary<TypeProvider, CsClass>());
         }
 
-        public T ResolveConfig<T>() where T : class, IAutoCodeConfiguration, new() =>
-            throw new NotImplementedException();
-
         public IList<object> Tags { get; } = new List<object>();
         public string Code => _file.GetCode();
 

@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace isukces.code.AutoCode
 {
-    public interface IAutoCodeGeneratorContext : IConfigResolver
+    public interface IAutoCodeGeneratorContext 
     {
         void AddNamespace(string namepace);
         CsClass GetOrCreateClass(TypeProvider type);
