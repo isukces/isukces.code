@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <Company>Internet Sukces Piotr Stęclik</Company>
+    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2019</Copyright>
+    <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
+    <SignAssembly>false</SignAssembly>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Product>isukces.code</Product>
+    <PackageId>iSukces.Code.VsSolutions</PackageId>
+    <IncludeSource>false</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <AssemblyVersion>1.0.19299.2</AssemblyVersion>
+    <Version>1.0.19299.2</Version>
+    <FileVersion>1.0.19299.2</FileVersion>
+    <Description>small C# code generating framework</Description>
+    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageTags>C#</PackageTags>
+    <Title>Microsoft Visual Studio solution related structures</Title>
+    <PackageProjectUrl>https://github.com/isukces/isukces.code</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/isukces/isukces.code/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/isukces/isukces.code</RepositoryUrl>
+    <LangVersion>7</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+  </ItemGroup>
+</Project>
