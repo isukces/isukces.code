@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using isukces.code.CodeWrite;
 using isukces.code.interfaces;
+using JetBrains.Annotations;
 
 namespace isukces.code.AutoCode
 {
@@ -33,12 +34,13 @@ namespace isukces.code.AutoCode
                 }
 #endif
 
-            if (_configuration.CustomCloneMethod == null)
+            var cloneMethod = Configuration?.CustomCloneMethod;
+            if (cloneMethod == null)
                 throw new Exception("Unable to clone value of type " + pi.PropertyType);
             writer.WriteLine("{0} = {1}.{2}(source.{3}); // {4}",
                 wm,
-                resolver.GetTypeName(_configuration.CustomCloneMethod.DeclaringType),
-                _configuration.CustomCloneMethod.Name,
+                resolver.GetTypeName(cloneMethod.DeclaringType),
+                cloneMethod.Name,
                 pi.Name,
                 pi.PropertyType);
         }
@@ -78,6 +80,7 @@ namespace isukces.code.AutoCode
             cm.Body = writer.Code;
         }
         
+        [CanBeNull]
         public CopyFromGeneratorConfiguration Configuration { get; set; } 
 
         protected override void GenerateInternal()
@@ -253,9 +256,10 @@ namespace isukces.code.AutoCode
 
         private void AddRange(ICsCodeWriter writer, string target, string source)
         {
-            if (_configuration.ListExtension == null)
-                throw new NotImplementedException("AddRange");
-            var m = _configuration.ListExtension
+            var listExtension = Configuration?.ListExtension;
+            if (listExtension == null)
+                throw new NotImplementedException("Configuration.ListExtension is null");
+            var m = listExtension
 #if COREFX
                                   .GetTypeInfo()
 #endif
@@ -289,12 +293,11 @@ namespace isukces.code.AutoCode
 
                 }
             }
-            var typeName = Class.GetTypeName(_configuration.ListExtension);
+            var typeName = Class.GetTypeName(listExtension);
             writer.WriteLine("{0}.AddRange({1}, {2});", typeName, target, source);
         }
 
         private Auto.CopyFromAttribute         _copyFromAttribute;
         private bool                           _doCloneable;
-        private CopyFromGeneratorConfiguration _configuration;
     }
 }
