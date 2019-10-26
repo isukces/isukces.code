@@ -10,15 +10,22 @@ namespace isukces.code.vssolutions
 
         public static Dictionary<string, Nuspec> GetForDirectory(DirectoryInfo directory)
         {
-            var fn     = GetFileName(directory);
             var result = new Dictionary<string, Nuspec>(StringComparer.OrdinalIgnoreCase);
-            if (!fn.Exists)
+            try
+            {
+                var fn     = GetFileName(directory);
+                if (!fn.Exists)
+                    return result;
+                var fromFile = JsonHelper.Load<Dictionary<string, Nuspec>>(fn);
+                if (fromFile != null)
+                    foreach (var i in fromFile)
+                        result[i.Key] = i.Value;
                 return result;
-            var fromFile = JsonHelper.Load<Dictionary<string, Nuspec>>(fn);
-            if (fromFile != null)
-                foreach (var i in fromFile)
-                    result[i.Key] = i.Value;
-            return result;
+            }
+            catch
+            {
+                return result;
+            }
         }
 
         public static void Save(DirectoryInfo directory, Dictionary<string, Nuspec> cache1)
