@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -15,12 +14,19 @@ namespace isukces.code.vssolutions
         public static PackagesConfig Load(string fileName) =>
             File.Exists(fileName) ? new PackagesConfig(XDocument.Load(fileName)) : Empty;
 
-        public IEnumerable<PackageInfo> GetPackages()
+        public static PackagesConfig Load(DirectoryInfo dir)
+        {
+            var filename = Path.Combine(dir.FullName, DefaultFilename);
+            return Load(filename);
+        }
+
+
+        public IEnumerable<PackagesConfigItem> GetPackages()
         {
             var root = Document?.Root;
             if (root == null)
-                return new PackageInfo[0];
-            return root.Elements("package").Select(PackageInfo.FromXElement);
+                return new PackagesConfigItem[0];
+            return root.Elements(Package).Select(PackagesConfigItem.FromXElement);
         }
 
         public static PackagesConfig Empty
@@ -32,29 +38,10 @@ namespace isukces.code.vssolutions
             }
         }
 
-        public class PackageInfo
-        {
-            public static PackageInfo FromXElement(XElement arg)
-            {
-                if (arg == null)
-                    throw new NullReferenceException(nameof(arg));
-                return new PackageInfo
-                {
-                    Id              = (string)arg.Attribute("id"),
-                    Version         = (string)arg.Attribute(Tags.Version),
-                    TargetFramework = (string)arg.Attribute("targetFramework")
-                };
-            }
-
-            public bool MachtId(string id) => string.Equals(id?.Trim(), Id?.Trim(), StringComparison.OrdinalIgnoreCase);
-
-            public override string ToString() => "PackageInfo: " + Id + " " + Version;
-
-            public string TargetFramework { get; set; }
-
-            public string Version { get; set; }
-
-            public string Id { get; set; }
-        }
+        public const string TargetFramework = "targetFramework";
+        public const string Id = "id";
+        public const string Version = Tags.Version;
+        public const string Package = "package";
+        public const string DefaultFilename = "packages.config";
     }
 }

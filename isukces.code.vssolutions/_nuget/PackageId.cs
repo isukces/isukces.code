@@ -77,4 +77,5 @@ namespace isukces.code.vssolutions
         public NugetVersion PackageVersion { get; }
         public string       FullId         { get; }
     }
+    
 }

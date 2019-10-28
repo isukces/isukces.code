@@ -1,4 +1,5 @@
 using System;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 
 namespace isukces.code.vssolutions
@@ -46,8 +47,8 @@ namespace isukces.code.vssolutions
                 return 1;
             var a = NormalizedVersion.CompareTo(other.NormalizedVersion);
             if (a != 0) return a;
-            var tmp1 = !string.IsNullOrEmpty(Suffix);
-            var tmp2 = !string.IsNullOrEmpty(other.Suffix);
+            var tmp1 = !String.IsNullOrEmpty(Suffix);
+            var tmp2 = !String.IsNullOrEmpty(other.Suffix);
             a = tmp1.CompareTo(tmp2);
             if (a != 0) return a;
             return (Suffix ?? "").CompareTo(other.Suffix ?? "");
@@ -58,7 +59,7 @@ namespace isukces.code.vssolutions
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             return Equals(NormalizedVersion, other.NormalizedVersion)
-                   && string.Equals(Suffix?.Trim() ?? "", other.Suffix?.Trim() ?? "");
+                   && String.Equals(Suffix?.Trim() ?? "", other.Suffix?.Trim() ?? "");
         }
 
         public override bool Equals(object obj)
@@ -78,9 +79,9 @@ namespace isukces.code.vssolutions
             }
         }
 
-        public bool ShouldSerializeSuffix() => !string.IsNullOrEmpty(Suffix);
+        public bool ShouldSerializeSuffix() => !String.IsNullOrEmpty(Suffix);
 
-        public override string ToString() => string.IsNullOrEmpty(Suffix) ? Version.ToString() : Version + "-" + Suffix;
+        public override string ToString() => String.IsNullOrEmpty(Suffix) ? Version.ToString() : Version + "-" + Suffix;
 
         [JsonIgnore]
         public Version NormalizedVersion
@@ -99,5 +100,9 @@ namespace isukces.code.vssolutions
         public Version Version { get; set; }
 
         public string Suffix { get; set; }
+        public static NugetVersion FromAttribute(XAttribute xAttribute)
+        {
+            return NugetVersion.Parse((string)xAttribute);
+        }
     }
 }

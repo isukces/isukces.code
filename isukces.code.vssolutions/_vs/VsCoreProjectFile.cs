@@ -12,49 +12,51 @@ namespace isukces.code.vssolutions
         }
 
 
-        public bool AddPackage(PackagesConfig.PackageInfo packageInfo, string forceSearchId = null)
+        public bool AddPackage(INuspec request, string forceSearchId = null)
         {
             var result = false;
             if (string.IsNullOrEmpty(forceSearchId))
-                forceSearchId = packageInfo.Id;
-            var message = "";
-            foreach (var j in PackageReferences)
+                forceSearchId = request.Id;
+            // var message = "";
+            foreach (var xElement in PackageReferences)
             {
-                var ver = j.Element(j.Name.Namespace + Tags.Version);
+                var ver = xElement.Element(xElement.Name.Namespace + Tags.Version);
                 if (ver != null)
                 {
-                    j.SetAttributeValue(Tags.Version, ver.Value?.Trim());
+                    // change node "Version" info attribute
+                    xElement.SetAttributeValue(Tags.Version, ver.Value?.Trim());
                     ver.Remove();
                     result = true;
                 }
 
-                if (!string.Equals(forceSearchId, (string)j.Attribute(Tags.Include),
+                if (!string.Equals(forceSearchId, (string)xElement.Attribute(Tags.Include),
                     StringComparison.OrdinalIgnoreCase)) continue;
-                if ((string)j.Attribute(Tags.Include) != packageInfo.Id)
+                if ((string)xElement.Attribute(Tags.Include) != request.Id)
                 {
-                    message += "Change " + (string)j.Attribute(Tags.Include) + " => " + packageInfo.Id;
-                    j.SetAttributeValue(Tags.Include, packageInfo.Id);
+                    //message += "Change " + (string)xElement.Attribute(Tags.Include) + " => " + packageInfo.Id;
+                    xElement.SetAttributeValue(Tags.Include, request.Id);
                     result = true;
                 }
 
-                if ((string)j.Attribute(Tags.Version) != packageInfo.Version)
+                var jVersion = NugetVersion.FromAttribute(xElement.Attribute(Tags.Version));
+                if (jVersion != request.PackageVersion)
                 {
-                    if (string.IsNullOrEmpty(message))
+                    /*if (string.IsNullOrEmpty(message))
                         message = packageInfo.Id;
-                    message += $", change version {(string)j.Attribute(Tags.Version)}=>{packageInfo.Version}";
-                    j.SetAttributeValue(Tags.Version, packageInfo.Version);
+                    message += $", change version {(string)xElement.Attribute(Tags.Version)}=>{packageInfo.PackageVersion}";*/
+                    xElement.SetAttributeValue(Tags.Version, request.PackageVersion);
                     result = true;
                 }
 
-                Console.WriteLine(message);
+                //Console.WriteLine(message);
                 return result;
             }
 
-            Console.WriteLine("Add " + packageInfo.Id + " " + packageInfo.Version);
+            //Console.WriteLine("Add " + request.Id + " " + request.PackageVersion);
             var pNode = FindOrCreateElement(Tags.ItemGroup);
             pNode.Add(new XElement(Tags.PackageReference,
-                new XAttribute(Tags.Include, packageInfo.Id),
-                new XAttribute(Tags.Version, packageInfo.Version)
+                new XAttribute(Tags.Include, request.Id),
+                new XAttribute(Tags.Version, request.PackageVersion)
             ));
             return true;
         }
@@ -95,45 +97,47 @@ namespace isukces.code.vssolutions
         }
 
 
-        public IEnumerable<PackagesConfig.PackageInfo> GetReferencedPackages()
+        public IEnumerable<PackagesConfigItem> GetReferencedPackages()
         {
             foreach (var j in PackageReferences)
-                yield return new PackagesConfig.PackageInfo
+                yield return new PackagesConfigItem
                 {
-                    Id      = (string)j.Attribute(Tags.Include),
-                    Version = (string)j.Attribute(Tags.Version)
+                    Id             = (string)j.Attribute(Tags.Include),
+                    PackageVersion = NugetVersion.FromAttribute(j.Attribute(Tags.Version))
                 };
         }
 
-        public bool RemovePackage(PackagesConfig.PackageInfo packageInfo, string forceSearchId = null)
+        public bool RemovePackage(PackagesConfigItem packageInfo, string forceSearchId = null)
         {
             var result = false;
             if (string.IsNullOrEmpty(forceSearchId))
                 forceSearchId = packageInfo.Id;
-            var message = "";
+            //var message = "";
             foreach (var j in PackageReferences)
             {
                 if (!string.Equals(forceSearchId, (string)j.Attribute(Tags.Include),
                     StringComparison.OrdinalIgnoreCase)) continue;
-                message += "Remove " + (string)j.Attribute(Tags.Include) + " => " + packageInfo.Id;
+                // message += "Remove " + (string)j.Attribute(Tags.Include) + " => " + packageInfo.Id;
                 j.Remove();
                 result = true;
             }
 
-            Console.WriteLine(message);
+            // Console.WriteLine(message);
             return result;
         }
 
-        public void RemovePackage(string modificationId)
+        public bool RemovePackage(string packageId)
         {
             foreach (var pr in PackageReferences)
             {
-                if (!string.Equals(modificationId, (string)pr.Attribute(Tags.Include),
+                if (!string.Equals(packageId, (string)pr.Attribute(Tags.Include),
                     StringComparison.OrdinalIgnoreCase)) continue;
                 pr.Remove();
-                Console.WriteLine("Remove " + modificationId + " " + (string)pr.Attribute(Tags.Version));
-                return;
+                // Console.WriteLine("Remove " + packageId + " " + (string)pr.Attribute(Tags.Version));
+                return true;
             }
+
+            return false;
         }
 
         public void Save(string iFullName)

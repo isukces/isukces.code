@@ -14,7 +14,6 @@ namespace isukces.code.vssolutions
         public const string MicrosoftNetSdkWeb = "Microsoft.NET.Sdk.Web";
         public const string TargetFrameworks = "TargetFrameworks";
 
-        
         public static class AppCfg
         {
             public const string DependentAssembly = "dependentAssembly";
