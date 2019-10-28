@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace isukces.code.vssolutions
 {
-    internal class VsOldProjectFile : VsProjectFile
+    public class VsOldProjectFile : VsProjectFile
     {
         public VsOldProjectFile(XDocument document) : base(document)
         {
