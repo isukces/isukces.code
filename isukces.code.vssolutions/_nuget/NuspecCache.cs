@@ -4,7 +4,7 @@ using System.IO;
 
 namespace isukces.code.vssolutions
 {
-    internal class NuspecCache
+    public class NuspecCache
     {
         #region Static Methods
 

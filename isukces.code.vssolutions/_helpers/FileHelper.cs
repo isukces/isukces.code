@@ -17,15 +17,7 @@ namespace isukces.code.vssolutions
                 throw new FileNotFoundException(string.Format("File {0} doesn't exist", file.FullName));
         }
 
-        public static JsonSerializer DefaultSerializerFactory()
-        {
-            var serializer = new JsonSerializer();
-            serializer.Converters.Add(new StringEnumConverter());
-            serializer.NullValueHandling    = NullValueHandling.Ignore;
-            serializer.DefaultValueHandling = DefaultValueHandling.Ignore;
-            return serializer;
-        }
-
+        
         public static XDocument Load([NotNull] FileName location)
         {
             if (location == null) throw new ArgumentNullException(nameof(location));

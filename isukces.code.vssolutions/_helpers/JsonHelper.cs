@@ -12,6 +12,7 @@ namespace isukces.code.vssolutions
         {
             var serializer = new JsonSerializer();
             serializer.Converters.Add(new StringEnumConverter());
+            serializer.Converters.Add(new StringVersionConverter());
             serializer.NullValueHandling    = NullValueHandling.Ignore;
             serializer.DefaultValueHandling = DefaultValueHandling.Ignore;
             return serializer;
@@ -46,32 +47,6 @@ namespace isukces.code.vssolutions
                 jsonTextWriter.Formatting = f; // Formatting.Indented;
                 var serializer = DefaultSerializerFactory();
                 serializer.Serialize(jsonTextWriter, data);
-            }
-        }
-
-        private static JsonSerializer MySerializerFactory()
-        {
-            var sf = FileHelper.DefaultSerializerFactory();
-            sf.Converters.Add(new MyVersionConverter());
-            return sf;
-        }
-
-
-        private  class MyVersionConverter : JsonConverter
-        {
-            public override bool CanConvert(Type objectType) => objectType == typeof(Version);
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-                JsonSerializer serializer)
-            {
-                var value = reader.Value;
-                return value == null ? null : Version.Parse(value.ToString());
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                var txt = ((Version)value).ToString();
-                writer.WriteValue(txt);
             }
         }
     }
