@@ -20,29 +20,29 @@ namespace isukces.code.vssolutions
             var message = "";
             foreach (var j in PackageReferences)
             {
-                var ver = j.Element(j.Name.Namespace + "Version");
+                var ver = j.Element(j.Name.Namespace + Tags.Version);
                 if (ver != null)
                 {
-                    j.SetAttributeValue("Version", ver.Value?.Trim());
+                    j.SetAttributeValue(Tags.Version, ver.Value?.Trim());
                     ver.Remove();
                     result = true;
                 }
 
-                if (!string.Equals(forceSearchId, (string)j.Attribute("Include"),
+                if (!string.Equals(forceSearchId, (string)j.Attribute(Tags.Include),
                     StringComparison.OrdinalIgnoreCase)) continue;
-                if ((string)j.Attribute("Include") != packageInfo.Id)
+                if ((string)j.Attribute(Tags.Include) != packageInfo.Id)
                 {
-                    message += "Change " + (string)j.Attribute("Include") + " => " + packageInfo.Id;
-                    j.SetAttributeValue("Include", packageInfo.Id);
+                    message += "Change " + (string)j.Attribute(Tags.Include) + " => " + packageInfo.Id;
+                    j.SetAttributeValue(Tags.Include, packageInfo.Id);
                     result = true;
                 }
 
-                if ((string)j.Attribute("Version") != packageInfo.Version)
+                if ((string)j.Attribute(Tags.Version) != packageInfo.Version)
                 {
                     if (string.IsNullOrEmpty(message))
                         message = packageInfo.Id;
-                    message += $", change version {(string)j.Attribute("Version")}=>{packageInfo.Version}";
-                    j.SetAttributeValue("Version", packageInfo.Version);
+                    message += $", change version {(string)j.Attribute(Tags.Version)}=>{packageInfo.Version}";
+                    j.SetAttributeValue(Tags.Version, packageInfo.Version);
                     result = true;
                 }
 
@@ -51,12 +51,47 @@ namespace isukces.code.vssolutions
             }
 
             Console.WriteLine("Add " + packageInfo.Id + " " + packageInfo.Version);
-            var pNode = FindOrCreateElement("ItemGroup");
-            pNode.Add(new XElement("PackageReference",
-                new XAttribute("Include", packageInfo.Id),
-                new XAttribute("Version", packageInfo.Version)
+            var pNode = FindOrCreateElement(Tags.ItemGroup);
+            pNode.Add(new XElement(Tags.PackageReference,
+                new XAttribute(Tags.Include, packageInfo.Id),
+                new XAttribute(Tags.Version, packageInfo.Version)
             ));
             return true;
+        }
+
+
+        public void AddProjectReference(ProjectReference projectReference)
+        {
+            /*
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+    <PackageReference Include="xunit.assert" Version="2.4.1" />
+    <PackageReference Include="xunit.core" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <ProjectReference Include="..\isukces.code.Serenity\isukces.code.Serenity.csproj" />
+    <ProjectReference Include="..\isukces.code.vssolutions\isukces.code.vssolutions.csproj" />
+    <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
+  </ItemGroup>
+             */
+            foreach (var pr in ProjectReferences)
+                if (string.Equals(projectReference.Include, (string)pr.Attribute(Tags.Include),
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!string.Equals(projectReference.Include, (string)pr.Attribute(Tags.Include),
+                        StringComparison.Ordinal)) 
+                        pr.SetAttributeValue(Tags.Include, projectReference.Include);
+
+                    return;
+                }
+
+            var pNode = FindOrCreateElement(Tags.ItemGroup);
+            pNode.Add(new XElement(Tags.ProjectReference,
+                new XAttribute(Tags.Include, projectReference.Include)
+            ));
         }
 
 
@@ -65,8 +100,8 @@ namespace isukces.code.vssolutions
             foreach (var j in PackageReferences)
                 yield return new PackagesConfig.PackageInfo
                 {
-                    Id      = (string)j.Attribute("Include"),
-                    Version = (string)j.Attribute("Version")
+                    Id      = (string)j.Attribute(Tags.Include),
+                    Version = (string)j.Attribute(Tags.Version)
                 };
         }
 
@@ -78,9 +113,9 @@ namespace isukces.code.vssolutions
             var message = "";
             foreach (var j in PackageReferences)
             {
-                if (!string.Equals(forceSearchId, (string)j.Attribute("Include"),
+                if (!string.Equals(forceSearchId, (string)j.Attribute(Tags.Include),
                     StringComparison.OrdinalIgnoreCase)) continue;
-                message += "Remove " + (string)j.Attribute("Include") + " => " + packageInfo.Id;
+                message += "Remove " + (string)j.Attribute(Tags.Include) + " => " + packageInfo.Id;
                 j.Remove();
                 result = true;
             }
@@ -93,10 +128,10 @@ namespace isukces.code.vssolutions
         {
             foreach (var pr in PackageReferences)
             {
-                if (!string.Equals(modificationId, (string)pr.Attribute("Include"),
+                if (!string.Equals(modificationId, (string)pr.Attribute(Tags.Include),
                     StringComparison.OrdinalIgnoreCase)) continue;
                 pr.Remove();
-                Console.WriteLine("Remove " + modificationId + " " + (string)pr.Attribute("Version"));
+                Console.WriteLine("Remove " + modificationId + " " + (string)pr.Attribute(Tags.Version));
                 return;
             }
         }
@@ -124,8 +159,20 @@ namespace isukces.code.vssolutions
             {
                 return Document
                     .Root
-                    .Elements("ItemGroup")
-                    .SelectMany(i => i.Elements("PackageReference"))
+                    .Elements(Tags.ItemGroup)
+                    .SelectMany(i => i.Elements(Tags.PackageReference))
+                    .ToArray();
+            }
+        }
+        
+        private XElement[] ProjectReferences
+        {
+            get
+            {
+                return Document
+                    .Root
+                    .Elements(Tags.ItemGroup)
+                    .SelectMany(i => i.Elements(Tags.ProjectReference))
                     .ToArray();
             }
         }
@@ -134,8 +181,8 @@ namespace isukces.code.vssolutions
         {
             get
             {
-                var sdk = (string)Document.Root?.Attribute("Sdk");
-                return sdk == "Microsoft.NET.Sdk.Web";
+                var sdk = (string)Document.Root?.Attribute(Tags.Sdk);
+                return sdk == Tags.MicrosoftNetSdkWeb;
             }
         }
 

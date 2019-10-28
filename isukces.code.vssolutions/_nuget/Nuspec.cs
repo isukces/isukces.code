@@ -24,7 +24,7 @@ namespace isukces.code.vssolutions
             if (root == null) throw new NullReferenceException("xml.Root.metadata node");
 
             var id  = GetNode("id").Value;
-            var ver = GetNode("version").Value;
+            var ver = GetNode(Tags.Version).Value;
             FullId         = id + "." + ver;
             Id             = id;
             PackageVersion = NugetVersion.Parse(ver);

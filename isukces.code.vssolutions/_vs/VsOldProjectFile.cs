@@ -12,19 +12,18 @@ namespace isukces.code.vssolutions
 
         public IEnumerable<ProjectReference> GetProjectReferences()
         {
-            var tmp = ScanItemGroups("ProjectReference").ToArray();
+            var tmp = ScanItemGroups(Tags.ProjectReference).ToArray();
             if (tmp.Length == 0)
                 return new ProjectReference[0];
             return tmp.Select(ProjectReference.FromNode);
-
-            return new ProjectReference[0];
+ 
         }
 
         private IEnumerable<XElement> ScanItemGroups(string name)
         {
             var ns = Document.Root.Name.Namespace;
             var nodes = Document.Root?
-                .Elements(ns + "ItemGroup")
+                .Elements(ns + Tags.ItemGroup)
                 .SelectMany(a => a.Elements(ns + name));
             return nodes;
         }
@@ -40,12 +39,12 @@ namespace isukces.code.vssolutions
 
         public string TargetFrameworkVersion
         {
-            get { return ScanPropertyGroups("TargetFrameworkVersion").FirstOrDefault()?.Value; }
+            get { return ScanPropertyGroups(Tags.TargetFrameworkVersion).FirstOrDefault()?.Value; }
         }
 
         public string OutputType
         {
-            get { return ScanPropertyGroups("OutputType").FirstOrDefault()?.Value; }
+            get { return ScanPropertyGroups(Tags.OutputType).FirstOrDefault()?.Value; }
         }
 
         public string AssemblyOriginatorKeyFile

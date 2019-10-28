@@ -41,7 +41,7 @@ namespace isukces.code.vssolutions
                 return new PackageInfo
                 {
                     Id              = (string)arg.Attribute("id"),
-                    Version         = (string)arg.Attribute("version"),
+                    Version         = (string)arg.Attribute(Tags.Version),
                     TargetFramework = (string)arg.Attribute("targetFramework")
                 };
             }

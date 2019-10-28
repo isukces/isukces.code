@@ -6,7 +6,7 @@ namespace isukces.code.vssolutions
     {
         public static NugetDependency FromNode(XElement x)
         {
-            var ver = (string)x.Attribute("version");
+            var ver = (string)x.Attribute(Tags.Version);
             return new NugetDependency
             {
                 Id       = (string)x.Attribute("id"),

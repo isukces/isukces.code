@@ -23,7 +23,7 @@ namespace isukces.code.vssolutions
             if (xAssemblyBinding == null)
                 return new XElement[0];
             var dependentAssemblys = xAssemblyBinding
-                .Elements(xAssemblyBinding.Name.Namespace + "dependentAssembly")
+                .Elements(xAssemblyBinding.Name.Namespace + Tags.AppCfg.DependentAssembly)
                 .ToArray();
             return dependentAssemblys;
         }
@@ -53,8 +53,6 @@ namespace isukces.code.vssolutions
             return null;
         }
 
-        // Public Methods 
-
         public IEnumerable<AssemblyBinding> GetAssemblyBindings()
         {
             var xAssemblyBinding = GetXAssemblyBinding();
@@ -71,18 +69,17 @@ namespace isukces.code.vssolutions
                 _xml.Save(fileName);
             }
         }
-        // Private Methods 
 
         private XElement GetXAssemblyBinding()
         {
             if (_xml == null) return null;
             var root = _xml.Root;
-            if (root == null || root.Name.LocalName != "configuration")
+            if (root == null || root.Name.LocalName != Tags.AppCfg.Configuration)
                 return null;
-            var runtime = root.Element(root.Name.Namespace + "runtime");
+            var runtime = root.Element(root.Name.Namespace + Tags.AppCfg.Runtime);
             if (runtime == null)
                 return null;
-            var ab = runtime.Elements().SingleOrDefault(a => a.Name.LocalName == "assemblyBinding");
+            var ab = runtime.Elements().SingleOrDefault(a => a.Name.LocalName == Tags.AppCfg.AssemblyBinding);
             return ab;
         }
 

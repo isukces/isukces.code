@@ -10,7 +10,7 @@ namespace isukces.code.vssolutions
 
         public static NugetPackage Parse(XElement packageXElement)
         {
-            var ver    = (string)packageXElement.Attribute("version");
+            var ver    = (string)packageXElement.Attribute(Tags.Version);
             var parsed = NugetVersion.Parse(ver);
             // if (!Version.TryParse(ver, out parsed))
             //   throw new Exception("Invalid version " + ver);

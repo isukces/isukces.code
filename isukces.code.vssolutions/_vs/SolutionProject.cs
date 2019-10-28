@@ -15,7 +15,7 @@ namespace isukces.code.vssolutions
         {
             var root = x?.Root;
             if (root == null) return VsProjectKind.Unknown;
-            var isNew = root.Name.LocalName == "Project" && "Microsoft.NET.Sdk" == (string)root.Attribute("Sdk");
+            var isNew = root.Name.LocalName == "Project" && Tags.MicrosoftNetSdk == (string)root.Attribute(Tags.Sdk);
             return isNew ? VsProjectKind.Core : VsProjectKind.Old;
         }
 
@@ -60,12 +60,12 @@ namespace isukces.code.vssolutions
             if (Kind == VsProjectKind.Core)
             {
                 var doc = FileHelper.Load(Location);
-                var refNodes = doc?.Root?.Elements("ItemGroup").SelectMany(q => q.Elements("Reference")).ToArray() ??
+                var refNodes = doc?.Root?.Elements(Tags.ItemGroup).SelectMany(q => q.Elements("Reference")).ToArray() ??
                                new XElement[0];
                 return refNodes.Select(q => { return ProjectReference.FromNode(q, Location.Directory); }).ToList();
             }
 
-            foreach (var itemGroupElement in root.Elements(root.Name.Namespace + "ItemGroup"))
+            foreach (var itemGroupElement in root.Elements(root.Name.Namespace + Tags.ItemGroup))
             foreach (var reference in itemGroupElement.Elements(itemGroupElement.Name.Namespace + "Reference"))
                 result.Add(ProjectReference.FromNode(reference, Location.Directory));
             return result;
@@ -96,16 +96,16 @@ namespace isukces.code.vssolutions
   </ItemGroup>
 </Project>*/
                 var doc = FileHelper.Load(Location);
-                var refNodes = doc?.Root?.Elements("ItemGroup").SelectMany(q => q.Elements("PackageReference"))
+                var refNodes = doc?.Root?.Elements(Tags.ItemGroup).SelectMany(q => q.Elements(Tags.PackageReference))
                                    .ToArray() ??
                                new XElement[0];
                 return refNodes.Select(q =>
                 {
                     var r = new NugetPackage
                     {
-                        Id = (string)q.Attribute("Include")
+                        Id = (string)q.Attribute(Tags.Include)
                     };
-                    var ver = (string)q.Attribute("Version");
+                    var ver = (string)q.Attribute(Tags.Version);
 
                     if (!string.IsNullOrEmpty(ver))
                         r.Version = NugetVersion.Parse(ver);
