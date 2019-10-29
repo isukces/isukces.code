@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using isukces.code.interfaces;
 
 namespace isukces.code.Ui.DataGrid
 {
     public abstract partial class GridAmmyMixinsGenerator
     {
-        protected class Model
+        protected class Model : IAnnotableByUser
         {
             public static Model MakeFromAttributes(Type type)
             {
@@ -50,9 +51,10 @@ namespace isukces.code.Ui.DataGrid
                 return result;
             }
 
-            public bool                AddExpandColumn { get; private set; }
-            public List<AttributeInfo> Categories      { get; } = new List<AttributeInfo>();
-            public List<ColumnInfo>    Columns         { get; } = new List<ColumnInfo>();
+            public bool                        AddExpandColumn { get; private set; }
+            public List<AttributeInfo>         Categories      { get; } = new List<AttributeInfo>();
+            public List<ColumnInfo>            Columns         { get; } = new List<ColumnInfo>();
+            public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
         }
     }
 }

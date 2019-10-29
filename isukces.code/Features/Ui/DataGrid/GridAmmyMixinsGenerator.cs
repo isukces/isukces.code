@@ -88,7 +88,12 @@ namespace isukces.code.Ui.DataGrid
             var model = Model.MakeFromAttributes(type);
             if (model == null)
                 return;
+            AfterCreateModel(type, model);
             WriteAmmyMixin(type.Name, model);
+        }
+
+        protected virtual void AfterCreateModel(Type type, Model model)
+        {
         }
 
         protected virtual LookupInfo GetLookupInfo(ColumnInfo col)

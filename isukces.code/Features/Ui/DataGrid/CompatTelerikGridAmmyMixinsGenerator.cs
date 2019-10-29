@@ -24,6 +24,14 @@ namespace isukces.code.Ui.DataGrid
         {
         }
 
+        protected virtual void AfterStartMixin(string name, IConversionCtx ctx, Model model)
+        {
+        }
+
+        protected virtual void BeforeEndMixin(string name, IConversionCtx ctx, Model model)
+        {
+        }
+
         protected virtual IConversionCtx CreateConversionContext()
         {
             var ctx = new ConversionCtx(Mixins);
@@ -48,7 +56,7 @@ namespace isukces.code.Ui.DataGrid
             var ctx = CreateConversionContext();
             // ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
             Mixins.Open($"mixin {name}() for {ctx.TypeName<RadGridView>()}");
-
+            AfterStartMixin(name, ctx, model);
             if (model.Categories.Any())
             {
                 Mixins.OpenArray("combine ColumnGroups:");
@@ -82,6 +90,7 @@ namespace isukces.code.Ui.DataGrid
                 Mixins.CloseArray();
             }
 
+            BeforeEndMixin(name, ctx, model);
             Mixins.CloseNl();
         }
 
