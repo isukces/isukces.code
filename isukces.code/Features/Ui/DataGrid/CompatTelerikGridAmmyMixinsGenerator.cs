@@ -20,7 +20,7 @@ namespace isukces.code.Ui.DataGrid
         {
         }
 
-        protected virtual void AfterConvertColumn(AmmyObjectBuilder<GridViewDataColumn> builder)
+        protected virtual void AfterConvertColumn(AmmyContainerBase builder, ColumnInfo col)
         {
         }
 
@@ -162,7 +162,7 @@ namespace isukces.code.Ui.DataGrid
             return obj;
         }
 
-        private IAmmyCodePieceConvertible ConvertColumn(ColumnInfo col)
+        protected virtual IAmmyCodePieceConvertible ConvertColumn(ColumnInfo col)
         {
             var lookup = GetLookupInfo(col);
             if (lookup != null)
@@ -176,6 +176,7 @@ namespace isukces.code.Ui.DataGrid
                 obj = obj
                     .WithPropertyNotNull(a => a.DisplayMemberPath, lookup.DisplayMemberPath)
                     .WithPropertyNotNull(a => a.SelectedValueMemberPath, lookup.SelectedValuePath);
+                AfterConvertColumn(obj, col);
                 return obj;
             }
 
@@ -185,7 +186,7 @@ namespace isukces.code.Ui.DataGrid
                 var obj = new AmmyObjectBuilder<GridViewDataColumn>();
                 obj = AddCommon(obj, col);
                 obj = AddTemplates(obj, col);
-                AfterConvertColumn(obj);
+                AfterConvertColumn(obj, col);
                 return obj;
             }
         }
