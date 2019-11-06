@@ -26,6 +26,11 @@ namespace isukces.code.Tests
             return _file.GetOrCreateClass(type, new Dictionary<TypeProvider, CsClass>());
         }
 
+        public CsNamespace GetOrCreateNamespace(string namespaceName)
+        {
+            return _file.GetOrCreateNamespace(namespaceName);
+        }
+
         public IList<object> Tags { get; } = new List<object>();
         public string Code => _file.GetCode();
 

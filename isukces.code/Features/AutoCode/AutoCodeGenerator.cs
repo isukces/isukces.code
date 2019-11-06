@@ -58,17 +58,14 @@ namespace isukces.code.AutoCode
             _classes = new Dictionary<TypeProvider, CsClass>();
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
-            var context = new SimpleAutoCodeGeneratorContext(
-                GetOrCreateClass,
-                ns => _csFile.AddImportNamespace(ns),
-                ResolveConfigInternal);
+            var context = new SimpleAutoCodeGeneratorContext(_csFile, GetOrCreateClass);
             foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
                 i.AssemblyStart(assembly, context);
 
             for (int index = 0, length = types.Length; index < length; index++)
             {
                 var type = types[index];
-                foreach (var i in CodeGenerators)
+                foreach (var i in CodeGenerators.OfType<IAutoCodeGenerator>()) 
                     i.Generate(type, context);
             }
 
@@ -99,7 +96,7 @@ namespace isukces.code.AutoCode
             return (TConfig)ResolveConfigInternal(typeof(TConfig));
         }*/
 
-        public AutoCodeGenerator WithGenerator(IAutoCodeGenerator generator)
+        public AutoCodeGenerator WithGenerator(IAutoCodeGeneratorBase generator)
         {
             CodeGenerators.Add(generator);
             return this;
@@ -129,7 +126,7 @@ namespace isukces.code.AutoCode
 
         public bool AnyFileSaved { get; set; }
 
-        public List<IAutoCodeGenerator> CodeGenerators { get; } = new List<IAutoCodeGenerator>();
+        public List<IAutoCodeGeneratorBase> CodeGenerators { get; } = new List<IAutoCodeGeneratorBase>();
 
         public ISet<string> FileNamespaces { get; } = new HashSet<string>();
         private readonly IAssemblyFilenameProvider _filenameProvider;

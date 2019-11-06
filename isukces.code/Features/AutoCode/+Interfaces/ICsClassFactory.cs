@@ -4,12 +4,16 @@ using System.Reflection;
 
 namespace isukces.code.AutoCode
 {
-    public interface IAutoCodeGenerator
+    public interface IAutoCodeGeneratorBase
+    {
+        
+    }
+    public interface IAutoCodeGenerator : IAutoCodeGeneratorBase
     {
         void Generate(Type type, IAutoCodeGeneratorContext context);
     }
 
-    public interface IAssemblyAutoCodeGenerator
+    public interface IAssemblyAutoCodeGenerator : IAutoCodeGeneratorBase
     {
         void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context);
         void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context);

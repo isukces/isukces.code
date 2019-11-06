@@ -4,7 +4,7 @@ using System.Linq;
 using isukces.code.AutoCode;
 using isukces.code.interfaces;
 
-namespace isukces.code.CodeWrite
+namespace isukces.code
 {
     public class CsNamespace : IClassOwner, INamespaceCollection, IConditional
     {
