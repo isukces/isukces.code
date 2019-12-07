@@ -29,5 +29,13 @@ namespace isukces.code.interfaces
         {
             return resolver.GetTypeName(type);
         }
+
+        public static string GetEnumValueCode<T>(this ITypeNameResolver resolver, T value)
+            where T : Enum
+        {
+            var c      = resolver.GetTypeName<T>();
+            var value2 = c + "." + value;
+            return value2;
+        }
     }
 }
