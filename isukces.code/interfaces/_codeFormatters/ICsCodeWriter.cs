@@ -9,7 +9,7 @@ namespace isukces.code.interfaces
     {
     }
 
-    public static class CsCodeFormatterExt
+    public static class CsCodeWriterExtensions
     {
         public static void AddNamespaces(this ICsCodeWriter src, string namespaceName)
         {

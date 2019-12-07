@@ -10,7 +10,7 @@ namespace isukces.code
     {
         public CsAttribute(string name)
         {
-            Name = name;
+            Name = AttributableExt.CutAttributeSuffix(name);
         }
 
         public static CsAttribute Make<T>(ITypeNameResolver typeNameResolver)

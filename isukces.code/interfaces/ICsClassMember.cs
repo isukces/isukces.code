@@ -2,11 +2,10 @@
 
 namespace isukces.code.interfaces
 {
-    public interface ICsClassMember : IDescriptable, IConditional
+    public interface ICsClassMember : IDescriptable, IConditional, IAttributable
     {
         Visibilities        Visibility { get; set; }
         bool                IsStatic   { get; set; }
-        IList<ICsAttribute> Attributes { get; set; }
     }
 
 

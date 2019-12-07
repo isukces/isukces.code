@@ -5,7 +5,6 @@ namespace isukces.code
 {
     public static class CsMethodExtensions
     {
-      
         public static CsMethod WithBody(this CsMethod method, string body)
         {
             method.Body = body;
@@ -23,5 +22,10 @@ namespace isukces.code
             return method;
         }
      
+        public static CsMethod WithParameter(this CsMethod method, CsMethodParameter parameter)
+        {
+            method.Parameters.Add(parameter); 
+            return method;
+        }
     }
 }

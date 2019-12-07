@@ -103,7 +103,7 @@ namespace isukces.code.AutoCode
         }
 
         public AutoCodeGenerator WithGenerator<T>(Action<T> configure = null)
-            where T : IAutoCodeGenerator, new()
+            where T : IAutoCodeGeneratorBase, new()
         {
             var generator = new T();
             configure?.Invoke(generator);
