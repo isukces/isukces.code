@@ -4,7 +4,6 @@ using System.IO;
 using System.Reflection;
 using isukces.code.Ammy;
 using isukces.code.AutoCode;
-using isukces.code.Compatibility.System.Windows.Data;
 using isukces.code.IO;
 
 namespace isukces.code.Ui.DataGrid
@@ -31,8 +30,6 @@ namespace isukces.code.Ui.DataGrid
         public GridAmmyMixinsGenerator(IAssemblyBaseDirectoryProvider directoryProvider) =>
             DirectoryProvider = directoryProvider;
 
-
-       
 
         private static PropertyInfo[] GetProperties(Type attModelType)
         {
@@ -76,11 +73,13 @@ namespace isukces.code.Ui.DataGrid
             var saved    = CodeFileUtils.SaveIfDifferent(code, filename, false);
             if (saved)
                 context.FileSaved(new FileInfo(filename));
+            Context = null;
         }
 
         public void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
         {
-            Mixins = new AmmyCodeWriter();
+            Context = context;
+            Mixins  = new AmmyCodeWriter();
         }
 
         public void Generate(Type type, IAutoCodeGeneratorContext context)
@@ -135,6 +134,8 @@ namespace isukces.code.Ui.DataGrid
         }
 
         protected abstract void WriteAmmyMixin(string name, Model model);
+
+        public    IAutoCodeGeneratorContext      Context           { get; private set; }
         protected IAssemblyBaseDirectoryProvider DirectoryProvider { get; }
         protected AmmyCodeWriter                 Mixins            { get; private set; }
 
