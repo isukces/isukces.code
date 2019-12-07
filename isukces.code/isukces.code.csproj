@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.19310.134</AssemblyVersion>
-    <Version>1.0.19310.134</Version>
-    <FileVersion>1.0.19310.134</FileVersion>
+    <AssemblyVersion>1.0.19341.135</AssemblyVersion>
+    <Version>1.0.19341.135</Version>
+    <FileVersion>1.0.19341.135</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
@@ -26,6 +26,7 @@
     <PackageProjectUrl>https://github.com/isukces/isukces.code</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/isukces/isukces.code/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/isukces/isukces.code</RepositoryUrl>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

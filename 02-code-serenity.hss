@@ -1,7 +1,7 @@
 // using System.IO;
 var builder = new ProjectBuilder
 {
-	VisualStudioExe = GlobalVar["VisualStudio 2017"],
+	VisualStudioExe = GlobalVar["MsBuild 2019"],
 	Nuget = {
 		Exe = GlobalVar["Nuget"],
 		RepositoryDir = GlobalVar["Private Nuget Repository"],
@@ -23,7 +23,7 @@ builder.Nuget.Restore();
 var version = builder.UpdateCoreProjectVersion();
 
 // task: Build
-builder.Build("deploy");
+builder.MsBuild();
 
 // task: Copy nuget
 var srcNupkg = builder.GetNupkgFile(version, true).FullName;
