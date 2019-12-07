@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using isukces.code.interfaces;
 
@@ -28,10 +27,7 @@ namespace isukces.code
         ///     Tworzy instancję obiektu
         ///     <param name="name">Nazwa metody</param>
         /// </summary>
-        public CsMethod(string name)
-        {
-            Name = name;
-        }
+        public CsMethod(string name) => Name = name;
 
 
         /// <summary>
@@ -45,10 +41,7 @@ namespace isukces.code
             ResultType = resultType;
         }
 
-        public static bool IsOperator(string name)
-        {
-            return operators.Contains(name);
-        }
+        public static bool IsOperator(string name) => operators.Contains(name);
 
         private static string FormatMethodParameter(CsMethodParameter i)
         {
@@ -61,6 +54,16 @@ namespace isukces.code
 
             if (i.UseThis)
                 sb.Append("this ");
+            switch (i.CallType)
+            {
+                case ParameterCallTypes.Output:
+                    sb.Append("out ");
+                    break;
+                case ParameterCallTypes.Reference:
+                    sb.Append("ref ");
+                    break;
+            }
+
             sb.AppendFormat("{0} {1}", i.Type, i.Name);
             if (!string.IsNullOrEmpty(i.ConstValue))
                 sb.Append(" = " + i.ConstValue);
@@ -74,10 +77,8 @@ namespace isukces.code
             return parameter;
         }
 
-        public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null)
-        {
-            return AddParam(name, typeof(T), owner, description);
-        }
+        public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null) =>
+            AddParam(name, typeof(T), owner, description);
 
         public CsMethodParameter AddParam(string name, Type type, CsClass owner, string description = null)
         {
@@ -123,9 +124,8 @@ namespace isukces.code
                 writer.Open(mDefinition);
 
             writer.SplitWriteLine(_body);
-            writer.Close();            
+            writer.Close();
         }
-
 
 
         private string[] GetMethodAttributes(bool inInterface)
@@ -203,8 +203,8 @@ namespace isukces.code
         /// </summary>
         public string Name
         {
-            get => _name;
-            set => _name = value?.Trim() ?? string.Empty;
+            get { return _name; }
+            set { _name = value?.Trim() ?? string.Empty; }
         }
 
 
@@ -212,16 +212,16 @@ namespace isukces.code
         /// </summary>
         public string ResultType
         {
-            get => _resultType;
-            set => _resultType = value?.Trim() ?? string.Empty;
+            get { return _resultType; }
+            set { _resultType = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
         /// </summary>
         public List<CsMethodParameter> Parameters
         {
-            get => _parameters;
-            set => _parameters = value ?? new List<CsMethodParameter>();
+            get { return _parameters; }
+            set { _parameters = value ?? new List<CsMethodParameter>(); }
         }
 
         /// <summary>
@@ -241,8 +241,8 @@ namespace isukces.code
         /// </summary>
         public string Body
         {
-            get => _body;
-            set => _body = value?.Trim() ?? string.Empty;
+            get { return _body; }
+            set { _body = value?.Trim() ?? string.Empty; }
         }
 
         /// <summary>
@@ -250,10 +250,10 @@ namespace isukces.code
         /// </summary>
         public string BaseConstructorCall
         {
-            get => _baseConstructorCall;
-            set => _baseConstructorCall = value?.Trim() ?? string.Empty;
+            get { return _baseConstructorCall; }
+            set { _baseConstructorCall = value?.Trim() ?? string.Empty; }
         }
-        
+
         public string AdditionalContentOverMethod { get; set; }
 
         private static readonly HashSet<string> operators;

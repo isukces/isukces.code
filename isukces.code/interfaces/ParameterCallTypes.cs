@@ -2,7 +2,7 @@
 {
     public enum ParameterCallTypes
     {
-        Input,
+        Default,
         Output,
         Reference
     }
