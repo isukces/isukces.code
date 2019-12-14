@@ -392,9 +392,21 @@ namespace isukces.code
             {
                 case CsNamespaceMemberKind.Class:
                     if (GetIsAbstract())
+                    {
+                        if (IsSealed)
+                            throw new Exception($"Class {Name} can't be both sealed and abstract");
+                        if (IsStatic)
+                            throw new Exception($"Class {Name} can't be both static and abstract");
                         x.Add("abstract");
-                    if (IsStatic)
+                    }
+                    else if (IsStatic)
+                    {
+                        if (IsSealed)
+                            throw new Exception($"Class {Name} can't be both static and sealed");
                         x.Add("static");
+                    } else if (IsSealed)
+                        x.Add("sealed");
+                    
                     if (IsPartial)
                         x.Add("partial");
                     x.Add("class");
