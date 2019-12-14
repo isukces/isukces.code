@@ -130,7 +130,7 @@ namespace isukces.code.Ui.DataGrid
                 }
             }
 
-            throw new NotSupportedException(t.ToString());
+            throw new NotSupportedException("Unable to find lookup for type " + t.ToString());
         }
 
         protected abstract void WriteAmmyMixin(string name, Model model);

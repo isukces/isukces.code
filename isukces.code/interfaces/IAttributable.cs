@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using isukces.code.AutoCode;
 using JetBrains.Annotations;
 
 namespace isukces.code.interfaces
@@ -28,6 +30,13 @@ namespace isukces.code.interfaces
             }
         }
 
+        public static T WithAttribute<T>(this T element, INamespaceContainer nsProvider, Type t)
+            where T : IAttributable
+        {
+            var tn = nsProvider.GetTypeName(t);
+            return element.WithAttribute(new CsAttribute(tn));
+        }
+
         public static T WithAttribute<T>(this T attributable, ICsAttribute attribute) where
             T : IAttributable
         {
@@ -35,6 +44,12 @@ namespace isukces.code.interfaces
             return attributable;
         }
 
+        public static T WithAttribute<T>(this T element, Type t)
+            where T : IAttributable, INamespaceContainer
+        {
+            var tn = element.GetTypeName(t);
+            return element.WithAttribute(new CsAttribute(tn));
+        }
 
         public static T WithAttribute<T>(this T self, string className, string value)
             where T : IAttributable

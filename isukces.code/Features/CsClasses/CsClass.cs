@@ -6,7 +6,8 @@ using isukces.code.interfaces;
 // ReSharper disable once CheckNamespace
 namespace isukces.code
 {
-    public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver
+    public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver,
+        IAttributable
     {
         /// <summary>
         ///     Tworzy instancję obiektu

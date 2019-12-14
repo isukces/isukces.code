@@ -100,7 +100,7 @@ namespace isukces.code.AutoCode
 #if COREFX
                                       .GetTypeInfo()
 #endif
-                                      .GetProperties();
+                                      .GetProperties(GeneratorsHelper.AllInstance);
                 foreach (var i in properties)
                     ProcessProperty(i, _copyFromAttribute, writer);
                 cm.Body = writer.Code;
