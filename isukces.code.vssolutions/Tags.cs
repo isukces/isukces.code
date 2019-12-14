@@ -4,6 +4,7 @@ namespace isukces.code.vssolutions
     {
         public const string Include = "Include";
         public const string Version = "Version";
+        public const string VersionLower = "version";
         public const string ItemGroup = "ItemGroup";
         public const string PackageReference = "PackageReference";
         public const string ProjectReference = "ProjectReference";
