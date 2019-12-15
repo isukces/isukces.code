@@ -222,14 +222,23 @@ namespace isukces.code
 
         public CsClass GetOrCreateNested(string typeName)
         {
+            return GetOrCreateNested(typeName, out _);
+        }
+        public CsClass GetOrCreateNested(string typeName, out bool isCreatedNew)
+        {
             var existing = _nestedClasses
                 .FirstOrDefault(csClass => csClass.Name == typeName);
-            if (existing != null) return existing;
+            if (existing != null)
+            {
+                isCreatedNew = false;
+                return existing;
+            }
             existing = new CsClass(typeName)
             {
                 Owner = this
             };
             _nestedClasses.Add(existing);
+            isCreatedNew = true;
             return existing;
         }
 

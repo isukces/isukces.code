@@ -26,12 +26,18 @@ namespace isukces.code.CodeWrite
 
         public CsClass GetOrCreateClass(TypeProvider typeP, Dictionary<TypeProvider, CsClass> classesCache)
         {
+            return GetOrCreateClass(typeP, classesCache, out _);
+        }
+        
+        public CsClass GetOrCreateClass(TypeProvider typeP, Dictionary<TypeProvider, CsClass> classesCache, out bool isCreatedNew)
+        {
             if (typeP.IsEmpty)
                 throw new ArgumentException("Value can't be empty", nameof(typeP));
             if (classesCache.TryGetValue(typeP, out var c))
             {
                 if (c.DotNetType == null && typeP.Type != null)
                     c.DotNetType = typeP.Type;
+                isCreatedNew = false;
                 return c;
             }
 
@@ -63,7 +69,10 @@ namespace isukces.code.CodeWrite
                             Kind       = type.GetNamespaceMemberKind()
                         };
                         ns.AddClass(existing);
+                        isCreatedNew = true;
                     }
+                    else
+                        isCreatedNew = false;
 
                     existing.DotNetType = type;
                     classesCache[typeP] = existing;
@@ -72,11 +81,12 @@ namespace isukces.code.CodeWrite
 
                 {
                     var parent   = GetOrCreateClass(TypeProvider.FromType(type.DeclaringType), classesCache);
-                    var existing = parent.GetOrCreateNested(name);
+                    var existing = parent.GetOrCreateNested(name, out isCreatedNew);
                     existing.IsPartial  = true;
                     existing.DotNetType = type;
                     existing.Kind       = type.GetNamespaceMemberKind();
-                    existing.Visibility = Visibilities.InterfaceDefault;
+                    if (isCreatedNew)
+                        existing.Visibility = Visibilities.InterfaceDefault;
                     return existing;
                 }
             }
@@ -90,7 +100,10 @@ namespace isukces.code.CodeWrite
                 var name   = typeNameParts.Last();
                 var result = ns.Classes.FirstOrDefault(aa => aa.Name == name);
                 if (result != null)
+                {
+                    isCreatedNew = false;
                     return classesCache[typeP] = result;
+                }
 
                 result = classesCache[typeP] = new CsClass(name)
                 {
@@ -102,6 +115,7 @@ namespace isukces.code.CodeWrite
                 };
 
                 ns.AddClass(result);
+                isCreatedNew = true;
                 return result;
             }
         }
