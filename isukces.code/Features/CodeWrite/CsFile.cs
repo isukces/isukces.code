@@ -51,8 +51,21 @@ namespace isukces.code.CodeWrite
                     if (!ti.IsGenericTypeDefinition)
                         throw new NotSupportedException();
                     name = name.Split('`')[0];
-                    var nn = ti.GetGenericArguments().Select(a => a.Name);
-                    name += "<" + string.Join(",", nn) + ">";
+                    var genericArguments = ti.GetGenericArguments();
+                    IEnumerable<string> nn = genericArguments.Select(a => a.Name);
+                    if (type.DeclaringType != null)
+                    {
+                        var genericArguments2 = type.DeclaringType
+                            .GetTypeInfo()
+                            .GetGenericArguments();
+                        var xn = genericArguments2.Select(a => a.Name).ToHashSet();
+                        nn = nn.Where(a => !xn.Contains(a));
+
+                    }
+
+                    var nn1 = nn.ToArray();
+                    if (nn1.Any())
+                        name += "<" + string.Join(",", nn1) + ">";
                 }
 
                 if (type.DeclaringType == null)
