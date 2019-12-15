@@ -10,4 +10,10 @@ namespace isukces.code.interfaces
     {
         string Description { get; set; }
     }
+
+    public interface ICommentable
+    {
+        void AddComment(string x);
+        string GetComments();
+    }
 }

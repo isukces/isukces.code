@@ -42,10 +42,8 @@ namespace isukces.code.interfaces
             return _this;
         }
 
-        public static string GetIndent(this ICodeWriter _this)
-        {
-            return _this.Indent > 0 ? new string(' ', _this.Indent * 4) : "";
-        }
+        public static string GetIndent(this ICodeWriter _this) =>
+            _this.Indent > 0 ? new string(' ', _this.Indent * 4) : "";
 
 
         public static void OpenCompilerIf(this ICsCodeWriter _this, string directive)
@@ -89,6 +87,25 @@ namespace isukces.code.interfaces
             src.WriteLine(elseStatement);
             src.DecIndent();
             return src;
+        }
+
+        public static void WriteComment(this ICsCodeWriter writer, ICommentable c)
+        {
+            var comment = c?.GetComments()?.Trim();
+            if (string.IsNullOrEmpty(comment))
+                return;
+            var lines = comment.Replace("\r\n", "\n").Split('\n');
+            if (lines.Length == 1)
+            {
+                writer.WriteLine("// " + lines[0]);
+            }
+            else
+            {
+                writer.WriteLine("/*");
+                foreach (var line in lines)
+                    writer.WriteLine(line);
+                writer.WriteLine("*/");
+            }
         }
 
 

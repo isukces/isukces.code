@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using isukces.code.interfaces;
 
 // ReSharper disable once CheckNamespace
 namespace isukces.code
 {
     public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver,
-        IAttributable
+        IAttributable, ICommentable
     {
         /// <summary>
         ///     Tworzy instancję obiektu
         ///     <param name="name">Nazwa klasy</param>
         /// </summary>
-        public CsClass(string name)
-        {
-            Name = name;
-        }
+        public CsClass(string name) => Name = name;
 
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -34,6 +32,7 @@ namespace isukces.code
         private static void Emit_single_field(ICsCodeWriter writer, CsClassField field)
         {
             writer.OpenCompilerIf(field);
+            writer.WriteComment(field);
             try
             {
                 WriteAttributes(writer, field.Attributes);
@@ -98,6 +97,7 @@ namespace isukces.code
                 writer.WriteLine("[{0}]", j.Code);
         }
 
+
         private static void WriteGetterOrSetter(ICsCodeWriter writer, CodeLines code, string keyWord,
             Visibilities? memberVisibility)
         {
@@ -142,6 +142,12 @@ namespace isukces.code
             foreach (var line in lines)
                 writer.WriteLine("/// " + line.XmlEncode());
             writer.WriteLine("/// </summary>");
+        }
+
+
+        public void AddComment(string x)
+        {
+            _extraComment.AppendLine(x);
         }
 
         // Public Methods 
@@ -220,10 +226,10 @@ namespace isukces.code
             return property;
         }
 
-        public CsClass GetOrCreateNested(string typeName)
-        {
-            return GetOrCreateNested(typeName, out _);
-        }
+        public string GetComments() => _extraComment.ToString();
+
+        public CsClass GetOrCreateNested(string typeName) => GetOrCreateNested(typeName, out _);
+
         public CsClass GetOrCreateNested(string typeName, out bool isCreatedNew)
         {
             var existing = _nestedClasses
@@ -233,6 +239,7 @@ namespace isukces.code
                 isCreatedNew = false;
                 return existing;
             }
+
             existing = new CsClass(typeName)
             {
                 Owner = this
@@ -259,6 +266,7 @@ namespace isukces.code
         public void MakeCode(ICsCodeWriter writer)
         {
             writer.OpenCompilerIf(CompilerDirective);
+            writer.WriteComment(this);
             WriteSummary(writer, Description);
             WriteAttributes(writer, Attributes);
             var def = string.Join(" ", DefAttributes());
@@ -310,6 +318,8 @@ namespace isukces.code
             writer.OpenCompilerIf(prop);
             try
             {
+                writer.WriteComment(prop);
+
                 var fieldName = prop.PropertyFieldName;
 
                 var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
@@ -413,9 +423,12 @@ namespace isukces.code
                         if (IsSealed)
                             throw new Exception($"Class {Name} can't be both static and sealed");
                         x.Add("static");
-                    } else if (IsSealed)
+                    }
+                    else if (IsSealed)
+                    {
                         x.Add("sealed");
-                    
+                    }
+
                     if (IsPartial)
                         x.Add("partial");
                     x.Add("class");
@@ -583,7 +596,7 @@ namespace isukces.code
         public bool IsSealed { get; set; }
 
         /// <summary>
-        ///     emit as interface
+        ///     emi as interface
         /// </summary>
         public bool IsInterface
         {
@@ -609,6 +622,8 @@ namespace isukces.code
         {
             get { return _methods; }
         }
+
+        private readonly StringBuilder _extraComment = new StringBuilder();
 
         /// <summary>
         /// </summary>

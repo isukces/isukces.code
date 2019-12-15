@@ -6,7 +6,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsMethod : ClassMemberBase
+    public class CsMethod : ClassMemberBase, ICommentable
     {
         static CsMethod()
         {
@@ -70,6 +70,12 @@ namespace isukces.code
             return sb.ToString();
         }
 
+
+        public void AddComment(string x)
+        {
+            _extraComment.AppendLine(x);
+        }
+
         public CsMethodParameter AddParam(string name, string type, string description = null)
         {
             var parameter = new CsMethodParameter(name, type, description);
@@ -87,6 +93,8 @@ namespace isukces.code
             return parameter;
         }
 
+        public string GetComments() => _extraComment.ToString();
+
         /// <summary>
         ///     Tworzy kod
         /// </summary>
@@ -98,6 +106,7 @@ namespace isukces.code
             foreach (var i in Attributes)
                 writer.WriteLine("[{0}]", i);
             // ================
+            writer.WriteComment(this);
             writer.SplitWriteLine(AdditionalContentOverMethod);
             var query = from i in _parameters
                 select FormatMethodParameter(i);
@@ -254,12 +263,14 @@ namespace isukces.code
             set { _baseConstructorCall = value?.Trim() ?? string.Empty; }
         }
 
+        [Obsolete("Use add comment")]
         public string AdditionalContentOverMethod { get; set; }
 
         private static readonly HashSet<string> operators;
 
         public static string Implicit = "implicit";
         public static string Explicit = "explicit";
+        private readonly StringBuilder _extraComment = new StringBuilder();
 
         private string _name = string.Empty;
         private string _resultType = "void";

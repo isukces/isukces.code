@@ -1,9 +1,10 @@
 ﻿using System.Linq;
+using System.Text;
 using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsProperty : CsMethodParameter, ICsClassMember
+    public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -35,6 +36,13 @@ namespace isukces.code
         {
         }
 
+        public void AddComment(string x)
+        {
+            _extraComment.AppendLine(x);
+        }
+
+        public string GetComments() => _extraComment.ToString();
+
         public CodeLines GetGetterLines(bool allowExpressionBodies)
         {
             var tmp = string.IsNullOrEmpty(OwnGetter)
@@ -57,10 +65,7 @@ namespace isukces.code
         ///     Zwraca tekstową reprezentację obiektu
         /// </summary>
         /// <returns>Tekstowa reprezentacja obiektu</returns>
-        public override string ToString()
-        {
-            return string.Format("property {0} {1}", Name, Type);
-        }
+        public override string ToString() => string.Format("property {0} {1}", Name, Type);
 
         public CsProperty WithIsPropertyReadOnly(bool isPropertyReadOnly = true)
         {
@@ -68,15 +73,15 @@ namespace isukces.code
             return this;
         }
 
-        public CsProperty WithNoEmitField()
-        {
-            EmitField = false;
-            return this;
-        }
-
         public CsProperty WithMakeAutoImplementIfPossible(bool value = true)
         {
             MakeAutoImplementIfPossible = value;
+            return this;
+        }
+
+        public CsProperty WithNoEmitField()
+        {
+            EmitField = false;
             return this;
         }
 
@@ -133,11 +138,13 @@ namespace isukces.code
         public Visibilities? GetterVisibility { get; set; }
         public Visibilities  FieldVisibility  { get; set; } = Visibilities.Private;
 
+        public string CompilerDirective { get; set; }
+
+        private readonly StringBuilder _extraComment = new StringBuilder();
+
 
         private string _ownGetter = string.Empty;
         private string _ownSetter = string.Empty;
-        
-        public string CompilerDirective { get; set; }
     }
 
     public class CodeLines
