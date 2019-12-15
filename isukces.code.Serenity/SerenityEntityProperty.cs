@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Linq;
 using isukces.code.interfaces;
 
 namespace isukces.code.Serenity
@@ -15,11 +15,18 @@ namespace isukces.code.Serenity
         }
 
 
-        public SerenityEntityProperty WithColumn(string id) => this.WithAttribute("Serenity.Data.Mapping.Column", id);
+        public SerenityEntityProperty WithColumn(string id)
+        {
+            var at = new CsAttribute("Serenity.Data.Mapping.Column").WithArgumentCode(id.CsEncode());
+            return AddAttributeOnce(at);
+        }
 
 
-        public SerenityEntityProperty WithDisplayName(string id) =>
-            this.WithAttribute("System.ComponentModel.DisplayName", id);
+        public SerenityEntityProperty WithDisplayName(string id)
+        {
+            var at = new CsAttribute("System.ComponentModel.DisplayName").WithArgumentCode(id.CsEncode());
+            return AddAttributeOnce(at);
+        }
 
         public SerenityEntityProperty WithFileUpload(Action<FileUploadConfig> action)
         {
@@ -46,8 +53,7 @@ namespace isukces.code.Serenity
             Add(nameof(cfg.DisableDefaultBehavior), cfg.DisableDefaultBehavior);
             Add(nameof(cfg.SubFolder), cfg.SubFolder);
 
-            this.WithAttribute(at);
-            return this;
+            return AddAttributeOnce(at);
         }
 
         public SerenityEntityProperty WithIdRow()
@@ -62,19 +68,29 @@ namespace isukces.code.Serenity
             return this;
         }
 
-        public SerenityEntityProperty WithNotNull() => this.WithAttributeFromName("Serenity.Data.Mapping.NotNull");
+        public SerenityEntityProperty WithNotNull() => AddAttributeOnce("Serenity.Data.Mapping.NotNull");
 
-        public SerenityEntityProperty WithPrimaryKey() =>
-            this.WithAttributeFromName("Serenity.Data.Mapping.PrimaryKey");
+        public SerenityEntityProperty WithPrimaryKey() => AddAttributeOnce("Serenity.Data.Mapping.PrimaryKey");
 
-        public SerenityEntityProperty WithQuickFilter() =>
-            this.WithAttributeFromName("Serenity.ComponentModel.QuickFilter");
+        public SerenityEntityProperty WithQuickFilter() => AddAttributeOnce("Serenity.ComponentModel.QuickFilter");
 
-        public SerenityEntityProperty WithQuickSearch() =>
-            this.WithAttributeFromName("Serenity.Data.Mapping.QuickSearch");
+        public SerenityEntityProperty WithQuickSearch() => AddAttributeOnce("Serenity.Data.Mapping.QuickSearch");
 
-        public SerenityEntityProperty WithSize(int maxLength) => this.WithAttribute("Serenity.Data.Mapping.Size",
-            maxLength.ToString(CultureInfo.InvariantCulture));
+        public SerenityEntityProperty WithSize(int maxLength)
+        {
+            var at = new CsAttribute("Serenity.Data.Mapping.Size")
+                .WithArgument(maxLength);
+            return AddAttributeOnce(at);
+        }
+
+        private SerenityEntityProperty AddAttributeOnce(CsAttribute at)
+        {
+            _uniqueAttributes[at.Name] = at;
+            return this;
+        }
+
+        private SerenityEntityProperty AddAttributeOnce(string className) =>
+            AddAttributeOnce(new CsAttribute(className));
 
 
         public string Name { get; }
@@ -83,8 +99,16 @@ namespace isukces.code.Serenity
 
 
         public ReflectionTypeWrapper Type { get; }
+
+
+        private readonly Dictionary<string, CsAttribute> _uniqueAttributes = new Dictionary<string, CsAttribute>();
         private readonly CsProperty _property;
         private readonly SerenityEntityBuilder _owner;
+
+        public IEnumerable<ICsAttribute> GetAllAttributes()
+        {
+            return _uniqueAttributes.Values.OrderBy(a => a.Name.Split('.').Last()).ThenBy(a=>a.Name).Concat(Attributes);
+        }
     }
 
     public class FileUploadConfig

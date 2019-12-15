@@ -83,8 +83,8 @@ namespace Cloud.Common
         {
         }
 
-        [DisplayName(""identifier"")]
         [Column(""idx"")]
+        [DisplayName(""identifier"")]
         [PrimaryKey]
         public int? Id
         {
@@ -94,7 +94,7 @@ namespace Cloud.Common
 
         [Column(""Name"")]
         [DisplayName(""Name"")]
-        [Size(""32"")]
+        [Size(32)]
         public string Name
         {
             get { return Fields.Name[this]; }
@@ -103,8 +103,8 @@ namespace Cloud.Common
 
         [Column(""Uid"")]
         [DisplayName(""Uid"")]
-        [Serenity.ComponentModel.QuickFilter]
         [NotNull]
+        [Serenity.ComponentModel.QuickFilter]
         [QuickSearch]
         public Guid? Uid
         {
@@ -114,8 +114,8 @@ namespace Cloud.Common
 
         [Column(""SomeFlag"")]
         [DisplayName(""SomeFlag"")]
-        [Serenity.ComponentModel.QuickFilter]
         [NotNull]
+        [Serenity.ComponentModel.QuickFilter]
         public bool? SomeFlag
         {
             get { return Fields.SomeFlag[this]; }
@@ -124,8 +124,8 @@ namespace Cloud.Common
 
         [Column(""CreationDate"")]
         [DisplayName(""CreationDate"")]
-        [Serenity.ComponentModel.QuickFilter]
         [NotNull]
+        [Serenity.ComponentModel.QuickFilter]
         public DateTime? CreationDate
         {
             get { return Fields.CreationDate[this]; }
@@ -134,8 +134,8 @@ namespace Cloud.Common
 
         [Column(""Kind32"")]
         [DisplayName(""Kind32"")]
-        [Serenity.ComponentModel.QuickFilter]
         [NotNull]
+        [Serenity.ComponentModel.QuickFilter]
         public SomeEnum32? Kind32
         {
             get { return (SomeEnum32?)Fields.Kind32[this]; }
@@ -144,9 +144,9 @@ namespace Cloud.Common
 
         [Column(""Kind16"")]
         [DisplayName(""Kind16"")]
-        [Serenity.ComponentModel.QuickFilter]
-        [NotNull]
         [Serenity.ComponentModel.FileUploadEditor(AllowNonImage = true,OriginalNameProperty = ""Name"",CopyToHistory = true,FilenameFormat = ""Documents/~"",DisableDefaultBehavior = true)]
+        [NotNull]
+        [Serenity.ComponentModel.QuickFilter]
         public SomeEnum16? Kind16
         {
             get { return (SomeEnum16?)Fields.Kind16[this]; }
@@ -163,7 +163,7 @@ namespace Cloud.Common
 
         [Column(""MyInt64"")]
         [DisplayName(""MyInt64"")]
-        public Int64? MyInt64
+        public long? MyInt64
         {
             get { return Fields.MyInt64[this]; }
             set { Fields.MyInt64[this] = value; }

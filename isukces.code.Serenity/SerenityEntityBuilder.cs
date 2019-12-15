@@ -96,7 +96,7 @@ namespace isukces.code.Serenity
                     p.EmitField = false;
                     p.OwnGetter = $"return {Cast(fieldType, propertyType)}Fields.{property.Name}[this];";
                     p.OwnSetter = $"Fields.{property.Name}[this] = {Cast(propertyType, fieldType)}value;";
-                    CopyAttributesAndReduceName(property.Attributes, p, kns);
+                    CopyAttributesAndReduceName(property.GetAllAttributes(), p, kns);
 
                     // var rowFieldType = property.RowFieldType;
                     var f            = fields.AddField(property.Name, types.RowFieldType);
