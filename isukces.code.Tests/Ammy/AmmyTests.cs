@@ -16,7 +16,7 @@ namespace isukces.code.Tests.Ammy
             var writer = new AmmyCodeWriter();
             var ctx= new ConversionCtx(writer);                        
             b.AppendTo(writer, ctx);
-            Assert.Equal("System.Object { Number: 1, Text: \"bla\" }", writer.GetCodeTrim());
+            Assert.Equal("object { Number: 1, Text: \"bla\" }", writer.GetCodeTrim());
             
             // every in separate line
             writer   = new AmmyCodeWriter();
@@ -49,7 +49,7 @@ namespace isukces.code.Tests.Ammy
             var expected = @"System.Object {
     Number: 1
     Other: 2
-    Nested: System.Object {}
+    Nested: object {}
 }";
             Assert.Equal(expected, writer.GetCodeTrim());
         }
