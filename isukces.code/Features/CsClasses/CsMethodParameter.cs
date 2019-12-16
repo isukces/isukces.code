@@ -4,7 +4,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsMethodParameter : IComparable, IAttributable
+    public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -163,7 +163,8 @@ namespace isukces.code
         /// </summary>
         public bool IsStatic { get; set; }
 
-        public bool IsVolatile { get; set; }
+        public bool                        IsVolatile      { get; set; }
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
         private string _constValue = string.Empty;
         private string _description = string.Empty;
@@ -197,7 +198,7 @@ namespace isukces.code
             src.IsReadOnly = isReadOnly;
             return src;
         }
-        
+
         public static T WithIsVolatile<T>(this T src, bool isVolatile = true)
             where T : CsMethodParameter
         {

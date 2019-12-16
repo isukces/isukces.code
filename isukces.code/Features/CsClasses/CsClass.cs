@@ -8,7 +8,7 @@ using isukces.code.interfaces;
 namespace isukces.code
 {
     public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver,
-        IAttributable, ICommentable
+        IAttributable, ICommentable, IAnnotableByUser
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -622,6 +622,8 @@ namespace isukces.code
         {
             get { return _methods; }
         }
+
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
         private readonly StringBuilder _extraComment = new StringBuilder();
 

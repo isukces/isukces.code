@@ -6,7 +6,7 @@ using isukces.code.interfaces;
 
 namespace isukces.code
 {
-    public class CsMethod : ClassMemberBase, ICommentable
+    public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser
     {
         static CsMethod()
         {
@@ -265,6 +265,8 @@ namespace isukces.code
 
         [Obsolete("Use add comment")]
         public string AdditionalContentOverMethod { get; set; }
+
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
         private static readonly HashSet<string> operators;
 
