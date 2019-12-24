@@ -250,7 +250,7 @@ namespace isukces.code.AutoCode
                 writer.WriteLine("}");
                 return;
             }
-            throw new NotSupportedException(String.Format("{0}.{1}", pi.DeclaringType, pi.Name));
+            throw new NotSupportedException(String.Format("CopyFromGenerator is unable to find a way how to copy value of property {0}.{1}", pi.DeclaringType, pi.Name));
             // writer.WriteLine("// {0} {1}", pi.Name, pi.PropertyType);
         }
 

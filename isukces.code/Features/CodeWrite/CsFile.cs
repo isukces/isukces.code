@@ -161,10 +161,9 @@ namespace isukces.code.CodeWrite
             if (_importNamespaces.Any())
                 writer.EmptyLine();
             var classByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
+            var enumByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Enums);
             var directiveByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.CompilerDirective);
-            var enumByNamespace = (_enums ?? new List<CsEnum>())
-                .GroupBy(c => c.DotNetType == null ? emptyNamespace : c.DotNetType.Namespace)
-                .ToDictionary(a => a.Key, a => a.ToList());
+
             var fileNamespaces = classByNamespace.Keys.Union(enumByNamespace.Keys)
                 .OrderBy(a => a).ToList();
 
@@ -256,15 +255,7 @@ namespace isukces.code.CodeWrite
         ///     Przestrzenie nazw
         /// </summary>
         public IReadOnlyList<CsNamespace> Namespaces { get; } = new List<CsNamespace>();
-
-        /// <summary>
-        ///     Przestrzenie nazw
-        /// </summary>
-        public List<CsEnum> Enums
-        {
-            get => _enums;
-            set => _enums = value ?? new List<CsEnum>();
-        }
+        
 
         /// <summary>
         /// </summary>

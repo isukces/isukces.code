@@ -23,7 +23,7 @@ namespace isukces.code.Tests.Ammy
             ctx = new ConversionCtx(writer);
             ctx.OnResolveSeparateLines += (a, bb) => { bb.WriteInSeparateLines = true; };            
             b.AppendTo(writer, ctx);
-            var expected = @"System.Object {
+            var expected = @"object {
     Number: 1
     Text: ""bla""
 }";
@@ -46,7 +46,7 @@ namespace isukces.code.Tests.Ammy
 
             b.AppendTo(writer, ctx);
             
-            var expected = @"System.Object {
+            var expected = @"object {
     Number: 1
     Other: 2
     Nested: object {}

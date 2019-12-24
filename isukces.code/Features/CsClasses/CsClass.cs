@@ -89,7 +89,7 @@ namespace isukces.code
             return v;
         }
 
-        private static void WriteAttributes(ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
+        public static void WriteAttributes(ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
         {
             if (attributes == null || attributes.Count == 0)
                 return;

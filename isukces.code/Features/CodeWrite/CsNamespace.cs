@@ -51,5 +51,10 @@ namespace isukces.code
         public string                 Name              { get; }
         public IReadOnlyList<CsClass> Classes           { get; } = new List<CsClass>();
         public string                 CompilerDirective { get; set; }
+        
+        /// <summary>
+        ///     Przestrzenie nazw
+        /// </summary>
+        public List<CsEnum> Enums { get;  } = new List<CsEnum>();
     }
 }
