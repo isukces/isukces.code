@@ -51,13 +51,20 @@ namespace isukces.code.Ammy
                 return ammyCodePiece;
             if (src is IAmmyCodePieceConvertible convertible)
                 return convertible.ToAmmyCode(ctx);
-
+            if (src is SystemColorsKeys systemColorsKeys)
+            {
+                // to do Make more general approach
+                var tmp = new AmmySystemColorDynamicResource(systemColorsKeys);
+                return tmp.ToAmmyCode(ctx);
+            }
             var simple = ToSimpleAmmyCodePiece();
             if (simple != null)
             {
                 var nested = new SimpleAmmyCodePiece(simple);
                 return nested;
             }
+
+       
 
             if (src is AmmyBindBuilder builder)
                 return builder.Build().ToAmmyCode(ctx);
