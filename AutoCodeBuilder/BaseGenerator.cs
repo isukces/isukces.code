@@ -7,7 +7,7 @@ using isukces.code.interfaces;
 
 namespace AutoCodeBuilder
 {
-    internal class BaseGenerator
+    public class BaseGenerator
     {
         protected static bool CheckIfAnonymousType(Type type)
         {

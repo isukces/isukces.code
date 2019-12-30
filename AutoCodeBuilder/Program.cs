@@ -26,6 +26,7 @@ namespace AutoCodeBuilder
             // autoCodeGenerator.CodeGenerators.Add(new AmmyBindConverterHostGenerator());
             // autoCodeGenerator.CodeGenerators.Add(new AmmyBindSourceHostGenerator());
             autoCodeGenerator.CodeGenerators.Add(new FluentBindGenerator());
+            autoCodeGenerator.CodeGenerators.Add(new SystemColorsGenerator());
             
             var scanAssembly = typeof(CsLangInfo).Assembly;
             autoCodeGenerator.Make(scanAssembly);
