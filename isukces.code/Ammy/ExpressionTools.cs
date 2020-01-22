@@ -8,13 +8,15 @@ namespace isukces.code.Ammy
     internal static class ExpressionTools
     {
         // ReSharper disable once UnusedParameter.Global
-        public static string GetBindingPath<T>(this T src, Expression<Func<T, object>> action)
+        public static string GetBindingPath<T>(this T src, [CanBeNull]Expression<Func<T, object>> action)
         {
             return GetBindingPath(action);
         }
 
-        public static string GetBindingPath<T,T2>(Expression<Func<T, T2>> action)
+        public static string GetBindingPath<T,T2>([CanBeNull]Expression<Func<T, T2>> action)
         {
+            if (action is null)
+                return string.Empty;
             var parts = new List<string>();
 
             Expression expression = action;

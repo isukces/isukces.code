@@ -29,10 +29,19 @@ namespace isukces.code.Ammy
             return FromAncestor(path, typeof(T));
         }
 
-        public static AmmyBind FromAncestor<T>(Expression<Func<T, object>> func, object mode)
+        public static AmmyBind FromAncestor<T>(Expression<Func<T, object>> func)
         {
             var path = CodeUtils.GetMemberPath(func);
             var tmp  = new AmmyBindBuilder(path).WithBindFromAncestor(typeof(T));
+            return tmp.Build();
+        }
+        
+        public static AmmyBind FromAncestor<T>(Expression<Func<T, object>> func, XBindingMode mode)
+        {
+            var path = CodeUtils.GetMemberPath(func);
+            var tmp  = new AmmyBindBuilder(path)
+                .WithMode(mode)
+                .WithBindFromAncestor(typeof(T));
             return tmp.Build();
         }
 

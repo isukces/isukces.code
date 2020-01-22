@@ -45,6 +45,14 @@ namespace isukces.code.Ammy
             Arguments.Add(x);
             return this;
         }
+        
+        public AmmyCallBuilder WithAmmyArgument(string x, AmmyCallBuilderOption option = AmmyCallBuilderOption.None)
+        {
+            if (x == null)
+                x = option == AmmyCallBuilderOption.NullToNone ? "none" : "null";
+            Arguments.Add(x);
+            return this;
+        }
 
         public AmmyCallBuilder WithTrimLastNones()
         {

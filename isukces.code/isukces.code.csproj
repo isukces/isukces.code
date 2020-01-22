@@ -4,7 +4,7 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2019</Copyright>
-    <TargetFrameworks>net451;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -53,9 +53,6 @@
       <DependentUpon>GridAmmyMixinsGenerator.cs</DependentUpon>
     </Compile>
   </ItemGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <DefineConstants>COREFX</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <DefineConstants>COREFX;COREFX20</DefineConstants>
   </PropertyGroup>
