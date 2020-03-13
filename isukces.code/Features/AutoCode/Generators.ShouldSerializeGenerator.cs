@@ -41,12 +41,20 @@ namespace isukces.code.AutoCode
                 }
 
                 var template = GetTypeTemplate(type)?.Trim();
-                if (string.IsNullOrEmpty(template))
-                    throw new Exception(string.Format("Unable to get condition for {0}.", type));
                 if (isNullable)
-                    return string.Format("{0} != null && ", pi.Name)
-                           + string.Format(template, pi.Name + ".Value");
-                return string.Format(template, pi.Name);
+                {
+                    var hasValueCondition = pi.Name + ".HasValue";
+                    if (string.IsNullOrEmpty(template))
+                        return hasValueCondition;
+                    var customCondition = string.Format(template, pi.Name + ".Value");
+                    return hasValueCondition + " && " + customCondition;
+                }
+
+                if (!string.IsNullOrEmpty(template)) return string.Format(template, pi.Name);
+                
+                var message = $"Unable to get condition for property {pi.Name} declared in {pi.DeclaringType}, property type {pi.PropertyType} .";
+                throw new Exception(message);
+
             }
 
             [CanBeNull]
@@ -78,11 +86,15 @@ namespace isukces.code.AutoCode
                 {
                     if (i.Item1.DeclaringType != Type)
                         continue;
-                    var m         = Class.AddMethod("ShouldSerialize" + i.Item1.Name, "bool");
+                    var propertyName = i.Item1.Name;
+                    var m         = Class.AddMethod("ShouldSerialize" + propertyName, "bool");
                     var writer    = new CsCodeWriter();
                     var condition = i.Item2.Condition;
                     if (string.IsNullOrEmpty(condition))
                         condition = MakeShouldSerializeCondition(i.Item1);
+                    else
+                        condition = string.Format(condition, propertyName);
+
                     writer.WriteLine("return {0};", condition);
                     m.Body = writer.Code;
                 }

@@ -50,15 +50,22 @@ namespace isukces.code.AutoCode
             OnGetBaseDirectory?.Invoke(this, args);
             var items = new[] {args.RootDirectory.FullName, args.ProjectSubDir};
             items = items.Where(item => !string.IsNullOrEmpty(item)).ToArray();
+
+            DirectoryInfo di;
             switch (items.Length)
             {
                 case 0:
                     throw new Exception("Emptyfile name");
                 case 1:
-                    return new DirectoryInfo(items[0]);
+                    di = new DirectoryInfo(items[0]);
+                    break;
                 default:
-                    return new DirectoryInfo(Path.Combine(items));
+                    di = new DirectoryInfo(Path.Combine(items));
+                    break;
             }
+
+            di = new DirectoryInfo(di.FullName);
+            return di;
         }
 
         public DirectoryInfo                                 SolutionDir          { get; }
