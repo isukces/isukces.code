@@ -9,8 +9,8 @@ namespace Bitbrains.AmmyParser
         public AmmyCode(UsingStatements usings, SourceSpan span, IReadOnlyList<IAstStatement> statements)
         {
             Span   = span;
-            Statements = statements;
-            Usings = usings ?? new UsingStatements(new IAstUsingDirective[0], span);
+            Statements = statements ?? new IAstStatement[0];
+            Usings = usings ?? new UsingStatements(new IAstUsingDirective[0], new SourceSpan(span.Location, 0));
         }
 
         [NotNull]

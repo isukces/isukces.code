@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Irony.Ast;
 using Irony.Interpreter;
 using Irony.Interpreter.Ast;
@@ -27,7 +28,10 @@ namespace Bitbrains.AmmyParser
                 var value = childNode.Evaluate(thread);
                 if (value is T t)
                     items[index] = t;
-                else
+                else if (value is null && (typeof(T).IsInterface || typeof(T).IsClass))
+                {
+                    Debug.Write("");
+                }else
                     throw new Exception("Invalid cast to " + typeof(T));
             }
 

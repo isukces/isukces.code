@@ -18,6 +18,7 @@ namespace Bitbrains.AmmyParser.Tests
         }
         protected static AmmyCode ParseTree(LanguageData language, string sourceCode)
         {
+            sourceCode = sourceCode.Trim();
             var parser  = new Parser(language);
             var tree    = parser.Parse(sourceCode);
             var runtime = new LanguageRuntime(language);

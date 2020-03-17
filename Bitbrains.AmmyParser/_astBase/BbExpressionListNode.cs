@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using Irony.Ast;
 using Irony.Interpreter;
 using Irony.Interpreter.Ast;
@@ -44,6 +46,10 @@ namespace Bitbrains.AmmyParser
             if (map.Length == 1)
             {
                 var index     = map[0];
+#if DEBUG
+                if (index >= ChildNodes.Count)
+                    Debug.Write("");
+#endif
                 var childNode = ChildNodes[index];
                 var value     = GetValue(thread, childNode);
                 return value;
@@ -54,6 +60,10 @@ namespace Bitbrains.AmmyParser
                 for (var outIdx = 0; outIdx < map.Length; outIdx++)
                 {
                     var index     = map[outIdx];
+#if DEBUG
+                    if (index >= ChildNodes.Count)
+                        Debug.Write("");
+#endif
                     var childNode = ChildNodes[index];
                     objArray[outIdx] = GetValue(thread, childNode);
                 }

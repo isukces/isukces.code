@@ -15,7 +15,7 @@ namespace Bitbrains.AmmyParser
             yield return "qual_name_segments_opt2";
             yield return "qual_name_with_targs";
             yield return "identifier_or_builtin";
-            yield return new AmmyGrammarAutogeneratorInfo("using_ns_directive").AsAlternative(1); // , "using_ns_directive");
+            yield return new AmmyGrammarAutogeneratorInfo("using_ns_directive").AsAlternative(0); // , "using_ns_directive");
             {
                 var el =  new AmmyGrammarAutogeneratorInfo("using_directive")
                     .AsOneOf("using_ns_directive");
@@ -27,8 +27,8 @@ namespace Bitbrains.AmmyParser
                 yield return list;
                 yield return list.GetOptional();
             }
-            yield return new AmmyGrammarAutogeneratorInfo(nameof(AmmyGrammar.mixin_definition))
-                .WithMap(1, 3, 6, 8);
+            yield return new AmmyGrammarAutogeneratorInfo(nameof(AmmyGrammar.mixin_definition));
+                //.WithMap(0, 2, 4, 6);
 
             {
                 var el = new AmmyGrammarAutogeneratorInfo("statement")
@@ -50,9 +50,11 @@ namespace Bitbrains.AmmyParser
                 yield return list.GetOptional();
             }
 
-            yield return new AmmyGrammarAutogeneratorInfo("object_property_setting").WithMap(0, 2);
+            yield return new AmmyGrammarAutogeneratorInfo("ammy_bind");
+            yield return new AmmyGrammarAutogeneratorInfo("object_property_setting");
             yield return new AmmyGrammarAutogeneratorInfo("ammy_property_name").AsOneOf("identifier");
-            yield return new AmmyGrammarAutogeneratorInfo("ammy_property_value").AsOneOf("primary_expression");
+            yield return new AmmyGrammarAutogeneratorInfo("ammy_property_value")
+                .AsOneOf("primary_expression", "ammy_bind");
 
             yield return new AmmyGrammarAutogeneratorInfo("primary_expression").AsOneOf("literal");
             yield return new AmmyGrammarAutogeneratorInfo("expression").AsOneOf("primary_expression");
@@ -144,8 +146,12 @@ namespace Bitbrains.AmmyParser
 
         public AmmyGrammarAutogeneratorInfo AsListOf<T>() => AsListOf(typeof(T).ToString());
 
-        public AmmyGrammarAutogeneratorInfo AsListOf(AmmyGrammarAutogeneratorInfo info) =>
-            AsListOf(info.AlternativeInterfaceName);
+        public AmmyGrammarAutogeneratorInfo AsListOf(AmmyGrammarAutogeneratorInfo info)
+        {
+            if ((info.Alternatives?.Length ?? 0) > 0)
+                return AsListOf(info.AlternativeInterfaceName);
+            return AsListOf("object");
+        }
 
         public AmmyGrammarAutogeneratorInfo AsListOf(string listItemName)
         {

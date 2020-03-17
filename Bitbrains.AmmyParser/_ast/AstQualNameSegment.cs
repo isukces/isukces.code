@@ -19,6 +19,13 @@ namespace Bitbrains.AmmyParser
                 NamePart = b;
                 return;
             }
+            if (nodes.Count == 1)
+            {
+                var a = nodes[0].Token.Text;
+                AsString = a;
+                NamePart = a;
+                return;
+            }
 
             throw new NotImplementedException();
         }

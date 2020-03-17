@@ -16,7 +16,7 @@ namespace Bitbrains.AmmyParser
             object_setting.Rule = object_property_setting;
             object_settings_opt.Rule = Empty | object_settings;
             ammy_property_name.Rule = identifier;
-            ammy_property_value.Rule = primary_expression;
+            ammy_property_value.Rule = primary_expression | ammy_bind;
             primary_expression.Rule = literal;
             expression.Rule = primary_expression;
             mixin_or_alias_argument.Rule = identifier;
@@ -55,6 +55,8 @@ namespace Bitbrains.AmmyParser
 
         public NonTerminal object_settings_opt = new NonTerminal("object_settings_opt", typeof(AstOptNode));
 
+        public NonTerminal ammy_bind = new NonTerminal("ammy_bind", typeof(AstAmmyBind));
+
         public NonTerminal object_property_setting = new NonTerminal("object_property_setting", typeof(AstObjectPropertySetting));
 
         public NonTerminal ammy_property_name = new NonTerminal("ammy_property_name", typeof(AstAmmyPropertyName));
@@ -73,6 +75,13 @@ namespace Bitbrains.AmmyParser
 
         public NonTerminal ammyCode = new NonTerminal("ammyCode", typeof(AstAmmyCode));
 
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind terminal
+    /// </summary>
+    partial class AstAmmyBind : BbExpressionListNode, IAstAmmyPropertyValueProvider
+    {
     }
 
     /// <summary>
@@ -142,11 +151,6 @@ namespace Bitbrains.AmmyParser
     /// </summary>
     partial class AstMixinDefinition : BbExpressionListNode, IAstStatementProvider
     {
-        protected override int[] GetMap()
-        {
-            return new [] { 1, 3, 6, 8 };
-        }
-
     }
 
     /// <summary>
@@ -173,11 +177,6 @@ namespace Bitbrains.AmmyParser
     /// </summary>
     partial class AstObjectPropertySetting : BbExpressionListNode, IAstObjectSettingProvider
     {
-        protected override int[] GetMap()
-        {
-            return new [] { 0, 2 };
-        }
-
     }
 
     /// <summary>
@@ -277,7 +276,7 @@ namespace Bitbrains.AmmyParser
     {
         protected override int[] GetMap()
         {
-            return new [] { 1 };
+            return new [] { 0 };
         }
 
     }

@@ -1,4 +1,5 @@
 using Irony.Interpreter;
+using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
 namespace Bitbrains.AmmyParser
@@ -9,6 +10,7 @@ namespace Bitbrains.AmmyParser
         public AmmyGrammar() : base(true)
         {
             identifier = TerminalFactory.CreateCSharpIdentifier("identifier");
+           
             AutoInit();
             var SingleLineComment =
                 new CommentTerminal("SingleLineComment", "//", "\r", "\n", "\u2085", "\u2028", "\u2029");
@@ -17,12 +19,27 @@ namespace Bitbrains.AmmyParser
             NonGrammarTerminals.Add(DelimitedComment);
 
             var comma    = ToTerm(",", "comma");
+            var comma_opt = new NonTerminal("comma_opt")
+            {
+                Rule = Empty | comma
+            };
             var dot      = ToTerm(".", "dot");
             var parOpen  = ToTerm("(");
             var parClose = ToTerm(")");
 
             var curlyOpen  = ToTerm("{");
             var curlyClose = ToTerm("}");
+            
+            /*
+            var new_line = new NewLineTerminal("new_line");
+            var new_lines = new NonTerminal("new_lines");
+            new_lines.Rule = MakePlusRule(new_lines, new_line);
+            var new_lines_or_comma = new NonTerminal("new_lines_or_comma", typeof(AstNode))
+            {
+                Rule = new_lines | comma
+            };
+            */
+            
 
             // var number     = TerminalFactory.CreateCSharpNumber("number");
 
@@ -96,8 +113,10 @@ namespace Bitbrains.AmmyParser
             var embedded_statement   = new NonTerminal("embedded_statement");
             resource_acquisition.Rule = local_variable_declaration; //| expression;
 
-            var using_statement = new NonTerminal("using_statement");
-            using_statement.Rule = "using" + parOpen + resource_acquisition + parClose + embedded_statement;
+            var using_statement = new NonTerminal("using_statement")
+            {
+                Rule = "using" + parOpen + resource_acquisition + parClose + embedded_statement
+            };
 
             embedded_statement.Rule = using_statement
                 ;
@@ -123,7 +142,7 @@ namespace Bitbrains.AmmyParser
             qual_name_with_targs.Rule    = identifier_or_builtin + qual_name_segments_opt2;
 
             // ============== Using
-            using_ns_directive.Rule = "using" + qual_name_with_targs; //  + semi;
+            using_ns_directive.Rule = "using" + qual_name_with_targs; // + new_lines; //  + semi;
             // using_directive.Rule      = using_ns_directive; // | using_alias_directive ;
             using_directives.Rule = MakePlusRule(using_directives, null, using_directive);
 
@@ -131,8 +150,9 @@ namespace Bitbrains.AmmyParser
             // ammy_property_name.Rule = identifier;
             object_property_setting.Rule = ammy_property_name + ":" + ammy_property_value;
             // object_setting.Rule = object_property_setting;
-            object_settings.Rule = MakePlusRule(object_settings, null, object_setting);
+            object_settings.Rule = MakePlusRule(object_settings, comma_opt, object_setting);
             // ============== values and bindigs
+            ammy_bind.Rule = "bind" + StringLiteral;  
             // ammy_property_value.Rule = primary_expression;
             // ============== Mixin
 
@@ -143,7 +163,6 @@ namespace Bitbrains.AmmyParser
                                             + parOpen + mixin_or_alias_arguments_opt + parClose
                                             + "for" + qual_name_with_targs
                                             + curlyOpen + object_settings_opt + curlyClose;
-
             // ============= Statements
             //statement.Rule = mixin_definition; 
             statements.Rule     = MakePlusRule(statements, null, statement);
@@ -156,6 +175,7 @@ namespace Bitbrains.AmmyParser
             LanguageFlags = LanguageFlags.NewLineBeforeEOF
                             | LanguageFlags.CreateAst
                             | LanguageFlags.SupportsBigInt;
+            MarkPunctuation("bind", "mixin", "for", ":", "using", "{", "}", "(", ")", ",", ".");
         }
 
         private readonly IdentifierTerminal identifier;
