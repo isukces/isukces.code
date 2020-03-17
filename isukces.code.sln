@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCodeBuilder", "AutoCode
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "isukces.code.vssolutions", "isukces.code.vssolutions\isukces.code.vssolutions.csproj", "{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitbrains.AmmyParser", "Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj", "{62B93CA3-CE40-4E2C-8F53-CE186B1BDFAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitbrains.AmmyParser.Tests", "Bitbrains.AmmyParser.Tests\Bitbrains.AmmyParser.Tests.csproj", "{C4D3F488-9A62-44B1-ACAD-A79502CDC621}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -119,6 +123,14 @@ Global
 		{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62B93CA3-CE40-4E2C-8F53-CE186B1BDFAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62B93CA3-CE40-4E2C-8F53-CE186B1BDFAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62B93CA3-CE40-4E2C-8F53-CE186B1BDFAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62B93CA3-CE40-4E2C-8F53-CE186B1BDFAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4D3F488-9A62-44B1-ACAD-A79502CDC621}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4D3F488-9A62-44B1-ACAD-A79502CDC621}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4D3F488-9A62-44B1-ACAD-A79502CDC621}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4D3F488-9A62-44B1-ACAD-A79502CDC621}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
