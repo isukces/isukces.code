@@ -84,5 +84,24 @@ mixin CtrlCadBusSegmentSplit_PipeItems() for Pd.Cad.Wpf.PipeItemsControl {
             var o = ParseTree(language, sourceCode);
             Assert.NotNull(o);
         }
+        
+        [Fact]
+        public void T05_Should_parse_mixin_with_ancestor_binding()
+        {
+            var sourceCode = @"
+mixin CtrlCadBusSegmentSplit_PipeItems() for Pd.Cad.Wpf.PipeItemsControl {
+    Jeden: 12, Dwa: 3
+    MinDwa: -3
+    Trzy: 3.3, Cztery: 3.3
+    Miasto: ""Okinawa""
+    Bind1: bind ""SomeContextProperty""  from $ancestor<Some.QualifiedName>()      
+    Bind3: bind ""SomeContextProperty""  from $ancestor<Some.QualifiedName>(3)
+}
+";
+            var language = GetLanguageData();
+            // var empty    = ParseTree(language, "");
+            var o = ParseTree(language, sourceCode);
+            Assert.NotNull(o);
+        }
     }
 }

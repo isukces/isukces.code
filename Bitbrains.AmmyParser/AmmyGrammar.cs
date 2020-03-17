@@ -1,5 +1,4 @@
 using Irony.Interpreter;
-using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
 namespace Bitbrains.AmmyParser
@@ -9,8 +8,9 @@ namespace Bitbrains.AmmyParser
     {
         public AmmyGrammar() : base(true)
         {
+            Number     = TerminalFactory.CreateCSharpNumber("Number");
             identifier = TerminalFactory.CreateCSharpIdentifier("identifier");
-           
+
             AutoInit();
             var SingleLineComment =
                 new CommentTerminal("SingleLineComment", "//", "\r", "\n", "\u2085", "\u2028", "\u2029");
@@ -18,7 +18,7 @@ namespace Bitbrains.AmmyParser
             NonGrammarTerminals.Add(SingleLineComment);
             NonGrammarTerminals.Add(DelimitedComment);
 
-            var comma    = ToTerm(",", "comma");
+            var comma = ToTerm(",", "comma");
             var comma_opt = new NonTerminal("comma_opt")
             {
                 Rule = Empty | comma
@@ -29,7 +29,7 @@ namespace Bitbrains.AmmyParser
 
             var curlyOpen  = ToTerm("{");
             var curlyClose = ToTerm("}");
-            
+
             /*
             var new_line = new NewLineTerminal("new_line");
             var new_lines = new NonTerminal("new_lines");
@@ -39,7 +39,6 @@ namespace Bitbrains.AmmyParser
                 Rule = new_lines | comma
             };
             */
-            
 
             // var number     = TerminalFactory.CreateCSharpNumber("number");
 
@@ -60,7 +59,6 @@ namespace Bitbrains.AmmyParser
             var using_directives_opt = new NonTerminal("using_directives_opt");*/
             // ==========================================================
 
-            var Number = TerminalFactory.CreateCSharpNumber("Number");
             Number.Options |= NumberOptions.AllowSign | NumberOptions.AllowLetterAfter |
                               NumberOptions.AllowStartEndDot | NumberOptions.AllowUnderscore;
             var StringLiteral = TerminalFactory.CreateCSharpString("StringLiteral");
@@ -152,7 +150,11 @@ namespace Bitbrains.AmmyParser
             // object_setting.Rule = object_property_setting;
             object_settings.Rule = MakePlusRule(object_settings, comma_opt, object_setting);
             // ============== values and bindigs
-            ammy_bind.Rule = "bind" + StringLiteral;  
+            ammy_bind_source.Rule = "from" + ammy_bind_source_source;
+            ammy_bind.Rule        = "bind" + StringLiteral + ammy_bind_source_opt;
+            ammy_bind_source_ancestor.Rule =
+                "$ancestor" + "<" + qual_name_with_targs + ">" + "(" + int_number_optional + ")";
+
             // ammy_property_value.Rule = primary_expression;
             // ============== Mixin
 
@@ -165,7 +167,7 @@ namespace Bitbrains.AmmyParser
                                             + curlyOpen + object_settings_opt + curlyClose;
             // ============= Statements
             //statement.Rule = mixin_definition; 
-            statements.Rule     = MakePlusRule(statements, null, statement);
+            statements.Rule = MakePlusRule(statements, null, statement);
 
             ammyCode.Rule = using_directives_opt + statements_opt;
             //ammyCode.Rule = MakePlusRule(ammyCode, ExtStmt);
@@ -175,8 +177,11 @@ namespace Bitbrains.AmmyParser
             LanguageFlags = LanguageFlags.NewLineBeforeEOF
                             | LanguageFlags.CreateAst
                             | LanguageFlags.SupportsBigInt;
-            MarkPunctuation("bind", "mixin", "for", ":", "using", "{", "}", "(", ")", ",", ".");
+            MarkPunctuation("bind", "mixin", "for", ":", "using", "{", "}", "(", ")", ",", ".",
+                "from",  "<", ">", "$ancestor");
         }
+
+        public NumberLiteral Number;
 
         private readonly IdentifierTerminal identifier;
     }

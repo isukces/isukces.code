@@ -9,12 +9,15 @@ namespace Bitbrains.AmmyParser
         public void AutoInit()
         {
             // generator : AssemblyStart:89
+            int_number_optional.Rule = Empty | Number;
             using_directive.Rule = using_ns_directive;
             using_directives_opt.Rule = Empty | using_directives;
             statement.Rule = mixin_definition;
             statements_opt.Rule = Empty | statements;
             object_setting.Rule = object_property_setting;
             object_settings_opt.Rule = Empty | object_settings;
+            ammy_bind_source_opt.Rule = Empty | ammy_bind_source;
+            ammy_bind_source_source.Rule = ammy_bind_source_ancestor;
             ammy_property_name.Rule = identifier;
             ammy_property_value.Rule = primary_expression | ammy_bind;
             primary_expression.Rule = literal;
@@ -22,6 +25,8 @@ namespace Bitbrains.AmmyParser
             mixin_or_alias_argument.Rule = identifier;
             mixin_or_alias_arguments_opt.Rule = Empty | mixin_or_alias_arguments;
         }
+
+        public NonTerminal int_number_optional = new NonTerminal("int_number_optional", typeof(AstOptNode));
 
         public NonTerminal literal = new NonTerminal("literal", typeof(AstLiteral));
 
@@ -57,6 +62,14 @@ namespace Bitbrains.AmmyParser
 
         public NonTerminal ammy_bind = new NonTerminal("ammy_bind", typeof(AstAmmyBind));
 
+        public NonTerminal ammy_bind_source = new NonTerminal("ammy_bind_source", typeof(AstAmmyBindSource));
+
+        public NonTerminal ammy_bind_source_opt = new NonTerminal("ammy_bind_source_opt", typeof(AstOptNode));
+
+        public NonTerminal ammy_bind_source_source = new NonTerminal("ammy_bind_source_source", typeof(AstAmmyBindSourceSource));
+
+        public NonTerminal ammy_bind_source_ancestor = new NonTerminal("ammy_bind_source_ancestor", typeof(AstAmmyBindSourceAncestor));
+
         public NonTerminal object_property_setting = new NonTerminal("object_property_setting", typeof(AstObjectPropertySetting));
 
         public NonTerminal ammy_property_name = new NonTerminal("ammy_property_name", typeof(AstAmmyPropertyName));
@@ -82,6 +95,37 @@ namespace Bitbrains.AmmyParser
     /// </summary>
     partial class AstAmmyBind : BbExpressionListNode, IAstAmmyPropertyValueProvider
     {
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_source terminal
+    /// </summary>
+    partial class AstAmmyBindSource : BbExpressionListNode
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_source_ancestor terminal
+    /// </summary>
+    partial class AstAmmyBindSourceAncestor : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
+    {
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_source_source terminal
+    /// </summary>
+    partial class AstAmmyBindSourceSource : BbExpressionListNode
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
     }
 
     /// <summary>
@@ -278,6 +322,16 @@ namespace Bitbrains.AmmyParser
         {
             return new [] { 0 };
         }
+
+    }
+
+    public partial interface IAstAmmyBindSourceSource
+    {
+    }
+
+    public partial interface IAstAmmyBindSourceSourceProvider
+    {
+        IAstAmmyBindSourceSource GetData(Irony.Interpreter.ScriptThread thread);
 
     }
 

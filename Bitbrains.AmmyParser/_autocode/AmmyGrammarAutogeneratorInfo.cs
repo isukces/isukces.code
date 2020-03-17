@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using X=Bitbrains.AmmyParser.AmmyGrammar;
 
 namespace Bitbrains.AmmyParser
 {
@@ -10,6 +11,9 @@ namespace Bitbrains.AmmyParser
     {
         public static IEnumerable<object> GetItemsInternal()
         {
+            yield return new AmmyGrammarAutogeneratorInfo("int_number_optional")
+                .AsOptional(null, nameof(X.Number));
+            
             yield return new AmmyGrammarAutogeneratorInfo("literal").AsOneOf();
             yield return "qual_name_segment";
             yield return "qual_name_segments_opt2";
@@ -27,13 +31,13 @@ namespace Bitbrains.AmmyParser
                 yield return list;
                 yield return list.GetOptional();
             }
-            yield return new AmmyGrammarAutogeneratorInfo(nameof(AmmyGrammar.mixin_definition));
+            yield return new AmmyGrammarAutogeneratorInfo(nameof(X.mixin_definition));
                 //.WithMap(0, 2, 4, 6);
 
             {
                 var el = new AmmyGrammarAutogeneratorInfo("statement")
                     .AsOneOf(
-                        nameof(AmmyGrammar.mixin_definition)
+                        nameof(X.mixin_definition)
                     );
 
                 var list = el.GetList();
@@ -50,7 +54,16 @@ namespace Bitbrains.AmmyParser
                 yield return list.GetOptional();
             }
 
-            yield return new AmmyGrammarAutogeneratorInfo("ammy_bind");
+            {
+                yield return new AmmyGrammarAutogeneratorInfo("ammy_bind");
+                var el = new AmmyGrammarAutogeneratorInfo("ammy_bind_source").WithMap(0);
+                yield return el;
+                yield return el.GetOptional();
+                
+                yield return new AmmyGrammarAutogeneratorInfo("ammy_bind_source_source")
+                    .AsAlternative(0, "ammy_bind_source_ancestor");
+                yield return new AmmyGrammarAutogeneratorInfo("ammy_bind_source_ancestor");
+            }
             yield return new AmmyGrammarAutogeneratorInfo("object_property_setting");
             yield return new AmmyGrammarAutogeneratorInfo("ammy_property_name").AsOneOf("identifier");
             yield return new AmmyGrammarAutogeneratorInfo("ammy_property_value")
@@ -162,10 +175,12 @@ namespace Bitbrains.AmmyParser
 
         public AmmyGrammarAutogeneratorInfo AsOneOf(params string[] elements) => AsAlternative(0, elements);
 
-        public AmmyGrammarAutogeneratorInfo AsOptional(string baseName = null)
+        public AmmyGrammarAutogeneratorInfo AsOptional(string baseName = null, string alternativeOf =null)
         {
             BaseClass   = baseName ?? "AstOptNode";
             CreateClass = BaseClass != "AstOptNode";
+            if (!string.IsNullOrEmpty(alternativeOf))
+                Alternatives = new[] {"Empty", alternativeOf};
             return this;
         }
 

@@ -6,10 +6,17 @@ namespace Bitbrains.AmmyParser
     {
         protected override object DoEvaluate(ScriptThread thread)
         {
-            var x = base.DoEvaluate(thread);
-            return x;
+            return GetData(thread);
         }
 
-        public IAstAmmyPropertyValue GetData(ScriptThread thread) => throw new System.NotImplementedException();
+        public IAstAmmyPropertyValue GetData(ScriptThread thread)
+        {
+            var x  = base.DoEvaluate(thread);
+            var xx = (object[])x;
+            return new AstAmmyBindData(Span,
+                (string)xx[0],
+                (IAstAmmyBindSourceSource)xx[1]
+            );
+        }
     }
 }
