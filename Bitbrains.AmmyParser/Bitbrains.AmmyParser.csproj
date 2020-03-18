@@ -9,4 +9,14 @@
       <PackageReference Include="JetBrains.Annotations" Version="2019.1.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="_grammar\AmmyGrammarAutogeneratorInfo.AutoCode.cs">
+        <DependentUpon>AmmyGrammarAutogeneratorInfo.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
 </Project>

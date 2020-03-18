@@ -8,7 +8,8 @@ namespace Bitbrains.AmmyParser
     {
         public void AutoInit()
         {
-            // generator : AssemblyStart:89
+            // generator : AssemblyStart:94
+            comma_opt.Rule = Empty | comma;
             int_number_optional.Rule = Empty | Number;
             using_directive.Rule = using_ns_directive;
             using_directives_opt.Rule = Empty | using_directives;
@@ -18,6 +19,22 @@ namespace Bitbrains.AmmyParser
             object_settings_opt.Rule = Empty | object_settings;
             ammy_bind_source_opt.Rule = Empty | ammy_bind_source;
             ammy_bind_source_source.Rule = ammy_bind_source_ancestor | ammy_bind_source_element_name | ammy_bind_source_this;
+            ammy_bind_set_opt.Rule = Empty | ammy_bind_set;
+            ammy_bind_set_Mode_enum_values.Rule = ToTerm("TwoWay") | ToTerm("OneWay") | ToTerm("OneTime") | ToTerm("OneWayToSource") | ToTerm("Default");
+            ammy_bind_set_Mode.Rule = ToTerm("Mode") + ":" + ammy_bind_set_Mode_enum_values + comma_opt;
+            ammy_bind_set_NotifyOnSourceUpdated.Rule = ToTerm("NotifyOnSourceUpdated") + ":" + boolean + comma_opt;
+            ammy_bind_set_NotifyOnTargetUpdated.Rule = ToTerm("NotifyOnTargetUpdated") + ":" + boolean + comma_opt;
+            ammy_bind_set_NotifyOnValidationError.Rule = ToTerm("NotifyOnValidationError") + ":" + boolean + comma_opt;
+            ammy_bind_set_ValidatesOnExceptions.Rule = ToTerm("ValidatesOnExceptions") + ":" + boolean + comma_opt;
+            ammy_bind_set_ValidatesOnDataErrors.Rule = ToTerm("ValidatesOnDataErrors") + ":" + boolean + comma_opt;
+            ammy_bind_set_ValidatesOnNotifyDataErrors.Rule = ToTerm("ValidatesOnNotifyDataErrors") + ":" + boolean + comma_opt;
+            ammy_bind_set_StringFormat.Rule = ToTerm("StringFormat") + ":" + TheStringLiteral + comma_opt;
+            ammy_bind_set_BindingGroupName.Rule = ToTerm("BindingGroupName") + ":" + TheStringLiteral + comma_opt;
+            ammy_bind_set_FallbackValue.Rule = ToTerm("FallbackValue") + ":" + Number + comma_opt;
+            ammy_bind_set_IsAsync.Rule = ToTerm("IsAsync") + ":" + boolean + comma_opt;
+            ammy_bind_set_item.Rule = ammy_bind_set_Mode | ammy_bind_set_NotifyOnSourceUpdated | ammy_bind_set_NotifyOnTargetUpdated | ammy_bind_set_NotifyOnValidationError | ammy_bind_set_ValidatesOnExceptions | ammy_bind_set_ValidatesOnDataErrors | ammy_bind_set_ValidatesOnNotifyDataErrors | ammy_bind_set_StringFormat | ammy_bind_set_BindingGroupName | ammy_bind_set_FallbackValue | ammy_bind_set_IsAsync;
+            ammy_bind_set_items.Rule = MakePlusRule(ammy_bind_set_items, null, ammy_bind_set_item);
+            ammy_bind_set_items_opt.Rule = Empty | ammy_bind_set_items;
             ammy_property_name.Rule = identifier;
             ammy_property_value.Rule = primary_expression | ammy_bind;
             primary_expression.Rule = literal;
@@ -26,7 +43,17 @@ namespace Bitbrains.AmmyParser
             mixin_or_alias_arguments_opt.Rule = Empty | mixin_or_alias_arguments;
         }
 
+        public void AutoInit2()
+        {
+            // generator : AssemblyStart:116
+            MarkPunctuation(":", "BindingGroupName", "FallbackValue", "IsAsync", "Mode", "NotifyOnSourceUpdated", "NotifyOnTargetUpdated", "NotifyOnValidationError", "StringFormat", "ValidatesOnDataErrors", "ValidatesOnExceptions", "ValidatesOnNotifyDataErrors");
+        }
+
+        public NonTerminal comma_opt = new NonTerminal("comma_opt", typeof(AstOptNode));
+
         public NonTerminal int_number_optional = new NonTerminal("int_number_optional", typeof(AstOptNode));
+
+        public NonTerminal boolean = new NonTerminal("boolean", typeof(AstBoolean));
 
         public NonTerminal literal = new NonTerminal("literal", typeof(AstLiteral));
 
@@ -74,6 +101,40 @@ namespace Bitbrains.AmmyParser
 
         public NonTerminal ammy_bind_source_this = new NonTerminal("ammy_bind_source_this", typeof(AstAmmyBindSourceThis));
 
+        public NonTerminal ammy_bind_set = new NonTerminal("ammy_bind_set", typeof(AstAmmyBindSet));
+
+        public NonTerminal ammy_bind_set_opt = new NonTerminal("ammy_bind_set_opt", typeof(AstOptNode));
+
+        public NonTerminal ammy_bind_set_Mode_enum_values = new NonTerminal("ammy_bind_set_Mode_enum_values", typeof(AstAmmyBindSetModeEnumValues));
+
+        public NonTerminal ammy_bind_set_Mode = new NonTerminal("ammy_bind_set_Mode", typeof(AstAmmyBindSetMode));
+
+        public NonTerminal ammy_bind_set_NotifyOnSourceUpdated = new NonTerminal("ammy_bind_set_NotifyOnSourceUpdated", typeof(AstAmmyBindSetNotifyOnSourceUpdated));
+
+        public NonTerminal ammy_bind_set_NotifyOnTargetUpdated = new NonTerminal("ammy_bind_set_NotifyOnTargetUpdated", typeof(AstAmmyBindSetNotifyOnTargetUpdated));
+
+        public NonTerminal ammy_bind_set_NotifyOnValidationError = new NonTerminal("ammy_bind_set_NotifyOnValidationError", typeof(AstAmmyBindSetNotifyOnValidationError));
+
+        public NonTerminal ammy_bind_set_ValidatesOnExceptions = new NonTerminal("ammy_bind_set_ValidatesOnExceptions", typeof(AstAmmyBindSetValidatesOnExceptions));
+
+        public NonTerminal ammy_bind_set_ValidatesOnDataErrors = new NonTerminal("ammy_bind_set_ValidatesOnDataErrors", typeof(AstAmmyBindSetValidatesOnDataErrors));
+
+        public NonTerminal ammy_bind_set_ValidatesOnNotifyDataErrors = new NonTerminal("ammy_bind_set_ValidatesOnNotifyDataErrors", typeof(AstAmmyBindSetValidatesOnNotifyDataErrors));
+
+        public NonTerminal ammy_bind_set_StringFormat = new NonTerminal("ammy_bind_set_StringFormat", typeof(AstAmmyBindSetStringFormat));
+
+        public NonTerminal ammy_bind_set_BindingGroupName = new NonTerminal("ammy_bind_set_BindingGroupName", typeof(AstAmmyBindSetBindingGroupName));
+
+        public NonTerminal ammy_bind_set_FallbackValue = new NonTerminal("ammy_bind_set_FallbackValue", typeof(AstAmmyBindSetFallbackValue));
+
+        public NonTerminal ammy_bind_set_IsAsync = new NonTerminal("ammy_bind_set_IsAsync", typeof(AstAmmyBindSetIsAsync));
+
+        public NonTerminal ammy_bind_set_item = new NonTerminal("ammy_bind_set_item", typeof(AstAmmyBindSetItem));
+
+        public NonTerminal ammy_bind_set_items = new NonTerminal("ammy_bind_set_items", typeof(AstAmmyBindSetItems));
+
+        public NonTerminal ammy_bind_set_items_opt = new NonTerminal("ammy_bind_set_items_opt", typeof(AstOptNode));
+
         public NonTerminal object_property_setting = new NonTerminal("object_property_setting", typeof(AstObjectPropertySetting));
 
         public NonTerminal ammy_property_name = new NonTerminal("ammy_property_name", typeof(AstAmmyPropertyName));
@@ -97,14 +158,201 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for ammy_bind terminal
     /// </summary>
-    partial class AstAmmyBind : BbExpressionListNode, IAstAmmyPropertyValueProvider
+    public partial class AstAmmyBind : BbExpressionListNode, IAstAmmyPropertyValueProvider
     {
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set terminal
+    /// </summary>
+    public partial class AstAmmyBindSet : BbExpressionListNode
+    {
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_BindingGroupName terminal
+    /// </summary>
+    public partial class AstAmmyBindSetBindingGroupName : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "BindingGroupName";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_FallbackValue terminal
+    /// </summary>
+    public partial class AstAmmyBindSetFallbackValue : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "FallbackValue";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_IsAsync terminal
+    /// </summary>
+    public partial class AstAmmyBindSetIsAsync : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "IsAsync";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_item terminal
+    /// </summary>
+    public partial class AstAmmyBindSetItem : BbExpressionListNode
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_items terminal
+    /// </summary>
+    public partial class AstAmmyBindSetItems : ExpressionListNode<IAstAmmyBindSetItem>
+    {
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_Mode terminal
+    /// </summary>
+    public partial class AstAmmyBindSetMode : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "Mode";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_Mode_enum_values terminal
+    /// </summary>
+    public partial class AstAmmyBindSetModeEnumValues : EnumValueNode
+    {
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_NotifyOnSourceUpdated terminal
+    /// </summary>
+    public partial class AstAmmyBindSetNotifyOnSourceUpdated : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "NotifyOnSourceUpdated";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_NotifyOnTargetUpdated terminal
+    /// </summary>
+    public partial class AstAmmyBindSetNotifyOnTargetUpdated : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "NotifyOnTargetUpdated";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_NotifyOnValidationError terminal
+    /// </summary>
+    public partial class AstAmmyBindSetNotifyOnValidationError : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "NotifyOnValidationError";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_StringFormat terminal
+    /// </summary>
+    public partial class AstAmmyBindSetStringFormat : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "StringFormat";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_ValidatesOnDataErrors terminal
+    /// </summary>
+    public partial class AstAmmyBindSetValidatesOnDataErrors : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "ValidatesOnDataErrors";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_ValidatesOnExceptions terminal
+    /// </summary>
+    public partial class AstAmmyBindSetValidatesOnExceptions : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "ValidatesOnExceptions";
+
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_set_ValidatesOnNotifyDataErrors terminal
+    /// </summary>
+    public partial class AstAmmyBindSetValidatesOnNotifyDataErrors : BbExpressionListNode, IAstAmmyBindSetItemProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+        public const string Keyword = "ValidatesOnNotifyDataErrors";
+
     }
 
     /// <summary>
     /// AST class for ammy_bind_source terminal
     /// </summary>
-    partial class AstAmmyBindSource : BbExpressionListNode
+    public partial class AstAmmyBindSource : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -116,14 +364,14 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for ammy_bind_source_ancestor terminal
     /// </summary>
-    partial class AstAmmyBindSourceAncestor : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
+    public partial class AstAmmyBindSourceAncestor : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
     {
     }
 
     /// <summary>
     /// AST class for ammy_bind_source_element_name terminal
     /// </summary>
-    partial class AstAmmyBindSourceElementName : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
+    public partial class AstAmmyBindSourceElementName : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
     {
         protected override int[] GetMap()
         {
@@ -135,7 +383,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for ammy_bind_source_source terminal
     /// </summary>
-    partial class AstAmmyBindSourceSource : BbExpressionListNode
+    public partial class AstAmmyBindSourceSource : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -147,21 +395,21 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for ammy_bind_source_this terminal
     /// </summary>
-    partial class AstAmmyBindSourceThis : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
+    public partial class AstAmmyBindSourceThis : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
     {
     }
 
     /// <summary>
     /// AST class for ammyCode terminal
     /// </summary>
-    partial class AstAmmyCode : ExpressionListNode<System.Object>
+    public partial class AstAmmyCode : ExpressionListNode<System.Object>
     {
     }
 
     /// <summary>
     /// AST class for ammy_property_name terminal
     /// </summary>
-    partial class AstAmmyPropertyName : BbExpressionListNode
+    public partial class AstAmmyPropertyName : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -173,7 +421,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for ammy_property_value terminal
     /// </summary>
-    partial class AstAmmyPropertyValue : BbExpressionListNode
+    public partial class AstAmmyPropertyValue : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -183,9 +431,16 @@ namespace Bitbrains.AmmyParser
     }
 
     /// <summary>
+    /// AST class for boolean terminal
+    /// </summary>
+    public partial class AstBoolean : AstNode
+    {
+    }
+
+    /// <summary>
     /// AST class for expression terminal
     /// </summary>
-    partial class AstExpression : BbExpressionListNode
+    public partial class AstExpression : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -197,14 +452,14 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for identifier_or_builtin terminal
     /// </summary>
-    partial class AstIdentifierOrBuiltin : BbExpressionListNode
+    public partial class AstIdentifierOrBuiltin : BbExpressionListNode
     {
     }
 
     /// <summary>
     /// AST class for literal terminal
     /// </summary>
-    partial class AstLiteral : BbExpressionListNode, IAstPrimaryExpressionProvider
+    public partial class AstLiteral : BbExpressionListNode, IAstPrimaryExpressionProvider
     {
         protected override int[] GetMap()
         {
@@ -216,14 +471,14 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for mixin_definition terminal
     /// </summary>
-    partial class AstMixinDefinition : BbExpressionListNode, IAstStatementProvider
+    public partial class AstMixinDefinition : BbExpressionListNode, IAstStatementProvider
     {
     }
 
     /// <summary>
     /// AST class for mixin_or_alias_argument terminal
     /// </summary>
-    partial class AstMixinOrAliasArgument : BbExpressionListNode
+    public partial class AstMixinOrAliasArgument : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -235,21 +490,21 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for mixin_or_alias_arguments terminal
     /// </summary>
-    partial class AstMixinOrAliasArguments : ExpressionListNode<System.Object>
+    public partial class AstMixinOrAliasArguments : ExpressionListNode<System.Object>
     {
     }
 
     /// <summary>
     /// AST class for object_property_setting terminal
     /// </summary>
-    partial class AstObjectPropertySetting : BbExpressionListNode, IAstObjectSettingProvider
+    public partial class AstObjectPropertySetting : BbExpressionListNode, IAstObjectSettingProvider
     {
     }
 
     /// <summary>
     /// AST class for object_setting terminal
     /// </summary>
-    partial class AstObjectSetting : BbExpressionListNode
+    public partial class AstObjectSetting : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -261,14 +516,14 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for object_settings terminal
     /// </summary>
-    partial class AstObjectSettings : ExpressionListNode<IAstObjectSetting>
+    public partial class AstObjectSettings : ExpressionListNode<IAstObjectSetting>
     {
     }
 
     /// <summary>
     /// AST class for primary_expression terminal
     /// </summary>
-    partial class AstPrimaryExpression : BbExpressionListNode, IAstAmmyPropertyValueProvider, IAstExpressionProvider
+    public partial class AstPrimaryExpression : BbExpressionListNode, IAstAmmyPropertyValueProvider, IAstExpressionProvider
     {
         protected override int[] GetMap()
         {
@@ -280,28 +535,28 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for qual_name_segment terminal
     /// </summary>
-    partial class AstQualNameSegment : BbExpressionListNode
+    public partial class AstQualNameSegment : BbExpressionListNode
     {
     }
 
     /// <summary>
     /// AST class for qual_name_segments_opt2 terminal
     /// </summary>
-    partial class AstQualNameSegmentsOpt2 : BbExpressionListNode
+    public partial class AstQualNameSegmentsOpt2 : BbExpressionListNode
     {
     }
 
     /// <summary>
     /// AST class for qual_name_with_targs terminal
     /// </summary>
-    partial class AstQualNameWithTargs : BbExpressionListNode
+    public partial class AstQualNameWithTargs : BbExpressionListNode
     {
     }
 
     /// <summary>
     /// AST class for statement terminal
     /// </summary>
-    partial class AstStatement : BbExpressionListNode
+    public partial class AstStatement : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -313,14 +568,14 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for statements terminal
     /// </summary>
-    partial class AstStatements : ExpressionListNode<IAstStatement>
+    public partial class AstStatements : ExpressionListNode<IAstStatement>
     {
     }
 
     /// <summary>
     /// AST class for using_directive terminal
     /// </summary>
-    partial class AstUsingDirective : BbExpressionListNode
+    public partial class AstUsingDirective : BbExpressionListNode
     {
         protected override int[] GetMap()
         {
@@ -332,19 +587,29 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for using_directives terminal
     /// </summary>
-    partial class AstUsingDirectives : ExpressionListNode<IAstUsingDirective>
+    public partial class AstUsingDirectives : ExpressionListNode<IAstUsingDirective>
     {
     }
 
     /// <summary>
     /// AST class for using_ns_directive terminal
     /// </summary>
-    partial class AstUsingNsDirective : BbExpressionListNode, IAstUsingDirectiveProvider
+    public partial class AstUsingNsDirective : BbExpressionListNode, IAstUsingDirectiveProvider
     {
         protected override int[] GetMap()
         {
             return new [] { 0 };
         }
+
+    }
+
+    public partial interface IAstAmmyBindSetItem
+    {
+    }
+
+    public partial interface IAstAmmyBindSetItemProvider
+    {
+        IAstAmmyBindSetItem GetData(Irony.Interpreter.ScriptThread thread);
 
     }
 

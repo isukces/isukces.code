@@ -6,11 +6,21 @@ namespace Bitbrains.AmmyParser
     [Language("Ammy")]
     public partial class AmmyGrammar : InterpretedLanguageGrammar
     {
+        private KeyTerm comma;
         public AmmyGrammar() : base(true)
         {
-            Number     = TerminalFactory.CreateCSharpNumber("Number");
-            identifier = TerminalFactory.CreateCSharpIdentifier("identifier");
+            Number       = TerminalFactory.CreateCSharpNumber("Number");
+            
+            Number.Options |= NumberOptions.AllowSign | NumberOptions.AllowLetterAfter |
+                              NumberOptions.AllowStartEndDot | NumberOptions.AllowUnderscore;
+            TheStringLiteral = TerminalFactory.CreateCSharpString("StringLiteral");
 
+            boolean.Rule = ToTerm("true") | "false";
+            identifier   = TerminalFactory.CreateCSharpIdentifier("identifier");
+
+            comma = ToTerm(",", "comma");
+            
+            
             AutoInit();
             var SingleLineComment =
                 new CommentTerminal("SingleLineComment", "//", "\r", "\n", "\u2085", "\u2028", "\u2029");
@@ -18,17 +28,15 @@ namespace Bitbrains.AmmyParser
             NonGrammarTerminals.Add(SingleLineComment);
             NonGrammarTerminals.Add(DelimitedComment);
 
-            var comma = ToTerm(",", "comma");
-            var comma_opt = new NonTerminal("comma_opt")
-            {
-                Rule = Empty | comma
-            };
             var dot      = ToTerm(".", "dot");
             var parOpen  = ToTerm("(");
             var parClose = ToTerm(")");
 
             var curlyOpen  = ToTerm("{");
             var curlyClose = ToTerm("}");
+            
+            var sqOpen  = ToTerm("[");
+            var sqClose = ToTerm("]");
 
             /*
             var new_line = new NewLineTerminal("new_line");
@@ -42,7 +50,7 @@ namespace Bitbrains.AmmyParser
 
             // var number     = TerminalFactory.CreateCSharpNumber("number");
 
-            var comment = new CommentTerminal("comment", "#", "\n", "\r");
+            // var comment = new CommentTerminal("comment", "#", "\n", "\r");
 
             // var literal = new NonTerminal("literal");
 
@@ -59,12 +67,8 @@ namespace Bitbrains.AmmyParser
             var using_directives_opt = new NonTerminal("using_directives_opt");*/
             // ==========================================================
 
-            Number.Options |= NumberOptions.AllowSign | NumberOptions.AllowLetterAfter |
-                              NumberOptions.AllowStartEndDot | NumberOptions.AllowUnderscore;
-            var StringLiteral = TerminalFactory.CreateCSharpString("StringLiteral");
-
             //var primary_expression = new NonTerminal("primary_expression");
-            literal.Rule = Number | StringLiteral | /*  | CharLiteral |*/ "true" | "false" | "null";
+            literal.Rule = Number | TheStringLiteral | /*  | CharLiteral |*/ boolean | "null";
 
             /*primary_expression.Rule =
                 literal
@@ -151,12 +155,14 @@ namespace Bitbrains.AmmyParser
             object_settings.Rule = MakePlusRule(object_settings, comma_opt, object_setting);
             // ============== values and bindigs
             ammy_bind_source.Rule = "from" + ammy_bind_source_source;
-            ammy_bind.Rule        = "bind" + StringLiteral + ammy_bind_source_opt;
+            ammy_bind.Rule        = "bind" + TheStringLiteral + ammy_bind_source_opt + ammy_bind_set_opt;
             ammy_bind_source_ancestor.Rule =
                 "$ancestor" + "<" + qual_name_with_targs + ">" + "(" + int_number_optional + ")";
 
-            ammy_bind_source_element_name.Rule = StringLiteral;
-            ammy_bind_source_this.Rule = "$this";
+            ammy_bind_source_element_name.Rule = TheStringLiteral;
+            ammy_bind_source_this.Rule         = "$this";
+
+            ammy_bind_set.Rule = ToTerm("set") + sqOpen + ammy_bind_set_items + sqClose;
 
             // ammy_property_value.Rule = primary_expression;
             // ============== Mixin
@@ -181,8 +187,13 @@ namespace Bitbrains.AmmyParser
                             | LanguageFlags.CreateAst
                             | LanguageFlags.SupportsBigInt;
             MarkPunctuation("bind", "mixin", "for", ":", "using", "{", "}", "(", ")", ",", ".",
-                "from",  "<", ">", "$ancestor", "$this");
+                "from", "<", ">", "$ancestor", "$this", "set"
+                // , "true", "false"
+                );
+            AutoInit2();
         }
+
+        public StringLiteral TheStringLiteral;
 
         public NumberLiteral Number;
 

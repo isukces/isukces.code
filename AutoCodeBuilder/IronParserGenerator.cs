@@ -76,6 +76,7 @@ namespace AutoCodeBuilder
                 var cl = context.GetOrCreateClass(tp);
                 cl.BaseClass   = i.BaseClass;
                 cl.Description = "AST class for " + i.TerminalName + " terminal";
+                cl.Visibility = Visibilities.Public;
                 foreach (var ii in GetImplementedInterfaces(i, _items))
                 {
                     cl.ImplementedInterfaces.Add(ii + "Provider");
@@ -83,17 +84,38 @@ namespace AutoCodeBuilder
                 }
 
                 GenerateGetMap(i.Map, cl);
+                if (!string.IsNullOrEmpty(i.Keyword))
+                {
+                    cl.AddConst("Keyword", "string", i.Keyword.CsEncode());
+                }
             }
 
             {
                 CodeWriter body = CsCodeWriter.Create(SourceCodeLocation.Make());
                 foreach (var i in _items)
                 {
-                    var altCode = i.GetAlternatives().ToArray();
-                    if (altCode.Any()) body.WriteLine(i.TerminalName + ".Rule = " + string.Join(" | ", altCode) + ";");
+                    var rule = i.GetRule();
+                    if (!string.IsNullOrEmpty(rule))
+                        body.WriteLine($"{i.TerminalName}.Rule = {rule};");
                 }
 
                 grammarClass.AddMethod("AutoInit", "void").WithBody(body);
+            }
+
+            {
+                var x= new HashSet<string>();
+                foreach (var i in _items)
+                {
+                    foreach (var j in i.Punctuations)
+                        x.Add(j);
+                }
+
+                /*  MarkPunctuation("bind", "mixin", "for", ":", "using", "{", "}", "(", ")", ",", ".",
+                "from", "<", ">", "$ancestor", "$this", "set", "true", "false");*/
+                var args = string.Join(", ", x.OrderBy(a => a).Select(a => a.CsEncode()));
+                CodeWriter body = CsCodeWriter.Create(SourceCodeLocation.Make());
+                body.WriteLine($"MarkPunctuation({args});");
+                grammarClass.AddMethod("AutoInit2", "void").WithBody(body);
             }
 
             {

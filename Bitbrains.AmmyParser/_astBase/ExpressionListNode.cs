@@ -31,8 +31,13 @@ namespace Bitbrains.AmmyParser
                 else if (value is null && (typeof(T).IsInterface || typeof(T).IsClass))
                 {
                     Debug.Write("");
-                }else
-                    throw new Exception("Invalid cast to " + typeof(T));
+                }
+                else
+                {
+                    var src = value is null ? "NULL" : value.GetType().ToString();
+                    var msg = $"Invalid cast {src} to {typeof(T)}, owner {GetType()}";
+                    throw new Exception(msg);
+                }
             }
 
             thread.CurrentNode = Parent;
