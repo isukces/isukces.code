@@ -155,6 +155,9 @@ namespace Bitbrains.AmmyParser
             ammy_bind_source_ancestor.Rule =
                 "$ancestor" + "<" + qual_name_with_targs + ">" + "(" + int_number_optional + ")";
 
+            ammy_bind_source_element_name.Rule = StringLiteral;
+            ammy_bind_source_this.Rule = "$this";
+
             // ammy_property_value.Rule = primary_expression;
             // ============== Mixin
 
@@ -178,7 +181,7 @@ namespace Bitbrains.AmmyParser
                             | LanguageFlags.CreateAst
                             | LanguageFlags.SupportsBigInt;
             MarkPunctuation("bind", "mixin", "for", ":", "using", "{", "}", "(", ")", ",", ".",
-                "from",  "<", ">", "$ancestor");
+                "from",  "<", ">", "$ancestor", "$this");
         }
 
         public NumberLiteral Number;

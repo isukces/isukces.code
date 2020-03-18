@@ -56,13 +56,18 @@ namespace Bitbrains.AmmyParser
 
             {
                 yield return new AmmyGrammarAutogeneratorInfo("ammy_bind");
-                var el = new AmmyGrammarAutogeneratorInfo("ammy_bind_source").WithMap(0);
+                var el = new AmmyGrammarAutogeneratorInfo("ammy_bind_source").Single();
                 yield return el;
                 yield return el.GetOptional();
-                
+
                 yield return new AmmyGrammarAutogeneratorInfo("ammy_bind_source_source")
-                    .AsAlternative(0, "ammy_bind_source_ancestor");
+                    .AsAlternative(0, 
+                        "ammy_bind_source_ancestor", 
+                        "ammy_bind_source_element_name",
+                        "ammy_bind_source_this").Single();
                 yield return new AmmyGrammarAutogeneratorInfo("ammy_bind_source_ancestor");
+                yield return new AmmyGrammarAutogeneratorInfo("ammy_bind_source_element_name").Single();
+                yield return new AmmyGrammarAutogeneratorInfo("ammy_bind_source_this");
             }
             yield return new AmmyGrammarAutogeneratorInfo("object_property_setting");
             yield return new AmmyGrammarAutogeneratorInfo("ammy_property_name").AsOneOf("identifier");
@@ -198,6 +203,10 @@ namespace Bitbrains.AmmyParser
             }
         }
 
+        public AmmyGrammarAutogeneratorInfo Single(params int[] map)
+        {
+            return WithMap(0);
+        }
         public AmmyGrammarAutogeneratorInfo WithMap(params int[] map)
         {
             if (map != null && map.Length > 0)

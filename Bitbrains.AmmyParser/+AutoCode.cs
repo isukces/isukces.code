@@ -17,7 +17,7 @@ namespace Bitbrains.AmmyParser
             object_setting.Rule = object_property_setting;
             object_settings_opt.Rule = Empty | object_settings;
             ammy_bind_source_opt.Rule = Empty | ammy_bind_source;
-            ammy_bind_source_source.Rule = ammy_bind_source_ancestor;
+            ammy_bind_source_source.Rule = ammy_bind_source_ancestor | ammy_bind_source_element_name | ammy_bind_source_this;
             ammy_property_name.Rule = identifier;
             ammy_property_value.Rule = primary_expression | ammy_bind;
             primary_expression.Rule = literal;
@@ -70,6 +70,10 @@ namespace Bitbrains.AmmyParser
 
         public NonTerminal ammy_bind_source_ancestor = new NonTerminal("ammy_bind_source_ancestor", typeof(AstAmmyBindSourceAncestor));
 
+        public NonTerminal ammy_bind_source_element_name = new NonTerminal("ammy_bind_source_element_name", typeof(AstAmmyBindSourceElementName));
+
+        public NonTerminal ammy_bind_source_this = new NonTerminal("ammy_bind_source_this", typeof(AstAmmyBindSourceThis));
+
         public NonTerminal object_property_setting = new NonTerminal("object_property_setting", typeof(AstObjectPropertySetting));
 
         public NonTerminal ammy_property_name = new NonTerminal("ammy_property_name", typeof(AstAmmyPropertyName));
@@ -117,6 +121,18 @@ namespace Bitbrains.AmmyParser
     }
 
     /// <summary>
+    /// AST class for ammy_bind_source_element_name terminal
+    /// </summary>
+    partial class AstAmmyBindSourceElementName : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
+    }
+
+    /// <summary>
     /// AST class for ammy_bind_source_source terminal
     /// </summary>
     partial class AstAmmyBindSourceSource : BbExpressionListNode
@@ -126,6 +142,13 @@ namespace Bitbrains.AmmyParser
             return new [] { 0 };
         }
 
+    }
+
+    /// <summary>
+    /// AST class for ammy_bind_source_this terminal
+    /// </summary>
+    partial class AstAmmyBindSourceThis : BbExpressionListNode, IAstAmmyBindSourceSourceProvider
+    {
     }
 
     /// <summary>
