@@ -23,7 +23,7 @@ namespace Bitbrains.AmmyParser
             var a = (object[])base.DoEvaluate(thread);
             return new AstMixinDefinitionData(Span,
                 (string)a[0],
-                (IReadOnlyList<IAstObjectSetting>)a[3]
+                (AstObjectSettingsCollection)a[3]
             );
         }
     }

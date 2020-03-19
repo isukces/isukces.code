@@ -13,8 +13,6 @@ namespace Bitbrains.AmmyParser
             int_number_optional.Rule = Empty | Number;
             using_directive.Rule = using_ns_directive;
             using_directives_opt.Rule = Empty | using_directives;
-            statement.Rule = mixin_definition;
-            statements_opt.Rule = Empty | statements;
             object_setting.Rule = object_property_setting;
             object_settings_opt.Rule = Empty | object_settings;
             ammy_bind_source_opt.Rule = Empty | ammy_bind_source;
@@ -41,6 +39,9 @@ namespace Bitbrains.AmmyParser
             expression.Rule = primary_expression;
             mixin_or_alias_argument.Rule = identifier;
             mixin_or_alias_arguments_opt.Rule = Empty | mixin_or_alias_arguments;
+            object_name_opt.Rule = Empty | object_name;
+            statement.Rule = mixin_definition | object_definition;
+            statements_opt.Rule = Empty | statements;
         }
 
         public void AutoInit2()
@@ -74,12 +75,6 @@ namespace Bitbrains.AmmyParser
         public NonTerminal using_directives_opt = new NonTerminal("using_directives_opt", typeof(AstOptNode));
 
         public NonTerminal mixin_definition = new NonTerminal("mixin_definition", typeof(AstMixinDefinition));
-
-        public NonTerminal statement = new NonTerminal("statement", typeof(AstStatement));
-
-        public NonTerminal statements = new NonTerminal("statements", typeof(AstStatements));
-
-        public NonTerminal statements_opt = new NonTerminal("statements_opt", typeof(AstOptNode));
 
         public NonTerminal object_setting = new NonTerminal("object_setting", typeof(AstObjectSetting));
 
@@ -150,6 +145,18 @@ namespace Bitbrains.AmmyParser
         public NonTerminal mixin_or_alias_arguments = new NonTerminal("mixin_or_alias_arguments", typeof(AstMixinOrAliasArguments));
 
         public NonTerminal mixin_or_alias_arguments_opt = new NonTerminal("mixin_or_alias_arguments_opt", typeof(AstOptNode));
+
+        public NonTerminal object_definition = new NonTerminal("object_definition", typeof(AstObjectDefinition));
+
+        public NonTerminal object_name = new NonTerminal("object_name", typeof(AstObjectName));
+
+        public NonTerminal object_name_opt = new NonTerminal("object_name_opt", typeof(AstOptNode));
+
+        public NonTerminal statement = new NonTerminal("statement", typeof(AstStatement));
+
+        public NonTerminal statements = new NonTerminal("statements", typeof(AstStatements));
+
+        public NonTerminal statements_opt = new NonTerminal("statements_opt", typeof(AstOptNode));
 
         public NonTerminal ammyCode = new NonTerminal("ammyCode", typeof(AstAmmyCode));
 
@@ -492,6 +499,25 @@ namespace Bitbrains.AmmyParser
     /// </summary>
     public partial class AstMixinOrAliasArguments : ExpressionListNode<System.Object>
     {
+    }
+
+    /// <summary>
+    /// AST class for object_definition terminal
+    /// </summary>
+    public partial class AstObjectDefinition : BbExpressionListNode, IAstStatementProvider
+    {
+    }
+
+    /// <summary>
+    /// AST class for object_name terminal
+    /// </summary>
+    public partial class AstObjectName : BbExpressionListNode
+    {
+        protected override int[] GetMap()
+        {
+            return new [] { 0 };
+        }
+
     }
 
     /// <summary>

@@ -156,8 +156,34 @@ mixin CtrlCadBusSegmentSplit_PipeItems() for Pd.Cad.Wpf.PipeItemsControl {
 }
 ";
             var language = GetLanguageData();
-            // var empty    = ParseTree(language, "");
             var o = ParseTree(language, sourceCode);
+            Assert.NotNull(o);
+        }
+        
+        [Fact]
+        public void T09_Should_parse_simple_object_definition()
+        {
+            var sourceCode = @"
+Grid {
+    Trzy: 3.3, Cztery: 3.3
+    Miasto: ""Okinawa""
+}
+";
+            var language = GetLanguageData();
+            var o        = ParseTree(language, sourceCode);
+            Assert.NotNull(o);
+        }
+        [Fact]
+        public void T10_Should_parse_simple_object_definition_with_name()
+        {
+            var sourceCode = @"
+Grid ""MyGrid"" {
+    Trzy: 3.3, Cztery: 3.3
+    Miasto: ""Okinawa""
+}
+";
+            var language = GetLanguageData();
+            var o        = ParseTree(language, sourceCode);
             Assert.NotNull(o);
         }
     }

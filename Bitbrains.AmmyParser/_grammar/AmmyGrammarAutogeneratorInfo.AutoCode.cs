@@ -43,17 +43,7 @@ namespace Bitbrains.AmmyParser
             }
             yield return new AmmyGrammarAutogeneratorInfo(nameof(X.mixin_definition));
 
-            {
-                var el = new AmmyGrammarAutogeneratorInfo("statement")
-                    .AsOneOf(
-                        nameof(X.mixin_definition)
-                    );
 
-                var list = el.GetList();
-                yield return el;
-                yield return list;
-                yield return list.GetOptional();
-            }
             {
                 var el = new AmmyGrammarAutogeneratorInfo("object_setting")
                     .AsOneOf("object_property_setting");
@@ -113,6 +103,28 @@ namespace Bitbrains.AmmyParser
                 var el = new AmmyGrammarAutogeneratorInfo("mixin_or_alias_argument").AsOneOf("identifier");
                 //var list = el.GetList();
                 var list = new AmmyGrammarAutogeneratorInfo(el.TerminalName + "s").AsListOf<object>();
+                yield return el;
+                yield return list;
+                yield return list.GetOptional();
+            }
+            
+            // ========================================== objects
+            {
+                yield return new AmmyGrammarAutogeneratorInfo("object_definition");
+                var el =new AmmyGrammarAutogeneratorInfo("object_name").Single();
+                yield return el;
+                yield return el.GetOptional();
+            }
+            
+            
+            {
+                var el = new AmmyGrammarAutogeneratorInfo("statement")
+                    .AsOneOf(
+                        nameof(X.mixin_definition),
+                        nameof(X.object_definition)
+                    );
+
+                var list = el.GetList();
                 yield return el;
                 yield return list;
                 yield return list.GetOptional();

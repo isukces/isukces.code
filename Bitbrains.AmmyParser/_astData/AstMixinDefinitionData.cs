@@ -6,7 +6,7 @@ namespace Bitbrains.AmmyParser
     public class AstMixinDefinitionData : IBaseData, IAstStatement
     {
         public AstMixinDefinitionData(SourceSpan span, string mixinName,
-            IReadOnlyList<IAstObjectSetting> objectSettings)
+            AstObjectSettingsCollection objectSettings)
         {
             Span      = span;
             MixinName = mixinName;
@@ -20,6 +20,6 @@ namespace Bitbrains.AmmyParser
 
         public SourceSpan Span      { get; }
         public string     MixinName { get; }
-        public IReadOnlyList<IAstObjectSetting> ObjectSettings { get; }
+        public AstObjectSettingsCollection ObjectSettings { get; }
     }
 }

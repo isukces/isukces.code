@@ -175,6 +175,8 @@ namespace Bitbrains.AmmyParser
                                             + "for" + qual_name_with_targs
                                             + curlyOpen + object_settings_opt + curlyClose;
             // ============= Statements
+            object_definition.Rule = qual_name_with_targs + object_name_opt + curlyOpen + object_settings_opt + curlyClose;
+            object_name.Rule = TheStringLiteral;
             //statement.Rule = mixin_definition; 
             statements.Rule = MakePlusRule(statements, null, statement);
 
