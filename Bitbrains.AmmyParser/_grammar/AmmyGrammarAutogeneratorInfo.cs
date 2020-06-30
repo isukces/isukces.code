@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -157,4 +156,3 @@ namespace Bitbrains.AmmyParser
         public string Keyword { get; set; }
     }
 }
-#endif

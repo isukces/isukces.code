@@ -15,6 +15,8 @@ namespace AutoCodeBuilder
         
         private static void Make2()
         {
+            #if DEBUG
+
             EmitTypeAttribute.IgnoreEmitTypeAttribute = true;
 
             var myAssembly  = typeof(Program).Assembly;
@@ -43,6 +45,8 @@ namespace AutoCodeBuilder
 
             var scanAssembly = typeof(AmmyGrammarAutogeneratorInfo).Assembly;
             autoCodeGenerator.Make(scanAssembly);
+
+            #endif
         }
 
         private static void Make1()
