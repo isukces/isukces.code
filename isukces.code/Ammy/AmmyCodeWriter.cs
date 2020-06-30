@@ -16,7 +16,10 @@ namespace isukces.code.Ammy
             return FullCode;
         }
 
-        public ISet<string> Namespaces => _namespaces;
+        public ISet<string> Namespaces
+        {
+            get { return _namespaces; }
+        }
 
         public string FullCode
         {

@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using isukces.code.AutoCode;
+using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
 using isukces.code.IO;
+using JetBrains.Annotations;
 
 namespace isukces.code.Ammy
 {
@@ -23,7 +25,8 @@ namespace isukces.code.Ammy
             if (CodeFileUtils.SaveIfDifferent(code, fi.FullName, false))
                 context.FileSaved(fi);
 
-            foreach (var pair in _otherFiles) Embed(pair.Value.CodeParts, pair.Key);
+            foreach (var pair in _otherFiles) 
+                Embed(pair.Value.CodeParts, pair.Key, pair.Value);
 
             CodeParts = null;
             _writer   = null;
@@ -50,13 +53,17 @@ namespace isukces.code.Ammy
         {
         }
 
-        private void Embed(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, string ctxEmbedFileName)
+        private void Embed(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, string ctxEmbedFileName, [CanBeNull]IAmmyNamespaceProvider provider)
         {
             var readedFromFile = File.Exists(ctxEmbedFileName)
                 ? File.ReadAllText(ctxEmbedFileName)
                 : string.Empty;
 
-            var code = EmitCode(cp, new AmmyCodeWriter());
+            var writer = new AmmyCodeWriter();
+            if (provider?.Namespaces != null)
+                foreach (var i in provider.Namespaces)
+                    writer.Namespaces.Add(i);
+            var code = EmitCode(cp, writer);
 
             var result = CodeEmbeder.Embed(readedFromFile, code);
 
@@ -102,6 +109,8 @@ namespace isukces.code.Ammy
                 if (!_otherFiles.TryGetValue(ctx.EmbedFileName, out var info))
                     _otherFiles[ctx.EmbedFileName] = info = new EmbeddedInfo();
                 cp = info.CodeParts;
+                foreach(var i in ctx.Namespaces)
+                    info.AddImportNamespace(i);
             }
 
             foreach (var mixin in ctx.Mixins)
@@ -126,14 +135,28 @@ namespace isukces.code.Ammy
         public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         public event EventHandler<CreateMixinPrefixEventArgs>                  CreateMixinPrefix;
 
-        private class EmbeddedInfo
+        private class EmbeddedInfo:INamespaceCollection, IAmmyNamespaceProvider
         {
             public EmbeddedInfo()
             {
                 CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
+                Namespaces = new HashSet<string>();
             }
 
+            [NotNull]
             public Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; }
+            
+ 
+            public ISet<string> Namespaces { get; } =new HashSet<string>();
+
+            public void AddImportNamespace(string ns)
+            {
+                ns = ns?.Trim();
+                if (string.IsNullOrEmpty(ns))
+                    throw new ArgumentException(nameof(ns));
+                Namespaces.Add(ns);
+            }
+ 
         }
 
         public class CreateMixinPrefixEventArgs : EventArgs

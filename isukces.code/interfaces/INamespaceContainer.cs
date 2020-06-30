@@ -11,7 +11,7 @@ namespace isukces.code.interfaces
 
     public interface INamespaceCollection
     {
-        void AddImportNamespace(string aNamespace);
+        void AddImportNamespace(string ns);
     }
 
     public static class NamespaceCollectionExt

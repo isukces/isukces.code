@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using isukces.code.Ammy;
 using isukces.code.AutoCode;
 using JetBrains.Annotations;
 
@@ -38,6 +39,8 @@ namespace isukces.code.interfaces.Ammy
 
         public static string GetTypeName(this IAmmyNamespaceProvider provider, Type type)
         {
+            if (AmmyGlobals.Instance.TryResolveTypeName(type, out var name))
+                return name;
             INamespaceContainer container = new MethodNamespaceContainer(provider?.Namespaces);
             return container.GetTypeName(type);
         }

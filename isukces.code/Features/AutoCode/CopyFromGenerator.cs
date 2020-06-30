@@ -275,7 +275,8 @@ namespace isukces.code.AutoCode
                     while (t.DeclaringType != null)
                         t = t.DeclaringType;
                     object owner            = Class.Owner;
-                    var    nsCollection = owner as INamespaceCollection;
+                    var    nsCollection = owner as 
+                        INamespaceCollection;
                     while (nsCollection == null && owner != null)
                     {
                         if (owner is CsClass csClass)

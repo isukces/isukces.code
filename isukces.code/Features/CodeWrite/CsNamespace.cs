@@ -21,9 +21,9 @@ namespace isukces.code
             return csClass;
         }
 
-        public void AddImportNamespace(string aNamespace)
+        public void AddImportNamespace(string ns)
         {
-            ImportNamespaces.Add(aNamespace);
+            ImportNamespaces.Add(ns);
         }
 
         public CsClass GetOrCreateClass(string csClassName)

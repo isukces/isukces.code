@@ -1,16 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
+using isukces.code.interfaces;
+using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public class AmmyBuilderContext
+    public class AmmyBuilderContext : INamespaceCollection, IAmmyNamespaceProvider
     {
-        public AmmyBuilderContext(string mixinNamePrefix)
+        public AmmyBuilderContext(string mixinNamePrefix) => MixinNamePrefix = mixinNamePrefix;
+
+        public void AddImportNamespace(string ns)
         {
-            MixinNamePrefix = mixinNamePrefix;
+            ns = ns?.Trim();
+            if (string.IsNullOrEmpty(ns))
+                throw new ArgumentException(nameof(ns));
+            _namespaces.Add(ns);
         }
 
 
@@ -39,10 +45,7 @@ namespace isukces.code.Ammy
             EmbedInRelativeFile(null, csFile);
         }
 
-        public string GetFullMixinName(string shortName)
-        {
-            return MixinNamePrefix + shortName;
-        }
+        public string GetFullMixinName(string shortName) => MixinNamePrefix + shortName;
 
         public MixinBuilder<T> RegisterMixin<T>(string name, bool globalName = false)
         {
@@ -54,15 +57,11 @@ namespace isukces.code.Ammy
             return mixinBuilder;
         }
 
-        public AmmyBuilderContext RegisterVariable(string name, int value, bool globalName = false)
-        {
-            return RegisterVariable(name, value.ToCsString(), globalName);
-        }
+        public AmmyBuilderContext RegisterVariable(string name, int value, bool globalName = false) =>
+            RegisterVariable(name, value.ToCsString(), globalName);
 
-        public AmmyBuilderContext RegisterVariable(string name, double value, bool globalName = false)
-        {
-            return RegisterVariable(name, value.ToCsString(), globalName);
-        }
+        public AmmyBuilderContext RegisterVariable(string name, double value, bool globalName = false) =>
+            RegisterVariable(name, value.ToCsString(), globalName);
 
         public AmmyBuilderContext RegisterVariable(string name, string value, bool globalName = false)
         {
@@ -73,10 +72,9 @@ namespace isukces.code.Ammy
             return this;
         }
 
-        public override string ToString()
-        {
-            return $"{nameof(AmmyBuilderContext)} {Variables.Count} variable(s), {Mixins.Count} mixin(s)";
-        }
+        public override string ToString() =>
+            $"{nameof(AmmyBuilderContext)} {Variables.Count} variable(s), {Mixins.Count} mixin(s)";
+
 
         protected virtual void AfterAddMixin<T>(MixinBuilder<T> mixinBuilder)
         {
@@ -96,7 +94,13 @@ namespace isukces.code.Ammy
 
         public string EmbedFileName { get; set; }
 
+        public ISet<string> Namespaces
+        {
+            get { return _namespaces; }
+        }
+
         private readonly List<AmmyMixin> _mixins = new List<AmmyMixin>();
         private readonly List<AmmyVariableDefinition> _variables = new List<AmmyVariableDefinition>();
+        private readonly HashSet<string> _namespaces = new HashSet<string>();
     }
 }

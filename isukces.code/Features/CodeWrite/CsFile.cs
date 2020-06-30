@@ -12,9 +12,9 @@ namespace isukces.code.CodeWrite
 {
     public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     {
-        public void AddImportNamespace(string aNamespace)
+        public void AddImportNamespace(string ns)
         {
-            _importNamespaces.Add(aNamespace);
+            _importNamespaces.Add(ns);
         }
 
 

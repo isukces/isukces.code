@@ -8,7 +8,7 @@ namespace isukces.code.AutoCode
 {
     public partial class AutoCodeGenerator
     {
-        private class SimpleAutoCodeGeneratorContext : IAutoCodeGeneratorContext
+        public class SimpleAutoCodeGeneratorContext : IAutoCodeGeneratorContext
         {
             public SimpleAutoCodeGeneratorContext(Func<TypeProvider, CsClass> getOrCreateClassFunc,
                 Action<string> addNamespaceAction, Func<string, CsNamespace> getOrCreateNamespaceFunc)
