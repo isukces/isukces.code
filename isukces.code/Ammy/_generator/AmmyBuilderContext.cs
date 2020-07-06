@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using isukces.code.interfaces;
 using isukces.code.interfaces.Ammy;
@@ -47,10 +48,22 @@ namespace isukces.code.Ammy
 
         public string GetFullMixinName(string shortName) => MixinNamePrefix + shortName;
 
-        public MixinBuilder<T> RegisterMixin<T>(string name, bool globalName = false)
+        public MixinBuilder<T> RegisterMixin<T>(string name, bool globalName = false, bool overwrite = false)
         {
             if (!globalName)
                 name = GetFullMixinName(name);
+            if (!overwrite)
+            {
+                var existing = _mixins.FirstOrDefault(a => a.Name == name);
+                if (existing != null)
+                {
+                    if (existing.MixinTargetType != typeof(T))
+                        throw new Exception(
+                            $"Invalid type for mixin {name}. Requested type is {typeof(T)}, but found {existing.MixinTargetType}.");
+                    return new MixinBuilder<T>(existing);
+                }
+            }
+
             var mixinBuilder = new MixinBuilder<T>(name);
             _mixins.Add(mixinBuilder.WrappedMixin);
             AfterAddMixin(mixinBuilder);
