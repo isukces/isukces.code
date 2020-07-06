@@ -152,6 +152,20 @@ namespace AutoCodeBuilder
                 }
             }
 
+            void AddSelf(FluentMethodInfo mi)
+            {
+                {
+                    const string value = nameof(SelfBindingSource) + "." + nameof(SelfBindingSource.Instance);
+                    var code = CreateCodeWriter()
+                        .WriteLine(creator(paramName, value));
+                    var m = _currentClass.AddMethod(mi.Self, _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass /*code.Info*/);
+                    //m.AddParam<Type>("ancestorType", _currentClass);
+                    // m.AddParam<int?>("level", _currentClass).WithConstValueNull();
+                }
+            }
+
             void AddAncestor(FluentMethodInfo mi)
             {
                 {
@@ -174,6 +188,7 @@ namespace AutoCodeBuilder
                         .WithAutocodeGeneratedAttribute(_currentClass /*code.Info*/);
                     m.AddParam<int?>("level", _currentClass).WithConstValueNull();
                 }
+              
             }
 
             void AddDirectValue(Type type1, FluentMethodInfo flu1)
@@ -199,7 +214,10 @@ namespace AutoCodeBuilder
             if ((flags & Fl.AddStaticAndResource) != 0)
                 AddStaticAndResource(flu);
             if (flu.AllowAncestor)
+            {
                 AddAncestor(flu);
+                AddSelf(flu);
+            }
         }
 
         private void BuildPropertiesAndFluentMethods(IAutoCodeGeneratorContext context, Type ownerType,
