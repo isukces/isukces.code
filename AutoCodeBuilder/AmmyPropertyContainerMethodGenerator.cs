@@ -125,6 +125,48 @@ namespace AutoCodeBuilder
                 p.Attributes.Add(new CsAttribute("CanBeNull"));
                 p.ConstValue = "null";
             }
+            // SELF
+            {
+                var cf = CreateCodeWriter()
+                    
+                    .WriteLine("var b          = new AmmyBind(bindToPath).WithBindFromSelf();")
+                    .WriteLine("bindingSettings?.Invoke(b);")
+                    .WriteLine("return this.WithProperty(propertyName, b);");                
+
+                var m = CreateMethod("WithPropertySelfBind", type, cl, cf);
+                m.AddParam("propertyName", "string");
+                m.AddParam("bindToPath", "string");
+                var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
+                p.Attributes.Add(new CsAttribute("CanBeNull"));
+                p.ConstValue = "null";
+            }
+            {
+                var cf = CreateCodeWriter()
+                    .WriteLine("var bindToPath = ExpressionTools.GetBindingPath(bindToPathExpression);")
+                    .WriteLine("return WithPropertySelfBind(propertyName, bindToPath, bindingSettings);");
+
+                var m = CreateMethod("WithPropertySelfBind<TSelf>", type, cl, cf);
+                m.AddParam("propertyName", "string");
+                m.AddParam("bindToPathExpression", "Expression<Func<TSelf, object>>");
+                var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
+                p.Attributes.Add(new CsAttribute("CanBeNull"));
+                p.ConstValue = "null";
+            }
+
+            {
+                var cf = CreateCodeWriter()
+                    .WriteLine("var propertyName = ExpressionTools.GetBindingPath(propertyNameExpression);")
+                    .WriteLine("var bindToPath = ExpressionTools.GetBindingPath(bindToPathExpression);")
+                    .WriteLine("return WithPropertySelfBind(propertyName, bindToPath, bindingSettings);");
+
+                var m = CreateMethod("WithPropertySelfBind<TSelf>", type, cl, cf);
+                m.AddParam("propertyNameExpression", "Expression<Func<TPropertyBrowser, object>>");
+                m.AddParam("bindToPathExpression", "Expression<Func<TSelf, object>>");
+                var p = m.AddParam("bindingSettings", "Action<AmmyBind>");
+                p.Attributes.Add(new CsAttribute("CanBeNull"));
+                p.ConstValue = "null";
+            }
+
             {
                 // ======== WithPropertyStaticResource
                 var cf = CreateCodeWriter()

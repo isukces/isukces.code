@@ -154,16 +154,29 @@ namespace AutoCodeBuilder
 
             void AddSelf(FluentMethodInfo mi)
             {
+                const string value = nameof(SelfBindingSource) + "." + nameof(SelfBindingSource.Instance);
                 {
-                    const string value = nameof(SelfBindingSource) + "." + nameof(SelfBindingSource.Instance);
                     var code = CreateCodeWriter()
                         .WriteLine(creator(paramName, value));
                     var m = _currentClass.AddMethod(mi.Self, _currentClass.Name)
                         .WithBody(code)
                         .WithAutocodeGeneratedAttribute(_currentClass /*code.Info*/);
-                    //m.AddParam<Type>("ancestorType", _currentClass);
-                    // m.AddParam<int?>("level", _currentClass).WithConstValueNull();
                 }
+                /*{
+
+                    //var name = CodeUtils.GetMemberPath(func);
+                    // this.WithProperty(name, value);
+                    var code = CreateCodeWriter()
+                        .WriteLine("var name = CodeUtils.GetMemberPath(func);")
+                        .WriteLine("this.WithProperty(name, value);")
+                        .WriteLine(creator(paramName, value));
+                    var m = _currentClass.AddMethod(mi.Self+"<TPropertyBrowser>", _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass /*code.Info#1#);
+                    m.AddParam("ancestorType", "Expression<Func<TPropertyBrowser, TValue>> func");
+                    
+                }*/
+               
             }
 
             void AddAncestor(FluentMethodInfo mi)
