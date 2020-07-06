@@ -4,13 +4,24 @@ using isukces.code.interfaces.Ammy;
 
 namespace isukces.code.Ammy
 {
-    public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyContainerBase,
-        IAmmyObjectBuilder<TPropertyBrowser>, IAnnotableByUser
+    public abstract class AmmyObjectBuilder : AmmyContainerBase, IAnnotableByUser
     {
-        public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
-        {
-            return ToComplexAmmyCode(ctx);
-        }
+        public abstract IAmmyCodePiece ToAmmyCode(IConversionCtx ctx);
+
+        /// <summary>
+        ///     Additional information used by custom generators
+        /// </summary>
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
+
+        public string Name { get; set; }
+
+        public ObjectNameKind NameKind { get; set; }
+    }
+
+    public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyObjectBuilder,
+        IAmmyObjectBuilder<TPropertyBrowser>
+    {
+        public override IAmmyCodePiece ToAmmyCode(IConversionCtx ctx) => ToComplexAmmyCode(ctx);
 
         public IComplexAmmyCodePiece ToComplexAmmyCode(IConversionCtx ctx)
         {
@@ -33,15 +44,6 @@ namespace isukces.code.Ammy
             NameKind = nameKind;
             return this;
         }
-
-        /// <summary>
-        ///     Additional information used by custom generators
-        /// </summary>
-        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
-
-        public string Name { get; set; }
-
-        public ObjectNameKind NameKind { get; set; }
     }
 
     public enum ObjectNameKind
