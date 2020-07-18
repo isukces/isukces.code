@@ -13,10 +13,8 @@ namespace isukces.code.Ammy
 {
     public class AmmyAutocodeGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
     {
-        public AmmyAutocodeGenerator(IAssemblyFilenameProvider filenameProvider)
-        {
+        public AmmyAutocodeGenerator(IAssemblyFilenameProvider filenameProvider) =>
             _filenameProvider = filenameProvider;
-        }
 
         public void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
         {
@@ -25,17 +23,17 @@ namespace isukces.code.Ammy
             if (CodeFileUtils.SaveIfDifferent(code, fi.FullName, false))
                 context.FileSaved(fi);
 
-            foreach (var pair in _otherFiles) 
+            foreach (var pair in _otherFiles)
                 Embed(pair.Value.CodeParts, pair.Key, pair.Value);
 
             CodeParts = null;
             _writer   = null;
-            _context = null;
+            _context  = null;
         }
 
         public void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
         {
-            _context = context;
+            _context  = context;
             CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
             _writer   = new AmmyCodeWriter();
             AfterStartAssembly(assembly, _writer, context);
@@ -53,7 +51,17 @@ namespace isukces.code.Ammy
         {
         }
 
-        private void Embed(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, string ctxEmbedFileName, [CanBeNull]IAmmyNamespaceProvider provider)
+        /// <summary>
+        ///     Creates context for Ammy builders
+        /// </summary>
+        /// <param name="prefix">mixin name prefix</param>
+        /// <param name="type">type that contains building method</param>
+        /// <returns></returns>
+        protected virtual AmmyBuilderContext CreateAmmyBuilderContext(string prefix, [CanBeNull] Type type) =>
+            new AmmyBuilderContext(prefix);
+
+        private void Embed(Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> cp, string ctxEmbedFileName,
+            [CanBeNull] IAmmyNamespaceProvider provider)
         {
             var readedFromFile = File.Exists(ctxEmbedFileName)
                 ? File.ReadAllText(ctxEmbedFileName)
@@ -101,7 +109,7 @@ namespace isukces.code.Ammy
                 prefix = args.Prefix;
             }
 
-            var ctx = CreateAmmyBuilderContext(prefix);
+            var ctx = CreateAmmyBuilderContext(prefix, type);
             method.Invoke(null, new object[] {ctx});
             var cp = CodeParts;
             if (!string.IsNullOrEmpty(ctx.EmbedFileName))
@@ -109,7 +117,7 @@ namespace isukces.code.Ammy
                 if (!_otherFiles.TryGetValue(ctx.EmbedFileName, out var info))
                     _otherFiles[ctx.EmbedFileName] = info = new EmbeddedInfo();
                 cp = info.CodeParts;
-                foreach(var i in ctx.Namespaces)
+                foreach (var i in ctx.Namespaces)
                     info.AddImportNamespace(i);
             }
 
@@ -117,11 +125,6 @@ namespace isukces.code.Ammy
                 cp.AddMixin(mixin);
             foreach (var variableDefinition in ctx.Variables)
                 cp.AddVariable(variableDefinition);
-        }
-
-        protected virtual AmmyBuilderContext CreateAmmyBuilderContext(string prefix)
-        {
-            return new AmmyBuilderContext(prefix);
         }
 
         protected Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; private set; }
@@ -135,19 +138,13 @@ namespace isukces.code.Ammy
         public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         public event EventHandler<CreateMixinPrefixEventArgs>                  CreateMixinPrefix;
 
-        private class EmbeddedInfo:INamespaceCollection, IAmmyNamespaceProvider
+        private class EmbeddedInfo : INamespaceCollection, IAmmyNamespaceProvider
         {
             public EmbeddedInfo()
             {
-                CodeParts = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
+                CodeParts  = new Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible>();
                 Namespaces = new HashSet<string>();
             }
-
-            [NotNull]
-            public Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; }
-            
- 
-            public ISet<string> Namespaces { get; } =new HashSet<string>();
 
             public void AddImportNamespace(string ns)
             {
@@ -156,7 +153,12 @@ namespace isukces.code.Ammy
                     throw new ArgumentException(nameof(ns));
                 Namespaces.Add(ns);
             }
- 
+
+            [NotNull]
+            public Dictionary<AmmyCodePartsKey, IAmmyCodePieceConvertible> CodeParts { get; }
+
+
+            public ISet<string> Namespaces { get; } = new HashSet<string>();
         }
 
         public class CreateMixinPrefixEventArgs : EventArgs
