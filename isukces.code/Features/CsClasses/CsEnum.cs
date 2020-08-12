@@ -17,7 +17,11 @@ namespace isukces.code
         public void MakeCode(ICsCodeWriter writer)
         {
             CsClass.WriteAttributes(writer, Attributes);
-            writer.Open(Visibility.ToCsCode() + " enum {0}", Name);
+            var def = $"{Visibility.ToCsCode()} enum {Name}";
+            var ut  = UnderlyingType?.Trim();
+            if (!string.IsNullOrEmpty(ut))
+                def += ": " + ut;
+            writer.Open(def);
             if (Items != null)
             {
                 var cnt = Items.Count;
@@ -30,5 +34,7 @@ namespace isukces.code
 
         public string            Name  { get; set; }
         public IList<CsEnumItem> Items { get; set; }
+
+        public string UnderlyingType { get; set; }
     }
 }
