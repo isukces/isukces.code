@@ -29,6 +29,14 @@ namespace isukces.code
 
         public static CsAttribute MkAttribute(string attributeName) => new CsAttribute(attributeName);
 
+        public static void WriteAttributes(ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
+        {
+            if (attributes == null || attributes.Count == 0)
+                return;
+            foreach (var j in attributes)
+                writer.WriteLine("[{0}]", j.Code);
+        }
+
         private static void Emit_single_field(ICsCodeWriter writer, CsClassField field)
         {
             writer.OpenCompilerIf(field);
@@ -87,14 +95,6 @@ namespace isukces.code
         {
             var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
             return v;
-        }
-
-        public static void WriteAttributes(ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
-        {
-            if (attributes == null || attributes.Count == 0)
-                return;
-            foreach (var j in attributes)
-                writer.WriteLine("[{0}]", j.Code);
         }
 
 
@@ -182,6 +182,23 @@ namespace isukces.code
         {
             var encodedValue = plainValue == null ? "null" : plainValue.CsEncode();
             return AddConst(name, "string", encodedValue);
+        }
+
+        public CsEvent AddEvent(string name, string type)
+        {
+            // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
+            var ev = new CsEvent(name, type);
+            _events.Add(ev);
+            return ev;
+        }
+
+        public CsEvent AddEvent<T>(string name)
+        {
+            // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
+            var type = this.GetTypeName<T>();
+            var ev   = new CsEvent(name, type);
+            _events.Add(ev);
+            return ev;
         }
 
         public CsClassField AddField(string fieldName, Type type) => AddField(fieldName, GetTypeName(type));
@@ -298,6 +315,8 @@ namespace isukces.code
             addEmptyLineBeforeRegion = Emit_properties(writer, addEmptyLineBeforeRegion);
             // Fields
             addEmptyLineBeforeRegion = Emit_fields(writer, addEmptyLineBeforeRegion);
+            // Events
+            addEmptyLineBeforeRegion = Emit_events(writer, addEmptyLineBeforeRegion);
             // Nested
             Emit_nested(writer, addEmptyLineBeforeRegion);
             writer.Close();
@@ -463,6 +482,31 @@ namespace isukces.code
             return addEmptyLineBeforeRegion;
         }
 
+        private bool Emit_events(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
+        {
+            if (!_events.Any())
+                return addEmptyLineBeforeRegion;
+            writer.EmptyLine(!addEmptyLineBeforeRegion);
+            addEmptyLineBeforeRegion = Action(writer, _events.OrderBy(a => a.Name), "Events",
+                ev =>
+                {
+                    writer.OpenCompilerIf(ev);
+                    try
+                    {
+                        // public event EventHandler<BeforeSaveEventArgs> BeforeSave;
+                        var v    = ev.Visibility.ToCsCode();
+                        var code = $"{v} event {ev.Type} {ev.Name};";
+                        writer.WriteLine(code.TrimStart());
+                    }
+                    finally
+                    {
+                        writer.CloseCompilerIf(ev);
+                    }
+                }
+            );
+            return addEmptyLineBeforeRegion;
+        }
+
         private bool Emit_fields(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
             if (!_fields.Any()) return addEmptyLineBeforeRegion;
@@ -623,6 +667,11 @@ namespace isukces.code
             get { return _methods; }
         }
 
+        public IReadOnlyList<CsEvent> Events
+        {
+            get { return _events; }
+        }
+
         public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
         private readonly StringBuilder _extraComment = new StringBuilder();
@@ -635,6 +684,8 @@ namespace isukces.code
         ///     methods
         /// </summary>
         private readonly List<CsMethod> _methods = new List<CsMethod>();
+
+        private readonly List<CsEvent> _events = new List<CsEvent>();
 
         private string _name = string.Empty;
         private string _baseClass = string.Empty;
