@@ -14,13 +14,18 @@ namespace isukces.code.Tests
             var ns = f.GetOrCreateNamespace("Tests");
 
             var cl = new CsClass("Demo") {Kind = CsNamespaceMemberKind.Class, Owner = ns};
-            cl.AddEvent<EventHandler<EventArgs>>("Sample");
+            var ev = cl.AddEvent<EventHandler<EventArgs>>("Sample", "Description");
+            ev.Attributes.Add(new CsAttribute("SampleAttribute"));
             
             ICsCodeWriter w = new CsCodeWriter();
             cl.MakeCode(w);
             var expected = @"
 public class Demo
 {
+    /// <summary>
+    /// Description
+    /// </summary>
+    [Sample]
     public event System.EventHandler<System.EventArgs> Sample;
 }
 

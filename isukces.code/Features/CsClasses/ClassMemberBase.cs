@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using isukces.code.interfaces;
 
 namespace isukces.code
 {
     public abstract class ClassMemberBase : IAttributable, ICsClassMember
     {
-
         public string Description { get; set; }
 
         public IList<ICsAttribute> Attributes

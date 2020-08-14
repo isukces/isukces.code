@@ -43,8 +43,8 @@ namespace isukces.code
             writer.WriteComment(field);
             try
             {
-                WriteAttributes(writer, field.Attributes);
                 WriteSummary(writer, field.Description);
+                WriteAttributes(writer, field.Attributes);
                 if (field.IsConst)
                 {
                     var v = field.Visibility.ToCsCode();
@@ -184,19 +184,19 @@ namespace isukces.code
             return AddConst(name, "string", encodedValue);
         }
 
-        public CsEvent AddEvent(string name, string type)
+        public CsEvent AddEvent(string name, string type, string description = null)
         {
             // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
-            var ev = new CsEvent(name, type);
+            var ev = new CsEvent(name, type, description);
             _events.Add(ev);
             return ev;
         }
 
-        public CsEvent AddEvent<T>(string name)
+        public CsEvent AddEvent<T>(string name, string description = null)
         {
             // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
             var type = this.GetTypeName<T>();
-            var ev   = new CsEvent(name, type);
+            var ev   = new CsEvent(name, type, description);
             _events.Add(ev);
             return ev;
         }
@@ -493,6 +493,8 @@ namespace isukces.code
                     writer.OpenCompilerIf(ev);
                     try
                     {
+                        WriteSummary(writer, ev.Description);
+                        WriteAttributes(writer, ev.Attributes);
                         // public event EventHandler<BeforeSaveEventArgs> BeforeSave;
                         var v    = ev.Visibility.ToCsCode();
                         var code = $"{v} event {ev.Type} {ev.Name};";
