@@ -497,8 +497,16 @@ namespace isukces.code
                         WriteAttributes(writer, ev.Attributes);
                         // public event EventHandler<BeforeSaveEventArgs> BeforeSave;
                         var v    = ev.Visibility.ToCsCode();
-                        var code = $"{v} event {ev.Type} {ev.Name};";
-                        writer.WriteLine(code.TrimStart());
+                        var code = $"{v} event {ev.Type} {ev.Name};".TrimStart();
+                        
+                        if (ev.LongDefinition)
+                        {
+                            writer.Open(code);
+                            writer.WriteLine($"add {{ {ev.FieldName} += value; }}");
+                            writer.WriteLine($"remove {{ {ev.FieldName} -= value; }}");
+                            writer.Close();
+                        } else
+                            writer.WriteLine(code);
                     }
                     finally
                     {
@@ -511,10 +519,22 @@ namespace isukces.code
 
         private bool Emit_fields(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
-            if (!_fields.Any()) return addEmptyLineBeforeRegion;
+            var all = _fields.OrderBy(a => a.IsConst).ToList();
+            foreach(var i in  _events.Where(a => a.LongDefinition))
+            {
+                var eventField = new CsClassField(i.FieldName, i.Type, i.GetFieldDescription());
+                all.Add(eventField);
+            }
+            
+            if (!all.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = Action(writer, _fields.OrderBy(a => a.IsConst), "Fields",
-                field => { Emit_single_field(writer, field); }
+
+
+            addEmptyLineBeforeRegion = Action(writer, all, "Fields",
+                field =>
+                {
+                    Emit_single_field(writer, field);
+                }
             );
             return addEmptyLineBeforeRegion;
         }

@@ -13,7 +13,8 @@ namespace isukces.code
         {
         }
 
-        public CsClassField(string name, string type, string description) : base(name, type, description)
+        public CsClassField(string name, string type, string description) 
+            : base(name, type, description)
         {
         }
 
