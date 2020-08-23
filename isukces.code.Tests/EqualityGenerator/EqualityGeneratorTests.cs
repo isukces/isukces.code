@@ -84,8 +84,15 @@ namespace isukces.code.Tests.EqualityGenerator
         public void T09_Should_create_equality_with_bools()
         {
             DoTest<ClassWithBools>();
-         
         }
+        
+        
+        [Fact]
+        public void T10_Should_create_get_hash_code_with_special_hashCode_fields()
+        {
+            DoTest<TestStructWithSpecialHashCodeField>();
+        }
+
 
         public class MyValueChecker : AbstractMemberNullValueChecker
         {

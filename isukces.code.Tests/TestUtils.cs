@@ -45,8 +45,9 @@ namespace isukces.code.Tests
                 s.Dispose();
             }
 
-            if (expected != actual)
-                Save(true);
+            var isNullOrEmpty = string.IsNullOrEmpty(expected.Trim());
+            if (expected != actual || isNullOrEmpty)
+                Save(!isNullOrEmpty);
             Assert.Equal(expected, actual);
         }
     }

@@ -112,16 +112,15 @@ namespace isukces.code.AutoCode
                 }
 
                 _canBeNull = !NullChecker.TypeIsAlwaysNotNull(type);
-
                 var properties = typeInfo.GetProperties(GeneratorsHelper.AllInstance);
                 var fields = string.IsNullOrEmpty(_attEq?.UseOnlyPropertiesOrFields)
                     ? new FieldInfo[0]
                     : typeInfo.GetFields(GeneratorsHelper.AllInstance);
-                _props = properties.Select(PropertyOrFieldInfo.FromProperty)
+                _propsAll = properties.Select(PropertyOrFieldInfo.FromProperty)
                     .Concat(fields.Select(PropertyOrFieldInfo.FromField))
                     .ToArray();
 
-                _props = FilterProperties(_props, _attEq);
+                _propsForEqual = FilterProperties(_propsAll, _attEq);
 
                 var implementer = new EqualityFeatureImplementer(_class, type)
                 {
@@ -135,7 +134,7 @@ namespace isukces.code.AutoCode
                 if (_attEq != null)
                 {
                     var otherName = implementer.OtherArgName;
-                    var equalityExpressions = _props
+                    var equalityExpressions = _propsForEqual
                         .Select(a =>
                         {
                             var template = FindEqualsCode(a);
@@ -195,7 +194,7 @@ namespace isukces.code.AutoCode
 
                 PropertyOrFieldInfo FindPropertyOrFieldInfo()
                 {
-                    var p = _props.Where(a => a.Name == fieldOrPropertyName).ToArray();
+                    var p = _propsAll.Where(a => a.Name == fieldOrPropertyName).ToArray();
                     if (p.Length == 1)
                         return p[0];
 
@@ -467,10 +466,13 @@ namespace isukces.code.AutoCode
             private IEnumerable<GetHashCodeExpressionDataWithMemberInfo> GetGetHashCodeExpressions()
             {
                 var filter = _attEq?.GetHashCodeProperties.ToHashSet();
-                for (var i = 0; i < _props.Length; i++)
+                var hasFilter    = filter != null && filter.Any();
+                var props  = hasFilter ? _propsAll : _propsForEqual;
+                
+                for (var i = 0; i < props.Length; i++)
                 {
-                    var prop = _props[i];
-                    if (filter != null && filter.Any() && !filter.Contains(prop.Name))
+                    var prop = props[i];
+                    if (hasFilter && !filter.Contains(prop.Name))
                         continue;
                     if (IsToHeavyToGetHashCode(prop.ValueType))
                         continue;
@@ -503,7 +505,8 @@ namespace isukces.code.AutoCode
 
             private bool _canBeNull;
             private CsClass _class;
-            private PropertyOrFieldInfo[] _props;
+            private PropertyOrFieldInfo[] _propsAll;
+            private PropertyOrFieldInfo[] _propsForEqual;
             private Type _type;
             
             

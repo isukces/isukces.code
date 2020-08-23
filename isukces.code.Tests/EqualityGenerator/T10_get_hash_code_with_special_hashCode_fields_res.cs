@@ -1,0 +1,39 @@
+// ReSharper disable All
+using System;
+
+namespace isukces.code.Tests.EqualityGenerator
+{
+    partial struct TestStructWithSpecialHashCodeField : isukces.code.AutoCode.IAutoEquatable<TestStructWithSpecialHashCodeField>
+    {
+        public override bool Equals(object other)
+        {
+            if (other is null) return false;
+            if (other.GetType() != typeof(TestStructWithSpecialHashCodeField)) return false;
+            return Equals((TestStructWithSpecialHashCodeField)other);
+        }
+
+        public bool Equals(TestStructWithSpecialHashCodeField other)
+        {
+            if (IsEmpty) return other.IsEmpty;
+            if (other.IsEmpty) return false;
+            return StringComparer.OrdinalIgnoreCase.Equals(Name, other.Name);
+        }
+
+        public override int GetHashCode()
+        {
+            if (IsEmpty) return 0;
+            return HashCode;
+        }
+
+        public static bool operator !=(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)
+        {
+            return !Equals(left, right);
+        }
+
+        public static bool operator ==(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)
+        {
+            return Equals(left, right);
+        }
+
+    }
+}
