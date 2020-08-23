@@ -52,7 +52,7 @@ namespace isukces.code.Tests
 
         [Theory]
         [InlineData("Number1", "Number1 != 0")]
-        [InlineData("Number2", "Number2 != null && Number2.Value != 0")]
+        [InlineData("Number2", "Number2.HasValue && Number2.Value != 0")]
         [InlineData("Name", "!string.IsNullOrEmpty(Name)")]
         [InlineData("OtherValue", "!OtherValue.Equals(Foo)")]
         public void T05_ShouldSerializeGenerator_tests(string propertyName, string expectedCode)
