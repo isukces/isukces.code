@@ -21,8 +21,7 @@ namespace isukces.code.Tests.EqualityGenerator
 
         public override int GetHashCode()
         {
-            if (IsEmpty) return 0;
-            return HashCode;
+            return IsEmpty ? 0 : HashCode;
         }
 
         public static bool operator !=(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)

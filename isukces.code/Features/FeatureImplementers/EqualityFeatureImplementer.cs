@@ -19,10 +19,7 @@ namespace isukces.code.FeatureImplementers
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string GetSuffix(int cnt)
-        {
-            return cnt == 0 ? "" : (cnt + 1).ToCsString();
-        }
+        private static string GetSuffix(int cnt) => cnt == 0 ? "" : (cnt + 1).ToCsString();
 
         public void CreateCode()
         {
@@ -62,7 +59,8 @@ namespace isukces.code.FeatureImplementers
             return this;
         }
 
-        public EqualityFeatureImplementer WithGetHashCodeExpressions(IEnumerable<GetHashCodeExpressionDataWithMemberInfo> expressions)
+        public EqualityFeatureImplementer WithGetHashCodeExpressions(
+            IEnumerable<GetHashCodeExpressionDataWithMemberInfo> expressions)
         {
             if (GetHashCodeExpressions == null)
                 GetHashCodeExpressions = new List<GetHashCodeExpressionDataWithMemberInfo>();
@@ -209,11 +207,11 @@ namespace isukces.code.FeatureImplementers
                 var getHashCodeExpression = CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Precomputed
                     ? GetHashCodeFieldName
                     : nameof(GetHashCode) + "()";
-                
+
                 cw.WriteLine(
                     $"if ({getHashCodeExpression} != {OtherArgName}.{getHashCodeExpression}) return false;");
             }
-            
+
             if (!string.IsNullOrEmpty(IsEmptyObjectPropertyName))
             {
                 cw.WriteLine(
@@ -261,8 +259,6 @@ namespace isukces.code.FeatureImplementers
                 .WithBody(cw);
             m.AddParam(OtherArgName, "object");
         }
-
-        const string GetHashCodeFieldName         = "_cachedHashCode";
 
         private void WriteGetHashCode()
         {
@@ -317,24 +313,44 @@ namespace isukces.code.FeatureImplementers
 
         private CsMethod WriteGetHashCode(string methodName)
         {
-            var cw = new CsCodeWriter();
-            if (!string.IsNullOrEmpty(IsEmptyObjectPropertyName))
-                cw.WriteLine($"if ({IsEmptyObjectPropertyName}) return 0;");
+            CsCodeWriter WriteGetHashCodeInternal()
+            {
+                var cw          = new CsCodeWriter();
+                var expressions = GetHashCodeExpressions;
+                if (expressions.Count == 0)
+                {
+                    cw.WriteLine("return 0;");
+                    return cw;
+                }
 
-            GetHashCodeEmiter.Write(GetHashCodeExpressions, cw);
-          
+                if (!string.IsNullOrEmpty(IsEmptyObjectPropertyName))
+                {
+                    if (expressions.Count == 1)
+                    {
+                        var q = expressions[0].Code.ExpressionWithOffset;
+                        cw.WriteLine($"return {IsEmptyObjectPropertyName} ? 0 : {q};");
+                        return cw;
+                    }
+
+                    cw.WriteLine($"if ({IsEmptyObjectPropertyName}) return 0;");
+                }
+
+                GetHashCodeEmiter.Write(expressions, cw);
+                return cw;
+            }
+
+            var cw1 = WriteGetHashCodeInternal();
             var m = _class.AddMethod(methodName, "int")
-                .WithBody(cw);
+                .WithBody(cw1);
 
             return m;
         }
 
-        public static int DefaultGethashcodeMultiply = 397;
-
         public List<EqualsExpressionData>    EqualityExpressions  { get; set; } = new List<EqualsExpressionData>();
         public List<CompareToExpressionData> CompareToExpressions { get; set; } = new List<CompareToExpressionData>();
 
-        public List<GetHashCodeExpressionDataWithMemberInfo> GetHashCodeExpressions { get; set; } = new List<GetHashCodeExpressionDataWithMemberInfo>();
+        public List<GetHashCodeExpressionDataWithMemberInfo> GetHashCodeExpressions { get; set; } =
+            new List<GetHashCodeExpressionDataWithMemberInfo>();
 
         public Features ImplementFeatures { get; set; }
 
@@ -346,10 +362,13 @@ namespace isukces.code.FeatureImplementers
         ///     Name of property that denotes if object is empty. If true then no other properties will be compared.
         /// </summary>
         public string IsEmptyObjectPropertyName { get; set; }
+
         public bool UseGetHashCodeInEqualityChecking { get; set; }
 
-        public GetHashCodeImplementationKind CachedGetHashCodeImplementation  { get; set; }
-        public bool                          CanBeNull                        { get; set; }
+        public GetHashCodeImplementationKind CachedGetHashCodeImplementation { get; set; }
+        public bool                          CanBeNull                       { get; set; }
+
+        public static int DefaultGethashcodeMultiply = 397;
 
 
         public static IReadOnlyList<string> CompareOperators = "> < >= <=".Split(' ');
@@ -366,5 +385,7 @@ namespace isukces.code.FeatureImplementers
             CompareOperators = 4,
             All = Equality | CompareTo | CompareOperators
         }
+
+        private const string GetHashCodeFieldName = "_cachedHashCode";
     }
 }
