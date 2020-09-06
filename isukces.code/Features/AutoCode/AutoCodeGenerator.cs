@@ -58,7 +58,7 @@ namespace isukces.code.AutoCode
             _classes = new Dictionary<TypeProvider, CsClass>();
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
-            var context = new SimpleAutoCodeGeneratorContext(_csFile, GetOrCreateClass);
+            var context = CreateAutoCodeGeneratorContext(_csFile);
             foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
                 i.AssemblyStart(assembly, context);
 
@@ -91,6 +91,12 @@ namespace isukces.code.AutoCode
                 AnyFileSaved = true;
         }
 
+        protected virtual IAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file)
+        {
+            var context = new SimpleAutoCodeGeneratorContext(file, GetOrCreateClass);
+            return context;
+        }
+
         /*public TConfig ResolveConfig<TConfig>() where TConfig : class, IAutoCodeConfiguration, new()
         {
             return (TConfig)ResolveConfigInternal(typeof(TConfig));
@@ -110,8 +116,9 @@ namespace isukces.code.AutoCode
             return WithGenerator(generator);
         }
 
-        private CsClass GetOrCreateClass(TypeProvider type)
+        protected CsClass GetOrCreateClass(TypeProvider type)
         {
+            // have to be protected due to CreateAutoCodeGeneratorContext method 
             return _csFile.GetOrCreateClass(type, _classes);
         }
 

@@ -31,8 +31,9 @@ namespace isukces.code.Tests
             return _file.GetOrCreateNamespace(namespaceName);
         }
 
-        public IList<object> Tags { get; } = new List<object>();
-        public string Code => _file.GetCode();
+        public IList<object> Tags         { get; } = new List<object>();
+        public bool          AnyFileSaved { get; }
+        public string        Code         => _file.GetCode();
 
         private CsFile _file = new CsFile();
     }

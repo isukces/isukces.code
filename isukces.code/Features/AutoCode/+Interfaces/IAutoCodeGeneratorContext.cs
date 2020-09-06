@@ -17,6 +17,8 @@ namespace isukces.code.AutoCode
 
         [NotNull]
         IList<object> Tags { get; }
+
+        bool AnyFileSaved { get; }
     }
 
     public static class AutoCodeGeneratorContextExtensions
