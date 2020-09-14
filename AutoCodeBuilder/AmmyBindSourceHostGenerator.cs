@@ -1,8 +1,8 @@
 using System;
-using isukces.code;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 
 /*
 namespace AutoCodeBuilder

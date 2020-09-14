@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     [Obsolete]
     public class CodeMaker

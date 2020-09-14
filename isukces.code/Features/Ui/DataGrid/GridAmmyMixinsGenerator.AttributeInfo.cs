@@ -1,4 +1,4 @@
-namespace isukces.code.Ui.DataGrid
+namespace iSukces.Code.Ui.DataGrid
 {
     public abstract partial class GridAmmyMixinsGenerator
     {

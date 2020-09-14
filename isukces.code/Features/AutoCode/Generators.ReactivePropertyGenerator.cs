@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public partial class Generators
     {

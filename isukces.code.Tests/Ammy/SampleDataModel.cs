@@ -1,4 +1,4 @@
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class SampleDataModel
     {

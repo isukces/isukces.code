@@ -1,8 +1,8 @@
 ﻿using System.IO;
 using System.Text;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.CodeWrite
+namespace iSukces.Code.CodeWrite
 {
     /*
     public class CodeWriter : ICodeWriter

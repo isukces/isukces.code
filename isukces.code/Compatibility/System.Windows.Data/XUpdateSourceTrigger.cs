@@ -1,4 +1,4 @@
-namespace isukces.code.Compatibility.System.Windows.Data
+namespace iSukces.Code.Compatibility.System.Windows.Data
 {
     /// <summary>
     ///     Reflection only enum

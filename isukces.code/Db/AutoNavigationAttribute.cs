@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.Db
+namespace iSukces.Code.Db
 {
     public class AutoNavigationAttribute : Attribute
     {

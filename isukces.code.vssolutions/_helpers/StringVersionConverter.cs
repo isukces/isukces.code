@@ -1,7 +1,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     internal class StringVersionConverter : JsonConverter
     {

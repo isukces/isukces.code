@@ -1,7 +1,7 @@
-using isukces.code.Compatibility.System.Windows;
-using isukces.code.Compatibility.System.Windows.Data;
+using iSukces.Code.Compatibility.System.Windows;
+using iSukces.Code.Compatibility.System.Windows.Data;
 
-namespace isukces.code.Compatibility.Telerik
+namespace iSukces.Code.Compatibility.Telerik
 {
     /// <summary>
     ///     Reflection only definition

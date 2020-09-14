@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class PackageId : IEquatable<PackageId>, IComparable<PackageId>, IComparable, INuspec
     {

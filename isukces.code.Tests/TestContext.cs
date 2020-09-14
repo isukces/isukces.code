@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using isukces.code.AutoCode;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+using iSukces.Code.AutoCode;
+using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class TestContext : IAutoCodeGeneratorContext
     {

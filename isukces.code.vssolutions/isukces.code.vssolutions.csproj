@@ -3,27 +3,27 @@
   <PropertyGroup>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2019</Copyright>
-    <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
+    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2020</Copyright>
+    <TargetFrameworks>net451;netstandard2.0;netcoreapp3.1</TargetFrameworks>
     <SignAssembly>false</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Product>isukces.code</Product>
+    <Product>iSukces.Code</Product>
     <PackageId>iSukces.Code.VsSolutions</PackageId>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.19348.11</AssemblyVersion>
-    <Version>1.0.19348.11</Version>
-    <FileVersion>1.0.19348.11</FileVersion>
+    <AssemblyVersion>1.0.20256.12</AssemblyVersion>
+    <Version>1.0.20256.12</Version>
+    <FileVersion>1.0.20256.12</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageTags>C#</PackageTags>
     <Title>Microsoft Visual Studio solution related structures</Title>
-    <PackageProjectUrl>https://github.com/isukces/isukces.code</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/isukces/isukces.code/blob/master/LICENSE</PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/isukces/isukces.code</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
     <LangVersion>7</LangVersion>
   </PropertyGroup>
   <ItemGroup>

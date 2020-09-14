@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public partial class Auto
     {

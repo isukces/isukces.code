@@ -1,7 +1,7 @@
 using System.IO;
 using System.Reflection;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public class SimpleAssemblyFilenameProvider : IAssemblyFilenameProvider
     {

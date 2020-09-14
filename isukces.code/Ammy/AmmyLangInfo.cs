@@ -1,6 +1,6 @@
-﻿using isukces.code.interfaces;
+﻿using iSukces.Code.Interfaces;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class AmmyLangInfo : ILangInfo
     {

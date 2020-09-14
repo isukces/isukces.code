@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.Serenity
+namespace iSukces.Code.Serenity
 {
     public class SerenityEntityProperty : IAttributable
     {

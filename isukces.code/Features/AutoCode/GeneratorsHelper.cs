@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public static class GeneratorsHelper
     {

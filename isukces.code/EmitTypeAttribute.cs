@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Struct)]
     public class EmitTypeAttribute : Attribute

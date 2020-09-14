@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Irony.Interpreter.Ast;
-using isukces.code;
-using isukces.code.Compatibility.System.Windows.Data;
+using iSukces.Code;
+using iSukces.Code.Compatibility.System.Windows.Data;
 using X=Bitbrains.AmmyParser.AmmyGrammar;
 
 namespace Bitbrains.AmmyParser

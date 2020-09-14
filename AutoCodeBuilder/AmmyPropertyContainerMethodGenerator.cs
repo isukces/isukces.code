@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using isukces.code;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 
 namespace AutoCodeBuilder
@@ -19,9 +19,9 @@ namespace AutoCodeBuilder
 
             context.AddNamespace("System.Linq.Expressions");
             context.AddNamespace("System");
-            context.AddNamespace("isukces.code.interfaces.Ammy");
-            context.AddNamespace("isukces.code.Ammy");
-            context.AddNamespace("isukces.code");
+            context.AddNamespace("iSukces.Code.Interfaces.Ammy");
+            context.AddNamespace("iSukces.Code.Ammy");
+            context.AddNamespace("iSukces.Code");
             context.AddNamespace<KeyValuePair<string, string>>();
             context.AddNamespace(typeof(AmmyHelper));
             context.AddNamespace<NotNullAttribute>();

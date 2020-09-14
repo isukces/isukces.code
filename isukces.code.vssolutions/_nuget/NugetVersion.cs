@@ -2,7 +2,7 @@ using System;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class NugetVersion : IEquatable<NugetVersion>, IComparable<NugetVersion>
     {

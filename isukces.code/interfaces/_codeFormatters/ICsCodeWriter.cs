@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public interface ICsCodeWriter : ICodeWriter
     {

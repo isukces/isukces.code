@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
-using isukces.code.IO;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
+using iSukces.Code.IO;
 
-namespace isukces.code.Ui.DataGrid
+namespace iSukces.Code.Ui.DataGrid
 {
     public abstract partial class GridAmmyMixinsGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
     {

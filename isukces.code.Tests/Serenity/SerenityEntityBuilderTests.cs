@@ -1,11 +1,11 @@
 using System;
 using System.Windows;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
-using isukces.code.Serenity;
+using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Serenity;
 using Xunit;
 
-namespace isukces.code.Tests.Serenity
+namespace iSukces.Code.Tests.Serenity
 {
     public class SerenityEntityBuilderTests
     {
@@ -65,7 +65,7 @@ namespace isukces.code.Tests.Serenity
             file.MakeCode(w);
             var newExpected = Encode(w.Code);
           var expected=  @"// ReSharper disable All
-using isukces.code.Tests.Serenity;
+using iSukces.Code.Tests.Serenity;
 
 namespace Cloud.Common
 {

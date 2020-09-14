@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class PrincipalTests
     {

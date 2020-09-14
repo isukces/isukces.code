@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using isukces.code.Ammy;
-using isukces.code.Compatibility.System.Windows.Data;
+using iSukces.Code.Ammy;
+using iSukces.Code.Compatibility.System.Windows.Data;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ui.DataGrid
+namespace iSukces.Code.Ui.DataGrid
 {
     public abstract partial class DataGridConfigurationProvider
     {

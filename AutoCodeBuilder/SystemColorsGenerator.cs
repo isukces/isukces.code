@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
 
 namespace AutoCodeBuilder
 {

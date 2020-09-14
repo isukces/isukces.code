@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.Serenity
+namespace iSukces.Code.Serenity
 {
     public static class SerenityCodeSettings
     {        

@@ -1,6 +1,6 @@
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public partial class CsExpression
     {

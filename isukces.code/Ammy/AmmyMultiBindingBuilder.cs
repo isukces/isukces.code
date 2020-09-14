@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public partial class AmmyMultiBindingBuilder : IAmmyCodePieceConvertible
     {

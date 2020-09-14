@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class StringExtensionsTests
     {

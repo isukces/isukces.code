@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public class DictionaryList<TKey, TValue> 
     {

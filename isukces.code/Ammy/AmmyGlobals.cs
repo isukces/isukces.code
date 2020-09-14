@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class AmmyGlobals
     {

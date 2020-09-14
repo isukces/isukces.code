@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.Ui
+namespace iSukces.Code.Ui
 {
     /// <summary>
     ///     Decorate enum type with LookupInfoAttribute in order to point type that implements IEnumLookupProvider

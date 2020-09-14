@@ -1,9 +1,9 @@
-using isukces.code.Ammy;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Ammy;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Interfaces.Ammy;
 using Xunit;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class MixinBuilderTests
     {
@@ -24,7 +24,7 @@ namespace isukces.code.Tests.Ammy
             var code = GenCode(m.WrappedMixin);
 
             const string expected =
-                @"mixin MyMixin() for isukces.code.Tests.Ammy.TextBox { Text: bind ""Name"" from $ancestor<isukces.code.Tests.Ammy.SampleDataModel> }";
+                @"mixin MyMixin() for iSukces.Code.Tests.Ammy.TextBox { Text: bind ""Name"" from $ancestor<iSukces.Code.Tests.Ammy.SampleDataModel> }";
             Assert.Equal(expected, code);
         }
 
@@ -37,7 +37,7 @@ namespace isukces.code.Tests.Ammy
             var code = GenCode(m.WrappedMixin);
 
             var expected =
-                @"mixin MyMixin() for isukces.code.Tests.Ammy.TextBox { Text: bind ""Name"" from $ancestor<isukces.code.Tests.Ammy.SampleDataModel> set [Mode: TwoWay] }";
+                @"mixin MyMixin() for iSukces.Code.Tests.Ammy.TextBox { Text: bind ""Name"" from $ancestor<iSukces.Code.Tests.Ammy.SampleDataModel> set [Mode: TwoWay] }";
             Assert.Equal(expected, code);
         }
     }

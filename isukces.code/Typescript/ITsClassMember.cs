@@ -1,4 +1,4 @@
-﻿namespace isukces.code.Typescript
+﻿namespace iSukces.Code.Typescript
 {
     public interface ITsClassMember : ITsCodeProvider
     {

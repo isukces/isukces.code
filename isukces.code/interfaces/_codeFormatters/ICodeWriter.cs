@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public interface ICodeWriter
     {

@@ -1,4 +1,4 @@
-namespace isukces.code.Compatibility.Telerik
+namespace iSukces.Code.Compatibility.Telerik
 {
     /// <summary>
     ///     Reflection only definition

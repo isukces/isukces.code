@@ -1,4 +1,4 @@
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public static class Locking
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public sealed class SolutionProject : IEquatable<SolutionProject>
     {

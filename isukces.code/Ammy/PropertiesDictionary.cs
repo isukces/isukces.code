@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class PropertiesDictionary : IDictionary<string, object>
     {

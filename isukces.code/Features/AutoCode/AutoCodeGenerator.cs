@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public partial class AutoCodeGenerator  
     {
@@ -87,11 +87,14 @@ namespace isukces.code.AutoCode
 
             if (_csFile.SaveIfDifferent(fileName))
                 AnyFileSaved = true;
+            
+            context.Finalize();
+            
             if (context.AnyFileSaved)
                 AnyFileSaved = true;
         }
 
-        protected virtual IAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file)
+        protected virtual IFinalizableAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file)
         {
             var context = new SimpleAutoCodeGeneratorContext(file, GetOrCreateClass);
             return context;

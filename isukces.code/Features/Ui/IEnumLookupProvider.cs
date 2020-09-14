@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.Ui
+namespace iSukces.Code.Ui
 {
     public interface IEnumLookupProvider
     {

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public interface IAutoCodeGeneratorContext
     {
@@ -19,6 +19,11 @@ namespace isukces.code.AutoCode
         IList<object> Tags { get; }
 
         bool AnyFileSaved { get; }
+    }
+
+    public interface IFinalizableAutoCodeGeneratorContext:IAutoCodeGeneratorContext
+    {
+        void Finalize();
     }
 
     public static class AutoCodeGeneratorContextExtensions

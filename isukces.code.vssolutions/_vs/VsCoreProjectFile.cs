@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class VsCoreProjectFile : VsProjectFile
     {
@@ -74,9 +74,9 @@ namespace isukces.code.vssolutions
     <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
     <PackageReference Include="xunit.extensibility.execution" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
-    <ProjectReference Include="..\isukces.code.Serenity\isukces.code.Serenity.csproj" />
-    <ProjectReference Include="..\isukces.code.vssolutions\isukces.code.vssolutions.csproj" />
-    <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
+    <ProjectReference Include="..\iSukces.Code.Serenity\iSukces.Code.Serenity.csproj" />
+    <ProjectReference Include="..\iSukces.Code.vssolutions\iSukces.Code.vssolutions.csproj" />
+    <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
   </ItemGroup>
              */
             foreach (var pr in ProjectReferences)
@@ -345,7 +345,7 @@ namespace isukces.code.vssolutions
     <None Remove=""isukces.Serenity.csproj.DotSettings"" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include=""isukces.code"" Version=""1.0.17221.22"" />
+    <PackageReference Include=""iSukces.Code"" Version=""1.0.17221.22"" />
     <PackageReference Include=""newtonsoft.json"" Version=""10.0.3"" />
   </ItemGroup>
 </Project>

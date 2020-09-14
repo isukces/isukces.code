@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public partial class MixinBuilder<TPropertyBrowser> : IAmmyContainer, IAmmyCodePieceConvertible
     {

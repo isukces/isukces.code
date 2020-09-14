@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.AutoCode;
+using iSukces.Code.AutoCode;
 using JetBrains.Annotations;
 
-namespace isukces.code.interfaces.Ammy
+namespace iSukces.Code.Interfaces.Ammy
 {
     public interface IConversionCtx
     {

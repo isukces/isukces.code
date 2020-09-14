@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
 using JetBrains.Annotations;
 
-namespace isukces.code.interfaces.Ammy
+namespace iSukces.Code.Interfaces.Ammy
 {
     public interface IAmmyNamespaceProvider
     {

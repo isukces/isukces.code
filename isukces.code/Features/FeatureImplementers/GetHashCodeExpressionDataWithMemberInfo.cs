@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace isukces.code.FeatureImplementers
+namespace iSukces.Code.FeatureImplementers
 {
     public struct GetHashCodeExpressionDataWithMemberInfo : IComparable<GetHashCodeExpressionDataWithMemberInfo>,
         IComparable

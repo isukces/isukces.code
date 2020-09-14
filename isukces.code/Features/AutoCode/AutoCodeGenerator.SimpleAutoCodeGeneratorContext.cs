@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+using iSukces.Code.CodeWrite;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public partial class AutoCodeGenerator
     {
-        public class SimpleAutoCodeGeneratorContext : IAutoCodeGeneratorContext
+        public class SimpleAutoCodeGeneratorContext : IFinalizableAutoCodeGeneratorContext
         {
             public SimpleAutoCodeGeneratorContext(Func<TypeProvider, CsClass> getOrCreateClassFunc,
                 Action<string> addNamespaceAction, Func<string, CsNamespace> getOrCreateNamespaceFunc)
             {
-                GetOrCreateClassFunc = getOrCreateClassFunc;
-                AddNamespaceAction   = addNamespaceAction;
+                GetOrCreateClassFunc     = getOrCreateClassFunc;
+                AddNamespaceAction       = addNamespaceAction;
                 GetOrCreateNamespaceFunc = getOrCreateNamespaceFunc;
             }
+
             public SimpleAutoCodeGeneratorContext(CsFile file, Func<TypeProvider, CsClass> getOrCreateClassFunc)
             {
                 GetOrCreateClassFunc     = getOrCreateClassFunc;
-                AddNamespaceAction = file.AddImportNamespace;
+                AddNamespaceAction       = file.AddImportNamespace;
                 GetOrCreateNamespaceFunc = file.GetOrCreateNamespace;
-
             }
 
             public void AddNamespace(string namepace)
@@ -35,15 +34,13 @@ namespace isukces.code.AutoCode
                 AnyFileSaved = true;
             }
 
-            public CsClass GetOrCreateClass(TypeProvider type)
+            public virtual void Finalize()
             {
-                return GetOrCreateClassFunc(type);
             }
 
-            public CsNamespace GetOrCreateNamespace(string namespaceName)
-            {
-                return GetOrCreateNamespaceFunc(namespaceName);
-            }
+            public CsClass GetOrCreateClass(TypeProvider type) => GetOrCreateClassFunc(type);
+
+            public CsNamespace GetOrCreateNamespace(string namespaceName) => GetOrCreateNamespaceFunc(namespaceName);
 
             public IList<object> Tags { get; } = new List<object>();
 

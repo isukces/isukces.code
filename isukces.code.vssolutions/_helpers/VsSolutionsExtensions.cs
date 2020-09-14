@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public static class VsSolutionsExtensions
     {

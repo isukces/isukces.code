@@ -3,7 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public  class JsonHelper
     {

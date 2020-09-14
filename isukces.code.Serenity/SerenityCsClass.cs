@@ -1,4 +1,4 @@
-namespace isukces.code.Serenity
+namespace iSukces.Code.Serenity
 {/*
     public class SerenityClass
     {

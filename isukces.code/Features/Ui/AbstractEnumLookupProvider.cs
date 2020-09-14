@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace isukces.code.Ui
+namespace iSukces.Code.Ui
 {
     public class AbstractEnumLookupProvider<T> : IEnumLookupProvider
     {
@@ -20,7 +20,7 @@ namespace isukces.code.Ui
         {
             const string enumvalues = "EnumValues";
             const string Sample =
-                "https://github.com/isukces/isukces.code/blob/master/isukces.code.Tests/Ui/SampleEnumLookupProvider.cs";
+                "https://github.com/isukces/iSukces.Code/blob/master/iSukces.Code.Tests/Ui/SampleEnumLookupProvider.cs";
             var type = GetType();
             var pi = type
 #if COREFX

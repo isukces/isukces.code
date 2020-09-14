@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace isukces.code.Typescript
+namespace iSukces.Code.Typescript
 {
     /// <summary>
     /// Helps to manage relations between ts files

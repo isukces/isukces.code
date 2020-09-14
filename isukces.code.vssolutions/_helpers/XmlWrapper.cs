@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public abstract class XmlWrapper
     {

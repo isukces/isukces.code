@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public struct AmmyCodePartsKey : IEquatable<AmmyCodePartsKey>, IComparable<AmmyCodePartsKey>, IComparable
     {

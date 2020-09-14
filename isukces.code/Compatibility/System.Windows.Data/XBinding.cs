@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using isukces.code.Ammy;
+using iSukces.Code.Ammy;
 
-namespace isukces.code.Compatibility.System.Windows.Data
+namespace iSukces.Code.Compatibility.System.Windows.Data
 {
     /// <summary>
     ///     Reflection only class

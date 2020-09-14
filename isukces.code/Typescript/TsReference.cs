@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
-namespace isukces.code.Typescript
+namespace iSukces.Code.Typescript
 {
     public sealed class TsReference : ITsCodeProvider, IEquatable<TsReference>
     {

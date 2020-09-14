@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using isukces.code.Ammy;
+using iSukces.Code.Ammy;
 
-namespace isukces.code.Ui.DataGrid
+namespace iSukces.Code.Ui.DataGrid
 {
     public abstract partial class GridAmmyMixinsGenerator
     {

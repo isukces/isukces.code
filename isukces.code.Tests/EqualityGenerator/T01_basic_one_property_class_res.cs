@@ -1,11 +1,11 @@
 // ReSharper disable All
 using System;
 
-namespace isukces.code.Tests.EqualityGenerator
+namespace iSukces.Code.Tests.EqualityGenerator
 {
     partial class EqualityGeneratorTests
     {
-        partial class OnePropertyClass : isukces.code.AutoCode.IAutoEquatable<EqualityGeneratorTests.OnePropertyClass>
+        partial class OnePropertyClass : iSukces.Code.AutoCode.IAutoEquatable<EqualityGeneratorTests.OnePropertyClass>
         {
             public override bool Equals(object other)
             {

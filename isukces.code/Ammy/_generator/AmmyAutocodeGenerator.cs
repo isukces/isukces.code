@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
-using isukces.code.IO;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
+using iSukces.Code.IO;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class AmmyAutocodeGenerator : IAutoCodeGenerator, IAssemblyAutoCodeGenerator
     {

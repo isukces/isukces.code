@@ -1,8 +1,8 @@
 using System;
-using isukces.code.AutoCode;
-using isukces.code.FeatureImplementers;
+using iSukces.Code.AutoCode;
+using iSukces.Code.FeatureImplementers;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public partial class Auto
     {

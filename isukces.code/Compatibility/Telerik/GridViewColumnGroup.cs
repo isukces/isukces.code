@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using isukces.code.Compatibility.System.Windows;
+using iSukces.Code.Compatibility.System.Windows;
 
-namespace isukces.code.Compatibility.Telerik
+namespace iSukces.Code.Compatibility.Telerik
 {
     /// <summary>
     ///     Reflection only definition

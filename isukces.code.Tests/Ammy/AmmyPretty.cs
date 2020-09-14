@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.Ammy;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class AmmyPretty
     {       

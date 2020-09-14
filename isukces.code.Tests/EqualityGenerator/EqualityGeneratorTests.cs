@@ -1,17 +1,17 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
 using Xunit;
 
-namespace isukces.code.Tests.EqualityGenerator
+namespace iSukces.Code.Tests.EqualityGenerator
 {
     public partial class EqualityGeneratorTests
     {
         private static void CompareCode(string code,
             [CallerMemberName] string method = null, [CallerFilePath] string file = null)
         {
-            TestUtils.CompareWithResource(code, "isukces.code.Tests.EqualityGenerator.", method, file, "_res.cs");
+            TestUtils.CompareWithResource(code, "iSukces.Code.Tests.EqualityGenerator.", method, file, "_res.cs");
         }
 
         private static void DoTest<T>(
@@ -22,7 +22,7 @@ namespace isukces.code.Tests.EqualityGenerator
             var                     ctx = new TestContext();
             q.Generate(typeof(T), ctx);
             CompareCode(ctx.Code, method, file);
-            // TestUtils.CompareWithResource(code, "isukces.code.Tests.EqualityGenerator.", method, file);
+            // TestUtils.CompareWithResource(code, "iSukces.Code.Tests.EqualityGenerator.", method, file);
             //var s = (sbyte)1;
             // var cc = s.GetHashCode();
             //Assert.Equal(1,cc);

@@ -5,9 +5,9 @@ using System.Reflection;
 using Bitbrains.AmmyParser;
 using Irony.Interpreter;
 using Irony.Parsing;
-using isukces.code;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
+using iSukces.Code;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
 
 namespace AutoCodeBuilder
 {

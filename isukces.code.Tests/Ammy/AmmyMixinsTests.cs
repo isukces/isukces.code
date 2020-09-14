@@ -1,9 +1,9 @@
-using isukces.code.Ammy;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Ammy;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 using Xunit;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class AmmyMixinsTests
     {
@@ -22,10 +22,10 @@ namespace isukces.code.Tests.Ammy
             ctx.OnResolveSeparateLines += (a, bb) => { bb.WriteInSeparateLines = true; };
             m.AppendTo(writer, ctx);
 
-            const string expected = @"mixin test() for isukces.code.Tests.Ammy.AmmyMixinsTests.SampleWindowsControls {
+            const string expected = @"mixin test() for iSukces.Code.Tests.Ammy.AmmyMixinsTests.SampleWindowsControls {
     Width: 10
     Heigth: $standardHeight
-    Content: bind ""Model.FirstName"" from $ancestor<isukces.code.Tests.Ammy.AmmyMixinsTests.SampleUserControl>
+    Content: bind ""Model.FirstName"" from $ancestor<iSukces.Code.Tests.Ammy.AmmyMixinsTests.SampleUserControl>
 }";
             Assert.Equal(expected, writer.GetCodeTrim());
         }

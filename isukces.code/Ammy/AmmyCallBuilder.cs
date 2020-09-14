@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class AmmyCallBuilder
     {

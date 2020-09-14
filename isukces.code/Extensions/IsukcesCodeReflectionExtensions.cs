@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public static class IsukcesCodeReflectionExtensions
     {

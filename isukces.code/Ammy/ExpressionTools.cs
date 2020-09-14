@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     internal static class ExpressionTools
     {

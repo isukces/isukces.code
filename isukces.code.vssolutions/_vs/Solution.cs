@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class Solution
     {

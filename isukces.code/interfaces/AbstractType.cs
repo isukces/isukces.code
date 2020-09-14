@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     /// <summary>
     ///     Represents type name with namespace not related to platform (CLR, typscript etc)

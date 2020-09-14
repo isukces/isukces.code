@@ -2,7 +2,7 @@ using System;
 using System.Xml.Linq;
 using JetBrains.Annotations;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class AssemblyBinding
     {

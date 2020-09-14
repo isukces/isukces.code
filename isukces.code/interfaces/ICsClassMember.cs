@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public interface ICsClassMember : IDescriptable, IConditional, IAttributable
     {

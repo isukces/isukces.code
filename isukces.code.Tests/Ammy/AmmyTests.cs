@@ -1,9 +1,9 @@
-using isukces.code.Ammy;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Ammy;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 using Xunit;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class AmmyTests
     {

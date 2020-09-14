@@ -1,7 +1,7 @@
 ﻿using Bitbrains.AmmyParser;
-using isukces.code;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
+using iSukces.Code;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
 
 namespace AutoCodeBuilder
 {
@@ -20,15 +20,15 @@ namespace AutoCodeBuilder
             EmitTypeAttribute.IgnoreEmitTypeAttribute = true;
 
             var myAssembly  = typeof(Program).Assembly;
-            var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "isukces.code.sln");
+            var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "iSukces.Code.sln");
             if (solutionDir == null)
                 return;
-            var                       dirProvider       = SlnAssemblyBaseDirectoryProvider.Make<Program>("isukces.code.sln");
+            var                       dirProvider       = SlnAssemblyBaseDirectoryProvider.Make<Program>("iSukces.Code.sln");
             IAssemblyFilenameProvider provider          = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
             var                       autoCodeGenerator = new AutoCodeGenerator(provider);
             
             
-            // autoCodeGenerator.FileNamespaces.Add("isukces.code");
+            // autoCodeGenerator.FileNamespaces.Add("iSukces.Code");
             autoCodeGenerator.FileNamespaces.Add("Irony.Interpreter.Ast");
             autoCodeGenerator.FileNamespaces.Add("Irony.Parsing");
             
@@ -54,13 +54,13 @@ namespace AutoCodeBuilder
             EmitTypeAttribute.IgnoreEmitTypeAttribute = true;
 
             var myAssembly  = typeof(Program).Assembly;
-            var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "isukces.code.sln");
+            var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "iSukces.Code.sln");
             if (solutionDir == null)
                 return;
-            var                       dirProvider       = SlnAssemblyBaseDirectoryProvider.Make<Program>("isukces.code.sln");
+            var                       dirProvider       = SlnAssemblyBaseDirectoryProvider.Make<Program>("iSukces.Code.sln");
             IAssemblyFilenameProvider provider          = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
             var                       autoCodeGenerator = new AutoCodeGenerator(provider);
-            autoCodeGenerator.FileNamespaces.Add("isukces.code");
+            autoCodeGenerator.FileNamespaces.Add("iSukces.Code");
             var ammyPropertyContainerMethodGenerator = new AmmyPropertyContainerMethodGenerator()
                 .WithSkip<AmmyContainerBase>()
                 .WithSkip<AmmyMixin>();

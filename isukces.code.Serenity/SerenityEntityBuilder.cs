@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.Serenity
+namespace iSukces.Code.Serenity
 {
     public class AttributeHolder : IAttributable
     {

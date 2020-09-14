@@ -5,11 +5,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public static class AmmyHelper
     {

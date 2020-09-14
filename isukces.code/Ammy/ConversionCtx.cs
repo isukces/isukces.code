@@ -1,7 +1,7 @@
 using System;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class ConversionCtx : IConversionCtx
     {

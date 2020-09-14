@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public class _PropertyInfoAttribute : Attribute
     {

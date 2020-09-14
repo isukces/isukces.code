@@ -1,9 +1,9 @@
 // ReSharper disable All
 using System;
 
-namespace isukces.code.Tests.EqualityGenerator
+namespace iSukces.Code.Tests.EqualityGenerator
 {
-    partial struct TestStructWithSpecialHashCodeField : isukces.code.AutoCode.IAutoEquatable<TestStructWithSpecialHashCodeField>
+    partial struct TestStructWithSpecialHashCodeField : iSukces.Code.AutoCode.IAutoEquatable<TestStructWithSpecialHashCodeField>
     {
         public override bool Equals(object other)
         {

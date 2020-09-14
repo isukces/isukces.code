@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public interface IDescriptable
     {

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public static class IsukcesCodeExtensions
     {

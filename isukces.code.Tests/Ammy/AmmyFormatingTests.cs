@@ -1,9 +1,9 @@
-using isukces.code.Ammy;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Ammy;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Interfaces.Ammy;
 using Xunit;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class AmmyFormatingTests
     {
@@ -35,11 +35,11 @@ namespace isukces.code.Tests.Ammy
                 .WithProperty(a => a.Text, text);
 
             tb.AppendTo(writer, ctx);
-            var expected = @"isukces.code.Tests.Ammy.TextBox {
+            var expected = @"iSukces.Code.Tests.Ammy.TextBox {
     Text: bind ""CustomHeight""
         set [
             Mode: TwoWay
-            ValidationRules: isukces.code.Tests.Ammy.DoubleValidation { CanBeNull: false, MinValue: 500, MaxValue: 6200, ValueName: ""Custom height"" }
+            ValidationRules: iSukces.Code.Tests.Ammy.DoubleValidation { CanBeNull: false, MinValue: 500, MaxValue: 6200, ValueName: ""Custom height"" }
         ]
 }";
             Assert.Equal(expected, writer.Code);
@@ -62,12 +62,12 @@ namespace isukces.code.Tests.Ammy
                 .WithProperty(a => a.Text, text);
 
             tb.AppendTo(writer, ctx);
-            var expected = @"isukces.code.Tests.Ammy.TextBox {
+            var expected = @"iSukces.Code.Tests.Ammy.TextBox {
     Text: bind ""CustomHeight""
         set [
             Mode: TwoWay
             Converter: resource ""MyConverter""
-            ValidationRules: isukces.code.Tests.Ammy.DoubleValidation { CanBeNull: false, MinValue: 500, MaxValue: 6200, ValueName: ""Custom height"" }
+            ValidationRules: iSukces.Code.Tests.Ammy.DoubleValidation { CanBeNull: false, MinValue: 500, MaxValue: 6200, ValueName: ""Custom height"" }
         ]
 }";
             Assert.Equal(expected, writer.Code);
@@ -89,7 +89,7 @@ namespace isukces.code.Tests.Ammy
                 .WithProperty(a => a.Text, text);
 
             tb.AppendTo(writer, ctx);
-            var expected = @"isukces.code.Tests.Ammy.TextBox {
+            var expected = @"iSukces.Code.Tests.Ammy.TextBox {
     Text: bind ""CustomHeight"" set [Mode: TwoWay, Converter: resource ""MyConverter""]
 }";
             Assert.Equal(expected, writer.Code);

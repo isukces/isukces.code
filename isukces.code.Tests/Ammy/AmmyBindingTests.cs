@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.Ammy;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Ammy;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class AmmyBindingTests
     {
@@ -68,7 +68,7 @@ namespace isukces.code.Tests.Ammy
             IConversionCtx ctx    = new ConversionCtx(writer);
             a.AppendTo(writer, ctx);
             const string expected =
-                @"bind ""PropName"" set [ValidationRules: isukces.code.Tests.Ammy.AmmyBindingTests.SampleValidationRule { MinValue: 12 }]";
+                @"bind ""PropName"" set [ValidationRules: iSukces.Code.Tests.Ammy.AmmyBindingTests.SampleValidationRule { MinValue: 12 }]";
             Assert.Equal(expected, writer.Code);
         }
 
@@ -89,9 +89,9 @@ namespace isukces.code.Tests.Ammy
                     b.WriteInSeparateLines = true;
             };
             a.AppendTo(writer, ctx);
-            const string expected = @"bind ""PropName"" from $ancestor<isukces.code.Tests.Ammy.AmmyBindingTests>
+            const string expected = @"bind ""PropName"" from $ancestor<iSukces.Code.Tests.Ammy.AmmyBindingTests>
     set [
-        ValidationRules: isukces.code.Tests.Ammy.AmmyBindingTests.SampleValidationRule { MinValue: 12 }
+        ValidationRules: iSukces.Code.Tests.Ammy.AmmyBindingTests.SampleValidationRule { MinValue: 12 }
     ]";
             Assert.Equal(expected, writer.Code);
         }
@@ -132,7 +132,7 @@ namespace isukces.code.Tests.Ammy
                 bi.WithBindFromAncestor<SampleDataModel>();
                 yield return Tuple.Create(bi.Build(),
                     @"Bind { Path: ""PropName""
-    RelativeSource: RelativeSource { Mode: ""FindAncestor"", AncestorType: ""isukces.code.Tests.Ammy.SampleDataModel"" }
+    RelativeSource: RelativeSource { Mode: ""FindAncestor"", AncestorType: ""iSukces.Code.Tests.Ammy.SampleDataModel"" }
  Converter: resource ""ConverterResource""
 }");
             }

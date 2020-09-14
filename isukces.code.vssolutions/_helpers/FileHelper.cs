@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     internal static class FileHelper
     {

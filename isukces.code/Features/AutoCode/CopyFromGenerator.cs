@@ -5,11 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGenerator
     {

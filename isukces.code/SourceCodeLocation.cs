@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public struct SourceCodeLocation
     {

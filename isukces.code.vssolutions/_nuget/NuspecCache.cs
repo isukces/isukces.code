@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class NuspecCache
     {

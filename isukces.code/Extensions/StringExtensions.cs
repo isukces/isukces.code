@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public static class StringExtensions
     {

@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public class SlnAssemblyBaseDirectoryProvider : IAssemblyBaseDirectoryProvider
     {

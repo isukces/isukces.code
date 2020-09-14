@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     [Flags]
     public enum LanguageFeatures

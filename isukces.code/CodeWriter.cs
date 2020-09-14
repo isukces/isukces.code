@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Linq;
 using System.Text;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public abstract class CodeWriter : ICodeWriter
     {

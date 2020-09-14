@@ -1,8 +1,8 @@
 ﻿#if OBSOLETE
 using System;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.CodeWrite
+namespace iSukces.Code.CodeWrite
 {
     [Obsolete]
     public static class CSharpCodeWriterExtension

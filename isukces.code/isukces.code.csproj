@@ -3,29 +3,29 @@
   <PropertyGroup>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2019</Copyright>
-    <TargetFrameworks>net451;netstandard2.0</TargetFrameworks>
+    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2020</Copyright>
+    <TargetFrameworks>net451;netstandard2.0;netcoreapp3.1</TargetFrameworks>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Product>isukces.code</Product>
-    <PackageId>isukces.code</PackageId>
-    <Description>isukces.code</Description>
+    <Product>iSukces.Code</Product>
+    <PackageId>iSukces.Code</PackageId>
+    <Description>iSukces.Code</Description>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.20251.152</AssemblyVersion>
-    <Version>1.0.20251.152</Version>
-    <FileVersion>1.0.20251.152</FileVersion>
+    <AssemblyVersion>1.0.20256.154</AssemblyVersion>
+    <Version>1.0.20256.154</Version>
+    <FileVersion>1.0.20256.154</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageTags>C#</PackageTags>
     <Title>Source code generators</Title>
-    <PackageProjectUrl>https://github.com/isukces/isukces.code</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/isukces/isukces.code/blob/master/LICENSE</PackageLicenseUrl>
-    <RepositoryUrl>https://github.com/isukces/isukces.code</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
@@ -53,6 +53,9 @@
       <DependentUpon>GridAmmyMixinsGenerator.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+    <DefineConstants>COREFX;COREFX20</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <DefineConstants>COREFX;COREFX20</DefineConstants>
   </PropertyGroup>

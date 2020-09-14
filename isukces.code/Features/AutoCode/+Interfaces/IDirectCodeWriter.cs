@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public interface IDirectCodeWriter
     {

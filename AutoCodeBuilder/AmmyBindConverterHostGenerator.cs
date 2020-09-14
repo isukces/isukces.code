@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using isukces.code;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 /*
 namespace AutoCodeBuilder

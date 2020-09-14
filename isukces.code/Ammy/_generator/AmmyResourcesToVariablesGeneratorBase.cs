@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using isukces.code.AutoCode;
+using iSukces.Code.AutoCode;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     /// <summary>
     ///     Use commented 'GetResourceNames' method
     ///     from
-    ///     https://github.com/isukces/isukces.code/blob/master/isukces.code/Ammy/_generator/AmmyResourcesToVariablesGeneratorBase.cs
+    ///     https://github.com/isukces/iSukces.Code/blob/master/iSukces.Code/Ammy/_generator/AmmyResourcesToVariablesGeneratorBase.cs
     ///     in derived class.
     ///     It requires reference to PresentationCore.
     /// </summary>

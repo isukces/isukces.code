@@ -1,7 +1,7 @@
-using isukces.code.Ammy;
+using iSukces.Code.Ammy;
 using Xunit;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class AmmyBuilderContextTests
     {

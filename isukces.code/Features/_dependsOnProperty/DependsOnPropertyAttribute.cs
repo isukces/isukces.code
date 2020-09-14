@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     [AttributeUsage(AttributeTargets.Property,AllowMultiple = true)]
     public class DependsOnPropertyAttribute:Attribute

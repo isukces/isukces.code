@@ -1,6 +1,6 @@
 using System.Collections;
 
-namespace isukces.code.Compatibility.System.Windows.Controls
+namespace iSukces.Code.Compatibility.System.Windows.Controls
 {
     [EmitType("System.Windows.Controls")]
     public class ItemsControl : Control

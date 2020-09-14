@@ -1,6 +1,6 @@
 using System.Xml.Linq;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public abstract class VsProjectFile : XmlWrapper
     {

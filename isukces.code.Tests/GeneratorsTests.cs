@@ -1,11 +1,11 @@
 using System;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
-using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
+using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class GeneratorsTests
     {
@@ -72,7 +72,7 @@ namespace isukces.code.Tests
         {
             var t  = typeof(AmmyObjectBuilder<>);
             var tn = new CsFile().GetTypeName(t);
-            Assert.Equal("isukces.code.Ammy.AmmyObjectBuilder<TPropertyBrowser>", tn);
+            Assert.Equal("iSukces.Code.Ammy.AmmyObjectBuilder<TPropertyBrowser>", tn);
         }
 
         [Auto.ShouldSerializeInfoAttribute("!{0}.Equals(Foo)")]

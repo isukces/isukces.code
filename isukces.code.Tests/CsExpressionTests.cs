@@ -1,8 +1,8 @@
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class CsExpressionTests
     {

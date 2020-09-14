@@ -1,7 +1,7 @@
 using System;
 
 // ReSharper disable once CheckNamespace
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public partial class Auto
     {

@@ -1,8 +1,8 @@
 using System;
 using System.Runtime.CompilerServices;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.Tests.EqualityGenerator
+namespace iSukces.Code.Tests.EqualityGenerator
 {
     /// <summary>
     ///     Identyfikuje unikalne połączenie (dwóch jeśli instalacja jest poprawna) drutów

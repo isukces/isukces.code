@@ -1,13 +1,13 @@
 // ReSharper disable All
-using isukces.code;
-using isukces.code.Ammy;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code;
+using iSukces.Code.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     partial class AmmyBind
     {
@@ -187,7 +187,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBind WithMode(isukces.code.Compatibility.System.Windows.Data.XBindingMode mode)
+        public AmmyBind WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode mode)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             return WithSetParameter("Mode", mode);
@@ -271,7 +271,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBind WithUpdateSourceTrigger(isukces.code.Compatibility.System.Windows.Data.XUpdateSourceTrigger updateSourceTrigger)
+        public AmmyBind WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger updateSourceTrigger)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             return WithSetParameter("UpdateSourceTrigger", updateSourceTrigger);
@@ -527,7 +527,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBindBuilder WithMode(isukces.code.Compatibility.System.Windows.Data.XBindingMode? mode)
+        public AmmyBindBuilder WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? mode)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             Mode = mode; return this;
@@ -597,7 +597,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyBindBuilder WithUpdateSourceTrigger(isukces.code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
+        public AmmyBindBuilder WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             UpdateSourceTrigger = updateSourceTrigger; return this;
@@ -676,7 +676,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public isukces.code.Compatibility.System.Windows.Data.XBindingMode? Mode { get; set; }
+        public iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? Mode { get; set; }
 
         [AutocodeGenerated]
         public object Converter { get; set; }
@@ -688,7 +688,7 @@ namespace isukces.code.Ammy
         public object ConverterParameter { get; set; }
 
         [AutocodeGenerated]
-        public isukces.code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
+        public iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
 
         [AutocodeGenerated]
         public bool? NotifyOnSourceUpdated { get; set; }
@@ -838,7 +838,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyMultiBind WithMode(isukces.code.Compatibility.System.Windows.Data.XBindingMode? mode)
+        public AmmyMultiBind WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? mode)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             Mode = mode; return this;
@@ -901,7 +901,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyMultiBind WithUpdateSourceTrigger(isukces.code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
+        public AmmyMultiBind WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             UpdateSourceTrigger = updateSourceTrigger; return this;
@@ -929,7 +929,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public isukces.code.Compatibility.System.Windows.Data.XBindingMode? Mode { get; set; }
+        public iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? Mode { get; set; }
 
         [AutocodeGenerated]
         public object Converter { get; set; }
@@ -941,7 +941,7 @@ namespace isukces.code.Ammy
         public object ConverterParameter { get; set; }
 
         [AutocodeGenerated]
-        public isukces.code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
+        public iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
 
         [AutocodeGenerated]
         public bool? NotifyOnSourceUpdated { get; set; }
@@ -1079,7 +1079,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyMultiBindingBuilder WithMode(isukces.code.Compatibility.System.Windows.Data.XBindingMode? mode)
+        public AmmyMultiBindingBuilder WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? mode)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             Mode = mode; return this;
@@ -1142,7 +1142,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyMultiBindingBuilder WithUpdateSourceTrigger(isukces.code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
+        public AmmyMultiBindingBuilder WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
         {
             // generator : FluentBindGenerator.AddFluentMethod:210
             UpdateSourceTrigger = updateSourceTrigger; return this;
@@ -1206,7 +1206,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public isukces.code.Compatibility.System.Windows.Data.XBindingMode? Mode { get; set; }
+        public iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? Mode { get; set; }
 
         [AutocodeGenerated]
         public object ConverterCulture { get; set; }
@@ -1215,7 +1215,7 @@ namespace isukces.code.Ammy
         public object ConverterParameter { get; set; }
 
         [AutocodeGenerated]
-        public isukces.code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
+        public iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? UpdateSourceTrigger { get; set; }
 
         [AutocodeGenerated]
         public bool? NotifyOnSourceUpdated { get; set; }
@@ -1273,7 +1273,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, isukces.code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, iSukces.Code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator.Generate:115
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
@@ -1291,7 +1291,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, isukces.code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public AmmyObjectBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, iSukces.Code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator.Generate:88
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
@@ -1388,7 +1388,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, isukces.code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor, TValue>(Expression<Func<TPropertyBrowser, TValue>> propertyNameExpression, Expression<Func<TAncestor, TValue>> bindToPathExpression, iSukces.Code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator.Generate:115
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
@@ -1406,7 +1406,7 @@ namespace isukces.code.Ammy
         }
 
         [AutocodeGenerated]
-        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, isukces.code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
+        public MixinBuilder<TPropertyBrowser> WithPropertyAncestorBind<TAncestor>(Expression<Func<TPropertyBrowser, object>> propertyNameExpression, Expression<Func<TAncestor, object>> bindToPathExpression, iSukces.Code.Compatibility.System.Windows.Data.XBindingMode mode, [CanBeNull] Action<AmmyBind> bindingSettings = null)
         {
             // generator : AmmyPropertyContainerMethodGenerator.Generate:88
             var bindToPath   = ExpressionTools.GetBindingPath(bindToPathExpression);
@@ -1482,7 +1482,7 @@ namespace isukces.code.Ammy
 
     }
 }
-namespace isukces.code.Compatibility.System.Windows.Data
+namespace iSukces.Code.Compatibility.System.Windows.Data
 {
     partial class XMultiBinding
     {

@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public static class CsStringExtensions
     {

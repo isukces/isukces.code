@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using isukces.code.interfaces;
-using isukces.code.IO;
+using iSukces.Code.Interfaces;
+using iSukces.Code.IO;
 
-namespace isukces.code.Typescript
+namespace iSukces.Code.Typescript
 {
     public class TsFile : ITsCodeProvider
     {

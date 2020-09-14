@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
     public class AddInterfaceAttribute : Attribute

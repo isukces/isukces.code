@@ -1,7 +1,7 @@
 ﻿using System;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.Typescript
+namespace iSukces.Code.Typescript
 {
     public interface ITsCodeProvider
     {

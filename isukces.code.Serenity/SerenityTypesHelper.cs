@@ -1,8 +1,8 @@
 using System;
 using System.Reflection;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.Serenity
+namespace iSukces.Code.Serenity
 {
     public enum SerenityClassRole
     {

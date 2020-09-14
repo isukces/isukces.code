@@ -1,6 +1,6 @@
-using isukces.code.Compatibility.System.Windows.Controls;
+using iSukces.Code.Compatibility.System.Windows.Controls;
 
-namespace isukces.code.Compatibility.Telerik
+namespace iSukces.Code.Compatibility.Telerik
 {
     /// <summary>
     ///     Reflection only definition

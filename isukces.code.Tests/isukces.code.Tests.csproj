@@ -24,9 +24,9 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <ProjectReference Include="..\isukces.code.Serenity\isukces.code.Serenity.csproj" />
-    <ProjectReference Include="..\isukces.code.vssolutions\isukces.code.vssolutions.csproj" />
-    <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
+    <ProjectReference Include="..\iSukces.Code.Serenity\iSukces.Code.Serenity.csproj" />
+    <ProjectReference Include="..\iSukces.Code.vssolutions\iSukces.Code.vssolutions.csproj" />
+    <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EqualityGenerator\*.txt" />

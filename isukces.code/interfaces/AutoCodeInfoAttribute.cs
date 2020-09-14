@@ -1,6 +1,6 @@
 using System;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     [AttributeUsage(AttributeTargets.Assembly)]
     public class AutoCodeInfoAttribute : Attribute

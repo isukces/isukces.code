@@ -1,6 +1,6 @@
-﻿using isukces.code.Ammy;
-using isukces.code.AutoCode;
-using isukces.code.interfaces.Ammy;
+﻿using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces.Ammy;
 
 namespace AmmySamples
 {

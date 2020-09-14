@@ -1,8 +1,8 @@
 using System;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public class MethodTypeNameResolver : ITypeNameResolver
     {

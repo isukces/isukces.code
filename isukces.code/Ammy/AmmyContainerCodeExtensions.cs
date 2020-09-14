@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public static class AmmyContainerCodeExtensions
     {

@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public static class AmmyCodePartsExtension
     {

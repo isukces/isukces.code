@@ -1,9 +1,9 @@
-﻿using isukces.code.CodeWrite;
-using isukces.code.interfaces;
-using isukces.code.Typescript;
+﻿using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Typescript;
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class TsTests
     {

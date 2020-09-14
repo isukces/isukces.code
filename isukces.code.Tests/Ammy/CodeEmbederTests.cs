@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using isukces.code.Ammy;
+using iSukces.Code.Ammy;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace isukces.code.Tests.Ammy
+namespace iSukces.Code.Tests.Ammy
 {
     public class CodeEmbederTests
     {

@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
-using isukces.code.AutoCode;
+using iSukces.Code.AutoCode;
 
 namespace AmmySamples
 {
@@ -9,7 +9,7 @@ namespace AmmySamples
     {
         public AssemblyBaseDirectoryProvider()
         {
-            _provider = SlnAssemblyBaseDirectoryProvider.Make<Program>("isukces.code.sln");
+            _provider = SlnAssemblyBaseDirectoryProvider.Make<Program>("iSukces.Code.sln");
             _provider.OnGetBaseDirectory += (a, b) =>
             {
                 var name = b.Assembly.GetName().Name;

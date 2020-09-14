@@ -7,7 +7,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj" />
-      <ProjectReference Include="..\isukces.code\isukces.code.csproj" />
+      <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
     </ItemGroup>
 
 </Project>

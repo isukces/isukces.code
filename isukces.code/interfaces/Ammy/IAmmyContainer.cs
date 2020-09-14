@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.Ammy;
+using iSukces.Code.Ammy;
 using JetBrains.Annotations;
 
-namespace isukces.code.interfaces.Ammy
+namespace iSukces.Code.Interfaces.Ammy
 {
     public interface IAmmyContainer : IAmmyPropertyContainer, IAmmyContentItemsContainer
     {

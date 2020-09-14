@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using isukces.code.Tests.EqualityGenerator;
+using iSukces.Code.Tests.EqualityGenerator;
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class TestUtils
     {

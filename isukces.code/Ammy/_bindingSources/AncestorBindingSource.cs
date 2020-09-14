@@ -1,8 +1,8 @@
 using System;
 using System.Globalization;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class AncestorBindingSource : IAmmyCodePieceConvertible, IRelativeBindingSource
     {

@@ -1,4 +1,4 @@
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public struct EqualsExpressionData
     {

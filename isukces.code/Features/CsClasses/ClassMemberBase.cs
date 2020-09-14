@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public abstract class ClassMemberBase : IAttributable, ICsClassMember
     {

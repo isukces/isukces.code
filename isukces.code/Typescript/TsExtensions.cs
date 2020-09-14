@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace isukces.code.Typescript
+namespace iSukces.Code.Typescript
 {
     public static class TsExtensions
     {

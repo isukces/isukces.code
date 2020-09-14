@@ -1,7 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class NugetVersionRange
     {

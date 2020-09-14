@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable
     {

@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public partial class CsExpression
     {

@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using isukces.code;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.interfaces;
+using iSukces.Code;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Interfaces;
 
 namespace AutoCodeBuilder
 {

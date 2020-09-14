@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using isukces.code.Ammy;
+using iSukces.Code.Ammy;
 using JetBrains.Annotations;
 
-namespace isukces.code.Ui.DataGrid
+namespace iSukces.Code.Ui.DataGrid
 {
     public abstract partial class DataGridConfigurationProvider
     {

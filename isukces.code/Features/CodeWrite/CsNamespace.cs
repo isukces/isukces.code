@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public class CsNamespace : IClassOwner, INamespaceCollection, IConditional
     {

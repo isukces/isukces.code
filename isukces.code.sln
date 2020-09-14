@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "isukces.code", "isukces.code\isukces.code.csproj", "{CC04E3F2-AD7A-4991-8BB3-CAB745F162C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSukces.Code", "iSukces.Code\iSukces.Code.csproj", "{CC04E3F2-AD7A-4991-8BB3-CAB745F162C2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "isukces.code.Tests", "isukces.code.Tests\isukces.code.Tests.csproj", "{09FB4C79-446C-4395-8584-ECC2A13A5A31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iSukces.Code.Tests", "iSukces.Code.Tests\iSukces.Code.Tests.csproj", "{09FB4C79-446C-4395-8584-ECC2A13A5A31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "isukces.code.Serenity", "isukces.code.Serenity\isukces.code.Serenity.csproj", "{9961DBCD-DE78-4B23-B4AE-F784DF6AB4AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.Serenity", "iSukces.Code.Serenity\iSukces.Code.Serenity.csproj", "{9961DBCD-DE78-4B23-B4AE-F784DF6AB4AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCodeBuilder", "AutoCodeBuilder\AutoCodeBuilder.csproj", "{3A555F64-5F1A-4757-8F73-97E92C7B0385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "isukces.code.vssolutions", "isukces.code.vssolutions\isukces.code.vssolutions.csproj", "{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.vssolutions", "iSukces.Code.vssolutions\iSukces.Code.vssolutions.csproj", "{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitbrains.AmmyParser", "Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj", "{62B93CA3-CE40-4E2C-8F53-CE186B1BDFAD}"
 EndProject

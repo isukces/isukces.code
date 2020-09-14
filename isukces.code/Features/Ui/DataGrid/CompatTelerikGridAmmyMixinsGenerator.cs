@@ -1,13 +1,13 @@
 using System.Linq;
-using isukces.code.Ammy;
-using isukces.code.AutoCode;
-using isukces.code.Compatibility.System.Windows;
-using isukces.code.Compatibility.System.Windows.Data;
-using isukces.code.Compatibility.Telerik;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Ammy;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Compatibility.System.Windows;
+using iSukces.Code.Compatibility.System.Windows.Data;
+using iSukces.Code.Compatibility.Telerik;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Ui.DataGrid
+namespace iSukces.Code.Ui.DataGrid
 {
     /// <summary>
     ///     Generates code for Telerik WPF components.

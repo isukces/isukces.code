@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
 	/// <summary>
 	/// See https://docs.microsoft.com/en-us/cpp/c-language/precedence-and-order-of-evaluation?view=vs-2019

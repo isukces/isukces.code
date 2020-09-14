@@ -1,7 +1,7 @@
 ﻿using System;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public static class CsMethodExtensions
     {

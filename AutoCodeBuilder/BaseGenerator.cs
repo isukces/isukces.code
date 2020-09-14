@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using isukces.code;
-using isukces.code.interfaces;
+using iSukces.Code;
+using iSukces.Code.Interfaces;
 
 namespace AutoCodeBuilder
 {

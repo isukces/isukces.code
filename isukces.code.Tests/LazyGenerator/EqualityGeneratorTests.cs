@@ -1,17 +1,17 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
 using Xunit;
 
-namespace isukces.code.Tests.LazyGenerator
+namespace iSukces.Code.Tests.LazyGenerator
 {
     public partial class LazyGeneratorTests
     {
         private static void CompareCode(string code,
             [CallerMemberName] string method = null, [CallerFilePath] string file = null)
         {
-            TestUtils.CompareWithResource(code, "isukces.code.Tests.LazyGenerator.", method, file, "_res.cs");
+            TestUtils.CompareWithResource(code, "iSukces.Code.Tests.LazyGenerator.", method, file, "_res.cs");
         }
 
         private static void DoTest<T>(

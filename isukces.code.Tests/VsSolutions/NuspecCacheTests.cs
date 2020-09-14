@@ -1,8 +1,8 @@
 using System.IO;
-using isukces.code.vssolutions;
+using iSukces.Code.vssolutions;
 using Xunit;
 
-namespace isukces.code.Tests.VsSolutions
+namespace iSukces.Code.Tests.VsSolutions
 {
     public class NuspecCacheTests
     {

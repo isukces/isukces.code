@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public class TypeName: object {
         private static string TypeNameNoGeneric(Type t)

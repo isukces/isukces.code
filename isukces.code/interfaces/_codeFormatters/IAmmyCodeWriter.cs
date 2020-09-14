@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public interface IAmmyCodeWriter : ICodeWriter
     {

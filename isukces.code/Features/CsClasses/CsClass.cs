@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
 // ReSharper disable once CheckNamespace
-namespace isukces.code
+namespace iSukces.Code
 {
     public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver,
         IAttributable, ICommentable, IAnnotableByUser

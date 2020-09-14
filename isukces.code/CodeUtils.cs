@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
-namespace isukces.code
+namespace iSukces.Code
 {
     public static  class CodeUtils
     {

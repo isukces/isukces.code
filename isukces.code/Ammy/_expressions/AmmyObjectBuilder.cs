@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using isukces.code.interfaces;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public abstract class AmmyObjectBuilder : AmmyContainerBase, IAnnotableByUser
     {

@@ -1,9 +1,9 @@
 using System;
 using System.Reflection;
-using isukces.code.AutoCode;
+using iSukces.Code.AutoCode;
 using JetBrains.Annotations;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public interface IMemberNullValueChecker
     {

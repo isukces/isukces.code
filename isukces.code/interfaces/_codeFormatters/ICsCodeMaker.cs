@@ -1,7 +1,7 @@
 ﻿using System;
 using JetBrains.Annotations;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     /*
    

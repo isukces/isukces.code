@@ -1,8 +1,8 @@
 using System.Globalization;
 using System.Linq;
-using isukces.code.interfaces.Ammy;
+using iSukces.Code.Interfaces.Ammy;
 
-namespace isukces.code.Ammy
+namespace iSukces.Code.Ammy
 {
     public class AmmyCellMixin : IAmmyCodePieceConvertible
     {

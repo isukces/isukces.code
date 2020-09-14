@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
-using isukces.code.IO;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
+using iSukces.Code.IO;
 
-namespace isukces.code.CodeWrite
+namespace iSukces.Code.CodeWrite
 {
     public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     {

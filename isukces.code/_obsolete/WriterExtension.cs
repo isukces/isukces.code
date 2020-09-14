@@ -1,5 +1,5 @@
 ﻿#if OBSOLETE
-namespace isukces.code.AutoCode
+namespace iSukces.Code.AutoCode
 {
     public static class WriterExtension
     {

@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace isukces.code.IO
+namespace iSukces.Code.IO
 {
     public class CodeFileUtils
     {

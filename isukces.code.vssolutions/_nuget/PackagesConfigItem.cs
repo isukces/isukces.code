@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Linq;
 
-namespace isukces.code.vssolutions
+namespace iSukces.Code.vssolutions
 {
     public class PackagesConfigItem : INuspec
     {

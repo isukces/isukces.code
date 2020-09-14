@@ -1,8 +1,8 @@
-﻿using isukces.code.CodeWrite;
-using isukces.code.interfaces;
+﻿using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class CsTests
     {

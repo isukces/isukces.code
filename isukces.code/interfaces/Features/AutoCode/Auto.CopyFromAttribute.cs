@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace isukces.code.interfaces
+namespace iSukces.Code.Interfaces
 {
     public partial class Auto
     {

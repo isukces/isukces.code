@@ -1,4 +1,4 @@
-﻿namespace isukces.code
+﻿namespace iSukces.Code
 {
    /*
     public class DataObjectMaker: System.Object {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using isukces.code.AutoCode;
-using isukces.code.CodeWrite;
+using iSukces.Code.AutoCode;
+using iSukces.Code.CodeWrite;
 using Xunit;
 
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     public class ClassCreationTests
     {
@@ -16,7 +16,7 @@ namespace isukces.code.Tests
             c.GetOrCreateClass(type, cache);
             var code = c.GetCode();
             Assert.Equal(@"// ReSharper disable All
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     partial class ParentGeneric<T>
     {
@@ -44,7 +44,7 @@ namespace isukces.code.Tests
             }
             var code = c.GetCode();
             Assert.Equal(@"// ReSharper disable All
-namespace isukces.code.Tests
+namespace iSukces.Code.Tests
 {
     partial class ParentGeneric<T>
     {

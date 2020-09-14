@@ -1,5 +1,5 @@
 // ReSharper disable All
-namespace isukces.code.Tests.LazyGenerator
+namespace iSukces.Code.Tests.LazyGenerator
 {
     partial class LazyGeneratorTests
     {

@@ -1,7 +1,7 @@
 using System.Reflection;
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 
-namespace isukces.code.Tests.EqualityGenerator
+namespace iSukces.Code.Tests.EqualityGenerator
 {
     public partial class EqualityGeneratorTests
     {
