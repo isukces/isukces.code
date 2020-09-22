@@ -74,7 +74,7 @@ namespace iSukces.Code.AutoCode
             csClass.ImplementedInterfaces.Add("ICloneable");
             var         cm     = csClass.AddMethod("Clone", "object", "Makes clone of object");
             ICsCodeWriter writer = new CsCodeWriter();
-            writer.WriteLine("var a = new {0}();", type);
+            writer.WriteLine("var a = new {0}();", type.Name);
             writer.WriteLine("a.CopyFrom(this);");
             writer.WriteLine("return a;");
             cm.Body = writer.Code;
@@ -86,7 +86,7 @@ namespace iSukces.Code.AutoCode
         protected override void GenerateInternal()
         {
             _copyFromAttribute = GetCustomAttribute<Auto.CopyFromAttribute>();
-            _doCloneable = GetCustomAttribute<Auto.Cloneable>() != null;
+            _doCloneable = GetCustomAttribute<Auto.CloneableAttribute>() != null;
 
             if (!_doCloneable && _copyFromAttribute == null)
                 return;
