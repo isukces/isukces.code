@@ -12,7 +12,10 @@ namespace iSukces.Code.Tests
             var g                        = new CopyFromGenerator();
             var context = new TestContext();
             g.Generate(typeof(Nested), context);
-            var expected = @"// ReSharper disable All
+            var expected = @"
+
+
+// ReSharper disable All
 namespace iSukces.Code.Tests
 {
     partial class CopyFromGeneratorTests
@@ -34,20 +37,33 @@ namespace iSukces.Code.Tests
                 if (ReferenceEquals(source, null))
                     throw new ArgumentNullException(nameof(source));
                 Number = source.Number; // int
+                if (source.Doubles == null)
+                    Doubles = null;
+                else {
+                    var sourceDoubles = source.Doubles;
+                    var targetDoubles = new double[sourceDoubles.Length];
+                    System.Array.Copy(sourceDoubles, 0, targetDoubles, 0, sourceDoubles.Length);
+                    Doubles = targetDoubles;
+                }
             }
 
         }
 
     }
-}";
-            Assert.Equal(expected.Trim(), context.Code.Trim());
+}
+
+";
+            var actual = context.Code.Trim();
+            
+            Assert.Equal(expected.Trim(), actual);
         }
 
         [Auto.CopyFrom]
         [Auto.CloneableAttribute]
         class Nested
         {
-            public int Number { get; set; }
+            public int      Number  { get; set; }
+            public double[] Doubles { get; set; }
         }
     }
 }

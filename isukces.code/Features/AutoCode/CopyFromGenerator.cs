@@ -45,33 +45,42 @@ namespace iSukces.Code.AutoCode
                 pi.PropertyType);
         }
 
-        private static void CopyArray(PropertyInfo pi, string type, ICsCodeWriter writer)
+        private static void CopyArray(PropertyInfo pi, string type, ICsCodeWriter writer,ITypeNameResolver res)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
             writer.WriteLine("if (source.{0} == null)", pi.Name);
             writer.WriteLine("    {0} = null;", wm);
             writer.WriteLine("else {");
-            writer.WriteIndent();
+            writer.IncIndent();
             {
+                var target = "target" + pi.Name;
+                var source = "source" + pi.Name;
+                writer.WriteLine($"var {source} = source.{pi.Name};");
                 if (type == "System.Windows.Point")
                 {
-                    var len = $"[source.{pi.Name}.Length]";
+                    var len = $"[{source}.Length]";
                     writer.WritelineNoIndent("#if COREFX");
-                    writer.WriteLine($"{wm} = new Compat.{type}{len};");
+                    writer.WriteLine($"var {target} = new Compat.{type}{len};");
                     writer.WritelineNoIndent("#else");
-                    writer.WriteLine($"{wm} = new {type}{len};");
+                    writer.WriteLine($"var {target} = new {type}{len};");
                     writer.WritelineNoIndent("#endif");
                 }
                 else
                 {
-                    writer.WriteLine($"{wm} = new {type}[source.{pi.Name}.Length];");
+                    writer.WriteLine($"var {target} = new {type}[{source}.Length];");
                 }
+/*
+                writer.WriteLine($"for (var index = {source}.Length - 1; index >= 0; index--)");
+                writer.IncIndent();
+                writer.WriteLine($"{target}[index] = {source}[index];");
+                writer.DecIndent(); 
+                */
 
-                writer.WriteLine($"for (var index = source.{pi.Name}.Length - 1; index >= 0; index--)");
-                writer.WriteIndent();
-                writer.WriteLine($"{wm}[index] = source.{pi.Name}[index];");
-                writer.DecIndent();
+                var arrayCopy = $"{res.GetTypeName<Array>()}.{nameof(Array.Copy)}";
+                writer.WriteLine($"{arrayCopy}({source}, 0, {target}, 0, {source}.Length);");
+                writer.WriteLine($"{wm} = {target};");
             }
+          
             writer.DecIndent();
             writer.WriteLine("}");
         }
@@ -134,7 +143,7 @@ namespace iSukces.Code.AutoCode
             if (pi.PropertyType.IsArray)
             {
                 var eltype = pi.PropertyType.GetElementType();
-                CopyArray(pi, eltype.FullName, writer);
+                CopyArray(pi, resolver.GetTypeName(eltype), writer, resolver);
                 return;
             }
             {
@@ -224,13 +233,13 @@ namespace iSukces.Code.AutoCode
             }
             if (ptg == typeof(double[]))
             {
-                CopyArray(pi, "double", writer);
+                CopyArray(pi, "double", writer,  resolver);
                 return;
             }
 #if !COREFX
                 if (ptg == typeof(Point[]))
                 {
-                    CopyArray(pi, "System.Windows.Point", writer); // todo: external copy
+                    CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
                     return;
                 }
                 {
