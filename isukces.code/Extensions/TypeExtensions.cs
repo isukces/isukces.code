@@ -17,6 +17,20 @@ namespace iSukces.Code
             return CsNamespaceMemberKind.Class;
         }
 
+        public static bool IsExplicityImplementation<TInterface>(this Type implementingType, string methodName)
+        {
+            var map = implementingType.GetInterfaceMap(typeof(TInterface));
+            for (var index = map.InterfaceMethods.Length - 1; index >= 0; index--)
+            {
+                var interfaceMethod = map.InterfaceMethods[index];
+                if (interfaceMethod.Name != methodName) continue;
+                var targetMethod = map.TargetMethods[index];
+                return targetMethod.Name.Contains(".");
+            }
+
+            return true;
+        }
+
         public static bool IsNullableType(this Type type)
         {
 #if COREFX
@@ -38,7 +52,7 @@ namespace iSukces.Code
                 return typeInfo.GetGenericArguments()[0];
             return type;
         }
-        
+
         public static Type StripNullable(this Type type, out bool wasNullable)
         {
 #if COREFX

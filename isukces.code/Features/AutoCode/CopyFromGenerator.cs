@@ -246,7 +246,16 @@ namespace iSukces.Code.AutoCode
                     var interf = pi.PropertyType.GetInterfaces();
                     if (interf.Any(a => a == typeof(ICloneable)))
                     {
-                        writer.WriteLine("{0} = ({1})((ICloneable)source.{0})?.Clone();", pi.Name, pi.PropertyType);
+                        var castTypeName = resolver.GetTypeName(pi.PropertyType);
+                        if (pi.PropertyType.IsExplicityImplementation<ICloneable>(nameof(ICloneable.Clone)))
+                        {
+                            writer.WriteLine($"{pi.Name} = ({castTypeName})((ICloneable)source.{pi.Name})?.Clone();");
+                        }
+                        else
+                        {
+                            writer.WriteLine($"{pi.Name} = ({castTypeName})source.{pi.Name}?.Clone();");
+                        }
+                        
                         return;
                     }
                 }
