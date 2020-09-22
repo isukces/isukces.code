@@ -51,21 +51,28 @@ namespace iSukces.Code.AutoCode
             writer.WriteLine("if (source.{0} == null)", pi.Name);
             writer.WriteLine("    {0} = null;", wm);
             writer.WriteLine("else {");
-            if (type == "System.Windows.Point")
+            writer.WriteIndent();
             {
-                writer.WriteLine("#if COREFX");
-                writer.WriteLine($"    {wm} = new Compat.{type}[source.{pi.Name}.Length];");
-                writer.WriteLine("#else");
-                writer.WriteLine($"    {wm} = new {type}[source.{pi.Name}.Length];");
-                writer.WriteLine("#endif");
+                if (type == "System.Windows.Point")
+                {
+                    var len = $"[source.{pi.Name}.Length]";
+                    writer.WritelineNoIndent("#if COREFX");
+                    writer.WriteLine($"{wm} = new Compat.{type}{len};");
+                    writer.WritelineNoIndent("#else");
+                    writer.WriteLine($"{wm} = new {type}{len};");
+                    writer.WritelineNoIndent("#endif");
+                }
+                else
+                {
+                    writer.WriteLine($"{wm} = new {type}[source.{pi.Name}.Length];");
+                }
+
+                writer.WriteLine($"for (var index = source.{pi.Name}.Length - 1; index >= 0; index--)");
+                writer.WriteIndent();
+                writer.WriteLine($"{wm}[index] = source.{pi.Name}[index];");
+                writer.DecIndent();
             }
-            else
-            {
-                writer.WriteLine($"    {wm} = new {type}[source.{pi.Name}.Length];");
-            }
-            writer.WriteLine(
-                "    for (var index = 0; index < source.{0}.Length; index++) {1}[index] = source.{0}[index];",
-                pi.Name, wm);
+            writer.DecIndent();
             writer.WriteLine("}");
         }
         
