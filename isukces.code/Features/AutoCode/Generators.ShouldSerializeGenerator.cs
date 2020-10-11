@@ -50,8 +50,12 @@ namespace iSukces.Code.AutoCode
                     return hasValueCondition + " && " + customCondition;
                 }
 
-                if (!string.IsNullOrEmpty(template)) return string.Format(template, pi.Name);
-                
+                if (!string.IsNullOrEmpty(template))
+                {
+                    var typeName = this.Class.GetTypeName(pi.PropertyType);
+                    return string.Format(template, pi.Name, typeName);
+                }
+
                 var message = $"Unable to get condition for property {pi.Name} declared in {pi.DeclaringType}, property type {pi.PropertyType} .";
                 throw new Exception(message);
 
