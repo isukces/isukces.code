@@ -65,7 +65,7 @@ namespace iSukces.Code.Ui.DataGrid
             return null;
         }
 
-        public void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
+        public virtual void AssemblyEnd(Assembly assembly, IAutoCodeGeneratorContext context)
         {
             var dir      = DirectoryProvider.GetBaseDirectory(assembly);
             var filename = Path.Combine(dir.FullName, "+grid.Auto.ammy");
@@ -76,7 +76,7 @@ namespace iSukces.Code.Ui.DataGrid
             Context = null;
         }
 
-        public void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
+        public virtual void AssemblyStart(Assembly assembly, IAutoCodeGeneratorContext context)
         {
             Context = context;
             Mixins  = new AmmyCodeWriter();
