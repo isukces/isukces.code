@@ -5,10 +5,10 @@ namespace iSukces.Code.Ammy
 {
     public class StaticBindingSource : IAmmyCodePieceConvertible
     {
-        public StaticBindingSource(Type type, string property)
+        public StaticBindingSource(Type ownerType, string propertyName)
         {
-            _type     = type;
-            _property = property;
+            OwnerType     = ownerType;
+            PropertyName = propertyName;
         }
 
         public static StaticBindingSource Make<T>(string property)
@@ -18,16 +18,16 @@ namespace iSukces.Code.Ammy
 
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
         {
-            var code = ctx.TypeName(_type) + "." + _property;
+            var code = ctx.TypeName(OwnerType) + "." + PropertyName;
             return new SimpleAmmyCodePiece(code);
         }
 
         public override string ToString()
         {
-            return $"StaticBindingSource {_type}.{_property}";
+            return $"StaticBindingSource {OwnerType}.{PropertyName}";
         }
 
-        private readonly Type _type;
-        private readonly string _property;
+        public Type   OwnerType    { get; }
+        public string PropertyName { get; }
     }
 }
