@@ -6,8 +6,6 @@ namespace iSukces.Code.Interfaces
     {
         public class CopyBy
         {
-            #region Nested
-
             [AttributeUsage(AttributeTargets.Property)]
             public class ReferenceAttribute : Attribute
             {
@@ -19,11 +17,10 @@ namespace iSukces.Code.Interfaces
             }
 
             [AttributeUsage(AttributeTargets.Property)]
+            // ReSharper disable once MemberHidesStaticFromOuterClass
             public class CloneableAttribute : Attribute
             {
             }
-
-            #endregion
         }
     }
 }
