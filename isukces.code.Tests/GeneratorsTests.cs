@@ -57,13 +57,16 @@ namespace iSukces.Code.Tests
         [InlineData("OtherValue", "!OtherValue.Equals(Foo)")]
         public void T05_ShouldSerializeGenerator_tests(string propertyName, string expectedCode)
         {
-            var pi   = typeof(ShouldSerializeGeneratorTestClass).GetProperty(propertyName);
-            var code = new Generators.ShouldSerializeGenerator().MakeShouldSerializeCondition(pi);
+            var    type      = typeof(ShouldSerializeGeneratorTestClass);
+            var    pi        = type.GetProperty(propertyName);
+            var    generator = new Generators.ShouldSerializeGenerator();
+            IAutoCodeGeneratorContext ctx= new TestContext();
+            generator.Setup(type, ctx);
+            var code      = generator.MakeShouldSerializeCondition(pi);
             Assert.Equal(expectedCode, code);
 
-            pi = typeof(ShouldSerializeGeneratorTestClass).GetProperty(
-                nameof(ShouldSerializeGeneratorTestClass.OtherValue));
-            code = new Generators.ShouldSerializeGenerator().MakeShouldSerializeCondition(pi);
+            pi   = type.GetProperty(nameof(ShouldSerializeGeneratorTestClass.OtherValue));
+            code = generator.MakeShouldSerializeCondition(pi);
             Assert.Equal("!OtherValue.Equals(Foo)", code);
         }
 

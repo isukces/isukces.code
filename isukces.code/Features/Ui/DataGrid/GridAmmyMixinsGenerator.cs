@@ -27,6 +27,7 @@ namespace iSukces.Code.Ui.DataGrid
             }.ToHashSet();
         }
 
+
         public GridAmmyMixinsGenerator(IAssemblyBaseDirectoryProvider directoryProvider) =>
             DirectoryProvider = directoryProvider;
 
@@ -84,11 +85,16 @@ namespace iSukces.Code.Ui.DataGrid
 
         public void Generate(Type type, IAutoCodeGeneratorContext context)
         {
+            if (Context == null)
+                throw new ArgumentNullException(nameof(Context), "must run AssemblyStart first");
+            var saved = Context;
+            Context = context ?? Context;
             var model = Model.MakeFromAttributes(type);
             if (model == null)
                 return;
             AfterCreateModel(type, model);
             WriteAmmyMixin(type.Name, model);
+            Context = saved;
         }
 
         protected virtual void AfterCreateModel(Type type, Model model)
@@ -99,11 +105,11 @@ namespace iSukces.Code.Ui.DataGrid
         {
             return col.Lookup ?? (col.Type
 #if COREFX
-                       .GetTypeInfo()
+                .GetTypeInfo()
 #endif
-                       .IsEnum
-                       ? GetLookupSource(col.Type)
-                       : null);
+                .IsEnum
+                ? GetLookupSource(col.Type)
+                : null);
         }
 
         protected virtual LookupInfo GetLookupSource(Type t)
@@ -130,7 +136,7 @@ namespace iSukces.Code.Ui.DataGrid
                 }
             }
 
-            throw new NotSupportedException("Unable to find lookup for type " + t.ToString());
+            throw new NotSupportedException("Unable to find lookup for type " + t);
         }
 
         protected abstract void WriteAmmyMixin(string name, Model model);
@@ -140,5 +146,6 @@ namespace iSukces.Code.Ui.DataGrid
         protected AmmyCodeWriter                 Mixins            { get; private set; }
 
         private static readonly HashSet<Type> RightAligned;
+    
     }
 }

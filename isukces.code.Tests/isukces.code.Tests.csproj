@@ -11,6 +11,8 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Version>1.0.0.0</Version>
     <FileVersion>1.0.0.0</FileVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
@@ -35,6 +37,9 @@
     <EmbeddedResource Include="LazyGenerator\*_res.cs" />
     <Compile Update="EqualityGenerator\EqualityGeneratorTests.Classes.cs">
       <DependentUpon>EqualityGeneratorTests.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Ui\CompatTelerikGridAmmyMixinsGeneratorTests+tools.cs">
+      <DependentUpon>CompatTelerikGridAmmyMixinsGeneratorTests.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

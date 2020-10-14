@@ -63,7 +63,7 @@ namespace iSukces.Code.Ui.DataGrid
                 foreach (var col in model.Categories)
                 {
                     var q = new AmmyObjectBuilder<GridViewColumnGroup>().WithProperty(a => a.Name, col.Name)
-                        .WithPropertyGeneric(a => a.Header, col.Header);
+                        .WithPropertyGeneric(a => a.Header, col.HeaderSource);
                     q.WriteLineTo(Mixins, ctx);
                 }
 
@@ -99,7 +99,7 @@ namespace iSukces.Code.Ui.DataGrid
         {
             obj = obj
                 .WithPropertyNotNull(a => a.DataMemberBinding, GetDataMemberBinding(col))
-                .WithProperty(a => a.Header, col.Header);
+                .WithProperty(a => a.Header, col.HeaderSource);
             if (col.IsReadOnly)
                 obj = obj.WithPropertyGeneric(a => a.IsReadOnly, true);
             if (col.Width.HasValue)

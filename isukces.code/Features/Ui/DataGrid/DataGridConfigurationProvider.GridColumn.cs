@@ -8,10 +8,10 @@ namespace iSukces.Code.Ui.DataGrid
     {
         public class GridColumn
         {
-            public GridColumn WithCategory(string categoryName, string categoryHeader = null)
+            public GridColumn WithCategory(string categoryName, object categoryHeaderSource = null)
             {
-                CategoryName   = categoryName;
-                CategoryHeader = categoryHeader ?? categoryName;
+                CategoryName         = categoryName;
+                CategoryHeaderSource = categoryHeaderSource ?? categoryName;
                 return this;
             }
 
@@ -64,12 +64,13 @@ namespace iSukces.Code.Ui.DataGrid
             }
 
 
-            public string Name   { get; set; }
-            public string Header { get; set; }
-            public int?   Width  { get; set; }
+            public string Name { get; set; }
 
-            public string CategoryHeader { get; set; }
-            public string CategoryName   { get; set; }
+            public object HeaderSource { get; set; }
+            public int?   Width        { get; set; }
+
+            public object CategoryHeaderSource { get; set; }
+            public string CategoryName         { get; set; }
 
             public LookupInfo Lookup       { get; set; }
             public object     CellTemplate { get; set; }
@@ -77,13 +78,13 @@ namespace iSukces.Code.Ui.DataGrid
 
             public string DataFormatString { get; set; }
 
-            public bool            IsReadOnly { get; set; }
-            
+            public bool IsReadOnly { get; set; }
+
             [NotNull]
-            public AmmyBindBuilder Binding    { get; } = new AmmyBindBuilder(null);
-            
+            public AmmyBindBuilder Binding { get; } = new AmmyBindBuilder(null);
+
             [NotNull]
-            public Dictionary<string, object> CustomValues { get; }= new Dictionary<string, object>(); 
+            public Dictionary<string, object> CustomValues { get; } = new Dictionary<string, object>();
         }
     }
 }

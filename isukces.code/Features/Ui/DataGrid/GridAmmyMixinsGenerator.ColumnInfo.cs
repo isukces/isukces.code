@@ -8,9 +8,11 @@ namespace iSukces.Code.Ui.DataGrid
     {
         protected class ColumnInfo
         {
-            public string                     Name             { get; set; }
-            public string                     Header           { get; set; }
-            public int?                       Width            { get; set; }
+            public string Name { get; set; }
+
+            public object HeaderSource { get; set; }
+            public int?   Width        { get; set; }
+
             public string                     CategoryName     { get; set; }
             public bool                       AlignRight       { get; set; }
             public Type                       Type             { get; set; }

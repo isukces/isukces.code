@@ -1,0 +1,41 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using iSukces.Code.AutoCode;
+using iSukces.Code.Ui.DataGrid;
+
+namespace iSukces.Code.Tests.Ui
+{
+    public partial class CompatTelerikGridAmmyMixinsGeneratorTests
+    {
+ 
+       public class TModel
+        {
+            public int    Number { get; set; }
+            public string Name   { get; set; }
+
+            public DateTime Date { get; set; }
+        }
+
+        private class FakeAssemblyBaseDirectoryProvider : IAssemblyBaseDirectoryProvider
+        {
+            public DirectoryInfo GetBaseDirectory(Assembly assembly) => throw new NotImplementedException();
+        }
+
+        private sealed class ImpulsAlarmMeasureItemGridDefinition : DataGridConfigurationProvider<TModel>
+        {
+            public override IEnumerable<GridColumn> GetColumns()
+            {
+                yield return Col(a => a.Number, "Number", 160).WithReadOnly();
+                yield return Col(a => a.Name, new SampleStaticTextSource("*Name"), 160).WithReadOnly();
+                yield return Col(a => a.Date, new SampleTranslatedTextSource("translations.common.date"), 120).WithReadOnly();
+            }
+
+            public override bool AddExpandColumn
+            {
+                get { return false; }
+            }
+        }
+    }
+}

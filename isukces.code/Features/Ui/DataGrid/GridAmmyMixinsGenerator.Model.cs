@@ -27,21 +27,21 @@ namespace iSukces.Code.Ui.DataGrid
                     modelProperties.TryGetValue(colDef.Name, out var rowProperty);
 
                     if (colDef.CategoryName != null)
-                        result.Categories.Add(new AttributeInfo(colDef.CategoryName, colDef.CategoryHeader));
+                        result.Categories.Add(new AttributeInfo(colDef.CategoryName, colDef.CategoryHeaderSource));
                     var col = new ColumnInfo
                     {
-                        Name             = rowProperty?.Name ?? colDef.Name,
-                        Binding          = colDef.Binding,
-                        Header           = colDef.Header ?? rowProperty?.Name,
-                        Width            = colDef.Width,
-                        CategoryName     = result.Categories.LastOrDefault()?.Name,
-                        Type             = rowProperty?.PropertyType ?? rowType,
-                        Lookup           = colDef.Lookup,
-                        CellTemplate     = colDef.CellTemplate,
-                        EditTemplate     = colDef.EditTemplate,
-                        DataFormatString = colDef.DataFormatString,
-                        IsReadOnly       = colDef.IsReadOnly,
-                        CustomValues     = colDef.CustomValues
+                        Name               = rowProperty?.Name ?? colDef.Name,
+                        Binding            = colDef.Binding,
+                        HeaderSource       = colDef.HeaderSource ?? rowProperty?.Name,
+                        Width              = colDef.Width,
+                        CategoryName = result.Categories.LastOrDefault()?.Name,
+                        Type               = rowProperty?.PropertyType ?? rowType,
+                        Lookup             = colDef.Lookup,
+                        CellTemplate       = colDef.CellTemplate,
+                        EditTemplate       = colDef.EditTemplate,
+                        DataFormatString   = colDef.DataFormatString,
+                        IsReadOnly         = colDef.IsReadOnly,
+                        CustomValues       = colDef.CustomValues
                     };
 
                     col.AlignRight = RightAligned.Contains(col.Type);
@@ -54,6 +54,7 @@ namespace iSukces.Code.Ui.DataGrid
             public bool                        AddExpandColumn { get; private set; }
             public List<AttributeInfo>         Categories      { get; } = new List<AttributeInfo>();
             public List<ColumnInfo>            Columns         { get; } = new List<ColumnInfo>();
+            
             public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
         }
     }

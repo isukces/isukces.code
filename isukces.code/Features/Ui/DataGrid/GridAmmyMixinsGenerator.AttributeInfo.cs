@@ -4,14 +4,14 @@ namespace iSukces.Code.Ui.DataGrid
     {
         protected class AttributeInfo
         {
-            public AttributeInfo(string name, string header)
+            public AttributeInfo(string name, object headerSource)
             {
-                Name   = name;
-                Header = header;
+                Name         = name;
+                HeaderSource = headerSource;
             }
 
-            public string Name   { get; }
-            public string Header { get; }
+            public string Name         { get; }
+            public object HeaderSource { get; }
         }
     }
 }

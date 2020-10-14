@@ -52,7 +52,7 @@ namespace iSukces.Code.AutoCode
 
                 if (!string.IsNullOrEmpty(template))
                 {
-                    var typeName = this.Class.GetTypeName(pi.PropertyType);
+                    var typeName = Class.GetTypeName(pi.PropertyType);
                     return string.Format(template, pi.Name, typeName);
                 }
 
@@ -97,7 +97,10 @@ namespace iSukces.Code.AutoCode
                     if (string.IsNullOrEmpty(condition))
                         condition = MakeShouldSerializeCondition(i.Item1);
                     else
-                        condition = string.Format(condition, propertyName);
+                    {
+                        var typeName = this.Class.GetTypeName(i.Item1.PropertyType); 
+                        condition = string.Format(condition, propertyName, typeName);
+                    }
 
                     writer.WriteLine("return {0};", condition);
                     m.Body = writer.Code;

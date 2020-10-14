@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 
@@ -47,6 +43,8 @@ namespace iSukces.Code.Ammy
                 return null;
             }
 
+            if (src is AmmyBindBuilder builder)
+                src = builder.Build();
             if (src is IAmmyCodePiece ammyCodePiece)
                 return ammyCodePiece;
             if (src is IAmmyCodePieceConvertible convertible)
@@ -57,6 +55,7 @@ namespace iSukces.Code.Ammy
                 var tmp = new AmmySystemColorDynamicResource(systemColorsKeys);
                 return tmp.ToAmmyCode(ctx);
             }
+
             var simple = ToSimpleAmmyCodePiece();
             if (simple != null)
             {
@@ -64,13 +63,20 @@ namespace iSukces.Code.Ammy
                 return nested;
             }
 
-       
+            var handler = ConvertToIAmmyCodePiece;
+            if (handler != null)
+            {
+                var args = new ConvertToIAmmyCodePieceEventArgs(src, ctx);
+                handler(null, args);
+                if (args.Handled)
+                    return args.Result;
+            }
 
-            if (src is AmmyBindBuilder builder)
-                return builder.Build().ToAmmyCode(ctx);
-
-            throw new NotSupportedException("Unable to convert ToCodePiece " + src.GetType());
+            var msg =
+                $"Unable to convert ToCodePiece {src.GetType()}.\r\nTry add handle AmmyHelper.ConvertToIAmmyCodePiece event to add custom conversion.";
+            throw new NotSupportedException(msg);
         }
+
 
         [NotNull]
         public static IAmmyCodePiece[] ConvertArguments(
@@ -198,6 +204,22 @@ namespace iSukces.Code.Ammy
                 default:
                     throw new NotSupportedException(piece.GetType().ToString());
             }
+        }
+
+        public static event EventHandler<ConvertToIAmmyCodePieceEventArgs> ConvertToIAmmyCodePiece;
+
+        public sealed class ConvertToIAmmyCodePieceEventArgs : EventArgs, IConverterEventArgs<object, IAmmyCodePiece>
+        {
+            public ConvertToIAmmyCodePieceEventArgs(object src, IConversionCtx conversionCtx)
+            {
+                SourceValue   = src;
+                ConversionCtx = conversionCtx;
+            }
+
+            public object         SourceValue   { get; }
+            public IConversionCtx ConversionCtx { get; }
+            public bool           Handled       { get; set; }
+            public IAmmyCodePiece Result        { get; set; }
         }
     }
 }

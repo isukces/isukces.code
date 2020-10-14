@@ -41,7 +41,7 @@ namespace iSukces.Code.AutoCode
         
         public abstract class SingleClassGenerator : IAutoCodeGenerator
         {
-            protected void Setup(Type type, IAutoCodeGeneratorContext context)
+            internal void Setup(Type type, IAutoCodeGeneratorContext context)
             {
                 Type    = type;
                 _class  = null;

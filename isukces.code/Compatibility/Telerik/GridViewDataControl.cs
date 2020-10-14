@@ -6,5 +6,6 @@ namespace iSukces.Code.Compatibility.Telerik
     [EmitType("Telerik.Windows.Controls.GridView")]
     public class GridViewDataControl : BaseItemsControl
     {
+        public bool IsLocalizationLanguageRespected { get; set; }
     }
 }

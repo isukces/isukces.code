@@ -23,7 +23,7 @@ namespace iSukces.Code.Ui.DataGrid
         }
 
 
-        protected GridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, string header,
+        protected GridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
         {
             var name = CodeUtils.GetMemberPath(func);
@@ -42,8 +42,8 @@ namespace iSukces.Code.Ui.DataGrid
                     Path = name,
                 },
                 //DataMemberBinding = name,
-                Header            = GetColumnHeader(name, header, prop),
-                Width             = width
+                HeaderSource = GetColumnHeaderSource(name, headerSource, prop),
+                Width        = width
             };
 
             if (prop != null)
@@ -62,11 +62,19 @@ namespace iSukces.Code.Ui.DataGrid
             return col;
         }
 
-        protected string GetColumnHeader([CanBeNull] string propertyName, [CanBeNull] string suggestedHeader,
+        protected object GetColumnHeaderSource([CanBeNull] string propertyName, [CanBeNull] object suggestedHeader,
             [CanBeNull] PropertyInfo property)
         {
-            if (!string.IsNullOrEmpty(suggestedHeader))
-                return suggestedHeader;
+            if (!(suggestedHeader is null))
+            {
+                switch (suggestedHeader)
+                {
+                    case string s when s.Length > 0:
+                        return suggestedHeader;
+                    default:
+                        return suggestedHeader;
+                }
+            }
 #if COREFX20 || FULLFX
             var descriptionFromAttribute = property?
                 .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?
