@@ -17,9 +17,9 @@ namespace iSukces.Code
             return CsNamespaceMemberKind.Class;
         }
 
-        public static bool IsExplicityImplementation<TInterface>(this Type implementingType, string methodName)
+        public static bool IsExplicityImplementation(this Type implementingType, Type interfaceType, string methodName)
         {
-            var map = implementingType.GetInterfaceMap(typeof(TInterface));
+            var map = implementingType.GetInterfaceMap(interfaceType);
             for (var index = map.InterfaceMethods.Length - 1; index >= 0; index--)
             {
                 var interfaceMethod = map.InterfaceMethods[index];
@@ -29,6 +29,11 @@ namespace iSukces.Code
             }
 
             return true;
+        }
+
+        public static bool IsExplicityImplementation<TInterface>(this Type implementingType, string methodName)
+        {
+            return IsExplicityImplementation(implementingType, typeof(TInterface), methodName);
         }
 
         public static bool IsNullableType(this Type type)
