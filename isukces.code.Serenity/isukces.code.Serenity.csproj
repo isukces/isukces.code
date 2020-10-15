@@ -13,9 +13,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.20287.70</AssemblyVersion>
-    <Version>1.0.20287.70</Version>
-    <FileVersion>1.0.20287.70</FileVersion>
+    <AssemblyVersion>1.0.20289.72</AssemblyVersion>
+    <Version>1.0.20289.72</Version>
+    <FileVersion>1.0.20289.72</FileVersion>
     <Description>Serenity extension for iSukces.Code</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
@@ -25,7 +25,7 @@
     <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <TargetFrameworks>net451;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net451;netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
@@ -35,7 +35,10 @@
     <Reference Include="System.Activities" />
     <Reference Include="WindowsBase" Condition="'$(TargetFramework)' == 'net451'" />
   </ItemGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
+    <DefineConstants>COREFX</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
     <DefineConstants>COREFX</DefineConstants>
   </PropertyGroup>
 </Project>

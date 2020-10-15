@@ -4,7 +4,7 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2020</Copyright>
-    <TargetFrameworks>net451;netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net451;netstandard2.0;netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.20288.159</AssemblyVersion>
-    <Version>1.0.20288.159</Version>
-    <FileVersion>1.0.20288.159</FileVersion>
+    <AssemblyVersion>1.0.20289.160</AssemblyVersion>
+    <Version>1.0.20289.160</Version>
+    <FileVersion>1.0.20289.160</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
@@ -58,6 +58,9 @@
     <DefineConstants>COREFX;COREFX20</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+    <DefineConstants>COREFX;COREFX20</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
     <DefineConstants>COREFX;COREFX20</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net451' ">
