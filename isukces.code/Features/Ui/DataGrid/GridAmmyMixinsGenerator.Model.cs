@@ -11,6 +11,8 @@ namespace iSukces.Code.Ui.DataGrid
         {
             public static Model MakeFromAttributes(Type type)
             {
+                if (type.IsInterface || type.IsAbstract)
+                    return null;
                 var rowType = GetRowType(type);
                 if (rowType == null)
                     return null;
