@@ -26,23 +26,23 @@ namespace iSukces.Code.Ui.DataGrid
         protected GridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
         {
-            var name = CodeUtils.GetMemberPath(func);
+            var bindingPath = CodeUtils.GetMemberPath(func);
 
             var prop = typeof(TRow)
 #if COREFX
                 .GetTypeInfo()
 #endif
-                .GetProperty(name);
+                .GetProperty(bindingPath);
 
             var result = new GridColumn
             {
-                Name              = name,
+                Name              = bindingPath,
                 Binding =
                 {
-                    Path = name,
+                    Path = bindingPath,
                 },
                 //DataMemberBinding = name,
-                HeaderSource = GetColumnHeaderSource(name, headerSource, prop),
+                HeaderSource = GetColumnHeaderSource(bindingPath, headerSource, prop),
                 Width        = width
             };
 

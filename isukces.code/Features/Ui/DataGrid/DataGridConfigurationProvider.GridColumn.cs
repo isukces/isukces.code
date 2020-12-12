@@ -39,19 +39,25 @@ namespace iSukces.Code.Ui.DataGrid
                 return this;
             }
 
+            public GridColumn WithName(string name)
+            {
+                Name = name;
+                return this;
+            }
+
             public GridColumn WithReadOnly(bool isReadOnly = true)
             {
                 IsReadOnly = isReadOnly;
                 return this;
             }
 
-            public GridColumn WitLookup(LookupInfo info)
+            public GridColumn WithLookup(LookupInfo info)
             {
                 Lookup = info;
                 return this;
             }
 
-            public GridColumn WitLookup(object source, string selectedValuePath = null,
+            public GridColumn WithLookup(object source, string selectedValuePath = null,
                 string displayMemberPath = null)
             {
                 Lookup = new LookupInfo
@@ -60,9 +66,8 @@ namespace iSukces.Code.Ui.DataGrid
                     DisplayMemberPath = displayMemberPath,
                     SelectedValuePath = selectedValuePath
                 };
-                return WitLookup(Lookup);
+                return WithLookup(Lookup);
             }
-
 
             public string Name { get; set; }
 
