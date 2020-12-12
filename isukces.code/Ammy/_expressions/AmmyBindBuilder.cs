@@ -1,14 +1,22 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using iSukces.Code.Compatibility.System.Windows.Data;
 using iSukces.Code.Interfaces;
-using iSukces.Code.Interfaces.Ammy;
 
 namespace iSukces.Code.Ammy
 {
-    public partial class AmmyBindBuilder:IAnnotableByUser 
+    public partial class AmmyBindBuilder : IAnnotableByUser
     {
-        public AmmyBindBuilder(string path)
+        public AmmyBindBuilder(string path) => Path = path;
+
+        public static AmmyBindBuilder FromAncestor<T>(Expression<Func<T, object>> func, XBindingMode? mode = null)
         {
-            Path = path;
+            var path = ExpressionTools.GetBindingPath(func);
+            var tmp  = new AmmyBindBuilder(path).WithBindFromAncestor<T>();
+            if (mode != null)
+                tmp = tmp.WithMode(mode);
+            return tmp;
         }
 
         public AmmyBind Build()
@@ -34,6 +42,7 @@ namespace iSukces.Code.Ammy
                     break;
                 }
             }
+
             return ammyBind;
         }
 
