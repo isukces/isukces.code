@@ -97,8 +97,8 @@ namespace iSukces.Code.AutoCode
             if (constructors.Length == 1)
                 return constructors[0];
             if (constructors.Length == 0)
-                throw new Exception("Unable to find constructor, mark one with Auto.CloneableConstructor");
-            throw new Exception("Unable to find constructor, too many marked with Auto.CloneableConstructor");
+                throw new UnableToFindConstructorException(type, "Mark one with Auto.CloneableConstructor");
+            throw new UnableToFindConstructorException(type, "Too many marked with Auto.CloneableConstructor");
 
         }
         private static void GenerateMethodClone(Type type, CsClass csClass)
