@@ -156,6 +156,20 @@ namespace iSukces.Code.AutoCode
         protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeWriter writer)
         {
             ITypeNameResolver resolver = Class;
+            {
+                var at = pi.GetCustomAttribute<Auto.CopyFromByMethodAttribute>();
+                if (at != null)
+                {
+                    /*var m = at.Type.GetMethods(GeneratorsHelper.All)
+                        .Where(a => a.Name == nameof(at.MethodName));*/
+                    var typename1    = resolver.GetTypeName<CopyPropertyValueArgs>();
+                    var typenameDot2 = at.Type != this.Type ? resolver.GetTypeName<CopyPropertyValueArgs>() + "." : "";
+                    var arg          = $"new {typename1}(source, this, nameof({pi.Name}))"; 
+                    var c            = $"{typenameDot2}{at.MethodName}({arg})";
+                    writer.WriteLine(c);
+                    return;
+                }
+            }
             if (pi.PropertyType
 #if COREFX
                   .GetTypeInfo()
@@ -303,7 +317,7 @@ namespace iSukces.Code.AutoCode
                 writer.WriteLine("}");
                 return;
             }
-            throw new NotSupportedException(String.Format("CopyFromGenerator is unable to find a way how to copy value of property {0}.{1}", pi.DeclaringType, pi.Name));
+            throw new NotSupportedException(string.Format("CopyFromGenerator is unable to find a way how to copy value of property {0}.{1}", pi.DeclaringType, pi.Name));
             // writer.WriteLine("// {0} {1}", pi.Name, pi.PropertyType);
         }
 
@@ -353,5 +367,19 @@ namespace iSukces.Code.AutoCode
 
         private Auto.CopyFromAttribute         _copyFromAttribute;
         private bool                           _doCloneable;
+    }
+
+    public sealed class CopyPropertyValueArgs
+    {
+        public CopyPropertyValueArgs(object source, object target, string propertyName)
+        {
+            Source       = source;
+            Target       = target;
+            PropertyName = propertyName;
+        }
+
+        public object Source { get;  }
+        public object Target { get;  }
+        public string      PropertyName      { get; }
     }
 }

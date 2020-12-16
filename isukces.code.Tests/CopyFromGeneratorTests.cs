@@ -146,6 +146,47 @@ namespace iSukces.Code.Tests
             Assert.Equal(expected.Trim(), actual);
         }
 
+        [Fact]
+        public void T04_Should_create_UseSpecialMethod()
+        {
+            var g       = new CopyFromGenerator();
+            var context = new TestContext();
+            g.Generate(typeof(UseSpecialMethod), context);
+            var expected = @"
+// ReSharper disable All
+namespace iSukces.Code.Tests
+{
+    partial class CopyFromGeneratorTests
+    {
+        partial class UseSpecialMethod : ICloneable
+        {
+            /// <summary>
+            /// Makes clone of object
+            /// </summary>
+            public object Clone()
+            {
+                var a = new UseSpecialMethod();
+                a.CopyFrom(this);
+                return a;
+            }
+
+            public void CopyFrom(UseSpecialMethod source)
+            {
+                if (ReferenceEquals(source, null))
+                    throw new ArgumentNullException(nameof(source));
+                CopySerialMethod(new iSukces.Code.AutoCode.CopyPropertyValueArgs(source, this, nameof(Serial)))
+            }
+
+        }
+
+    }
+}
+";
+            var actual = context.Code.Trim();
+
+            Assert.Equal(expected.Trim(), actual);
+        }
+
         [Auto.CopyFromAttribute]
         [Auto.CloneableAttribute]
         private class Nested
@@ -193,5 +234,13 @@ namespace iSukces.Code.Tests
             public string Name   { get; }
         }
 
+                
+        [Auto.CopyFromAttribute]
+        [Auto.CloneableAttribute]
+        private class UseSpecialMethod
+        {
+            [Auto.CopyFromByMethod(typeof(UseSpecialMethod), "CopySerialMethod")]
+            public CopyFromConstructor Serial { get; set; }
+        }
     }
 }
