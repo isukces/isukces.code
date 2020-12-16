@@ -84,13 +84,41 @@ namespace iSukces.Code.AutoCode
             writer.DecIndent();
             writer.WriteLine("}");
         }
-        
+
+        static ConstructorInfo GetConstructor(Type type)
+        {
+            ConstructorInfo[] constructors =
+                type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (constructors.Length == 1)
+                return constructors[0];
+            constructors = constructors
+                .Where(a => a.GetCustomAttribute<Auto.CloneableConstructorAttribute>() != null)
+                .ToArray();
+            if (constructors.Length == 1)
+                return constructors[0];
+            if (constructors.Length == 0)
+                throw new Exception("Unable to find constructor, mark one with Auto.CloneableConstructor");
+            throw new Exception("Unable to find constructor, too many marked with Auto.CloneableConstructor");
+
+        }
         private static void GenerateMethodClone(Type type, CsClass csClass)
         {
             csClass.ImplementedInterfaces.Add("ICloneable");
-            var         cm     = csClass.AddMethod("Clone", "object", "Makes clone of object");
+            var cm     = csClass.AddMethod("Clone", "object", "Makes clone of object");
+            var constr = GetConstructor(type);
+            var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .ToDictionary(a => a.Name, a => a, StringComparer.OrdinalIgnoreCase);
+            var l = constr.GetParameters()
+                .Select(i =>
+                {
+                    if (props.TryGetValue(i.Name, out var pi))
+                        return pi.Name;
+                    throw new Exception("Unable to find property related to constructor parameter " + i.Name);
+                }).ToArray();
+           
             ICsCodeWriter writer = new CsCodeWriter();
-            writer.WriteLine("var a = new {0}();", type.Name);
+            var           pars   = string.Join(", ", l);
+            writer.WriteLine("var a = new {0}({1});", type.Name, pars);
             writer.WriteLine("a.CopyFrom(this);");
             writer.WriteLine("return a;");
             cm.Body = writer.Code;

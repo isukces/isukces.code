@@ -59,8 +59,7 @@ namespace iSukces.Code.Tests
             Assert.Equal(expected.Trim(), actual);
         }
 
-        
-        
+
         [Fact]
         public void T02_Should_create_cloneable()
         {
@@ -106,6 +105,47 @@ namespace iSukces.Code.Tests
             Assert.Equal(expected.Trim(), actual);
         }
 
+
+        [Fact]
+        public void T03_Should_create_CopyFromConstructor()
+        {
+            var g       = new CopyFromGenerator();
+            var context = new TestContext();
+            g.Generate(typeof(CopyFromConstructor), context);
+            var expected = @"
+// ReSharper disable All
+namespace iSukces.Code.Tests
+{
+    partial class CopyFromGeneratorTests
+    {
+        partial class CopyFromConstructor : ICloneable
+        {
+            /// <summary>
+            /// Makes clone of object
+            /// </summary>
+            public object Clone()
+            {
+                var a = new CopyFromConstructor(Serial, Name);
+                a.CopyFrom(this);
+                return a;
+            }
+
+            public void CopyFrom(CopyFromConstructor source)
+            {
+                if (ReferenceEquals(source, null))
+                    throw new ArgumentNullException(nameof(source));
+            }
+
+        }
+
+    }
+}
+";
+            var actual = context.Code.Trim();
+
+            Assert.Equal(expected.Trim(), actual);
+        }
+
         [Auto.CopyFromAttribute]
         [Auto.CloneableAttribute]
         private class Nested
@@ -128,14 +168,30 @@ namespace iSukces.Code.Tests
             public int NumberImplicitCloneable { get; set; }
         }
 
-        
+
         [Auto.CopyFromAttribute]
         [Auto.CloneableAttribute]
-        class CloneableContainer
+        private class CloneableContainer
         {
-            public ExplicitCloneable Explicit          { get; set; }
+            public ExplicitCloneable Explicit { get; set; }
             public ImplicitCloneable Implicit { get; set; }
-
         }
+
+
+        [Auto.CopyFromAttribute]
+        [Auto.CloneableAttribute]
+        private class CopyFromConstructor
+        {
+            [Auto.CloneableConstructor]
+            public CopyFromConstructor(int serial, string name)
+            {
+                Serial = serial;
+                Name   = name;
+            }
+
+            public int    Serial { get; }
+            public string Name   { get; }
+        }
+
     }
 }

@@ -54,4 +54,5 @@ namespace iSukces.Code.Interfaces
         /// </summary>
         Custom
     }
+    
 }
