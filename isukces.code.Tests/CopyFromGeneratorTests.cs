@@ -174,7 +174,7 @@ namespace iSukces.Code.Tests
             {
                 if (ReferenceEquals(source, null))
                     throw new ArgumentNullException(nameof(source));
-                CopySerialMethod(new iSukces.Code.AutoCode.CopyPropertyValueArgs(source, this, nameof(Serial)))
+                CopySerialMethod(new iSukces.Code.AutoCode.CopyPropertyValueArgs(source, this, nameof(Serial)));
             }
 
         }

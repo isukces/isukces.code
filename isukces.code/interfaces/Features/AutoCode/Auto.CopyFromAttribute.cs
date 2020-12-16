@@ -48,6 +48,5 @@ namespace iSukces.Code.Interfaces
             private string _skip;
             private HashSet<string> _skipHash;
         }
-        
     }
 }

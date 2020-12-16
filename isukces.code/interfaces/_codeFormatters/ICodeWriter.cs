@@ -73,7 +73,7 @@ namespace iSukces.Code.Interfaces
         }
 
 
-        public static void Open(this ICodeWriter src, string x)
+        public static T Open<T>(this T src, string x) where T:ICodeWriter
         {
 #if AutoCloseText
             opening[src.Indent] = x;
@@ -82,11 +82,13 @@ namespace iSukces.Code.Interfaces
             src.WriteLine(x);
             src.WriteLine(src.LangInfo.OpenText);
             src.Indent++;
+            return src;
         }
 
-        public static void Open(this ICodeWriter src, string format, params object[] args)
+        public static T Open<T>(this T src, string format, params object[] args) where T : ICodeWriter
         {
             src.Open(string.Format(format, args));
+            return src;
         }
 
 
@@ -110,6 +112,7 @@ namespace iSukces.Code.Interfaces
             return _this;
         }
 
+        [Obsolete]
         public static T WithOpen<T>(this T _this, string text)
             where T : ICodeWriter
         {

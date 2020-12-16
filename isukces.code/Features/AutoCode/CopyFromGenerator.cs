@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
@@ -13,39 +12,38 @@ namespace iSukces.Code.AutoCode
 {
     public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGenerator
     {
-        private void CloneWithValuesProcessor(PropertyInfo pi, ICsCodeWriter writer, ITypeNameResolver resolver)
+        protected static ConstructorInfo GetConstructor(Type type)
         {
-            var wm = GeneratorsHelper.GetWriteMemeberName(pi);
-#if !COREFX
-
-                var isCloneable = pi.PropertyType == typeof(ICloneable)
-                                  || pi.PropertyType.GetInterfaces().Any(a => a == typeof(ICloneable));
-                if (isCloneable)
-                {
-                    writer.WriteLine("if (source.{0} != null)", pi.Name);
-                    writer.WriteLine("    {0} = ({1})(source.{2} as {3}).Clone();",
-                        wm,
-                        resolver.GetTypeName(pi.PropertyType),
-                        pi.Name,
-                        resolver.GetTypeName(typeof(ICloneable)));
-                    writer.WriteLine("else");
-                    writer.WriteLine("    {0} = null;", wm);
-                    return;
-                }
-#endif
-
-            var cloneMethod = Configuration?.CustomCloneMethod;
-            if (cloneMethod == null)
-                throw new Exception("Unable to clone value of type " + pi.PropertyType);
-            writer.WriteLine("{0} = {1}.{2}(source.{3}); // {4}",
-                wm,
-                resolver.GetTypeName(cloneMethod.DeclaringType),
-                cloneMethod.Name,
-                pi.Name,
-                pi.PropertyType);
+            var constructors =
+                type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (constructors.Length == 1)
+                return constructors[0];
+            constructors = constructors
+                .Where(a => a.GetCustomAttribute<Auto.CloneableConstructorAttribute>() != null)
+                .ToArray();
+            if (constructors.Length == 1)
+                return constructors[0];
+            if (constructors.Length == 0)
+                throw new UnableToFindConstructorException(type, "Mark one with Auto.CloneableConstructor");
+            throw new UnableToFindConstructorException(type, "Too many marked with Auto.CloneableConstructor");
         }
 
-        private static void CopyArray(PropertyInfo pi, string type, ICsCodeWriter writer,ITypeNameResolver res)
+        protected static string GetConstructorParameters(Type type, ConstructorInfo constr)
+        {
+            var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .ToDictionary(a => a.Name, a => a, StringComparer.OrdinalIgnoreCase);
+            var l = constr.GetParameters()
+                .Select(i =>
+                {
+                    if (props.TryGetValue(i.Name, out var pi))
+                        return pi.Name;
+                    throw new Exception("Unable to find property related to constructor parameter " + i.Name);
+                }).ToArray();
+            var pars = string.Join(", ", l);
+            return pars;
+        }
+
+        private static void CopyArray(PropertyInfo pi, string type, ICsCodeWriter writer, ITypeNameResolver res)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
             writer.WriteLine("if (source.{0} == null)", pi.Name);
@@ -80,62 +78,34 @@ namespace iSukces.Code.AutoCode
                 writer.WriteLine($"{arrayCopy}({source}, 0, {target}, 0, {source}.Length);");
                 writer.WriteLine($"{wm} = {target};");
             }
-          
+
             writer.DecIndent();
             writer.WriteLine("}");
         }
 
-        static ConstructorInfo GetConstructor(Type type)
-        {
-            ConstructorInfo[] constructors =
-                type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (constructors.Length == 1)
-                return constructors[0];
-            constructors = constructors
-                .Where(a => a.GetCustomAttribute<Auto.CloneableConstructorAttribute>() != null)
-                .ToArray();
-            if (constructors.Length == 1)
-                return constructors[0];
-            if (constructors.Length == 0)
-                throw new UnableToFindConstructorException(type, "Mark one with Auto.CloneableConstructor");
-            throw new UnableToFindConstructorException(type, "Too many marked with Auto.CloneableConstructor");
-
-        }
         private static void GenerateMethodClone(Type type, CsClass csClass)
         {
             csClass.ImplementedInterfaces.Add("ICloneable");
             var cm     = csClass.AddMethod("Clone", "object", "Makes clone of object");
             var constr = GetConstructor(type);
-            var props = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .ToDictionary(a => a.Name, a => a, StringComparer.OrdinalIgnoreCase);
-            var l = constr.GetParameters()
-                .Select(i =>
-                {
-                    if (props.TryGetValue(i.Name, out var pi))
-                        return pi.Name;
-                    throw new Exception("Unable to find property related to constructor parameter " + i.Name);
-                }).ToArray();
-           
+            var pars   = GetConstructorParameters(type, constr);
+
             ICsCodeWriter writer = new CsCodeWriter();
-            var           pars   = string.Join(", ", l);
             writer.WriteLine("var a = new {0}({1});", type.Name, pars);
             writer.WriteLine("a.CopyFrom(this);");
             writer.WriteLine("return a;");
             cm.Body = writer.Code;
         }
-        
-        [CanBeNull]
-        public CopyFromGeneratorConfiguration Configuration { get; set; } 
 
         protected override void GenerateInternal()
         {
             _copyFromAttribute = GetCustomAttribute<Auto.CopyFromAttribute>();
-            _doCloneable = GetCustomAttribute<Auto.CloneableAttribute>() != null;
+            _doCloneable       = GetCustomAttribute<Auto.CloneableAttribute>() != null;
 
             if (!_doCloneable && _copyFromAttribute == null)
                 return;
             {
-                var cm = Class.AddMethod("CopyFrom", "void", null);
+                var cm = Class.AddMethod("CopyFrom", "void");
                 cm.AddParam("source", Class.GetTypeName(Type)); // reduce type
                 ICsCodeWriter writer = new CsCodeWriter();
                 writer.WriteLine("if (ReferenceEquals(source, null))");
@@ -144,7 +114,8 @@ namespace iSukces.Code.AutoCode
 #if COREFX
                                       .GetTypeInfo()
 #endif
-                                      .GetProperties(GeneratorsHelper.AllInstance);
+                    .GetProperties(GeneratorsHelper.AllInstance);
+                properties = SortProperties(properties);
                 foreach (var i in properties)
                     ProcessProperty(i, _copyFromAttribute, writer);
                 cm.Body = writer.Code;
@@ -152,7 +123,7 @@ namespace iSukces.Code.AutoCode
             if (_doCloneable)
                 GenerateMethodClone(Type, Class);
         }
-        
+
         protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeWriter writer)
         {
             ITypeNameResolver resolver = Class;
@@ -163,9 +134,9 @@ namespace iSukces.Code.AutoCode
                     /*var m = at.Type.GetMethods(GeneratorsHelper.All)
                         .Where(a => a.Name == nameof(at.MethodName));*/
                     var typename1    = resolver.GetTypeName<CopyPropertyValueArgs>();
-                    var typenameDot2 = at.Type != this.Type ? resolver.GetTypeName<CopyPropertyValueArgs>() + "." : "";
-                    var arg          = $"new {typename1}(source, this, nameof({pi.Name}))"; 
-                    var c            = $"{typenameDot2}{at.MethodName}({arg})";
+                    var typenameDot2 = at.Type != Type ? resolver.GetTypeName<CopyPropertyValueArgs>() + "." : "";
+                    var arg          = $"new {typename1}(source, this, nameof({pi.Name}))";
+                    var c            = $"{typenameDot2}{at.MethodName}({arg});";
                     writer.WriteLine(c);
                     return;
                 }
@@ -174,7 +145,7 @@ namespace iSukces.Code.AutoCode
 #if COREFX
                   .GetTypeInfo()
 #endif
-                  .IsValueType || pi.PropertyType == typeof(string))
+                .IsValueType || pi.PropertyType == typeof(string))
             {
                 if (!pi.CanWrite || !pi.CanRead)
                     return;
@@ -182,12 +153,14 @@ namespace iSukces.Code.AutoCode
                 writer.WriteLine("{0} = source.{0}; // {1}", pi.Name, resolver.GetTypeName(pi.PropertyType));
                 return;
             }
+
             if (pi.PropertyType.IsArray)
             {
                 var eltype = pi.PropertyType.GetElementType();
                 CopyArray(pi, resolver.GetTypeName(eltype), writer, resolver);
                 return;
             }
+
             {
                 var tmp = pi.GetCustomAttribute<Auto.CopyBy.CloneableAttribute>();
                 if (tmp != null)
@@ -219,17 +192,18 @@ namespace iSukces.Code.AutoCode
 #if COREFX
                   .GetTypeInfo()
 #endif
-                  .IsInterface)
+                .IsInterface)
             {
                 CloneWithValuesProcessor(pi, writer, resolver);
                 return;
             }
+
             var ptg = pi.PropertyType;
             if (pi.PropertyType
 #if COREFX
                   .GetTypeInfo()
 #endif
-                  .IsGenericType)
+                .IsGenericType)
                 ptg = pi.PropertyType.GetGenericTypeDefinition();
 
             if (ptg == typeof(ObservableCollection<>))
@@ -239,13 +213,15 @@ namespace iSukces.Code.AutoCode
                 AddRange(writer, writeMemeber, "source." + pi.Name);
                 return;
             }
+
             if (ptg == typeof(Tuple<,>))
             {
                 var writeMemeber = GeneratorsHelper.GetWriteMemeberName(pi);
-                var other        = String.Format("Tuple.Create(source.{0}.Item1, source.{0}.Item2)", writeMemeber);
+                var other        = string.Format("Tuple.Create(source.{0}.Item1, source.{0}.Item2)", writeMemeber);
                 writer.WriteLine("{0} = source.{0} == null ? null : {0};", writeMemeber, other);
                 return;
             }
+
             if (ptg == typeof(List<>))
             {
                 var wm = GeneratorsHelper.GetWriteMemeberName(pi);
@@ -260,7 +236,7 @@ namespace iSukces.Code.AutoCode
 #if COREFX
                           .GetTypeInfo()
 #endif
-                          .GetGenericArguments()[0]);
+                            .GetGenericArguments()[0]);
                     writer.Indent++;
                     AddRange(writer, wm, "source." + pi.Name);
                     writer.Indent--;
@@ -271,36 +247,35 @@ namespace iSukces.Code.AutoCode
                     writer.WriteLine("{0}.Clear();", wm);
                     AddRange(writer, wm, "source." + pi.Name);
                 }
+
                 return;
             }
+
             if (ptg == typeof(double[]))
             {
-                CopyArray(pi, "double", writer,  resolver);
+                CopyArray(pi, "double", writer, resolver);
                 return;
             }
 #if !COREFX
-                if (ptg == typeof(Point[]))
+            if (ptg == typeof(Point[]))
+            {
+                CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
+                return;
+            }
+
+            {
+                var interf = pi.PropertyType.GetInterfaces();
+                if (interf.Any(a => a == typeof(ICloneable)))
                 {
-                    CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
+                    var castTypeName = resolver.GetTypeName(pi.PropertyType);
+                    if (pi.PropertyType.IsExplicityImplementation<ICloneable>(nameof(ICloneable.Clone)))
+                        writer.WriteLine($"{pi.Name} = ({castTypeName})((ICloneable)source.{pi.Name})?.Clone();");
+                    else
+                        writer.WriteLine($"{pi.Name} = ({castTypeName})source.{pi.Name}?.Clone();");
+
                     return;
                 }
-                {
-                    var interf = pi.PropertyType.GetInterfaces();
-                    if (interf.Any(a => a == typeof(ICloneable)))
-                    {
-                        var castTypeName = resolver.GetTypeName(pi.PropertyType);
-                        if (pi.PropertyType.IsExplicityImplementation<ICloneable>(nameof(ICloneable.Clone)))
-                        {
-                            writer.WriteLine($"{pi.Name} = ({castTypeName})((ICloneable)source.{pi.Name})?.Clone();");
-                        }
-                        else
-                        {
-                            writer.WriteLine($"{pi.Name} = ({castTypeName})source.{pi.Name}?.Clone();");
-                        }
-                        
-                        return;
-                    }
-                }
+            }
 #endif
             if (pi.PropertyType == typeof(Dictionary<string, string>))
             {
@@ -317,8 +292,21 @@ namespace iSukces.Code.AutoCode
                 writer.WriteLine("}");
                 return;
             }
-            throw new NotSupportedException(string.Format("CopyFromGenerator is unable to find a way how to copy value of property {0}.{1}", pi.DeclaringType, pi.Name));
+
+            throw new NotSupportedException(string.Format(
+                "CopyFromGenerator is unable to find a way how to copy value of property {0}.{1}", pi.DeclaringType,
+                pi.Name));
             // writer.WriteLine("// {0} {1}", pi.Name, pi.PropertyType);
+        }
+
+        protected virtual PropertyInfo[] SortProperties(PropertyInfo[] properties)
+        {
+            var p = properties.OrderBy(a =>
+            {
+                var attribute = a.GetCustomAttribute<CopyFromOrderAttribute>();
+                return attribute?.Order ?? 0;
+            }).ToArray();
+            return p;
         }
 
         private void AddRange(ICsCodeWriter writer, string target, string source)
@@ -330,7 +318,7 @@ namespace iSukces.Code.AutoCode
 #if COREFX
                                   .GetTypeInfo()
 #endif
-                                  .GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
+                .GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
             if (m == null)
                 throw new Exception("Unable to find AddRange method");
             var isExtension = m.IsDefined(typeof(ExtensionAttribute), true);
@@ -341,32 +329,68 @@ namespace iSukces.Code.AutoCode
                 {
                     while (t.DeclaringType != null)
                         t = t.DeclaringType;
-                    object owner            = Class.Owner;
-                    var    nsCollection = owner as 
+                    object owner = Class.Owner;
+                    var nsCollection = owner as
                         INamespaceCollection;
                     while (nsCollection == null && owner != null)
                     {
                         if (owner is CsClass csClass)
-                            owner = csClass.Owner;                      
+                            owner = csClass.Owner;
                         else
                             break;
                         nsCollection = owner as INamespaceCollection;
                     }
+
                     if (nsCollection != null)
                     {
                         nsCollection.AddImportNamespace(t.Namespace);
                         writer.WriteLine("{0}.AddRange({1});", target, source);
                         return;
                     }
-
                 }
             }
+
             var typeName = Class.GetTypeName(listExtension);
             writer.WriteLine("{0}.AddRange({1}, {2});", typeName, target, source);
         }
 
-        private Auto.CopyFromAttribute         _copyFromAttribute;
-        private bool                           _doCloneable;
+        private void CloneWithValuesProcessor(PropertyInfo pi, ICsCodeWriter writer, ITypeNameResolver resolver)
+        {
+            var wm = GeneratorsHelper.GetWriteMemeberName(pi);
+#if !COREFX
+
+            var isCloneable = pi.PropertyType == typeof(ICloneable)
+                              || pi.PropertyType.GetInterfaces().Any(a => a == typeof(ICloneable));
+            if (isCloneable)
+            {
+                writer.WriteLine("if (source.{0} != null)", pi.Name);
+                writer.WriteLine("    {0} = ({1})(source.{2} as {3}).Clone();",
+                    wm,
+                    resolver.GetTypeName(pi.PropertyType),
+                    pi.Name,
+                    resolver.GetTypeName(typeof(ICloneable)));
+                writer.WriteLine("else");
+                writer.WriteLine("    {0} = null;", wm);
+                return;
+            }
+#endif
+
+            var cloneMethod = Configuration?.CustomCloneMethod;
+            if (cloneMethod == null)
+                throw new Exception("Unable to clone value of type " + pi.PropertyType);
+            writer.WriteLine("{0} = {1}.{2}(source.{3}); // {4}",
+                wm,
+                resolver.GetTypeName(cloneMethod.DeclaringType),
+                cloneMethod.Name,
+                pi.Name,
+                pi.PropertyType);
+        }
+
+        [CanBeNull]
+        public CopyFromGeneratorConfiguration Configuration { get; set; }
+
+        private Auto.CopyFromAttribute _copyFromAttribute;
+        private bool _doCloneable;
     }
 
     public sealed class CopyPropertyValueArgs
@@ -378,8 +402,9 @@ namespace iSukces.Code.AutoCode
             PropertyName = propertyName;
         }
 
-        public object Source { get;  }
-        public object Target { get;  }
-        public string      PropertyName      { get; }
+        public object Source       { get; }
+        public object Target       { get; }
+        public string PropertyName { get; }
     }
+    
 }
