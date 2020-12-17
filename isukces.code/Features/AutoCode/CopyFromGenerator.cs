@@ -14,17 +14,23 @@ namespace iSukces.Code.AutoCode
     {
         protected static ConstructorInfo GetConstructor(Type type)
         {
-            var constructors =
-                type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-            if (constructors.Length == 1)
-                return constructors[0];
-            constructors = constructors
+            var c = type.GetConstructors(GeneratorsHelper.AllInstance);
+            if (c.Length == 1)
+                return c[0];
+
+            var constructors2 = c
                 .Where(a => a.GetCustomAttribute<Auto.CloneableConstructorAttribute>() != null)
                 .ToArray();
-            if (constructors.Length == 1)
-                return constructors[0];
-            if (constructors.Length == 0)
+            if (constructors2.Length == 1)
+                return constructors2[0];
+            if (constructors2.Length == 0)
+            {
+                constructors2 = c.Where(a => a.GetParameters().Length == 0).ToArray();
+                if (constructors2.Length == 1)
+                    return constructors2[0];
                 throw new UnableToFindConstructorException(type, "Mark one with Auto.CloneableConstructor");
+            }
+
             throw new UnableToFindConstructorException(type, "Too many marked with Auto.CloneableConstructor");
         }
 
@@ -303,7 +309,7 @@ namespace iSukces.Code.AutoCode
         {
             var p = properties.OrderBy(a =>
             {
-                var attribute = a.GetCustomAttribute<CopyFromOrderAttribute>();
+                var attribute = a.GetCustomAttribute<Auto.CopyFromOrderAttribute>();
                 return attribute?.Order ?? 0;
             }).ToArray();
             return p;
@@ -406,5 +412,4 @@ namespace iSukces.Code.AutoCode
         public object Target       { get; }
         public string PropertyName { get; }
     }
-    
 }
