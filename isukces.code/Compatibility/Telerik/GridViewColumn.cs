@@ -11,5 +11,7 @@ namespace iSukces.Code.Compatibility.Telerik
     {
         public DataTemplate CellTemplate     { get; set; }
         public DataTemplate CellEditTemplate { get; set; }
+
+        public GridViewEditTriggers EditTriggers { get; set; }
     }
 }
