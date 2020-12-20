@@ -32,6 +32,40 @@ namespace iSukces.Code.Ui.DataGrid
         {
         }
 
+        protected virtual IAmmyCodePieceConvertible ConvertColumn(ColumnInfo col)
+        {
+            var lookup = GetLookupInfo(col);
+            if (lookup != null)
+            {
+                var obj = AddCommon(new AmmyObjectBuilder<GridViewComboBoxColumn>(), col);
+                if (lookup.Source is AmmyBind)
+                    obj = obj.WithProperty(a => a.ItemsSourceBinding, lookup.Source);
+                else
+                    obj = obj.WithProperty(a => a.ItemsSource, lookup.Source);
+
+                obj = obj
+                    .WithPropertyNotNull(a => a.DisplayMemberPath, lookup.DisplayMemberPath)
+                    .WithPropertyNotNull(a => a.SelectedValueMemberPath, lookup.SelectedValuePath);
+                AfterConvertColumn(obj, col);
+                return obj;
+            }
+
+            if (col.Type == typeof(bool))
+            {
+                var obj = AddCommon(new AmmyObjectBuilder<GridViewCheckBoxColumn>(), col);
+                AfterConvertColumn(obj, col);
+                return obj;
+            }
+
+            {
+                var obj = new AmmyObjectBuilder<GridViewDataColumn>();
+                obj = AddCommon(obj, col);
+                obj = AddTemplates(obj, col);
+                AfterConvertColumn(obj, col);
+                return obj;
+            }
+        }
+
         protected virtual IConversionCtx CreateConversionContext()
         {
             var ctx = new ConversionCtx(Mixins);
@@ -157,38 +191,10 @@ namespace iSukces.Code.Ui.DataGrid
                 return obj;
             }
 
-            if (col.Type == typeof(bool)) return obj;
+            if (col.Type == typeof(bool)) 
+                return obj;
 
             return obj;
-        }
-
-        protected virtual IAmmyCodePieceConvertible ConvertColumn(ColumnInfo col)
-        {
-            var lookup = GetLookupInfo(col);
-            if (lookup != null)
-            {
-                var obj = AddCommon(new AmmyObjectBuilder<GridViewComboBoxColumn>(), col);
-                if (lookup.Source is AmmyBind)
-                    obj = obj.WithProperty(a => a.ItemsSourceBinding, lookup.Source);
-                else
-                    obj = obj.WithProperty(a => a.ItemsSource, lookup.Source);
-
-                obj = obj
-                    .WithPropertyNotNull(a => a.DisplayMemberPath, lookup.DisplayMemberPath)
-                    .WithPropertyNotNull(a => a.SelectedValueMemberPath, lookup.SelectedValuePath);
-                AfterConvertColumn(obj, col);
-                return obj;
-            }
-
-            if (col.Type == typeof(bool))
-                return AddCommon(new AmmyObjectBuilder<GridViewCheckBoxColumn>(), col);
-            {
-                var obj = new AmmyObjectBuilder<GridViewDataColumn>();
-                obj = AddCommon(obj, col);
-                obj = AddTemplates(obj, col);
-                AfterConvertColumn(obj, col);
-                return obj;
-            }
         }
     }
 }
