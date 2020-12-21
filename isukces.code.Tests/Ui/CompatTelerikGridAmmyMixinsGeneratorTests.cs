@@ -24,14 +24,14 @@ namespace iSukces.Code.Tests.Ui
             var g = new SampleGridViewAmmyMixinsGenerator(new FakeAssemblyBaseDirectoryProvider());
             var ctx = new TestContext();
 
-            var type = typeof(ImpulsAlarmMeasureItemGridDefinition);
+            var type = typeof(GridDefinition1);
             g.AssemblyStart(type.Assembly, ctx);
             g.Generate(type, ctx);
 
             var code = g.GetFullCode();
             var exp = @"using Telerik.Windows.Controls
 
-mixin ImpulsAlarmMeasureItemGridDefinition() for RadGridView
+mixin GridDefinition1() for RadGridView
 {
     Resources: ResourceDictionary
     {
@@ -54,7 +54,7 @@ namespace iSukces.Code.Tests.Ui
 {
     partial class CompatTelerikGridAmmyMixinsGeneratorTests
     {
-        partial class ImpulsAlarmMeasureItemGridDefinition
+        partial class GridDefinition1
         {
             private static string GetHeader(string name)
             {
@@ -62,6 +62,84 @@ namespace iSukces.Code.Tests.Ui
                 {
                     case ""Date"": return Translations.GetCurrentTranslation(""translations.common.date"");
                     case ""Name"": return ""*Name"";
+                }
+                return name;
+            }
+
+        }
+
+    }
+}
+";
+            Assert.Equal(exp2.Trim(), ctx.Code.Trim());
+        }
+        
+        
+              [Fact]
+        public void T02_Should_create_bool_with_data_template()
+        {
+            AmmyHelper.ConvertToIAmmyCodePiece += (a, b) =>
+            {
+                if (b.SourceValue is SampleStaticTextSource s)
+                {
+                    var value = new SimpleAmmyCodePiece(s.Value.CsEncode());
+                    b.Handle(value);
+                }
+                else if (b.SourceValue is SampleTranslatedTextSource s2)
+                {
+                    var value = new SimpleAmmyCodePiece("SomeFakeClass.SomeFakeProperty");
+                    b.Handle(value);
+                }
+            };
+            var g = new SampleGridViewAmmyMixinsGenerator(new FakeAssemblyBaseDirectoryProvider());
+            var ctx = new TestContext();
+
+            var type = typeof(GridDefinition2);
+            g.AssemblyStart(type.Assembly, ctx);
+            g.Generate(type, ctx);
+
+            var code = g.GetFullCode();
+            var exp = @"using Telerik.Windows.Controls
+
+mixin GridDefinition2() for RadGridView
+{
+    Resources: ResourceDictionary
+    {
+        combine MergedDictionaries: [ ResourceDictionary {Source: ""pack://application:,,,/MyApplication;component/resources/gridviewstyles.g.xaml""} ]
+    }
+    IsLocalizationLanguageRespected: false
+    #MyGridProperties
+    combine Columns: [
+        GridViewDataColumn { DataMemberBinding: bind ""Flag"", Header: ""Flag1"", Width: 160
+            CellTemplate: System.Windows.DataTemplate {
+                iSukces.Code.Tests.Ammy.CheckBox {
+                    IsChecked: bind ""Flag"" set [Mode: TwoWay, UpdateSourceTrigger: PropertyChanged]
+                }
+            }
+            CellEditTemplate: System.Windows.DataTemplate {
+                iSukces.Code.Tests.Ammy.CheckBox {
+                    IsChecked: bind ""Flag"" set [Mode: TwoWay, UpdateSourceTrigger: PropertyChanged]
+                }
+            }
+        }
+    ]
+}
+
+";
+            Assert.Equal(exp.Trim(), code.Trim());
+
+            const string exp2 = @"// ReSharper disable All
+namespace iSukces.Code.Tests.Ui
+{
+    partial class CompatTelerikGridAmmyMixinsGeneratorTests
+    {
+        partial class GridDefinition2
+        {
+            private static string GetHeader(string name)
+            {
+                switch(name)
+                {
+                    case ""Flag"": return ""Flag1"";
                 }
                 return name;
             }

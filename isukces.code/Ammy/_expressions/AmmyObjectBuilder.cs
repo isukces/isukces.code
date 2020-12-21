@@ -6,6 +6,21 @@ namespace iSukces.Code.Ammy
 {
     public abstract class AmmyObjectBuilder : AmmyContainerBase, IAnnotableByUser
     {
+        public virtual AmmyObjectBuilder<TBrowser> Map<TBrowser>()
+        {
+            var a = new AmmyObjectBuilder<TBrowser>();
+            foreach (var i in Properties)
+                a.Properties.Add(i.Key, i.Value);
+            foreach (var i in UserAnnotations)
+                a.UserAnnotations.Add(i.Key, i.Value);
+            foreach (var i in ContentItems) 
+                a.ContentItems.Add(i);
+
+            a.Name     = Name;
+            a.NameKind = NameKind;
+            return a;
+        }
+
         public abstract IAmmyCodePiece ToAmmyCode(IConversionCtx ctx);
 
         /// <summary>
@@ -17,6 +32,7 @@ namespace iSukces.Code.Ammy
 
         public ObjectNameKind NameKind { get; set; }
     }
+
 
     public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyObjectBuilder,
         IAmmyObjectBuilder<TPropertyBrowser>

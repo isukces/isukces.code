@@ -20,6 +20,45 @@ namespace iSukces.Code.Ui.DataGrid
         {
         }
 
+        protected AmmyObjectBuilder<T> AddTemplates<T>(AmmyObjectBuilder<T> obj, ColumnInfo col)
+            where T : GridViewColumn
+        {
+            if (col.CellTemplate != null)
+            {
+                var cellTemplate = TemplatesProcess(col.CellTemplate);
+                obj = obj.WithProperty(a => a.CellTemplate, cellTemplate);
+            }
+
+            if (col.EditTemplate != null)
+            {
+                var cellTemplate = TemplatesProcess(col.EditTemplate);
+                obj = obj.WithProperty(a => a.CellEditTemplate, cellTemplate);
+            }
+
+            var lookup = GetLookupInfo(col);
+            if (lookup != null)
+            {
+                if (lookup.IsEmpty)
+                    return obj;
+                var checkBox = new AmmyObjectBuilder<RadComboBox>()
+                    .WithProperty(a => a.Margin, AmmyExpression.FromString("5,0,0,0"))
+                    .WithProperty(a => a.VerticalAlignment, VerticalAlignment.Center)
+                    .WithProperty(a => a.ItemsSource, lookup.Source)
+                    .WithPropertyNotNull(a => a.SelectedValuePath, lookup.SelectedValuePath)
+                    .WithPropertyNotNull(a => a.DisplayMemberPath, lookup.DisplayMemberPath)
+                    .WithProperty(a => a.SelectedValue, new AmmyBind(col.Name, XBindingMode.TwoWay));
+                var cellEditTemplate = new AmmyObjectBuilder<DataTemplate>()
+                    .WithContent(checkBox);
+                obj = obj.WithProperty(a => a.CellEditTemplate, cellEditTemplate);
+                return obj;
+            }
+
+            if (col.Type == typeof(bool))
+                return obj;
+
+            return obj;
+        }
+
         protected virtual void AfterConvertColumn(AmmyContainerBase builder, ColumnInfo col)
         {
         }
@@ -50,7 +89,8 @@ namespace iSukces.Code.Ui.DataGrid
                 return obj;
             }
 
-            if (col.Type == typeof(bool))
+            var hasOwnTemplates = col.CellTemplate != null || col.EditTemplate != null;
+            if (col.Type == typeof(bool) && !hasOwnTemplates)
             {
                 var obj = AddCommon(new AmmyObjectBuilder<GridViewCheckBoxColumn>(), col);
                 AfterConvertColumn(obj, col);
@@ -78,6 +118,22 @@ namespace iSukces.Code.Ui.DataGrid
             if (string.IsNullOrEmpty(binding?.Path))
                 return null;
             return binding.Build();
+        }
+
+        protected virtual object TemplatesProcess(object src)
+        {
+            switch (src)
+            {
+                case AmmyStaticResource _:
+                case AmmyObjectBuilder<DataTemplate> _:
+                    return src;
+                default:
+                {
+                    var cellTemplate = new AmmyObjectBuilder<DataTemplate>()
+                        .WithContent(src);
+                    return cellTemplate;
+                }
+            }
         }
 
 
@@ -145,55 +201,6 @@ namespace iSukces.Code.Ui.DataGrid
                 obj = obj.WithPropertyGeneric(a => a.TextAlignment, TextAlignment.Right);
             if (!string.IsNullOrEmpty(col.DataFormatString))
                 obj = obj.WithPropertyGeneric(a => a.DataFormatString, col.DataFormatString);
-            return obj;
-        }
-
-        private AmmyObjectBuilder<T> AddTemplates<T>(AmmyObjectBuilder<T> obj, ColumnInfo col)
-            where T : GridViewColumn
-        {
-            if (col.CellTemplate != null)
-            {
-                if (col.CellTemplate is AmmyStaticResource sr)
-                {
-                    obj = obj.WithProperty(a => a.CellTemplate, sr);
-                }
-                else
-                {
-                    var cellTemplate = new AmmyObjectBuilder<DataTemplate>()
-                        .WithContent(col.CellTemplate);
-                    obj = obj.WithProperty(a => a.CellTemplate, cellTemplate);
-                }
-            }
-
-            if (col.EditTemplate != null)
-            {
-                var cellTemplate = new AmmyObjectBuilder<DataTemplate>()
-                    .WithContent(col.EditTemplate);
-                obj = obj.WithProperty(a => a.CellEditTemplate, cellTemplate);
-                return obj;
-            }
-
-            var lookup = GetLookupInfo(col);
-            if (lookup != null)
-            {
-                if (lookup.IsEmpty)
-                    return obj;
-                var checkBox = new AmmyObjectBuilder<RadComboBox>()
-                    .WithProperty(a => a.Margin, AmmyExpression.FromString("5,0,0,0"))
-                    .WithProperty(a => a.VerticalAlignment, VerticalAlignment.Center)
-                    .WithProperty(a => a.ItemsSource, lookup.Source)
-                    .WithPropertyNotNull(a => a.SelectedValuePath, lookup.SelectedValuePath)
-                    .WithPropertyNotNull(a => a.DisplayMemberPath, lookup.DisplayMemberPath)
-                    .WithProperty(a => a.SelectedValue, new AmmyBind(col.Name, XBindingMode.TwoWay));
-                var cellEditTemplate = new AmmyObjectBuilder<DataTemplate>()
-                    .WithContent(checkBox);
-                obj = obj.WithProperty(a => a.CellEditTemplate, cellEditTemplate);
-                return obj;
-            }
-
-            if (col.Type == typeof(bool)) 
-                return obj;
-
             return obj;
         }
     }

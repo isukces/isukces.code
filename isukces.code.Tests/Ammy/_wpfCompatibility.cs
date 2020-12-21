@@ -23,7 +23,7 @@ namespace iSukces.Code.Tests.Ammy
     }
     public class CheckBox
     {
-        
+        public bool IsChecked { get; set; }
     }
 
     public class DoubleValidation
