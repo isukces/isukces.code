@@ -99,7 +99,8 @@ namespace iSukces.Code.Tests.Ui
             g.Generate(type, ctx);
 
             var code = g.GetFullCode();
-            var exp = @"using Telerik.Windows.Controls
+            var exp = @"
+using Telerik.Windows.Controls
 
 mixin GridDefinition2() for RadGridView
 {
@@ -121,9 +122,11 @@ mixin GridDefinition2() for RadGridView
                     IsChecked: bind ""Flag"" set [Mode: TwoWay, UpdateSourceTrigger: PropertyChanged]
                 }
             }
+            EditTriggers: CellClick
         }
     ]
 }
+
 
 ";
             Assert.Equal(exp.Trim(), code.Trim());

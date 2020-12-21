@@ -34,7 +34,7 @@ namespace iSukces.Code.Interfaces
 
             writer.Append(openingCode + " " + openingBracket);
             writer.Indent++;
-            var addComma                         = false;
+            var separatorBeforeContent                  = Separators.Space;
             var addNewLineBeforeClose            = false;
             var needAddNewLineForPreviousContent = true;
             foreach (var i in codePieces)
@@ -62,14 +62,25 @@ namespace iSukces.Code.Interfaces
                     writer.WriteLine();
                     addNewLineBeforeClose            = true;
                     needAddNewLineForPreviousContent = false;
-                    addComma                         = false;
+                    separatorBeforeContent                  = Separators.Indent;
                 }
                 else
                 {
-                    if (addComma)
-                        writer.Append(", ");
-                    else
-                        writer.Append(" ");
+                    switch (separatorBeforeContent)
+                    {
+                        case Separators.Comma:
+                            writer.Append(", ");
+                            break;
+                        case Separators.Space:
+                            writer.Append(" ");
+                            break;
+                        case Separators.Indent:
+                            writer.WriteIndent();
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
                     switch (i)
                     {
                         case IComplexAmmyCodePiece complexAmmyCodePiece:
@@ -85,7 +96,7 @@ namespace iSukces.Code.Interfaces
                     }
 
                     needAddNewLineForPreviousContent = true;
-                    addComma                         = true;
+                    separatorBeforeContent                  = Separators.Comma;
                 }
 
             if (addNewLineBeforeClose && needAddNewLineForPreviousContent)
@@ -98,9 +109,9 @@ namespace iSukces.Code.Interfaces
             else
             {
                 writer.Indent--;
-                if (needAddNewLineForPreviousContent) 
+                if (needAddNewLineForPreviousContent)
                     writer.Append(" " + closingBracket);
-                else 
+                else
                     writer.WriteIndent().Append(closingBracket);
             }
 
@@ -144,5 +155,12 @@ namespace iSukces.Code.Interfaces
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
             }
         }
+    }
+
+    internal enum Separators
+    {
+        Comma,
+        Space,
+        Indent
     }
 }

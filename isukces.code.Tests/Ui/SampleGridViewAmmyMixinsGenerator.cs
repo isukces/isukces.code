@@ -26,6 +26,17 @@ namespace iSukces.Code.Tests.Ui
             if (builder is AmmyObjectBuilder<GridViewComboBoxColumn> b)
                 b.WithPropertyStaticResource("EditorStyle", "GridComboBoxStyle");
         }
+        
+        protected override IAmmyCodePieceConvertible ConvertColumn(ColumnInfo col)
+        {
+            var code = base.ConvertColumn(col);
+            if (col.Type != typeof(bool))
+                return code;
+            var aob = (AmmyObjectBuilder)code;
+            var t   = aob.Map<GridViewDataColumn>();
+            t.WithPropertyGeneric(q => q.EditTriggers, GridViewEditTriggers.CellClick);
+            return t;
+        }
 
         private static UiTestTextSourceInfo GetText(object textSource)
         {
