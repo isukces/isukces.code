@@ -4,7 +4,7 @@ using Xunit;
 
 namespace iSukces.Code.Tests.VsSolutions
 {
-    public class NuspecCacheTests
+    /*public class NuspecCacheTests
     {
         private const string dir = @"c:\programs\conexx\conexx.total\app\packages";
         [Fact]
@@ -16,5 +16,5 @@ namespace iSukces.Code.Tests.VsSolutions
             //var c = 
         }
         
-    }
+    }*/
 }

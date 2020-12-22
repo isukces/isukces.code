@@ -133,7 +133,7 @@ namespace iSukces.Code.Tests.Ammy
                 yield return Tuple.Create(bi.Build(),
                     @"Bind { Path: ""PropName""
     RelativeSource: RelativeSource { Mode: ""FindAncestor"", AncestorType: ""iSukces.Code.Tests.Ammy.SampleDataModel"" }
- Converter: resource ""ConverterResource""
+    Converter: resource ""ConverterResource""
 }");
             }
         }
