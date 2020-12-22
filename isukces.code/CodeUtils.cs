@@ -7,30 +7,8 @@ using System.Text;
 
 namespace iSukces.Code
 {
-    public static  class CodeUtils
+    public static class CodeUtils
     {
-        public static DirectoryInfo SearchFoldersUntilFileExists(Assembly a, string fileName)
-        {
-            var di = new FileInfo(a.Location).Directory;
-            di = SearchFoldersUntilFileExists(di,fileName);
-            return di;
-        }
-
-        public static DirectoryInfo SearchFoldersUntilFileExists(DirectoryInfo di, string fileName)
-        {
-            while (di != null)
-            {
-                if (!di.Exists)
-                    return null;
-                var fi = Path.Combine(di.FullName, fileName);
-                if (File.Exists(fi))
-                    return di;
-                di = di.Parent;
-            }
-
-            return null;
-        }
-
         public static MemberExpression GetMemberInfo(Expression method)
         {
             if (!(method is LambdaExpression lambda))
@@ -48,13 +26,28 @@ namespace iSukces.Code
             return memberExpr;
         }
 
-        public static string GetMemberPath<T,T2>(Expression<Func<T, T2>> func)
+        public static string GetMemberPath<TBrowser, TProperty>(Expression<Func<TBrowser, TProperty>> func)
         {
             var mi   = GetMemberInfo(func);
             var list = new List<string>();
             while (mi != null)
             {
                 list.Add(mi.Member.Name);
+                if (mi.Expression is UnaryExpression ue)
+                {
+                    if (ue.NodeType == ExpressionType.Convert)
+                    {
+                        var ex = ue.Operand;
+                        if (ex is MemberExpression me)
+                        {
+                            mi = me;
+                            continue;
+                        }
+
+                        
+                    }
+                    break;
+                }
                 mi = mi.Expression as MemberExpression;
             }
 
@@ -75,6 +68,28 @@ namespace iSukces.Code
             }
 
             return sb.ToString();
+        }
+
+        public static DirectoryInfo SearchFoldersUntilFileExists(Assembly a, string fileName)
+        {
+            var di = new FileInfo(a.Location).Directory;
+            di = SearchFoldersUntilFileExists(di, fileName);
+            return di;
+        }
+
+        public static DirectoryInfo SearchFoldersUntilFileExists(DirectoryInfo di, string fileName)
+        {
+            while (di != null)
+            {
+                if (!di.Exists)
+                    return null;
+                var fi = Path.Combine(di.FullName, fileName);
+                if (File.Exists(fi))
+                    return di;
+                di = di.Parent;
+            }
+
+            return null;
         }
     }
 }
