@@ -115,7 +115,7 @@ namespace iSukces.Code.Ui.DataGrid
         protected virtual object GetDataMemberBinding(ColumnInfo col)
         {
             var binding = col.Binding;
-            if (string.IsNullOrEmpty(binding?.Path))
+            if (binding?.Path is null)
                 return null;
             return binding.Build();
         }

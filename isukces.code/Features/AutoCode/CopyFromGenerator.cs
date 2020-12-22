@@ -137,10 +137,8 @@ namespace iSukces.Code.AutoCode
                 var at = pi.GetCustomAttribute<Auto.CopyFromByMethodAttribute>();
                 if (at != null)
                 {
-                    /*var m = at.Type.GetMethods(GeneratorsHelper.All)
-                        .Where(a => a.Name == nameof(at.MethodName));*/
                     var typename1    = resolver.GetTypeName<CopyPropertyValueArgs>();
-                    var typenameDot2 = at.Type != Type ? resolver.GetTypeName<CopyPropertyValueArgs>() + "." : "";
+                    var typenameDot2 = at.Type != Type ? resolver.GetTypeName(at.Type) + "." : "";
                     var arg          = $"new {typename1}(source, this, nameof({pi.Name}))";
                     var c            = $"{typenameDot2}{at.MethodName}({arg});";
                     writer.WriteLine(c);

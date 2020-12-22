@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 using iSukces.Code.Ammy;
@@ -16,6 +17,25 @@ namespace iSukces.Code.Ui.DataGrid
 
     public abstract class DataGridConfigurationProvider<TRow> : DataGridConfigurationProvider
     {
+        protected static PropertyInfo GetPropertyInfo<TValue>(Expression<Func<TRow, TValue>> func, string bindingPath)
+        {
+            var expression = CodeUtils.StripExpression(func);
+            if (expression is null)
+                return null;
+            if (expression.NodeType == ExpressionType.Parameter)
+                return null;
+
+            var memberExpression = expression as MemberExpression;
+            if (memberExpression?.Member is PropertyInfo pi)
+                return pi;
+
+            return typeof(TRow)
+#if COREFX
+                .GetTypeInfo()
+#endif
+                .GetProperty(bindingPath);
+        }
+
         protected AmmyBind BindToModel<TValue>(Expression<Func<TRow, TValue>> func, XBindingMode? mode = null)
         {
             var name = CodeUtils.GetMemberPath(func);
@@ -26,29 +46,24 @@ namespace iSukces.Code.Ui.DataGrid
         protected GridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
         {
-            var bindingPath = CodeUtils.GetMemberPath(func);
-
-            var prop = typeof(TRow)
-#if COREFX
-                .GetTypeInfo()
-#endif
-                .GetProperty(bindingPath);
+            var bindingPath  = CodeUtils.GetMemberPath(func);
+            var propertyInfo = GetPropertyInfo(func, bindingPath);
 
             var result = new GridColumn
             {
-                Name              = bindingPath,
+                Name = bindingPath,
                 Binding =
                 {
                     Path = bindingPath,
                 },
-                //DataMemberBinding = name,
-                HeaderSource = GetColumnHeaderSource(bindingPath, headerSource, prop),
-                Width        = width
+                HeaderSource = GetColumnHeaderSource(bindingPath, headerSource, propertyInfo),
+                Width        = width,
+                Member       = propertyInfo
             };
 
-            if (prop != null)
+            if (propertyInfo != null)
             {
-                var att = prop.GetCustomAttribute<DecimalPlacesAttribute>();
+                var att = propertyInfo.GetCustomAttribute<DecimalPlacesAttribute>();
                 if (att != null)
                     result = result.WithDataFormatString(att.Format);
             }
@@ -66,7 +81,6 @@ namespace iSukces.Code.Ui.DataGrid
             [CanBeNull] PropertyInfo property)
         {
             if (!(suggestedHeader is null))
-            {
                 switch (suggestedHeader)
                 {
                     case string s when s.Length > 0:
@@ -74,10 +88,9 @@ namespace iSukces.Code.Ui.DataGrid
                     default:
                         return suggestedHeader;
                 }
-            }
 #if COREFX20 || FULLFX
             var descriptionFromAttribute = property?
-                .GetCustomAttribute<System.ComponentModel.DescriptionAttribute>()?
+                .GetCustomAttribute<DescriptionAttribute>()?
                 .Description;
             if (!string.IsNullOrEmpty(descriptionFromAttribute))
                 return descriptionFromAttribute;

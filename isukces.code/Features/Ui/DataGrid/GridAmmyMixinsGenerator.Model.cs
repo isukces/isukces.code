@@ -22,22 +22,19 @@ namespace iSukces.Code.Ui.DataGrid
                 result.AddExpandColumn = instance.AddExpandColumn;
                 var columnDefinitions = instance.GetColumns().ToList();
 
-                var modelProperties = GetProperties(rowType)
-                    .ToDictionary(a => a.Name, a => a, StringComparer.OrdinalIgnoreCase);
                 foreach (var colDef in columnDefinitions)
                 {
-                    modelProperties.TryGetValue(colDef.Name, out var rowProperty);
-
+                    var propertyInfo = colDef.Member;
                     if (colDef.CategoryName != null)
                         result.Categories.Add(new AttributeInfo(colDef.CategoryName, colDef.CategoryHeaderSource));
                     var col = new ColumnInfo
                     {
-                        Name               = rowProperty?.Name ?? colDef.Name,
+                        Name               = propertyInfo?.Name ?? colDef.Name,
                         Binding            = colDef.Binding,
-                        HeaderSource       = colDef.HeaderSource ?? rowProperty?.Name,
+                        HeaderSource       = colDef.HeaderSource ?? propertyInfo?.Name,
                         Width              = colDef.Width,
                         CategoryName = result.Categories.LastOrDefault()?.Name,
-                        Type               = rowProperty?.PropertyType ?? rowType,
+                        Type               = propertyInfo?.PropertyType ?? rowType,
                         Lookup             = colDef.Lookup,
                         CellTemplate       = colDef.CellTemplate,
                         EditTemplate       = colDef.EditTemplate,

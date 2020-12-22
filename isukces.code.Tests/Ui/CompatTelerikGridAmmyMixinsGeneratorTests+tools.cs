@@ -20,6 +20,18 @@ namespace iSukces.Code.Tests.Ui
             public DateTime Date { get; set; }
 
             public bool Flag { get; set; }
+
+            public Nested Obj { get; set; }
+        }
+
+        public class Nested
+        {
+            public string Name { get; set; }
+        }
+
+        private class Derived : Nested
+        {
+            public string Number { get; set; }
         }
 
 
@@ -48,14 +60,29 @@ namespace iSukces.Code.Tests.Ui
         {
             public override IEnumerable<GridColumn> GetColumns()
             {
-                var bind         = new AmmyBind(nameof(TModel.Flag), XBindingMode.TwoWay)
-                .WithUpdateSourceTrigger(XUpdateSourceTrigger.PropertyChanged);
+                var bind = new AmmyBind(nameof(TModel.Flag), XBindingMode.TwoWay)
+                    .WithUpdateSourceTrigger(XUpdateSourceTrigger.PropertyChanged);
                 var cellTemplate = new AmmyObjectBuilder<CheckBox>();
-                    cellTemplate.WithProperty(a=>a.IsChecked,bind);
+                cellTemplate.WithProperty(a => a.IsChecked, bind);
 
-                    yield return Col(a => a.Flag, "Flag1", 160)
-                        .WithCellTemplate(cellTemplate)
-                        .WithEditTemplate(cellTemplate);
+                yield return Col(a => a.Flag, "Flag1", 160)
+                    .WithCellTemplate(cellTemplate)
+                    .WithEditTemplate(cellTemplate);
+            }
+
+            public override bool AddExpandColumn
+            {
+                get { return false; }
+            }
+        }
+
+        private sealed class GridDefinition3 : DataGridConfigurationProvider<TModel>
+        {
+            public override IEnumerable<GridColumn> GetColumns()
+            {
+                yield return Col(a => a.Obj.Name, "Name", 160);
+                yield return Col(a => ((Derived)a.Obj).Number, "Number", 130);
+                yield return Col(a => a, "Whole", 120);
             }
 
             public override bool AddExpandColumn

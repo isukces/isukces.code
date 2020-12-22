@@ -11,24 +11,22 @@ namespace iSukces.Code
     {
         public static MemberExpression GetMemberInfo(Expression method)
         {
-            if (!(method is LambdaExpression lambda))
-                throw new ArgumentNullException(nameof(method));
-
-            MemberExpression memberExpr = null;
-            if (lambda.Body.NodeType == ExpressionType.Convert)
-                memberExpr =
-                    ((UnaryExpression)lambda.Body).Operand as MemberExpression;
-            else if (lambda.Body.NodeType == ExpressionType.MemberAccess) memberExpr = lambda.Body as MemberExpression;
-
-            if (memberExpr == null)
-                throw new ArgumentException("method");
-
-            return memberExpr;
+            var e = StripExpression(method);
+            if (e is MemberExpression me)
+                return me;
+            throw new ArgumentException("method");
         }
 
         public static string GetMemberPath<TBrowser, TProperty>(Expression<Func<TBrowser, TProperty>> func)
         {
-            var mi   = GetMemberInfo(func);
+            var expression = StripExpression(func);
+            if (expression is null)
+                return string.Empty;
+            if (expression.NodeType == ExpressionType.Parameter)
+                return string.Empty;
+            var mi = expression as MemberExpression;
+            if (expression is null)
+                throw new NotSupportedException(expression.NodeType.ToString());
             var list = new List<string>();
             while (mi != null)
             {
@@ -43,11 +41,11 @@ namespace iSukces.Code
                             mi = me;
                             continue;
                         }
-
-                        
                     }
+
                     break;
                 }
+
                 mi = mi.Expression as MemberExpression;
             }
 
@@ -90,6 +88,25 @@ namespace iSukces.Code
             }
 
             return null;
+        }
+
+        public static Expression StripExpression(Expression method)
+        {
+            if (!(method is LambdaExpression lambda))
+                throw new ArgumentNullException(nameof(method));
+
+            MemberExpression memberExpr = null;
+            switch (lambda.Body.NodeType)
+            {
+                case ExpressionType.Convert:
+                    return ((UnaryExpression)lambda.Body).Operand;
+                case ExpressionType.MemberAccess:
+                    return lambda.Body;
+                case ExpressionType.Parameter:
+                    return lambda.Body;
+                default:
+                    return null;
+            }
         }
     }
 }

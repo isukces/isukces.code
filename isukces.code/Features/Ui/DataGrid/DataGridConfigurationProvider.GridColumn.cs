@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using iSukces.Code.Ammy;
 using JetBrains.Annotations;
 
@@ -39,18 +40,6 @@ namespace iSukces.Code.Ui.DataGrid
                 return this;
             }
 
-            public GridColumn WithName(string name)
-            {
-                Name = name;
-                return this;
-            }
-
-            public GridColumn WithReadOnly(bool isReadOnly = true)
-            {
-                IsReadOnly = isReadOnly;
-                return this;
-            }
-
             public GridColumn WithLookup(LookupInfo info)
             {
                 Lookup = info;
@@ -69,21 +58,33 @@ namespace iSukces.Code.Ui.DataGrid
                 return WithLookup(Lookup);
             }
 
-            public string Name { get; set; }
+            public GridColumn WithName(string name)
+            {
+                Name = name;
+                return this;
+            }
 
-            public object HeaderSource { get; set; }
-            public int?   Width        { get; set; }
+            public GridColumn WithReadOnly(bool isReadOnly = true)
+            {
+                IsReadOnly = isReadOnly;
+                return this;
+            }
 
-            public object CategoryHeaderSource { get; set; }
-            public string CategoryName         { get; set; }
-
-            public LookupInfo Lookup       { get; set; }
-            public object     CellTemplate { get; set; }
-            public object     EditTemplate { get; set; }
-
-            public string DataFormatString { get; set; }
-
-            public bool IsReadOnly { get; set; }
+            public string       Name                 { get; set; }
+            public object       HeaderSource         { get; set; }
+            public int?         Width                { get; set; }
+            public object       CategoryHeaderSource { get; set; }
+            public string       CategoryName         { get; set; }
+            public LookupInfo   Lookup               { get; set; }
+            public object       CellTemplate         { get; set; }
+            public object       EditTemplate         { get; set; }
+            public string       DataFormatString     { get; set; }
+            public bool         IsReadOnly           { get; set; }
+            
+            /// <summary>
+            /// Reflected property if possible. For complicated paths can be declared in other than Row types 
+            /// </summary>
+            public PropertyInfo Member               { get; set; }
 
             [NotNull]
             public AmmyBindBuilder Binding { get; } = new AmmyBindBuilder(null);
