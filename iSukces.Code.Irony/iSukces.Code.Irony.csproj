@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net451;netstandard2.0;netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
+      <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+      <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+      <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net451'">
+      <PackageReference Include="Irony.Interpreter" Version="1.1.0" />
+    </ItemGroup>
+
+</Project>

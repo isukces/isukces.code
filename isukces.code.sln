@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitbrains.AmmyParser.Tests"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmmySamples", "AmmySamples\AmmySamples.csproj", "{799FA461-6E87-402C-AD16-E683B044B4B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.Irony", "iSukces.Code.Irony\iSukces.Code.Irony.csproj", "{121D6EF1-F7F3-437A-A0B9-879E3C9AD682}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +139,10 @@ Global
 		{799FA461-6E87-402C-AD16-E683B044B4B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{799FA461-6E87-402C-AD16-E683B044B4B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{799FA461-6E87-402C-AD16-E683B044B4B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{121D6EF1-F7F3-437A-A0B9-879E3C9AD682}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{121D6EF1-F7F3-437A-A0B9-879E3C9AD682}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{121D6EF1-F7F3-437A-A0B9-879E3C9AD682}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{121D6EF1-F7F3-437A-A0B9-879E3C9AD682}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
