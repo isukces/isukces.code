@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using iSukces.Code.CodeWrite;
+using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.AutoCode
 {
@@ -22,6 +23,7 @@ namespace iSukces.Code.AutoCode
                 GetOrCreateClassFunc     = getOrCreateClassFunc;
                 AddNamespaceAction       = file.AddImportNamespace;
                 GetOrCreateNamespaceFunc = file.GetOrCreateNamespace;
+                FileLevelResolver        = file;
             }
 
             public void AddNamespace(string namepace)
@@ -49,6 +51,8 @@ namespace iSukces.Code.AutoCode
             public Func<TypeProvider, CsClass> GetOrCreateClassFunc     { get; }
             public Action<string>              AddNamespaceAction       { get; }
             public bool                        AnyFileSaved             { get; set; }
+
+            public ITypeNameResolver FileLevelResolver { get; set; }
         }
     }
 }

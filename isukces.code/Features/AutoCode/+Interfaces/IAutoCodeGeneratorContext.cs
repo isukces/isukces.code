@@ -19,6 +19,8 @@ namespace iSukces.Code.AutoCode
         IList<object> Tags { get; }
 
         bool AnyFileSaved { get; }
+        
+        ITypeNameResolver FileLevelResolver { get; }
     }
 
     public interface IFinalizableAutoCodeGeneratorContext:IAutoCodeGeneratorContext

@@ -23,5 +23,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net451'">
       <PackageReference Include="Irony.Interpreter" Version="1.1.0" />
     </ItemGroup>
-
+    <PropertyGroup>
+        <NoWarn>1701;1702;1591</NoWarn>
+    </PropertyGroup>
 </Project>

@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.20357.166</AssemblyVersion>
-    <Version>1.0.20357.166</Version>
-    <FileVersion>1.0.20357.166</FileVersion>
+    <AssemblyVersion>1.0.20363.167</AssemblyVersion>
+    <Version>1.0.20363.167</Version>
+    <FileVersion>1.0.20363.167</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
@@ -65,5 +65,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'net451' ">
     <DefineConstants>FULLFX</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
 </Project>

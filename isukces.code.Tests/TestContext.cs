@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using iSukces.Code.AutoCode;
@@ -18,7 +17,6 @@ namespace iSukces.Code.Tests
         {
         }
 
-
         public CsClass GetOrCreateClass(TypeProvider type)
         {
             if (_file == null)
@@ -26,14 +24,20 @@ namespace iSukces.Code.Tests
             return _file.GetOrCreateClass(type, new Dictionary<TypeProvider, CsClass>());
         }
 
-        public CsNamespace GetOrCreateNamespace(string namespaceName)
-        {
-            return _file.GetOrCreateNamespace(namespaceName);
-        }
+        public CsNamespace GetOrCreateNamespace(string namespaceName) => _file.GetOrCreateNamespace(namespaceName);
 
         public IList<object> Tags         { get; } = new List<object>();
         public bool          AnyFileSaved { get; }
-        public string        Code         => _file.GetCode();
+
+        public ITypeNameResolver FileLevelResolver
+        {
+            get { return (ITypeNameResolver)_file ?? FullNameTypeNameResolver.Instance; }
+        }
+
+        public string Code
+        {
+            get { return _file?.GetCode(); }
+        }
 
         private CsFile _file = new CsFile();
     }
