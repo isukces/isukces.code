@@ -7,12 +7,12 @@ namespace iSukces.Code.Interfaces
 	/// </summary>
 	public enum CsOperatorPrecendence
 	{
-		//[ ] ( ) . -> ++ -- (postfix)
+		//[ ] ( ) . -> ++ -- (postfix)
 		//Left to right
 		Expression,
 
 
-		//sizeof & * + - ~ ! ++ -- (prefix)
+		//sizeof & * + - ~ ! ++ -- (prefix)
 		//Right to left
 		Unary,
 
@@ -21,23 +21,23 @@ namespace iSukces.Code.Interfaces
 		//Right to left
 		UnaryTypecast,
 
-		//* / %
+		//* / %
 		//Left to right
 		Multiplicative,
 
-		//+ -
+		//+ -
 		// Left to right
 		Additive,
 
-		//<< >>
+		//<< >>
 		//Left to right
 		BitwiseShift,
 
-		//< > <= >=
+		//< > <= >=
 		//Left to right
 		Relational,
 
-		//== !=
+		//== !=
 		//Left to right
 		Equality,
 
@@ -65,9 +65,9 @@ namespace iSukces.Code.Interfaces
 		//Right to left
 		ConditionalExpression,
 
-		// = *= /= %=
-		// += -= <<= >>= &=
-		// ^= |=
+		// = *= /= %=
+		// += -= <<= >>= &=
+		// ^= |=
 		//Right to left
 		SimpleAndCompoundAssignment,
 

@@ -4,7 +4,7 @@ using System;
 // ReSharper disable once CheckNamespace
 namespace EqualityGeneratorSample
 {
-    partial class ClassWithCompare : isukces.code.AutoCode.IAutoEquatable<ClassWithCompare>, isukces.code.AutoCode.IAutoComparable<ClassWithCompare>
+    partial class ClassWithCompare : iSukces.Code.AutoCode.IAutoEquatable<ClassWithCompare>, iSukces.Code.AutoCode.IAutoComparable<ClassWithCompare>
     {
         public int CompareTo(ClassWithCompare other)
         {
@@ -101,7 +101,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class ClassWithCustomGetHashCode : isukces.code.AutoCode.IAutoEquatable<ClassWithCustomGetHashCode>
+    partial class ClassWithCustomGetHashCode : iSukces.Code.AutoCode.IAutoEquatable<ClassWithCustomGetHashCode>
     {
         public override bool Equals(object other)
         {
@@ -132,7 +132,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class ClassWithNullables : isukces.code.AutoCode.IAutoEquatable<ClassWithNullables>, isukces.code.AutoCode.IAutoComparable<ClassWithNullables>
+    partial class ClassWithNullables : iSukces.Code.AutoCode.IAutoEquatable<ClassWithNullables>, iSukces.Code.AutoCode.IAutoComparable<ClassWithNullables>
     {
         public int CompareTo(ClassWithNullables other)
         {
@@ -218,7 +218,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class ClassWithPrecomputedGetHashCode : isukces.code.AutoCode.IAutoEquatable<ClassWithPrecomputedGetHashCode>
+    partial class ClassWithPrecomputedGetHashCode : iSukces.Code.AutoCode.IAutoEquatable<ClassWithPrecomputedGetHashCode>
     {
         public override bool Equals(object other)
         {
@@ -269,7 +269,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class ClassWithStrings : isukces.code.AutoCode.IAutoEquatable<ClassWithStrings>, isukces.code.AutoCode.IAutoComparable<ClassWithStrings>
+    partial class ClassWithStrings : iSukces.Code.AutoCode.IAutoEquatable<ClassWithStrings>, iSukces.Code.AutoCode.IAutoComparable<ClassWithStrings>
     {
         public int CompareTo(ClassWithStrings other)
         {
@@ -354,7 +354,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class ClassWithUseCachedGetHashCodeInEqualityChecking : isukces.code.AutoCode.IAutoEquatable<ClassWithUseCachedGetHashCodeInEqualityChecking>
+    partial class ClassWithUseCachedGetHashCodeInEqualityChecking : iSukces.Code.AutoCode.IAutoEquatable<ClassWithUseCachedGetHashCodeInEqualityChecking>
     {
         public override bool Equals(object other)
         {
@@ -412,7 +412,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class ClassWithUsePrecomputedGetHashCodeInEqualityChecking : isukces.code.AutoCode.IAutoEquatable<ClassWithUsePrecomputedGetHashCodeInEqualityChecking>
+    partial class ClassWithUsePrecomputedGetHashCodeInEqualityChecking : iSukces.Code.AutoCode.IAutoEquatable<ClassWithUsePrecomputedGetHashCodeInEqualityChecking>
     {
         public override bool Equals(object other)
         {
@@ -464,7 +464,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class SimpleClass : isukces.code.AutoCode.IAutoEquatable<SimpleClass>
+    partial class SimpleClass : iSukces.Code.AutoCode.IAutoEquatable<SimpleClass>
     {
         public override bool Equals(object other)
         {
@@ -507,7 +507,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial struct SimpleStruct : isukces.code.AutoCode.IAutoEquatable<SimpleStruct>
+    partial struct SimpleStruct : iSukces.Code.AutoCode.IAutoEquatable<SimpleStruct>
     {
         public override bool Equals(object other)
         {
@@ -548,7 +548,7 @@ namespace EqualityGeneratorSample
 
     }
 
-    partial class VerySimpleClassOwner : isukces.code.AutoCode.IAutoEquatable<VerySimpleClassOwner>
+    partial class VerySimpleClassOwner : iSukces.Code.AutoCode.IAutoEquatable<VerySimpleClassOwner>
     {
         public override bool Equals(object other)
         {

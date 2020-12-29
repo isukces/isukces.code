@@ -1,6 +1,7 @@
 using System;
-using isukces.code.AutoCode;
-using isukces.code.interfaces;
+using iSukces.Code.AutoCode;
+using iSukces.Code.FeatureImplementers;
+using iSukces.Code.Interfaces;
 
 namespace EqualityGeneratorSample
 {
@@ -9,19 +10,20 @@ namespace EqualityGeneratorSample
     /// </summary>
     public class DateOnlyEqualityAttribute : Auto.AbstractEqualityComparisonAttribute
     {
-        private static string GetUniversal(IExpressionDelegateArgs input, string methodName)
+        private static CsExpression GetUniversal(IExpressionDelegateArgs input, string methodName)
         {
             var comparerInstance = input.Resolver.GetTypeName(typeof(DateOnlyComparer));
             return GeneratorsHelper.CallMethod(comparerInstance, methodName, input);
         }
 
-        public override string GetCoalesceExpression(ITypeNameResolver resolver)
+        public override CsExpression GetCoalesceExpression(ITypeNameResolver resolver)
         {
-            return resolver.GetMemeberName<DateTime>(nameof(DateTime.MinValue));
+            var expression= resolver.GetMemeberName<DateTime>(nameof(DateTime.MinValue));
+            return new CsExpression(expression, CsOperatorPrecendence.Expression);
         }
 
 
-        public override string GetEqualsExpression(BinaryExpressionDelegateArgs input)
+        public override CsExpression GetEqualsExpression(BinaryExpressionDelegateArgs input)
         {
             var method = input.DataType == typeof(DateTime)
                 ? nameof(DateOnlyComparer.Equals)
@@ -29,7 +31,7 @@ namespace EqualityGeneratorSample
             return GetUniversal(input, method);
         }
 
-        public override string GetHashCodeExpression(UnaryExpressionDelegateArgs input)
+        public override CsExpression GetHashCodeExpression(UnaryExpressionDelegateArgs input)
         {
             return GetUniversal(input, nameof(GetHashCode));
         }

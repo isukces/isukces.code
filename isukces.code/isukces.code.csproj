@@ -38,7 +38,7 @@
     <Folder Include="Features\Ui\FakeTelerik" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Features\IO\DataGrid\DataGridConfigurationProvider.GridColumn.cs">

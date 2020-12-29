@@ -1,4 +1,4 @@
-using isukces.code.interfaces;
+using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
 namespace EqualityGeneratorSample

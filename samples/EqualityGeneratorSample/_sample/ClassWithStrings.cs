@@ -1,4 +1,5 @@
-using isukces.code.interfaces;
+
+using iSukces.Code.Interfaces;
 
 namespace EqualityGeneratorSample
 {
