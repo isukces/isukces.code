@@ -4,16 +4,10 @@ namespace iSukces.Code.Irony
 {
     public sealed class DirectCode : ICsExpression
     {
-        public DirectCode(string code)
-        {
-            _code = code;
-        }
+        public DirectCode(string code) => Code = code;
 
-        public string GetCode(ITypeNameResolver resolver)
-        {
-            return _code;
-        }
+        public string GetCode(ITypeNameResolver resolver) => Code;
 
-        private readonly string _code;
+        public string Code { get; }
     }
 }

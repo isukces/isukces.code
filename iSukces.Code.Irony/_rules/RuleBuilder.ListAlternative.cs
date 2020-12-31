@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using iSukces.Code.Irony._codeSrc;
 using JetBrains.Annotations;
 
 namespace iSukces.Code.Irony
@@ -9,10 +8,11 @@ namespace iSukces.Code.Irony
     {
         public class ListAlternative : Alternative, IMap12
         {
-            public ListAlternative(string alternativeInterfaceName, IReadOnlyList<MapInfo> map,  params ICsExpression[] alternatives)
+            public ListAlternative(string alternativeInterfaceName, IReadOnlyList<MapInfo> map,
+                params ICsExpression[] alternatives)
             {
                 AlternativeInterfaceName = alternativeInterfaceName;
-                Map                 = map;
+                Map                      = map;
                 Alternatives             = alternatives ?? new ICsExpression[0];
             }
 
@@ -24,18 +24,25 @@ namespace iSukces.Code.Irony
                 return false;
             }
 
-            public override IEnumerable<ICsExpression> GetAlternatives()
-            {
-                return Alternatives;
-            }
+            public override IEnumerable<ICsExpression> GetAlternatives() => Alternatives;
 
             public override string GetDesc()
             {
                 var enumerable = Alternatives.Select(a =>
                 {
-                    if (a is TerminalName tn)
-                        return tn.Name;
-                    else return "?";
+                    switch (a)
+                    {
+                        case TokenInfo tokenInfo:
+                            return tokenInfo.Name.Name;
+                        case DirectCode directCode:
+                            return directCode.Code;
+                        case TerminalName tn:
+                            return tn.Name;
+                        case WhiteCharCode whc:
+                            return whc.Code;
+                        default:
+                            return "?";
+                    }
                 });
                 return "one of: " + string.Join(", ", enumerable);
             }
@@ -44,9 +51,9 @@ namespace iSukces.Code.Irony
             [NotNull]
             public IReadOnlyList<ICsExpression> Alternatives { get; }
 
-            public override string                 AlternativeInterfaceName { get; }
-            
-            public          IReadOnlyList<MapInfo> Map                      { get; }
+            public override string AlternativeInterfaceName { get; }
+
+            public IReadOnlyList<MapInfo> Map { get; }
         }
     }
 

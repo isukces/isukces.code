@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="iSukces.Code" Version="1.0.20357.166" />
+        <PackageReference Include="iSukces.Code" Version="1.0.20363.167" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
@@ -26,6 +26,19 @@
 
     <ItemGroup>
       <None Remove="iSukces.Code.Irony.csproj.DotSettings" />
+      <None Remove="iSukces.Code.Irony2.csproj.DotSettings" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="IronyAutocodeGenerator.DataClassesGenerator.cs">
+        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+      </Compile>
+      <Compile Update="IronyAutocodeGenerator.AstClassesGenerator.cs">
+        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+      </Compile>
+      <Compile Update="IronyAutocodeGenerator.NestedGeneratorBase.cs">
+        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
 </Project>

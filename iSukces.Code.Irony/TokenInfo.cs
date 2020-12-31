@@ -1,19 +1,11 @@
 using iSukces.Code.Interfaces;
-using iSukces.Code.Irony._codeSrc;
 
 namespace iSukces.Code.Irony
 {
-    public abstract class TokenInfo : ICsExpression
+    public abstract class TokenInfo : ICsExpression, ITerminalNameSource
     {
-        protected TokenInfo(TerminalName name)
-        {
-            Name = name;
-        }
+        protected TokenInfo(TerminalName name) => Name = name;
 
-        public abstract string GetCode(ITypeNameResolver resolver);
-
-        public TerminalName Name { get; }
-        
         public NonTerminalInfo CreateOptional()
         {
             var info1 = new NonTerminalInfo(new TerminalName(Name.Name + "_optional"))
@@ -21,5 +13,10 @@ namespace iSukces.Code.Irony
             return info1;
         }
 
+        public abstract string GetCode(ITypeNameResolver resolver);
+
+        public TerminalName GetTerminalName() => Name;
+
+        public TerminalName Name { get; }
     }
 }

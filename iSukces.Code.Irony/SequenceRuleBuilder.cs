@@ -1,8 +1,5 @@
-#if DEBUG
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using iSukces.Code.Interfaces;
 using iSukces.Code.Irony._codeSrc;
 
 namespace iSukces.Code.Irony
@@ -10,7 +7,7 @@ namespace iSukces.Code.Irony
     public sealed class MapInfo
     {
         public MapInfo(int index, NonTerminalInfo token = null, string propertyName = null,
-            Func<ITypeNameResolver, string> propertyType = null)
+            AstTypesInfoDelegate propertyType = null)
         {
             Index        = index;
             Token        = token;
@@ -18,69 +15,120 @@ namespace iSukces.Code.Irony
             PropertyType = propertyType;
         }
 
-        public int                             Index        { get; }
-        public NonTerminalInfo                 Token        { get; }
-        public string                          PropertyName { get; }
-        public Func<ITypeNameResolver, string> PropertyType { get; }
+        public int                  Index        { get; }
+        public NonTerminalInfo      Token        { get; }
+        public string               PropertyName { get; }
+        public AstTypesInfoDelegate PropertyType { get; }
     }
 
     public class SequenceRuleBuilder
     {
-        public SequenceRuleBuilder()
-        {
-            _items = new List<Tup>();
-        }
+        public SequenceRuleBuilder() => _items = new List<SeqTuple>();
 
-        public ICsExpression[] GetItems()
+        public IReadOnlyList<RuleBuilder.SequenceRule.SequenceItem> GetItems()
         {
-            return _items.Select(a => a.Token).ToArray();
+            var result = new RuleBuilder.SequenceRule.SequenceItem[_items.Count];
+            for (var index = 0; index < _items.Count; index++)
+            {
+                var item = _items[index];
+                if (item.Flag == SequenceFlags.None)
+                {
+                    result[index] = new RuleBuilder.SequenceRule.SequenceItem(item.Token, null);
+                }
+                else
+                {
+                    var                 hints = new List<ICsExpression>();
+                    const SequenceFlags forb  = SequenceFlags.PreferShift | SequenceFlags.PreferReduce;
+                    if ((item.Flag & forb) == forb)
+                        throw new Exception("Invalid flags combinations " + forb);
+                    if ((item.Flag & SequenceFlags.PreferShift) != 0)
+                        hints.Add(PreferShiftHere);
+                    if ((item.Flag & SequenceFlags.PreferReduce) != 0)
+                        hints.Add(ReduceHere);
+                    result[index] = new RuleBuilder.SequenceRule.SequenceItem(item.Token, hints);
+                }
+            }
+
+            return result;
         }
 
         public MapInfo[] GetMap()
         {
             var l = new List<MapInfo>();
-            for (var index = 0; index < _items.Count; index++)
+            for (int index = 0, astIndex = 0; index < _items.Count; index++, astIndex++)
             {
                 var i = _items[index];
+                if (i.Token is WhiteCharCode)
+                {
+                    astIndex--;
+                    continue;
+                }
+
                 if (string.IsNullOrEmpty(i.PropertyName))
                     continue;
-                var mapInfo = new MapInfo(index, i.Token as NonTerminalInfo,
-                    i.PropertyName,
-                    ProcessToken?.Invoke(i.Token));
-                l.Add(mapInfo);
+                if (i.Token is ITerminalNameSource tns)
+                {
+                    var aa = ProcessToken?.Invoke(tns);
+
+                    var mapInfo = new MapInfo(astIndex, i.Token as NonTerminalInfo,
+                        i.PropertyName,
+                        aa);
+                    l.Add(mapInfo);
+                }
+                else
+                {
+                    throw new NotSupportedException();
+                }
             }
 
             return l.ToArray();
         }
 
-        public SequenceRuleBuilder With(ICsExpression token, string name = null)
+        public SequenceRuleBuilder With(ICsExpression token, string name = null, string propertyDescription = null)
         {
-            var tuple = new Tup(token, name);
+            var tuple = new SeqTuple(token, name, propertyDescription, SequenceFlags.None);
             _items.Add(tuple);
             return this;
         }
 
-        public SequenceRuleBuilder With(string token)
+        public SequenceRuleBuilder With(ICsExpression token, SequenceFlags flag)
         {
-            return With(new ToTermFunctionCall(token));
+            var tuple = new SeqTuple(token, null, null, flag);
+            _items.Add(tuple);
+            return this;
         }
 
-        public Func<ICsExpression, Func<ITypeNameResolver, string>> ProcessToken { get; set; }
+        public SequenceRuleBuilder With(string token) => With(new ToTermFunctionCall(token));
+
+        public Func<ITerminalNameSource, AstTypesInfoDelegate> ProcessToken { get; set; }
+        private static readonly DirectCode PreferShiftHere = new DirectCode("this.PreferShiftHere()");
+        private static readonly DirectCode ReduceHere = new DirectCode("this.ReduceHere()");
 
 
-        private readonly List<Tup> _items;
+        private readonly List<SeqTuple> _items;
 
-        private struct Tup
+        private struct SeqTuple
         {
-            public Tup(ICsExpression token, string propertyName)
+            public SeqTuple(ICsExpression token, string propertyName, string propertyDescription, SequenceFlags flag)
             {
-                Token        = token;
-                PropertyName = propertyName;
+                Token               = token;
+                PropertyName        = propertyName;
+                PropertyDescription = propertyDescription;
+                Flag                = flag;
             }
 
-            public ICsExpression Token        { get; }
-            public string        PropertyName { get; }
+            public ICsExpression Token               { get; }
+            public string        PropertyName        { get; }
+            public string        PropertyDescription { get; }
+            public SequenceFlags Flag                { get; }
         }
     }
+
+    [Flags]
+    public enum SequenceFlags
+    {
+        None = 0,
+        PreferShift = 1,
+        PreferReduce = 2
+    }
 }
-#endif

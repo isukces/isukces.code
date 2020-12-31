@@ -19,7 +19,7 @@ namespace iSukces.Code.Irony
             var tn = csc.GetTypeName<CommentTerminal>();
             var s  = new List<string> {Name, StartSymbol};
             s.AddRange(EndSymbols);
-            var args       = string.Join(", ", s.Select(IronyAutocodeGenerator.CsEncode2));
+            var args       = string.Join(", ", s.Select(StringExtensions.CsEncode));
             var constValue = $"new {tn}({args})";
             csc.AddField(Name, tn).WithConstValue(constValue);
         }

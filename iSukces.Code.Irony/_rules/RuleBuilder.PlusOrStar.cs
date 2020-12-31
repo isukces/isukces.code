@@ -1,5 +1,5 @@
+using Irony.Parsing;
 using iSukces.Code.Interfaces;
-using iSukces.Code.Irony._codeSrc;
 
 namespace iSukces.Code.Irony
 {
@@ -7,31 +7,44 @@ namespace iSukces.Code.Irony
     {
         public sealed class PlusOrStar : RuleBuilder
         {
-            public PlusOrStar(ICsExpression delimiter, ICsExpression element, bool isPlus, TerminalName output)
+            public PlusOrStar(ICsExpression delimiter, ITerminalNameSource element, TermListOptions2 options,
+                TerminalName output)
             {
                 Delimiter = delimiter ?? new DirectCode("null");
                 Element   = element;
-                IsPlus    = isPlus;
+                Options   = options;
                 Output    = output;
             }
 
             public override string GetCode(ITypeNameResolver resolver)
             {
-                var args = new[]
+                var args = new CsArgumentsBuilder()
+                    .AddCode(Output.GetCode(resolver))
+                    .AddCode(Delimiter.GetCode(resolver))
+                    .AddCode(Element.GetTerminalName().GetCode(resolver));
+                if (Options == TermListOptions2.PlusList)
+                    return "MakePlusRule" + args.CodeEx;
+                if (Options == TermListOptions2.StarList)
+                    return "MakeStarRule" + args.CodeEx;
+
+                if ((Options & TermListOptions2.AllowStartingDelimiter) != 0)
                 {
-                    Output,
-                    Delimiter,
-                    Element
-                };
-                var argsCode   = GetCode(resolver, ", ", args);
-                var methodName = IsPlus ? "MakePlusRule" : "MakeStarRule";
-                return methodName + "(" + argsCode + ")";
+                    var flags = resolver.GetEnumFlagsValueCode(Options);
+                    args.AddCode(flags);
+                    return "MakeListRuleEx" + args.CodeEx;
+                }
+                else
+                {
+                    var flags = resolver.GetEnumFlagsValueCode((TermListOptions)Options);
+                    args.AddCode(flags);
+                    return "MakeListRule" + args.CodeEx;
+                }
             }
 
-            public ICsExpression Delimiter { get; }
-            public ICsExpression Element   { get; }
-            public bool          IsPlus    { get; }
-            public TerminalName  Output    { get; }
+            public ICsExpression       Delimiter { get; }
+            public ITerminalNameSource Element   { get; }
+            public TermListOptions2    Options   { get; }
+            public TerminalName        Output    { get; }
         }
     }
 }

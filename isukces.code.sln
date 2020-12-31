@@ -25,6 +25,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmmySamples", "samples\Ammy
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EqualityGeneratorSample", "samples\EqualityGeneratorSample\EqualityGeneratorSample.csproj", "{0D588A77-45C5-44AD-8C14-2929E8C203D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Irony.AmmyGrammar", "samples\Samples.Irony.AmmyGrammar\Samples.Irony.AmmyGrammar.csproj", "{BE5BB7A7-B8F6-4337-AE93-EB3CB56412C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples.Irony.AmmyGrammar.Tests", "samples\Samples.Irony.AmmyGrammar.Tests\Samples.Irony.AmmyGrammar.Tests.csproj", "{019DDE97-B94E-413E-A96A-B50A5F9BEFED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +155,14 @@ Global
 		{0D588A77-45C5-44AD-8C14-2929E8C203D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D588A77-45C5-44AD-8C14-2929E8C203D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D588A77-45C5-44AD-8C14-2929E8C203D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE5BB7A7-B8F6-4337-AE93-EB3CB56412C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5BB7A7-B8F6-4337-AE93-EB3CB56412C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5BB7A7-B8F6-4337-AE93-EB3CB56412C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5BB7A7-B8F6-4337-AE93-EB3CB56412C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{019DDE97-B94E-413E-A96A-B50A5F9BEFED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{019DDE97-B94E-413E-A96A-B50A5F9BEFED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{019DDE97-B94E-413E-A96A-B50A5F9BEFED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{019DDE97-B94E-413E-A96A-B50A5F9BEFED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,5 +173,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8B5E9979-5177-4E2C-9891-D4C456B2A330} = {47AE0DCB-720D-4F2E-AF42-08EAF82FDD5B}
 		{0D588A77-45C5-44AD-8C14-2929E8C203D5} = {47AE0DCB-720D-4F2E-AF42-08EAF82FDD5B}
+		{BE5BB7A7-B8F6-4337-AE93-EB3CB56412C3} = {47AE0DCB-720D-4F2E-AF42-08EAF82FDD5B}
+		{019DDE97-B94E-413E-A96A-B50A5F9BEFED} = {47AE0DCB-720D-4F2E-AF42-08EAF82FDD5B}
 	EndGlobalSection
 EndGlobal

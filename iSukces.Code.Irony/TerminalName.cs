@@ -1,12 +1,11 @@
 using System;
 using System.Text;
 using iSukces.Code.Interfaces;
-using iSukces.Code.Irony._codeSrc;
 using JetBrains.Annotations;
 
 namespace iSukces.Code.Irony
 {
-    public struct TerminalName : IEquatable<TerminalName>, ICsExpression
+    public struct TerminalName : IEquatable<TerminalName>, ICsExpression, ITerminalNameSource
     {
         public TerminalName([NotNull] string name)
         {
@@ -15,32 +14,17 @@ namespace iSukces.Code.Irony
                 throw new ArgumentNullException(nameof(name));
         }
 
-        public static TerminalName operator +(TerminalName a, string b)
-        {
-            return new TerminalName(a.Name + b);
-        }
+        public static TerminalName operator +(TerminalName a, string b) => new TerminalName(a.Name + b);
 
-        public static bool operator ==(TerminalName left, TerminalName right)
-        {
-            return left.Equals(right);
-        }
+        public static bool operator ==(TerminalName left, TerminalName right) => left.Equals(right);
 
-        public static bool operator !=(TerminalName left, TerminalName right)
-        {
-            return !left.Equals(right);
-        }
+        public static bool operator !=(TerminalName left, TerminalName right) => !left.Equals(right);
 
-        public bool Equals(TerminalName other)
-        {
-            return Name == other.Name;
-        }
+        public bool Equals(TerminalName other) => Name == other.Name;
 
-        public override bool Equals(object obj)
-        {
-            return obj is TerminalName other && Equals(other);
-        }
+        public override bool Equals(object obj) => obj is TerminalName other && Equals(other);
 
-        public StringBuilder GetCamelTerminalName()
+        public string GetCamelTerminalName()
         {
             var s       = new StringBuilder();
             var toUpper = true;
@@ -56,19 +40,22 @@ namespace iSukces.Code.Irony
                 toUpper = false;
             }
 
-            return s;
+            return s.ToString();
         }
 
-        public string GetCode(ITypeNameResolver resolver)
-        {
-            return "__" + Name;
-        }
+        public string GetCode(ITypeNameResolver resolver) => "__" + Name;
 
-        public override int GetHashCode()
-        {
-            return Name != null ? Name.GetHashCode() : 0;
-        }
+        public override int GetHashCode() => Name != null ? Name.GetHashCode() : 0;
+
+        public TerminalName GetTerminalName() => this;
+
+        public override string ToString() => $"Name = {Name}";
 
         public string Name { get; }
+    }
+
+    public interface ITerminalNameSource
+    {
+        TerminalName GetTerminalName();
     }
 }

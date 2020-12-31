@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Interfaces;
-using iSukces.Code.Irony._codeSrc;
 
 namespace iSukces.Code.Irony
 {
     public abstract partial class RuleBuilder : ICsExpression
     {
-        public abstract string GetCode(ITypeNameResolver resolver);
-
         public static string GetCode(ITypeNameResolver resolver, string delimiter, IEnumerable<ICsExpression> items)
         {
             return string.Join(delimiter, items.Select(a => a.GetCode(resolver)));
         }
+
+        public abstract string GetCode(ITypeNameResolver resolver);
 
         public class BinaryRule : RuleBuilder
         {
@@ -28,15 +27,9 @@ namespace iSukces.Code.Irony
                 Items     = items;
             }
 
-            public static BinaryRule Or(params ICsExpression[] items)
-            {
-                return new BinaryRule(" | ", items);
-            }
+            public static BinaryRule Or(params ICsExpression[] items) => new BinaryRule(" | ", items);
 
-            public static BinaryRule Plus(params ICsExpression[] items)
-            {
-                return new BinaryRule(" + ", items);
-            }
+            public static BinaryRule Plus(params ICsExpression[] items) => new BinaryRule(" + ", items);
 
             public override string GetCode(ITypeNameResolver resolver)
             {

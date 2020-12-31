@@ -5,9 +5,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
+        <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
     </ItemGroup>
-
+    
     <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
       <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
     </ItemGroup>
@@ -23,7 +23,22 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net451'">
       <PackageReference Include="Irony.Interpreter" Version="1.1.0" />
     </ItemGroup>
-    <PropertyGroup>
-        <NoWarn>1701;1702;1591</NoWarn>
-    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="iSukces.Code.Irony.csproj.DotSettings" />
+      <None Remove="iSukces.Code.Irony2.csproj.DotSettings" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="IronyAutocodeGenerator.DataClassesGenerator.cs">
+        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+      </Compile>
+      <Compile Update="IronyAutocodeGenerator.AstClassesGenerator.cs">
+        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+      </Compile>
+      <Compile Update="IronyAutocodeGenerator.NestedGeneratorBase.cs">
+        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+    
 </Project>

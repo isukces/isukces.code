@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using iSukces.Code.Irony._codeSrc;
 
 namespace iSukces.Code.Irony
 {
@@ -7,24 +6,21 @@ namespace iSukces.Code.Irony
     {
         public class OptionAlternative : Alternative
         {
-            public OptionAlternative(TerminalName name, string alternativeInterfaceName)
+            public OptionAlternative(TokenInfo info, string alternativeInterfaceName)
             {
-                Name             = name;
+                Info                     = info;
                 AlternativeInterfaceName = alternativeInterfaceName;
             }
 
             public override IEnumerable<ICsExpression> GetAlternatives()
             {
                 yield return new DirectCode("Empty");
-                yield return Name;
+                yield return Info.Name;
             }
 
-            public override string GetDesc()
-            {
-                return "optional " + Name.Name;
-            }
+            public override string GetDesc() => "optional " + Info.Name;
 
-            public TerminalName Name { get; }
+            public TokenInfo Info { get; }
 
             public override string AlternativeInterfaceName { get; }
         }

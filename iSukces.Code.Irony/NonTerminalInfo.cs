@@ -9,8 +9,18 @@ namespace iSukces.Code.Irony
     {
         public NonTerminalInfo(TerminalName name) : base(name)
         {
-            AstClassTypeName = new SimpleCodeExpression(".Ast.Ast" + Name.GetCamelTerminalName());
+            var factory = AstClassNameFactory ?? DefaultAstClassNameFactory;
+            AstClassTypeName = factory(name);
+
+            factory       = DataClassNameFactory ?? DefaultDataClassNameFactory;
+            DataClassName = factory(name);
         }
+
+        public static ITypeNameProvider DefaultAstClassNameFactory(TerminalName name) =>
+            new StringTypeNameProvider(".Ast" + name.GetCamelTerminalName());
+
+        public static ITypeNameProvider DefaultDataClassNameFactory(TerminalName name) =>
+            new StringTypeNameProvider(".Data" + name.GetCamelTerminalName());
 
         public static NonTerminalInfo Parse(string parsecode)
         {
@@ -20,12 +30,22 @@ namespace iSukces.Code.Irony
             {
                 var baseClass = parts[1];
                 if (!string.IsNullOrEmpty(baseClass))
-                    result.AstBaseClassTypeName = new SimpleCodeExpression(baseClass);
+                    result.AstBaseClassTypeName = new StringTypeNameProvider(baseClass);
             }
 
             var createClassCommand = parts[2].ToLower();
-            result.CreateClass = createClassCommand == "" || createClassCommand == "true";
+            result.CreateAstClass = createClassCommand == "" || createClassCommand == "true";
             return result;
+        }
+
+        private static TermListOptions2 EncodeDelimiters(Delimiters2 a)
+        {
+            var r = TermListOptions2.None;
+            if ((a & Delimiters2.Starting) != 0)
+                r |= TermListOptions2.AllowStartingDelimiter;
+            if ((a & Delimiters2.Trailing) != 0)
+                r |= TermListOptions2.AllowTrailingDelimiter;
+            return r;
         }
 
         /*
@@ -48,10 +68,7 @@ namespace iSukces.Code.Irony
         }*/
 
 
-        public NonTerminalInfo AsOneOf(params ICsExpression[] elements)
-        {
-            return AsOneOf(0, elements);
-        }
+        public NonTerminalInfo AsOneOf(params ICsExpression[] elements) => AsOneOf(0, elements);
 
         public NonTerminalInfo AsOneOf(int index, params ICsExpression[] elements)
         {
@@ -63,42 +80,51 @@ namespace iSukces.Code.Irony
 
         public NonTerminalInfo AsOptional(TokenInfo basedOn)
         {
-            Rule = new RuleBuilder.OptionAlternative(basedOn.Name,
+            Rule = new RuleBuilder.OptionAlternative(basedOn,
                 "IAst" + Name.GetCamelTerminalName());
             return this;
         }
 
 
-        public string GetBaseClass(IReadOnlyList<NonTerminalInfo> nt, ITypeNameResolver resolver)
+        public string GetBaseClassAndInterfaces(IReadOnlyList<NonTerminalInfo> nonterminals,
+            ITypeNameResolver resolver, string classNamespace)
         {
-            var baseClass = AstBaseClassTypeName?.GetCode(resolver);
+            var baseClass = AstBaseClassTypeName?.GetTypeName(resolver, classNamespace)?.Name;
             if (string.IsNullOrEmpty(baseClass))
                 throw new Exception("Empty base class");
-            var l = new List<string> {baseClass};
-            foreach (var i in nt)
+            var list = new List<string> {baseClass};
+            foreach (var i in nonterminals)
             {
-                if (!(i.Rule is RuleBuilder.ListAlternative al)) continue;
+                if (!(i.Rule is RuleBuilder.ListAlternative al))
+                    continue;
                 if (al.Contains(Name))
-                    l.Add(al.AlternativeInterfaceName);
+                    list.Add(al.AlternativeInterfaceName);
             }
 
-            return string.Join(",", l.Distinct());
+            return string.Join(",", list.Distinct());
         }
 
-        public override string GetCode(ITypeNameResolver resolver)
+        public override string GetCode(ITypeNameResolver resolver) => Name.GetCode(resolver);
+
+        public override string ToString() => "NonTerminal " + Name.Name;
+
+        public NonTerminalInfo WithDataBaseClassName(Type type)
         {
-            return Name.GetCode(resolver);
+            DataBaseClassName = new TypeTypeNameProvider(type);
+            return this;
         }
 
-        public NonTerminalInfo WithDataClassName(ICsExpression name)
+        public NonTerminalInfo WithDataClassName(ITypeNameProvider name)
         {
             DataClassName = name;
             return this;
         }
 
-        public NonTerminalInfo WithDataClassName(string name)
+        public NonTerminalInfo WithDataClassName(string name, Type baseType = null)
         {
-            DataClassName = new SimpleCodeExpression(name);
+            DataClassName = new StringTypeNameProvider(name);
+            if (baseType != null)
+                WithDataBaseClassName(baseType);
             return this;
         }
 
@@ -109,15 +135,24 @@ namespace iSukces.Code.Irony
         }
 
 
-        public NonTerminalInfo WithPlusRule(ICsExpression delimiter, TerminalName element)
+        public NonTerminalInfo WithPlusRule(ICsExpression delimiter, TerminalName element,
+            Delimiters2 delimiters = Delimiters2.None)
         {
-            Rule = new RuleBuilder.PlusOrStar(delimiter, element, true, Name);
+            var options = TermListOptions2.PlusList;
+            options |= EncodeDelimiters(delimiters);
+            Rule    =  new RuleBuilder.PlusOrStar(delimiter, element, options, Name);
             return this;
         }
 
-        public NonTerminalInfo WithPlusRule(TerminalName element)
+        public NonTerminalInfo WithPlusRule(TerminalName element) => WithPlusRule(null, element);
+
+        public NonTerminalInfo WithPlusRule(ICsExpression delimiter, ITerminalNameSource element,
+            Delimiters2 delimiters = Delimiters2.None)
         {
-            return WithPlusRule(null, element);
+            var options = TermListOptions2.PlusList;
+            options |= EncodeDelimiters(delimiters);
+            Rule    =  new RuleBuilder.PlusOrStar(delimiter, element, options, Name);
+            return this;
         }
 
         public NonTerminalInfo WithRule(RuleBuilder rule)
@@ -135,7 +170,7 @@ namespace iSukces.Code.Irony
 
 
         public NonTerminalInfo WithSequenceRule(Action<RuleBuilder.SequenceRule> process,
-            IReadOnlyList<MapInfo> map, params ICsExpression[] items)
+            IReadOnlyList<MapInfo> map, IReadOnlyList<RuleBuilder.SequenceRule.SequenceItem> items)
         {
             var sequenceRule = new RuleBuilder.SequenceRule(items, map);
             process?.Invoke(sequenceRule);
@@ -143,23 +178,25 @@ namespace iSukces.Code.Irony
             return this;
         }
 
-        public NonTerminalInfo WithStarRule(ICsExpression delimiter, TerminalName element)
+        public NonTerminalInfo WithStarRule(ICsExpression delimiter, ITerminalNameSource element,
+            Delimiters2 delimiters = Delimiters2.None)
         {
-            Rule = new RuleBuilder.PlusOrStar(delimiter, element, false, Name);
+            var options = TermListOptions2.StarList;
+            options |= EncodeDelimiters(delimiters);
+            Rule    =  new RuleBuilder.PlusOrStar(delimiter, element, options, Name);
             return this;
         }
 
-        public NonTerminalInfo WithStarRule(TerminalName element)
-        {
-            return WithStarRule(null, element);
-        }
+        public NonTerminalInfo WithStarRule(ITerminalNameSource element, Delimiters2 addPreferShiftHint = Delimiters2.None) =>
+            WithStarRule(null, element, addPreferShiftHint);
 
 
-        public bool CreateClass { get; set; }
+        public bool CreateDataClass { get; set; } = true;
+        public bool CreateAstClass  { get; set; } = true;
 
-        public ICsExpression AstClassTypeName { get; }
+        public ITypeNameProvider AstClassTypeName { get; }
 
-        public ICsExpression AstBaseClassTypeName { get; set; }
+        public ITypeNameProvider AstBaseClassTypeName { get; set; }
 
         public RuleBuilder Rule
         {
@@ -172,9 +209,35 @@ namespace iSukces.Code.Irony
             }
         }
 
-        public bool          CreateDataClass { get; set; } = true;
-        public ICsExpression DataClassName   { get; set; }
 
+        public ITypeNameProvider DataClassName     { get; set; }
+        public ITypeNameProvider DataBaseClassName { get; set; }
+        public static Func<TerminalName, ITypeNameProvider> AstClassNameFactory = DefaultAstClassNameFactory;
+        public static Func<TerminalName, ITypeNameProvider> DataClassNameFactory = DefaultDataClassNameFactory;
         private RuleBuilder _rule;
+    }
+
+    [Flags]
+    public enum TermListOptions2
+    {
+        None = 0,
+        AllowEmpty = 1,
+        AllowTrailingDelimiter = 2,
+        AddPreferShiftHint = 4,
+        
+        PlusList =  AddPreferShiftHint, 
+        StarList = PlusList | AllowEmpty,
+        AllowStartingDelimiter = 8,
+        
+        BothDelimiters = AllowStartingDelimiter | AllowTrailingDelimiter
+    }
+
+    [Flags]
+    public enum Delimiters2
+    {
+        None = 0,
+        Starting = 1,
+        Trailing = 2,
+        Both = Starting | Trailing
     }
 }
