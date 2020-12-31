@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Text;
 
 namespace iSukces.Code
@@ -18,12 +19,15 @@ namespace iSukces.Code
             const string backslash = "\\";
             if (x is null)
                 return "null";
-            return quote + x
-                .Replace(backslash, backslash + backslash)
-                .Replace("\r", backslash + "r")
-                .Replace("\n", backslash + "n")
-                .Replace("\t", backslash + "t")
-                .Replace(quote, backslash + quote) + quote;
+            var sb = new StringBuilder();
+            sb.Append(quote);
+            foreach (var i in x)
+            {
+                var c = i.CsEncode();
+                sb.Append(c);
+            }
+            sb.Append(quote);
+            return sb.ToString();
         }
 
         /// <summary>
@@ -98,6 +102,36 @@ namespace iSukces.Code
                     sb.Append(i);
 
             return sb.ToString();
+        }
+
+        public static string CsEncode(this char i)
+        {
+            const string backslash = "\\";
+            const string quote     = "\"";
+            switch (i)
+            {
+                case '\\':
+                    return backslash + backslash;
+                case '\r':
+                    return backslash + "r";
+                case '\n':
+                    return backslash + "n";
+                case '\t':
+                    return backslash + "t";
+                case '\"':
+                    return backslash + quote;
+                    break;
+                default:
+                    if (i < '\u2000')
+                    {
+                        return i.ToString();
+                    }
+                    else
+                    {
+                        var ord = ((int)i).ToString("x4", CultureInfo.InvariantCulture);
+                        return "\\u" + ord;
+                    }
+            }
         }
     }
 }

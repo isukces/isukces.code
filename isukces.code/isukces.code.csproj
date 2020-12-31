@@ -53,6 +53,20 @@
     <Compile Update="Features\Ui\DataGrid\GridAmmyMixinsGenerator.AttributeInfo.cs">
       <DependentUpon>GridAmmyMixinsGenerator.cs</DependentUpon>
     </Compile>
+    <Compile Update="Interfaces\CsEnumHelper+.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CsEnumHelper+.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Interfaces\CsEnumHelper.cs">
+      <DependentUpon>CsEnumHelper+.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Interfaces\CsEnumHelper+.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CsEnumHelper+.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <DefineConstants>COREFX;COREFX20</DefineConstants>

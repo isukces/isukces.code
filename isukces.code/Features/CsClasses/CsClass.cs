@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -26,6 +27,7 @@ namespace iSukces.Code
             Name      = name;
             BaseClass = baseClass;
         }
+
 
         public static CsAttribute MkAttribute(string attributeName) => new CsAttribute(attributeName);
 
@@ -232,6 +234,9 @@ namespace iSukces.Code
 
         public CsProperty AddProperty(string propertyName, string type)
         {
+            propertyName = propertyName?.Trim();
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentException("propertyName is empty");
             var property = new CsProperty(propertyName, type);
             if (propertyName.Contains('.'))
             {
@@ -244,6 +249,25 @@ namespace iSukces.Code
         }
 
         public string GetComments() => _extraComment.ToString();
+
+        public string GetNamespace()
+        {
+            var owner = Owner;
+            while (true)
+                switch (owner)
+                {
+                    case null:
+                    case CsFile _:
+                        return string.Empty;
+                    case CsNamespace ns:
+                        return ns.Name;
+                    case CsClass cl:
+                        owner = cl.Owner;
+                        continue;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(owner));
+                }
+        }
 
         public CsClass GetOrCreateNested(string typeName) => GetOrCreateNested(typeName, out _);
 
@@ -498,15 +522,18 @@ namespace iSukces.Code
                         // public event EventHandler<BeforeSaveEventArgs> BeforeSave;
                         var v    = ev.Visibility.ToCsCode();
                         var code = $"{v} event {ev.Type} {ev.Name};".TrimStart();
-                        
+
                         if (ev.LongDefinition)
                         {
                             writer.Open(code);
                             writer.WriteLine($"add {{ {ev.FieldName} += value; }}");
                             writer.WriteLine($"remove {{ {ev.FieldName} -= value; }}");
                             writer.Close();
-                        } else
+                        }
+                        else
+                        {
                             writer.WriteLine(code);
+                        }
                     }
                     finally
                     {
@@ -520,21 +547,17 @@ namespace iSukces.Code
         private bool Emit_fields(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
             var all = _fields.OrderBy(a => a.IsConst).ToList();
-            foreach(var i in  _events.Where(a => a.LongDefinition))
+            foreach (var i in _events.Where(a => a.LongDefinition))
             {
                 var eventField = new CsClassField(i.FieldName, i.Type, i.GetFieldDescription());
                 all.Add(eventField);
             }
-            
+
             if (!all.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
 
-
             addEmptyLineBeforeRegion = Action(writer, all, "Fields",
-                field =>
-                {
-                    Emit_single_field(writer, field);
-                }
+                field => { Emit_single_field(writer, field); }
             );
             return addEmptyLineBeforeRegion;
         }
@@ -714,5 +737,21 @@ namespace iSukces.Code
 
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsClassField> _fields = new List<CsClassField>();
+    }
+
+    public static class CsClassExt
+    {
+        public static string ReduceTypenameIfPossible(this CsClass csClass, string typeName)
+        {
+            if (typeName is null || csClass is null)
+                return typeName;
+            var referenceNamespace = csClass.GetNamespace();
+            if (string.IsNullOrEmpty(referenceNamespace))
+                return typeName;
+            var ns2 = NamespaceAndName.Parse(typeName);
+            if (referenceNamespace == ns2.Namespace)
+                return ns2.Name;
+            return typeName;
+        }
     }
 }
