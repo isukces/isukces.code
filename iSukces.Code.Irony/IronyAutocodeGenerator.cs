@@ -22,7 +22,7 @@ namespace iSukces.Code.Irony
         {
             string ff(ICsExpression src, string begin = null, string end = null)
             {
-                if (!(src is ITerminalNameSource tns)) return null;
+                if (!(src is ITokenNameSource tns)) return null;
                 var w = cfg.GetAstTypesInfoDelegate(tns)?.Invoke(res);
                 if (w is null)
                     return null;
@@ -51,18 +51,18 @@ namespace iSukces.Code.Irony
                     break;
                 case RuleBuilder.PlusOrStar plusOrStar:
                     if ((plusOrStar.Options & TermListOptions2.AllowEmpty) != 0)
-                        debug = "zero of more";
+                        debug = "zero or more";
                     else
-                        debug = "one of more";
-                    debug += " " + plusOrStar.Element.GetTerminalName().GetCode(res);
-                    debug += ff(plusOrStar.Element.GetTerminalName());
+                        debug = "one or more";
+                    debug += " " + plusOrStar.Element.GetTokenName().GetCode(res);
+                    debug += ff(plusOrStar.Element.GetTokenName());
                     break;
                 case RuleBuilder.SequenceRule sequenceRule:
                     debug = "";
                     if ((sequenceRule.Map?.Count ?? 0) > 0)
                         foreach (var ii in sequenceRule.Map)
                         {
-                            var q = sequenceRule.Expressions[ii.Index];
+                            var q = sequenceRule.Expressions[ii.RuleItemIndex];
                             if (debug.Length > 0)
                                 debug += ", ";
                             debug += q.Expression.GetCode(res) + " " + ff(q.Expression, " [", "]");
@@ -81,28 +81,32 @@ namespace iSukces.Code.Irony
 
         public void Generate(IAutoCodeGeneratorContext context)
         {
-            _context = context;
             foreach (var i in Cfg.NonTerminals)
                 if (i.AstBaseClassTypeName is null)
-                    i.AstBaseClassTypeName = new TypeTypeNameProvider(Cfg.DefaultAstBaseClass);
+                    i.AstBaseClassTypeName = new TypeNameProvider(Cfg.DefaultAstBaseClass);
 
             var fullClassName = Cfg.Names.GrammarType.FullName;
-            _csc = context.GetOrCreateClass(fullClassName,
+            _grammarClass = context.GetOrCreateClass(fullClassName,
                 CsNamespaceMemberKind.Class);
-            _csc.WithBaseClass(_csc.Owner.GetTypeName<InterpretedLanguageGrammar>());
+            _grammarClass.WithBaseClass(_grammarClass.Owner.GetTypeName<InterpretedLanguageGrammar>());
             var initCode = Add_Fields()
                 .Where(a => a != null)
                 .ToArray();
             Add_AutoInit(initCode);
-            new AstClassesGenerator(context, Cfg).Add_AstClasses();
+            var astClassesGenerator = new AstClassesGenerator(context, Cfg);
+            astClassesGenerator.Add_AstClasses();
             Add_AstInterfaces(context);
             new DataClassesGenerator(context, Cfg).Add_DataClasses();
+
+            if (Cfg.DoEvaluateHelper != null)
+                astClassesGenerator.Update(Cfg.DoEvaluateHelper);
         }
 
         public SequenceRuleBuilder GetSequenceRuleBuilder() =>
             new SequenceRuleBuilder
             {
-                ProcessToken = Cfg.GetAstTypesInfoDelegate
+                ProcessToken       = Cfg.GetAstTypesInfoDelegate,
+                GetTokenInfoByName = Cfg.GetTokenInfoByName
             };
 
         public IronyAutocodeGenerator With(string terminalName, Action<NonTerminalInfo> process = null)
@@ -133,11 +137,16 @@ namespace iSukces.Code.Irony
                     case null:
                         continue;
                     case RuleBuilder.Alternative altRule:
-                        var interfaceName = Cfg.Names.AstNamespace + "." + altRule.AlternativeInterfaceName;
-                        var iface = context.GetOrCreateClass(interfaceName,
-                            CsNamespaceMemberKind.Interface);
-                        iface.Description = altRule.GetDesc();
-                        iface.Visibility  = Visibilities.Public;
+                        var ip = altRule.AlternativeInterfaceName;
+                        if (ip.IsInterface && ip.CreateAutoCode)
+                        {
+                            var pn = ip.Provider.GetTypeName(context.FileLevelResolver, Cfg.Names.AstNamespace);
+                            var iface = context.GetOrCreateClass(pn.Name,
+                                CsNamespaceMemberKind.Interface);
+                            iface.Description = altRule.GetDesc();
+                            iface.Visibility  = Visibilities.Public;
+                        }
+
                         break;
                     case RuleBuilder.BinaryRule binaryRule:
                         break;
@@ -150,7 +159,7 @@ namespace iSukces.Code.Irony
                 }
         }
 
-        private void Add_AutoInit(Tt[] initCode)
+        private void Add_AutoInit(FieldCreationInfo[] initCode)
         {
             var code = CsCodeWriter.Create<IronyAutocodeGenerator>();
 
@@ -165,55 +174,83 @@ namespace iSukces.Code.Irony
                 }
             }
 
-            code.WriteLine("// init Terms");
+            code.WriteLine("// == init Terminals");
             if (Cfg.Terminals.Any())
                 foreach (var i in Cfg.Terminals)
                 {
-                    var fieldName = i.Name.GetCode(_csc);
+                    var fieldName = i.Name.GetCode(_grammarClass);
                     code.WriteLine($"{fieldName} = ToTerm({i.Code.CsEncode()});");
                 }
 
-            code.WriteLine("// init NonTerminals");
+            code.WriteLine("// == init NonTerminals");
             foreach (var i in Cfg.NonTerminals)
             {
-                var fieldName = i.Name.GetCode(_csc);
-                var rule      = i.Rule?.GetCode(_csc);
+                var fieldName = i.Name.GetCode(_grammarClass);
+                var rule      = i.Rule?.GetCode(_grammarClass);
                 if (string.IsNullOrEmpty(rule)) continue;
                 code.WriteLine($"{fieldName}.Rule = {rule};");
             }
+
+            // add brackets
+            if (Cfg.BracketsPairs.Any())
+            {
+                code.WriteLine("// == brackets");
+                foreach (var i in Cfg.BracketsPairs)
+                {
+                    var ab = new CsArgumentsBuilder()
+                        .AddValue(i.Item1)
+                        .AddValue(i.Item2);
+                    code.WriteLine(ab.CallMethod("RegisterBracePair", true));
+                }
+            }
+
+            void Add(TerminalsList x, string method, string title)
+            {
+                if (!x.Any()) return;
+                code.WriteLine("// == mark " + title);
+                var ab = new CsArgumentsBuilder();
+                foreach (var i in x)
+                    ab.AddValue(i.Code);
+                code.WriteLine(ab.CallMethod(method, true));
+                code.WriteLine();
+            }
+
+            Add(Cfg.ReservedWords, "MarkReservedWords", "reserved words");
+            Add(Cfg.Punctuations, "MarkPunctuation", "punctuations");
 
             if (Cfg.SingleLineComment != null)
                 code.WriteLine($"NonGrammarTerminals.Add({Cfg.SingleLineComment.Name});");
             if (Cfg.DelimitedComment != null)
                 code.WriteLine($"NonGrammarTerminals.Add({Cfg.DelimitedComment.Name});");
 
-            if (Cfg.Root != null) code.WriteLine("Root = " + Cfg.Root.Name.GetCode(_csc) + ";");
-            _csc.AddMethod("AutoInit", "void")
+            if (Cfg.Root != null) code.WriteLine("Root = " + Cfg.Root.Name.GetCode(_grammarClass) + ";");
+            _grammarClass.AddMethod("AutoInit", "void")
                 .WithBody(code);
         }
 
-        private IEnumerable<Tt> Add_Fields()
+        private IEnumerable<FieldCreationInfo> Add_Fields()
         {
             var fields = new List<CsClassField>();
 
-            Tt MakeFromFactory<T>(SpecialTerminalKind key, string methodName)
+            FieldCreationInfo MakeFromFactory<T>(SpecialTerminalKind key, string methodName)
             {
                 if (!Cfg.SpecialTerminals.TryGetValue(key, out var name)) return null;
-                var tn = _csc.GetTypeName<T>();
-                var factory = _csc.GetTypeName(typeof(TerminalFactory));
+                var tn         = _grammarClass.GetTypeName<T>();
+                var factory    = _grammarClass.GetTypeName(typeof(TerminalFactory));
                 var constValue = $"{factory}.{methodName}({name.CsEncode()})";
-                var field = new CsClassField(new TerminalName(name).GetCode(_csc), tn); //.WithConstValue(constValue);
+                var field = new CsClassField(new TokenName(name).GetCode(_grammarClass),
+                    tn); //.WithConstValue(constValue);
                 fields.Add(field);
                 field.UserAnnotations["o"] = 1;
                 if (key == SpecialTerminalKind.CreateCSharpNumber)
                     if (Cfg.CSharpNumberLiteralOptions != NumberOptions.None)
                     {
-                        var code = _csc.GetEnumFlagsValueCode(Cfg.CSharpNumberLiteralOptions, OptimalJoin);
+                        var code = _grammarClass.GetEnumFlagsValueCode(Cfg.CSharpNumberLiteralOptions, OptimalJoin);
                         code = field.Name + ".Options = " + code + ";";
-                        return new Tt(field.Name, constValue, code);
+                        return new FieldCreationInfo(field.Name, constValue, code);
                     }
 
-                return new Tt(field.Name, constValue);
+                return new FieldCreationInfo(field.Name, constValue);
             }
 
             yield return MakeFromFactory<IdentifierTerminal>(SpecialTerminalKind.CreateCSharpIdentifier,
@@ -221,22 +258,27 @@ namespace iSukces.Code.Irony
             yield return MakeFromFactory<StringLiteral>(SpecialTerminalKind.CreateCSharpString, "CreateCSharpString");
             yield return MakeFromFactory<NumberLiteral>(SpecialTerminalKind.CreateCSharpNumber, "CreateCSharpNumber");
 
-            Cfg.SingleLineComment?.AddTo(_csc);
-            Cfg.DelimitedComment?.AddTo(_csc);
+            Cfg.SingleLineComment?.AddTo(_grammarClass);
+            Cfg.DelimitedComment?.AddTo(_grammarClass);
 
-            var tnKeyTerm = _csc.GetTypeName<KeyTerm>();
+            var tnKeyTerm = _grammarClass.GetTypeName<KeyTerm>();
             foreach (var i in Cfg.Terminals)
             {
-                var field = new CsClassField(i.Name.GetCode(_csc), tnKeyTerm);
+                var field = new CsClassField(i.Name.GetCode(_grammarClass), tnKeyTerm);
                 field.UserAnnotations["o"] = 2;
                 fields.Add(field);
             }
 
-            var tnNonTerminal = _csc.GetTypeName<NonTerminal>();
+            var tnNonTerminal = _grammarClass.GetTypeName<NonTerminal>();
             foreach (var i in Cfg.NonTerminals)
             {
-                var astClassNameSrc = i.CreateAstClass ? i.AstClassTypeName : i.AstBaseClassTypeName;
-                var astClassName    = astClassNameSrc.GetTypeName(_csc, Cfg.Names.AstNamespace)?.Name;
+                ITypeNameProvider astClassNameSrc; // ? i.AstClassTypeName2 : i.AstBaseClassTypeName;
+                if (i.AstClass.BuiltInOrAutocode)
+                    astClassNameSrc = i.AstClass.Provider;
+                else
+                    astClassNameSrc = i.AstBaseClassTypeName;
+                var astClassName = astClassNameSrc.GetTypeName(_grammarClass, Cfg.Names.AstNamespace)?.Name;
+
                 /*
                 if (astClassName.StartsWith("."))
                     astClassName = Cfg.TargetNamespace + astClassName;
@@ -249,10 +291,10 @@ namespace iSukces.Code.Irony
                     args.AddCode($"typeof({astClassName})");
 
                 var constValue = $"new {tnNonTerminal}{args.CodeEx}";
-                var field      = new CsClassField(i.Name.GetCode(_csc), tnNonTerminal);
+                var field      = new CsClassField(i.Name.GetCode(_grammarClass), tnNonTerminal);
                 field.UserAnnotations["o"] = 3;
                 fields.Add(field);
-                yield return new Tt(field.Name, constValue);
+                yield return new FieldCreationInfo(field.Name, constValue);
             }
 
             foreach (var field in fields
@@ -264,25 +306,17 @@ namespace iSukces.Code.Irony
                 .ThenBy(a => a.Name))
             {
                 field.Visibility = Visibilities.Private;
-                _csc.Fields.Add(field);
+                _grammarClass.Fields.Add(field);
             }
         }
 
-
-        /*private FullTypeName GetFileLevelTypeName(ITypeNameProvider ex)
-        {
-            var name = ex?.GetTypeName(_context.FileLevelResolver, Cfg.Namespaces);
-            return name;
-        }*/
-
         public IronyAutocodeGeneratorModel Cfg { get; } = new IronyAutocodeGeneratorModel();
 
-        private CsClass _csc;
-        private IAutoCodeGeneratorContext _context;
+        private CsClass _grammarClass;
 
-        private class Tt
+        private class FieldCreationInfo
         {
-            public Tt(string fieldName, string setValueCode, params string[] otherCode)
+            public FieldCreationInfo(string fieldName, string setValueCode, params string[] otherCode)
             {
                 FieldName    = fieldName;
                 SetValueCode = setValueCode;

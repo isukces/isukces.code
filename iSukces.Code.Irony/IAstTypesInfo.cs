@@ -29,14 +29,16 @@ namespace iSukces.Code.Irony
 
     public struct GetEvaluateExpressionInput
     {
-        public GetEvaluateExpressionInput(CsExpression variable, CsExpression scriptThread)
+        public GetEvaluateExpressionInput(CsExpression variable, CsExpression scriptThread, bool castAst)
         {
             Variable     = variable;
             ScriptThread = scriptThread;
+            CastAst      = castAst;
         }
 
         public CsExpression Variable     { get; }
         public CsExpression ScriptThread { get; }
+        public bool         CastAst      { get; }
     }
 
     public delegate IAstTypesInfo AstTypesInfoDelegate(ITypeNameResolver resolver);

@@ -17,7 +17,7 @@ namespace iSukces.Code.Tests
             var enu = new CsEnum("MyEnum",
                 new CsEnumItem("Jeden"),
                 new CsEnumItem("Dwa"));
-            ns.Enums.Add(enu);
+            ns.AddEnum(enu);
 
             var code = f.GetCode();
             var exp = @"// ReSharper disable All
@@ -46,7 +46,7 @@ namespace My123
 
             enu.Items.Last().WithAttribute(CsAttribute.Make<DescriptionAttribute>(ns).WithArgument("kuku"));
             
-            ns.Enums.Add(enu);
+            ns.AddEnum(enu);
 
             var code = f.GetCode();
             var exp = @"// ReSharper disable All

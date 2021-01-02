@@ -1,11 +1,51 @@
 using System;
 using System.Collections.Generic;
 using Irony.Parsing;
+using JetBrains.Annotations;
 
 namespace iSukces.Code.Irony
 {
     public class IronyAutocodeGeneratorModel
     {
+        [CanBeNull]
+        public SequenceRuleBuilder.TokenInfoResult GetTokenInfoByName(ITokenNameSource src)
+        {
+            var terminalName = src.GetTokenName();
+            if (Punctuations.ContainsTerminalName(terminalName))
+                return new SequenceRuleBuilder.TokenInfoResult
+                {
+                    IsNoAst = true
+                };
+            if (ReservedWords.ContainsTerminalName(terminalName))
+                return new SequenceRuleBuilder.TokenInfoResult
+                {
+                    IsNoAst = false
+                };
+
+            foreach (var i in BracketsPairs)
+                if (i.Item1 == terminalName.Name || i.Item2 == terminalName.Name)
+                    return new SequenceRuleBuilder.TokenInfoResult
+                    {
+                        IsNoAst = false
+                    };
+            switch (terminalName)
+            {
+                case TokenName tn:
+                {
+                    foreach (var i in SpecialTerminals)
+                        if (i.Value == tn.Name)
+                            return new SequenceRuleBuilder.TokenInfoResult
+                            {
+                                SpecialTerminal = i.Key
+                            };
+
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
         public IronyAutocodeGeneratorModel WithDelimitedComment(string startSymbol, params string[] endSymbols)
         {
             DelimitedComment = new CommentInfo("DelimitedComment", startSymbol, endSymbols);
@@ -18,14 +58,14 @@ namespace iSukces.Code.Irony
             return this;
         }
 
-        public TerminalInfo WithTerm(string code, TerminalName name)
+        public TerminalInfo WithTerm(string code, TokenName name)
         {
             var termInfo = new TerminalInfo(code, name);
             Terminals.Add(termInfo);
             return termInfo;
         }
 
-        internal AstTypesInfoDelegate GetAstTypesInfoDelegate(ITerminalNameSource src)
+        internal AstTypesInfoDelegate GetAstTypesInfoDelegate(ITokenNameSource src)
         {
             {
                 var h = OnGetAstTypesInfoDelegate;
@@ -43,11 +83,11 @@ namespace iSukces.Code.Irony
                     return AstTypesInfo.BuildFrom(nti, Names);
             }
 
-            var exp = src.GetTerminalName();
+            var exp = src.GetTokenName();
 
             switch (exp)
             {
-                case TerminalName tn:
+                case TokenName tn:
                 {
                     foreach (var i in SpecialTerminals)
                         if (i.Value == tn.Name)
@@ -56,10 +96,6 @@ namespace iSukces.Code.Irony
                     return null;
                 }
             }
-
-            /*if (Equals(exp, identifier))
-                        return q => q.GetTypeName(typeof(IdentifierTerminal));*/
-            throw new NotImplementedException();
         }
 
         public NonTerminalInfo Root { get; set; }
@@ -71,26 +107,31 @@ namespace iSukces.Code.Irony
 
         public Type DefaultAstBaseClass { get; set; }
 
+        public List<Tuple<string, string>> BracketsPairs { get; } = new List<Tuple<string, string>>();
+
         public GrammarNames Names { get; set; }
 
 
-        public List<TerminalInfo> Terminals { get; } = new List<TerminalInfo>();
+        public TerminalsList Terminals { get; } = new TerminalsList();
 
         public Dictionary<SpecialTerminalKind, string> SpecialTerminals { get; } =
             new Dictionary<SpecialTerminalKind, string>();
 
-        public NumberOptions CSharpNumberLiteralOptions { get; set; }
+        public NumberOptions     CSharpNumberLiteralOptions { get; set; }
+        public TerminalsList     ReservedWords              { get; } = new TerminalsList();
+        public TerminalsList     Punctuations               { get; } = new TerminalsList();
+        public IDoEvaluateHelper DoEvaluateHelper           { get; set; }
 
         public event EventHandler<OnGetAstTypesInfoDelegateEventArgs> OnGetAstTypesInfoDelegate;
 
         public sealed class OnGetAstTypesInfoDelegateEventArgs : EventArgs
         {
-            public OnGetAstTypesInfoDelegateEventArgs(ITerminalNameSource src) => Source = src;
+            public OnGetAstTypesInfoDelegateEventArgs(ITokenNameSource src) => Source = src;
 
             public AstTypesInfoDelegate Result { get; set; }
 
-            public ITerminalNameSource Source  { get; }
-            public bool                Handled { get; set; }
+            public ITokenNameSource Source  { get; }
+            public bool             Handled { get; set; }
         }
     }
 }

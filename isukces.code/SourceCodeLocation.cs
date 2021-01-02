@@ -20,6 +20,12 @@ namespace iSukces.Code
         ) =>
             new SourceCodeLocation(lineNumber, memberName, filePath);
 
+        public static SourceCodeLocation Make<T>(
+            [CallerMemberName] string memberName = null,
+            [CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0) =>
+            Make(memberName, filePath, lineNumber).WithGeneratorClass(typeof(T));
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string Join(string sep, string x, string y)
         {

@@ -95,9 +95,7 @@ namespace iSukces.Code.AutoCode
 
         public static CsExpression TypeCast(string type, CsExpression expression)
         {
-            const CsOperatorPrecendence resultPrecedence = CsOperatorPrecendence.UnaryTypecast;
-            var                         code             = expression.GetCode(resultPrecedence, ExpressionAppend.After);
-            return new CsExpression("(" + type + ")" + code, resultPrecedence);
+            return new Cast(type, expression);
         }
 
         public CsExpression CallMethod(string methodName, params CsExpression[] args)

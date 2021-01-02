@@ -40,7 +40,7 @@ namespace iSukces.Code
         {
             _extraComment.AppendLine(x);
         }
-
+        
         public string GetComments() => _extraComment.ToString();
 
         public CodeLines GetGetterLines(bool allowExpressionBodies)

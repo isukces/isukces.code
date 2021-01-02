@@ -30,6 +30,12 @@ namespace iSukces.Code
         ) =>
             Create(new SourceCodeLocation(lineNumber, memberName, filePath)
                 .WithGeneratorClass(typeof(T)));
+        
+        public static CsCodeWriter Create(Type generatorClass, [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memberName = null, [CallerFilePath] string filePath = null
+        ) =>
+            Create(new SourceCodeLocation(lineNumber, memberName, filePath)
+                .WithGeneratorClass(generatorClass));
 
         public void AddAutocodeGeneratedAttribute(IAttributable attributable, [NotNull] ITypeNameResolver resolver)
         {

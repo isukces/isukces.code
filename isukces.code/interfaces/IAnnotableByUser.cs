@@ -11,4 +11,13 @@ namespace iSukces.Code.Interfaces
         [NotNull]
         IDictionary<string, object> UserAnnotations { get; }
     }
+
+    public static class AnnotableByUserExt
+    {
+        public static T GetAnnotation<T>(this IAnnotableByUser an, string key)
+        {
+            if (!an.UserAnnotations.TryGetValue(key, out var value)) return default;
+            return value is T tt ? tt : default;
+        }
+    }
 }

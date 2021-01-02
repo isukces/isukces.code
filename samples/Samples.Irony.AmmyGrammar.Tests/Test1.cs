@@ -129,12 +129,16 @@ ObjectName ""SomeObject.SomeNamespace"" {
 using Windows.Bla
 
 ObjectName ""SomeObject.SomeNamespace"" {
-Name: ""Piotr"" , NumberInt: -1, NumberFloat1: 2.2, NumberFloat2: -3.2e-1 
+Name: ""Piotr"" , NumberInt: -1, NumberFloat1: 2.2, NumberFloat2: -3.2e-3 
 Octal: 012
 Hex: 0xff
 }
 ";
-            var ast = ParseAst(GetLanguageData(), ammyCode);
+            var ast  = ParseAst(GetLanguageData(), ammyCode);
+ 
+            var language = GetLanguageData();
+            var o        = ParseTree(language, ammyCode);
+            var json     = Serialize(o);
         }
     }
 }

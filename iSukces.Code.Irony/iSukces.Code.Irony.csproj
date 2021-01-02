@@ -39,6 +39,16 @@
       <Compile Update="IronyAutocodeGenerator.NestedGeneratorBase.cs">
         <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
       </Compile>
+      <Compile Update="DoEvaluateMethodMakerBase.ForSequenceRule.cs">
+        <DependentUpon>DoEvaluateMethodMakerBase.cs</DependentUpon>
+      </Compile>
+      <Compile Update="DoEvaluateMethodMakerBase.ForPlusOrStar.cs">
+        <DependentUpon>DoEvaluateMethodMakerBase.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     </ItemGroup>
     
 </Project>

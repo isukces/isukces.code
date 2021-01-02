@@ -5,7 +5,7 @@ namespace iSukces.Code.Irony
 {
     public partial class IronyAutocodeGenerator
     {
-        private class NestedGeneratorBase
+        internal class NestedGeneratorBase
         {
             protected NestedGeneratorBase(IAutoCodeGeneratorContext context, IronyAutocodeGeneratorModel cfg)
             {

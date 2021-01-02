@@ -16,7 +16,7 @@ namespace iSukces.Code.Irony
 
             public override string ToString() => GetDesc();
 
-            public abstract string AlternativeInterfaceName { get; }
+            public abstract TypeNameProviderEx AlternativeInterfaceName { get; set; }
         }
     }
 }

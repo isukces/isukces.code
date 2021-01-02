@@ -1,12 +1,16 @@
 using iSukces.Code.Interfaces;
 
-namespace iSukces.Code.Irony._codeSrc
+namespace iSukces.Code.Irony
 {
-    internal class ToTermFunctionCall : ICsExpression
+    internal class ToTermFunctionCall : ICsExpression, ITokenNameSource
     {
         public ToTermFunctionCall(string text) => Text = text;
 
-        public string GetCode(ITypeNameResolver resolver) => "ToTerm(" + Text.CsEncode() + ")";
+        string ICsExpression.GetCode(ITypeNameResolver resolver) => "ToTerm(" + Text.CsEncode() + ")";
+
+        TokenName ITokenNameSource.GetTokenName() => new TokenName(Text);
+
+        TokenNameTarget ITokenNameSource.GetTokenNameIsNonterminal() => TokenNameTarget.Terminal;
 
         public string Text { get; }
     }

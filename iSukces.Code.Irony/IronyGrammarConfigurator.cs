@@ -1,3 +1,4 @@
+using System;
 using Irony.Ast;
 using Irony.Interpreter;
 using Irony.Interpreter.Ast;
@@ -24,7 +25,6 @@ namespace iSukces.Code.Irony
         public static readonly ICsExpression NewLinePlus = new WhiteCharCode("NewLinePlus");
         public static readonly ICsExpression NewLineStar = new WhiteCharCode("NewLineStar");
         public static readonly ICsExpression Eof = new DirectCode("Eof");
-        
     }
 
     public abstract class IronyAutocodeConfigurator<TBaseAstType> : IronyGrammarConfigurator
@@ -45,6 +45,25 @@ namespace iSukces.Code.Irony
             return gen;
         }
 
+        protected (TerminalInfo open, TerminalInfo close) AddBrackets(
+            string codeOpen,
+            string codeClose,
+            string namePrefix) =>
+            AddBrackets(codeOpen, namePrefix + "Open", codeClose, namePrefix + "Close");
+
+        protected (TerminalInfo open, TerminalInfo close) AddBrackets(
+            string codeOpen,
+            string nameOpen,
+            string codeClose,
+            string nameClose)
+        {
+            var open  = AddTerminal(codeOpen, nameOpen);
+            var close = AddTerminal(codeClose, nameClose);
+            Generator.Cfg.BracketsPairs.Add(new Tuple<string, string>(codeOpen, codeClose));
+            return (open, close);
+        }
+
+
         protected NonTerminalInfo AddNonTerminal(string code) => AddNonTerminal(NonTerminalInfo.Parse(code));
 
         protected NonTerminalInfo AddNonTerminal(NonTerminalInfo info)
@@ -61,9 +80,24 @@ namespace iSukces.Code.Irony
 
         protected NonTerminalInfo AddOptionalFrom(TokenInfo info) => AddNonTerminal(info.CreateOptional());
 
+        protected TerminalInfo AddPunctuation(string code, string name)
+        {
+            var q = AddTerminal(code, name);
+            Generator.Cfg.Punctuations.Add(q);
+            return q;
+        }
+
+        protected TerminalInfo AddReservedWord(string code, string name)
+        {
+            var q = AddTerminal(code, name);
+            Generator.Cfg.ReservedWords.Add(q);
+            return q;
+        }
+
 
         protected TerminalInfo AddTerminal(string code, string name) =>
-            Generator.Cfg.WithTerm(code, new TerminalName(name));
+            Generator.Cfg.WithTerm(code, new TokenName(name));
+
 
         protected virtual void AfterAdd(NonTerminalInfo info)
         {

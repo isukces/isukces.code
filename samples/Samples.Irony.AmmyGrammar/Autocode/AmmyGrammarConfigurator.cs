@@ -1,4 +1,6 @@
 using Irony.Parsing;
+using iSukces.Code;
+using iSukces.Code.AutoCode;
 using iSukces.Code.Irony;
 using Samples.Irony.AmmyGrammar.Ast;
 using Samples.Irony.AmmyGrammar.Data;
@@ -20,20 +22,17 @@ namespace Samples.Irony.AmmyGrammar.Autocode
 
         protected override void BuildInternal()
         {
-            
-            
-            
             NonTerminalInfo.DataClassNameFactory =
                 name =>
                 {
                     var tmp = name.GetCamelTerminalName();
                     if (!tmp.StartsWith("Ammy"))
                         tmp = "Ammy" + tmp;
-                    return new StringTypeNameProvider("." + tmp);
+                    return new TypeNameProviderEx(new StringTypeNameProvider("." + tmp), TypeNameProviderFlags.CreateAutoCode);
                 };
-            var identifier    = new TerminalName("identifier");
-            var stringLiteral = new TerminalName("stringLiteral");
-            var numberLiteral = new TerminalName("numberLiteral");
+            var identifier    = new TokenName("identifier");
+            var stringLiteral = new TokenName("stringLiteral");
+            var numberLiteral = new TokenName("numberLiteral");
 
             var generator = Generator;
             var cfg = generator.Cfg
@@ -41,35 +40,29 @@ namespace Samples.Irony.AmmyGrammar.Autocode
                 .WithDelimitedComment("/*", "*/");
 
             cfg.SpecialTerminals[SpecialTerminalKind.CreateCSharpIdentifier] = identifier.Name;
-            cfg.SpecialTerminals[SpecialTerminalKind.CreateCSharpNumber]     = numberLiteral.Name;
-            cfg.CSharpNumberLiteralOptions =
-                //NumberOptions.Binary
-                //                             | NumberOptions.Hex
-                //                             | NumberOptions.Octal
-                                              NumberOptions.AllowSign
-                                             | NumberOptions.AllowUnderscore;
-            
-            cfg.SpecialTerminals[SpecialTerminalKind.CreateCSharpString]     = stringLiteral.Name;
+            cfg.SpecialTerminals[SpecialTerminalKind.CreateCSharpNumber] = numberLiteral.Name;
+            cfg.CSharpNumberLiteralOptions = NumberOptions.AllowSign | NumberOptions.AllowUnderscore;
+            cfg.SpecialTerminals[SpecialTerminalKind.CreateCSharpString] = stringLiteral.Name;
 
-            var comma     = AddTerminal(",", "comma");
-            // var semicolon = AddTerminal(";", "semicolon");
+            var comma     = AddPunctuation(",", "comma");
+            var dot       = AddPunctuation(".", "dot");
+            var doubledot = AddPunctuation(":", "doubledot");
 
-            var dot       = AddTerminal(".", "dot");
-            var doubledot = AddTerminal(":", "doubledot");
-            AddTerminal("(", "parOpen");
-            AddTerminal(")", "parClose");
+            AddBrackets("(", ")", "par");
+            AddBrackets("{", "}", "curly");
+            AddBrackets("[", "]", "square");
 
-            var xtrue  = AddTerminal("true", "true");
-            var xfalse = AddTerminal("false", "false");
-
-            var curlyOpen  = AddTerminal("{", "curlyOpen");
-            var curlyClose = AddTerminal("}", "curlyClose");
+            var xtrue  = AddReservedWord("true", "true");
+            var xfalse = AddReservedWord("false", "false");
+            AddReservedWord("using", "using");
+            AddReservedWord("Key", "key");
 
             /*AddNonTerminal("literal")
                 .AsOneOf(identifier, stringLiteral);*/
 
             var end_of_using_statement = AddNonTerminal("end_of_using_statement")
-                .AsOneOf(0, NewLinePlus, Eof)
+                .AsOneOf( NewLinePlus, Eof)
+                .WithNoAstClass()
                 .WithNoDataClass();
 
             // var semicolon_optional = AddOptionalFrom(semicolon);
@@ -91,7 +84,10 @@ namespace Samples.Irony.AmmyGrammar.Autocode
                 .WithStarRule(using_statement);
 
             var boolean_value = AddNonTerminal("boolean_value")
-                .AsOneOf(xtrue, xfalse);
+                .AsOneOf(rule =>
+                {
+                    rule.AlternativeInterfaceName = TypeNameProviderEx.MakeBuiltIn<bool>();
+                }, xtrue, xfalse);
 
             var ammy_value = AddNonTerminal("ammy_value")
                 .AsOneOf(stringLiteral, numberLiteral, boolean_value);
@@ -100,31 +96,25 @@ namespace Samples.Irony.AmmyGrammar.Autocode
                 .WithSequenceRule(
                     generator.GetSequenceRuleBuilder()
                         .With(identifier, "PropertyName")
-                        //.With(NewLineStar)
                         .With(doubledot)
-                        .With(ammy_value)
+                        .With(ammy_value, "PropertyValue")
                 );
 
-            
-            
             var object_body_element = AddNonTerminal("object_body_element")
                 .AsOneOf(property_set_statement, ammy_value);
 
-            var object_body_code_one_line = AddNonTerminal("object_body_code_one_line")
+            var object_body_one_line = AddNonTerminal("object_body_one_line")
                 .WithPlusRule(comma, object_body_element);
-            
-            var code_lines = AddNonTerminal("code_lines")
-                .WithStarRule(NewLinePlus, object_body_code_one_line, Delimiters2.Trailing);
-            
-            
-            
+
+            var object_body = AddNonTerminal("object_body")
+                .WithStarRule(NewLinePlus, object_body_one_line, Delimiters2.Trailing);
 
             var object_body_in_curly_brackets = AddNonTerminal("object_body_in_curly_brackets")
                 .WithSequenceRule(
                     generator.GetSequenceRuleBuilder()
-                        .With(curlyOpen)
-                        .With(code_lines, "Lines")
-                        .With(curlyClose)
+                        .With("{")
+                        .With(object_body, "Body")
+                        .With("}")
                 );
 
             // ==== MAIN OBJECT
@@ -136,8 +126,9 @@ namespace Samples.Irony.AmmyGrammar.Autocode
                         // .With(NewLineStar)
                         .With(stringLiteral, "FullTypeName", "Full type name")
                         //.With(NewLineStar)
-                        .With(object_body_in_curly_brackets, SequenceFlags.PreferShift)
-                        //.With(NewLineStar)
+                        .With(object_body_in_curly_brackets, SequenceFlags.PreferShift,
+                            "Body", "Body in brackets")
+                    //.With(NewLineStar)
                 );
 
             // ==== OBJECT
@@ -166,7 +157,7 @@ namespace Samples.Irony.AmmyGrammar.Autocode
                         .With(object_name_optional, "ObjectName")
                         //.With(NewLineStar)
                         .With(object_body_in_curly_brackets)
-                        // .With(NewLineStar)
+                    // .With(NewLineStar)
                 );
 
             //===============================
@@ -253,6 +244,28 @@ namespace Samples.Irony.AmmyGrammar.Autocode
             AddNonTerminal("mixin_or_alias_arguments");
             AddNonTerminal("mixin_or_alias_arguments_opt");
             */
+            cfg.DoEvaluateHelper = new MyDoEvaluateHelper();
+        }
+
+        public class MyDoEvaluateHelper : IDoEvaluateHelper
+        {
+            public bool GetDataClassConstructorArgument(ConstructorBuilder.Argument argument, bool lastChance,
+                CsCodeWriter writer,
+                out CsExpression constructorCallExpression)
+            {
+                if (lastChance)
+                {
+                    if (argument.Type == "SourceSpan")
+                    {
+                        constructorCallExpression = new CsExpression(nameof(AmmyStatement.Span));
+                        return true;
+                    }
+                }
+
+                constructorCallExpression = null;
+                return false;
+            }
+                
         }
     }
 }

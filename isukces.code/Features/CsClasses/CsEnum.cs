@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code
@@ -13,6 +15,27 @@ namespace iSukces.Code
         }
 
         public CsEnum() => Items = new List<CsEnumItem>();
+
+        public NamespaceAndName GetFullName() => new NamespaceAndName(GetNamespace(), Name);
+
+        public string GetNamespace()
+        {
+            var owner = Owner;
+            while (true)
+                switch (owner)
+                {
+                    case null:
+                    case CsFile _:
+                        return string.Empty;
+                    case CsNamespace ns:
+                        return ns.Name;
+                    case CsClass cl:
+                        owner = cl.Owner;
+                        continue;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(owner));
+                }
+        }
 
         public void MakeCode(ICsCodeWriter writer)
         {
@@ -31,6 +54,8 @@ namespace iSukces.Code
 
             writer.Close();
         }
+
+        public IClassOwner Owner { get; set; }
 
         public string            Name  { get; set; }
         public IList<CsEnumItem> Items { get; set; }

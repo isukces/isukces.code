@@ -2,21 +2,31 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Irony
 {
-    public abstract class TokenInfo : ICsExpression, ITerminalNameSource
+    public abstract class TokenInfo : ICsExpression, ITokenNameSource
     {
-        protected TokenInfo(TerminalName name) => Name = name;
+        protected TokenInfo(TokenName name) => Name = name;
 
         public NonTerminalInfo CreateOptional()
         {
-            var info1 = new NonTerminalInfo(new TerminalName(Name.Name + "_optional"))
+            var info1 = new NonTerminalInfo(new TokenName(Name.Name + "_optional"))
                 .AsOptional(this);
             return info1;
         }
 
         public abstract string GetCode(ITypeNameResolver resolver);
 
-        public TerminalName GetTerminalName() => Name;
+        public TokenName GetTokenName() => Name;
+        public abstract TokenNameTarget GetTokenNameIsNonterminal();
 
-        public TerminalName Name { get; }
+        public TokenName Name { get; }
+
+        public TokenCreationInfo CreationInfo { get; } = new TokenCreationInfo();
+    }
+
+    public class TokenCreationInfo
+    {
+        public ConstructorBuilder DataConstructor { get; set; }
+        public CsClass            AstClass        { get; set; }
+        public CsClass            DataClass       { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace iSukces.Code
 {
@@ -78,9 +79,11 @@ namespace iSukces.Code
             return s.ToString();
         }
 
-        public static string FirstLower(this string name) // !!!!!!
-            =>
-                name.Substring(0, 1).ToLower() + name.Substring(1);
+        public static string FirstLower([NotNull] this string name) // !!!!!!
+        {
+            if (name == null) throw new ArgumentNullException(nameof(name));
+            return name.Substring(0, 1).ToLower() + name.Substring(1);
+        }
 
 
         public static string FirstUpper(this string name) => name.Substring(0, 1).ToUpper() + name.Substring(1);

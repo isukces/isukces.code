@@ -1,5 +1,7 @@
 using System;
+using Irony.Interpreter.Ast;
 using iSukces.Code.AutoCode;
+using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Irony
 {
@@ -27,14 +29,22 @@ namespace iSukces.Code.Irony
 
                 t               = kind.GetDataClass();
                 result.DataType = resolver.GetTypeName(t);
-
-                result.NodeType = resolver.GetTypeName(kind.GetNodeType());
+                var nodeType = kind.GetNodeType();
+                result.NodeType = resolver.GetTypeName(nodeType);
 
                 // var items = GetItems().Select(a => a.Symbol).ToArray();
                 result.GetEvaluateExpression = q =>
                 {
-                    var cast = CsExpression.TypeCast(result.NodeType, q.Variable);
-                    cast = cast.CallProperty("Symbol");
+                    var cast = q.Variable;
+                    if (q.CastAst)
+                        cast = CsExpression.TypeCast(result.NodeType, cast);
+                    var property = "Value";
+                    if (nodeType == typeof(IdentifierNode))
+                        property = nameof(IdentifierNode.Symbol);
+                    else if (nodeType == typeof(LiteralValueNode))
+                        property = nameof(LiteralValueNode.Value) + "?.ToString()";
+
+                    cast = cast.CallProperty(property);
                     return new GetEvaluateExpressionOutput(cast, false);
                 };
 
@@ -46,15 +56,30 @@ namespace iSukces.Code.Irony
         {
             return resolver =>
             {
+                string sh(FullTypeName x)
+                {
+                    var xName = x?.Name;
+                    if (string.IsNullOrEmpty(xName))
+                        return null;
+                    var p = NamespaceAndName.Parse(xName);
+                    if (string.IsNullOrEmpty(p.Namespace))
+                        return xName;
+                    if (resolver is INamespaceContainer c)
+                        if (c.IsKnownNamespace(p.Namespace))
+                            return p.Name;
+
+                    return xName;
+                }
+
                 var result = new AstTypesInfo
                 {
-                    AstType = nti.AstClassTypeName.GetTypeName(resolver, targetNamespace.AstNamespace)?.Name
+                    AstType = sh(nti.AstClass.Provider.GetTypeName(resolver, targetNamespace.AstNamespace))
                 };
                 result.NodeType = result.AstType;
 
-                if (nti.CreateDataClass)
+                if (nti.DataClass.CreateAutoCode)
                 {
-                    result.DataType = nti.DataClassName?.GetTypeName(resolver, targetNamespace.DataNamespace)?.Name;
+                    result.DataType = sh(nti.DataClass.Provider?.GetTypeName(resolver, targetNamespace.DataNamespace));
 
                     result.GetEvaluateExpression = expression =>
                     {

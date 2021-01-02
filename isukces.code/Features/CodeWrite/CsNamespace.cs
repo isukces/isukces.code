@@ -20,6 +20,13 @@ namespace iSukces.Code
             csClass.Owner = this;
             return csClass;
         }
+        
+        public CsEnum AddEnum(CsEnum csEnum)
+        {
+            ((List<CsEnum>)Enums).Add(csEnum);
+            csEnum.Owner = this;
+            return csEnum;
+        }
 
         public void AddImportNamespace(string ns)
         {
@@ -55,6 +62,6 @@ namespace iSukces.Code
         /// <summary>
         ///     Przestrzenie nazw
         /// </summary>
-        public List<CsEnum> Enums { get;  } = new List<CsEnum>();
+        public IReadOnlyList<CsEnum> Enums { get;  } = new List<CsEnum>();
     }
 }

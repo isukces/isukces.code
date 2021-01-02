@@ -133,7 +133,7 @@ namespace Bitbrains.AmmyParser
 
         public int[] Map { get; set; }
 
-        public bool   CreateClass  { get; set; }
+        public bool CreateClass  { get; private set; }
         public string TerminalName { get; }
         public string ClassType    { get; }
         public string BaseClass    { get; set; }

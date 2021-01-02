@@ -1,14 +1,30 @@
-﻿using System.Xml.Linq;
-using iSukces.Code.Interfaces;
+﻿using System.Text;
+using System.Xml.Linq;
 
 namespace iSukces.Code
 {
     public static class CSharpExtension
     {
-        public static string PropertyBackingFieldName(this string propertyName)
+        public static string GetCamelTerminalName(string name)
         {
-            return "_" + propertyName.FirstLower();
+            var s       = new StringBuilder();
+            var toUpper = true;
+            foreach (var i in name)
+            {
+                if (i == '_')
+                {
+                    toUpper = true;
+                    continue;
+                }
+
+                s.Append(toUpper ? char.ToUpper(i) : i);
+                toUpper = false;
+            }
+
+            return s.ToString();
         }
+
+        public static string PropertyBackingFieldName(this string propertyName) => "_" + propertyName.FirstLower();
 
         public static string XmlEncode(this string x)
         {

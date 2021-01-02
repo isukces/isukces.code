@@ -24,9 +24,8 @@ namespace iSukces.Code.Irony
                 else
                     foreach (var map in Map)
                     {
-                        var index = map.Index;
-                        var i     = Expressions[index];
-                        yield return new EnumerateTuple(index, map, i.Expression);
+                        var i = Expressions[map.RuleItemIndex];
+                        yield return new EnumerateTuple(map.AstIndex, map, i.Expression);
                     }
             }
 
@@ -50,16 +49,16 @@ namespace iSukces.Code.Irony
 
             public struct EnumerateTuple
             {
-                public EnumerateTuple(int sourceIndex, MapInfo map, ICsExpression expression)
+                public EnumerateTuple(int astIndex, MapInfo map, ICsExpression expression)
                 {
-                    SourceIndex = sourceIndex;
-                    Map         = map;
-                    Expression  = expression;
+                    AstIndex   = astIndex;
+                    Map        = map;
+                    Expression = expression;
                 }
 
-                public int           SourceIndex { get; }
-                public MapInfo       Map         { get; }
-                public ICsExpression Expression  { get; }
+                public int           AstIndex   { get; }
+                public MapInfo       Map        { get; }
+                public ICsExpression Expression { get; }
             }
 
 

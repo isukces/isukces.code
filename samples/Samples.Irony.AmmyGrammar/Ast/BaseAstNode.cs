@@ -7,7 +7,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 {
     public class BaseAstNode : AstNode
     {
-        private static object GetValue(ScriptThread thread, AstNode childNode)
+        protected static object GetValue(ScriptThread thread, AstNode childNode)
         {
             if (childNode is NullNode)
                 return null;

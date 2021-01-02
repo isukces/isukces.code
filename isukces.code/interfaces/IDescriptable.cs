@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 
 namespace iSukces.Code.Interfaces
 {
@@ -15,5 +11,37 @@ namespace iSukces.Code.Interfaces
     {
         void AddComment(string x);
         string GetComments();
+    }
+
+    public static class CommentableEx
+    {
+        public static void AddCommentLocation(this ICommentable self, string prefix, 
+            SourceCodeLocation x)
+        {
+            prefix += " " + x;
+            prefix =  prefix.Trim();
+            self.AddComment(prefix);
+        }
+        
+        public static void AddCommentLocation(this ICommentable self,  SourceCodeLocation x)
+        {
+            self.AddComment(x.ToString());
+        }
+        
+        public static void AddCommentLocation<T>(this ICommentable self, string prefix=null, [CallerMemberName] string memberName = null,
+            [CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            var m = SourceCodeLocation.Make<T>(
+                memberName: memberName,
+                filePath: filePath,
+                lineNumber: lineNumber); 
+            AddCommentLocation(self, prefix, m);
+        }
+        
+        
+        
+        
+        
     }
 }

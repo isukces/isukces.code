@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using iSukces.Code.Interfaces;
+using JetBrains.Annotations;
 
 namespace iSukces.Code.Irony
 {
@@ -19,54 +20,77 @@ namespace iSukces.Code.Irony
 
         public void AddBaseConstructorParameter(string baseParameterName, string baseParameterType)
         {
-            _baseConstructorParameters.Add(new NameAndType(baseParameterName, baseParameterType));
+            _constructorArguments.Add(new Argument(baseParameterName, baseParameterType,
+                Kinds.BaseConstructor));
         }
 
         public void AddPropertyToSet(CsProperty property)
         {
-            _properties.Add(new NameAndType(property.Name, property.Type));
+            _constructorArguments.Add(new Argument(property.Name, property.Type, Kinds.PorpertySet));
         }
 
         public void CreateConstructor()
         {
-            var constr = Target.AddConstructor();
-
-            if (_baseConstructorParameters.Any())
+            var constr                    = Target.AddConstructor();
+            var arguments                 = ConstructorArguments;
+            var baseConstructorParameters = new CsArgumentsBuilder();
+            var cw                        = CsCodeWriter.Create<ConstructorBuilder>();
+            if (!string.IsNullOrEmpty(CustomCodeHeader))
+                cw.WriteLine("CustomCodeHeader");
+            foreach (var arg in arguments)
             {
-                foreach (var p in _baseConstructorParameters)
-                    constr.AddParam(p.Name.FirstLower(), p.Type);
-                var args = string.Join(", ", _baseConstructorParameters.Select(a => a.Name.FirstLower()));
-                constr.BaseConstructorCall = "base(" + args + ")";
-            }
-
-            if (_properties.Any())
-            {
-                var cw = new CsCodeWriter();
-                foreach (var p in _properties)
+                var fieldName = arg.Name.FirstLower();
+                constr.AddParam(fieldName, arg.Type);
+                switch (arg.Kind)
                 {
-                    var fieldName = p.Name.FirstLower();
-                    constr.AddParam(fieldName, p.Type);
-                    cw.WriteLine(p.Name + " = " + fieldName + ";");
+                    case Kinds.PorpertySet:
+                        cw.WriteLine($"{arg.Name} = {fieldName};");
+                        break;
+                    case Kinds.BaseConstructor:
+                        baseConstructorParameters.AddCode(fieldName);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-
-                constr.WithBody(cw);
             }
+
+            if (baseConstructorParameters.Any())
+                constr.BaseConstructorCall = baseConstructorParameters.CallMethod("base", false);
+            constr.WithBody(cw);
         }
 
-        public CsClass Target { get; }
-        private readonly List<NameAndType> _baseConstructorParameters = new List<NameAndType>();
-        private readonly List<NameAndType> _properties = new List<NameAndType>();
+        public string CustomCodeHeader { get; set; }
 
-        private struct NameAndType
+        public CsClass Target { get; }
+
+        public IReadOnlyList<Argument> ConstructorArguments
         {
-            public NameAndType(string name, string type)
+            get { return _constructorArguments; }
+        }
+
+
+        private readonly List<Argument> _constructorArguments = new List<Argument>();
+
+        public enum Kinds
+        {
+            PorpertySet,
+            BaseConstructor
+        }
+
+        public class Argument
+        {
+            public Argument([NotNull] string name, [NotNull] string type, Kinds kind)
             {
-                Name = name;
-                Type = type;
+                Name = name ?? throw new ArgumentNullException(nameof(name));
+                Type = type ?? throw new ArgumentNullException(nameof(type));
+                Kind = kind;
             }
+
+            public override string ToString() => $"{Type} {Name}";
 
             public string Name { get; }
             public string Type { get; }
+            public Kinds  Kind { get; }
         }
     }
 }

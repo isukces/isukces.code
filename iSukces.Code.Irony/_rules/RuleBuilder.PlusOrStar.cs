@@ -7,8 +7,8 @@ namespace iSukces.Code.Irony
     {
         public sealed class PlusOrStar : RuleBuilder
         {
-            public PlusOrStar(ICsExpression delimiter, ITerminalNameSource element, TermListOptions2 options,
-                TerminalName output)
+            public PlusOrStar(ICsExpression delimiter, ITokenNameSource element, TermListOptions2 options,
+                TokenName output)
             {
                 Delimiter = delimiter ?? new DirectCode("null");
                 Element   = element;
@@ -21,7 +21,7 @@ namespace iSukces.Code.Irony
                 var args = new CsArgumentsBuilder()
                     .AddCode(Output.GetCode(resolver))
                     .AddCode(Delimiter.GetCode(resolver))
-                    .AddCode(Element.GetTerminalName().GetCode(resolver));
+                    .AddCode(Element.GetTokenName().GetCode(resolver));
                 if (Options == TermListOptions2.PlusList)
                     return "MakePlusRule" + args.CodeEx;
                 if (Options == TermListOptions2.StarList)
@@ -41,10 +41,10 @@ namespace iSukces.Code.Irony
                 }
             }
 
-            public ICsExpression       Delimiter { get; }
-            public ITerminalNameSource Element   { get; }
-            public TermListOptions2    Options   { get; }
-            public TerminalName        Output    { get; }
+            public ICsExpression    Delimiter { get; }
+            public ITokenNameSource Element   { get; }
+            public TermListOptions2 Options   { get; }
+            public TokenName        Output    { get; }
         }
     }
 }

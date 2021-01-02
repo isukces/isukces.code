@@ -6,7 +6,7 @@ namespace iSukces.Code.Irony
     {
         public class OptionAlternative : Alternative
         {
-            public OptionAlternative(TokenInfo info, string alternativeInterfaceName)
+            public OptionAlternative(TokenInfo info, TypeNameProviderEx alternativeInterfaceName)
             {
                 Info                     = info;
                 AlternativeInterfaceName = alternativeInterfaceName;
@@ -22,7 +22,7 @@ namespace iSukces.Code.Irony
 
             public TokenInfo Info { get; }
 
-            public override string AlternativeInterfaceName { get; }
+            public override TypeNameProviderEx AlternativeInterfaceName { get; set; }
         }
     }
 }

@@ -49,11 +49,20 @@ namespace iSukces.Code.Irony
             {
                 case SpecialTerminalKind.CreateCSharpIdentifier:
                     return typeof(IdentifierNode);
+
                 case SpecialTerminalKind.CreateCSharpString:
                     return typeof(LiteralValueNode);
+
+                case SpecialTerminalKind.CreateCSharpNumber:
+                    return typeof(FakeCSharpNumber);
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(kind), kind, null);
             }
         }
+    }
+
+    public sealed class FakeCSharpNumber : AstNode
+    {
     }
 }

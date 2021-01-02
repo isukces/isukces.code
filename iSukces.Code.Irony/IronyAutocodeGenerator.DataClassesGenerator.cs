@@ -18,75 +18,79 @@ namespace iSukces.Code.Irony
 
             public void Add_DataClasses()
             {
-                /*
-                void Add_GetMap(CsClass c, NonTerminalInfo i)
-                {
-                    c.BaseClass = i.GetBaseClass(_cfg.NonTerminals, c.Owner, _cfg.TargetNamespace);
-                    var map = (i.Rule as IMap12)?.Map;
-                    if (map == null || map.Count <= 0) return;
-                    var map2 = string.Join(", ", map.Select(a => a.Index));
-                    c.AddMethod("GetMap", "int[]")
-                        .WithVisibility(Visibilities.Protected)
-                        .WithOverride()
-                        .WithBody($"return new [] {{ {map2} }};");
-                }
-                */
-
                 foreach (var i in _cfg.NonTerminals)
                 {
                     if (SkipCreateClass(i))
                         continue;
-                    _terminal = i;
+                    _token = i;
                     Create();
                 }
             }
 
+            private void AddProperty(ITokenNameSource el, string propertyName, bool collection)
+            {
+                var a = _cfg.GetTokenInfoByName(el);
+                if (a != null)
+                    if (a.IsNoAst)
+                        return;
+
+                propertyName = propertyName?.Trim();
+                if (string.IsNullOrEmpty(propertyName))
+                    throw new ArgumentException("propertyName is empty");
+
+                var w            = _cfg.GetAstTypesInfoDelegate(el)?.Invoke(_dataClass);
+                var propertyType = w?.DataType;
+                if (string.IsNullOrEmpty(propertyType))
+                    throw new Exception(el + " has no data type");
+                propertyType = _dataClass.ReduceTypenameIfPossible(propertyType);
+                if (collection)
+                    propertyType = MakeList(_dataClass, propertyType, typeof(IReadOnlyList<>));
+
+                ProcessProperty(_dataClass.AddProperty(propertyName, propertyType), true);
+            }
+
+            private void AddToString(string expression)
+            {
+                var body = $"return {expression};";
+                var m = _dataClass.AddMethod("ToString", "string")
+                    .WithOverride()
+                    .WithVisibility(Visibilities.Public)
+                    .WithBody(body);
+            }
+
             private void Create()
             {
-                if (!_terminal.CreateDataClass)
+                if (!_token.DataClass.CreateAutoCode)
                     return;
-                var fullClassName = GetFileLevelTypeNameData(_terminal.DataClassName)?.Name;
+                var fullClassName = GetFileLevelTypeNameData(_token.DataClass.Provider)?.Name;
                 if (string.IsNullOrEmpty(fullClassName))
                     return;
-                var c = _context
+                _dataClass = _context
                     .GetOrCreateClass(fullClassName, CsNamespaceMemberKind.Class)
                     .WithVisibility(Visibilities.Public);
+                _token.CreationInfo.DataClass = _dataClass;
 
                 {
-                    var dataClassName = _terminal.DataBaseClassName;
+                    var dataClassName = _token.DataBaseClassName;
                     if (dataClassName != null)
                     {
-                        var baseClassName = dataClassName.GetTypeName(c.Owner, c.GetNamespace());
-                        c.BaseClass = baseClassName.Name;
+                        var baseClassName = dataClassName.GetTypeName(_dataClass.Owner, _dataClass.GetNamespace());
+                        _dataClass.BaseClass = baseClassName.Name;
                     }
                 }
 
-                void AddProperty(ITerminalNameSource el, string propertyName, bool collection)
+                _dataClass.Description = GetDebugFromRule(_token, _dataClass, _cfg);
+                switch (_token.Rule)
                 {
-                    propertyName = propertyName?.Trim();
-                    if (string.IsNullOrEmpty(propertyName))
-                        throw new ArgumentException("propertyName is empty");
-
-                    var w            = _cfg.GetAstTypesInfoDelegate(el)?.Invoke(c);
-                    var propertyType = w?.DataType;
-                    if (string.IsNullOrEmpty(propertyType))
-                        throw new Exception(el + " has no data type");
-                    propertyType = c.ReduceTypenameIfPossible(propertyType);
-                    if (collection)
-                        propertyType = MakeList(c, propertyType, typeof(IReadOnlyList<>));
-
-                    ProcessProperty(c.AddProperty(propertyName, propertyType), true);
-                }
-
-                c.Description = GetDebugFromRule(_terminal, c, _cfg);
-                switch (_terminal.Rule)
-                {
+                    case RuleBuilder.Alternative alternative:
+                        Process_Alternative(alternative);
+                        break;
                     case RuleBuilder.PlusOrStar plusOrStar:
-                        AddProperty(plusOrStar.Element, "Items", true);
+                        Process_PlusOrStar(plusOrStar);
                         break;
                     case RuleBuilder.SequenceRule sequenceRule:
                         foreach (var tmp in sequenceRule.Enumerate())
-                            if (tmp.Expression is ITerminalNameSource tns)
+                            if (tmp.Expression is ITokenNameSource tns)
                             {
                                 var propertyName = tmp.Map?.PropertyName;
                                 if (string.IsNullOrEmpty(propertyName))
@@ -98,31 +102,55 @@ namespace iSukces.Code.Irony
                 }
 
                 {
-                    var builder = new ConstructorBuilder(c);
-                    switch (_terminal.DataBaseClassName)
+                    var constructorBuilder = new ConstructorBuilder(_dataClass);
+                    switch (_token.DataBaseClassName)
                     {
                         case MethodTypeNameProvider methodCsExpression:
                             break;
                         case StringTypeNameProvider stringTypeNameProvider:
                             break;
-                        case TypeTypeNameProvider typeTypeNameProvider:
+                        case TypeNameProvider typeTypeNameProvider:
                             var constructor = typeTypeNameProvider.Type.GetConstructors().FirstOrDefault();
-                            builder.AddBaseConstructor(constructor);
-
+                            constructorBuilder.AddBaseConstructor(constructor);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    foreach (var pi in c.Properties)
-                        builder.AddPropertyToSet(pi);
+                    foreach (var pi in _dataClass.Properties)
+                        constructorBuilder.AddPropertyToSet(pi);
 
-                    builder.CreateConstructor();
+                    _token.CreationInfo.DataConstructor = constructorBuilder;
+                    constructorBuilder.CreateConstructor();
                 }
             }
 
+            private void Process_Alternative(RuleBuilder.Alternative rule)
+            {
+                var propertyName = "TmpValue";
+                var p            = ProcessProperty(_dataClass.AddProperty(propertyName, "object"), false);
+                var alts         = rule.GetAlternatives();
+                // p.Description = alternative.AlternativeInterfaceName;
+                var e = rule.CreationInfo.Enum1;
+                if (e != null)
+                {
+                    var n  = e.GetFullName();
+                    var nn = _dataClass.ReduceTypenameIfPossible(n.FullName);
+                    ProcessProperty(_dataClass.AddProperty("NodeKind", nn), true);
+                }
 
-            private NonTerminalInfo _terminal;
+                AddToString($"{propertyName}?.ToString() ?? string.Empty");
+            }
+
+            private void Process_PlusOrStar(RuleBuilder.PlusOrStar rule)
+            {
+                AddProperty(rule.Element, "Items", true);
+                AddToString("string.Join(\".\", Items)");
+            }
+
+
+            private NonTerminalInfo _token;
+            private CsClass _dataClass;
         }
     }
 }

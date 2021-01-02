@@ -8,7 +8,7 @@ namespace iSukces.Code.Irony
     {
         public class ListAlternative : Alternative, IMap12
         {
-            public ListAlternative(string alternativeInterfaceName, IReadOnlyList<MapInfo> map,
+            public ListAlternative(TypeNameProviderEx alternativeInterfaceName, IReadOnlyList<MapInfo> map,
                 params ICsExpression[] alternatives)
             {
                 AlternativeInterfaceName = alternativeInterfaceName;
@@ -16,10 +16,10 @@ namespace iSukces.Code.Irony
                 Alternatives             = alternatives ?? new ICsExpression[0];
             }
 
-            public bool Contains(TerminalName terminalName)
+            public bool Contains(TokenName tokenName)
             {
-                foreach (var a in Alternatives.OfType<TerminalName>())
-                    if (a == terminalName)
+                foreach (var a in Alternatives.OfType<TokenName>())
+                    if (a == tokenName)
                         return true;
                 return false;
             }
@@ -36,7 +36,7 @@ namespace iSukces.Code.Irony
                             return tokenInfo.Name.Name;
                         case DirectCode directCode:
                             return directCode.Code;
-                        case TerminalName tn:
+                        case TokenName tn:
                             return tn.Name;
                         case WhiteCharCode whc:
                             return whc.Code;
@@ -51,7 +51,7 @@ namespace iSukces.Code.Irony
             [NotNull]
             public IReadOnlyList<ICsExpression> Alternatives { get; }
 
-            public override string AlternativeInterfaceName { get; }
+            public override TypeNameProviderEx AlternativeInterfaceName { get; set; }
 
             public IReadOnlyList<MapInfo> Map { get; }
         }

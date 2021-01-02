@@ -1,9 +1,34 @@
 using iSukces.Code.Interfaces;
+using JetBrains.Annotations;
 
 namespace iSukces.Code.AutoCode
 {
     public partial class CsExpression
     {
+        public class Cast : CsExpression
+        {
+            public Cast([NotNull] string type, CsExpression castedExpression)
+                : base(CsOperatorPrecendence.UnaryTypecast)
+            {
+                Type         = type;
+                CastedExpression = castedExpression;
+            }
+
+            [NotNull]
+            public string Type { get; }
+
+            public CsExpression CastedExpression { get; }
+
+            public override string Code
+            {
+                get
+                {
+                    var code = CastedExpression.GetCode(Precedence, ExpressionAppend.After);
+                    return $"({Type}){code}";
+                }
+            }
+        }
+
         public class Binary : CsExpression
         {
             public Binary(CsExpression left, CsExpression right,
@@ -33,13 +58,13 @@ namespace iSukces.Code.AutoCode
                         break;
                     }
                     case "-" when right.Code == "0": return left;
-                    
+
                     case "*" when left.Code == "1": return right;
                     case "*" when right.Code == "1": return left;
-                    
+
                     case "*":
                     {
-                        if ( right.Precedence == CsOperatorPrecendence.Multiplicative)
+                        if (right.Precedence == CsOperatorPrecendence.Multiplicative)
                             code2 = right.Code;
                         break;
                     }
