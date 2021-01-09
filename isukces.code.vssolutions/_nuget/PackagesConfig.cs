@@ -40,7 +40,7 @@ namespace iSukces.Code.vssolutions
 
         public const string TargetFramework = "targetFramework";
         public const string Id = "id";
-        public const string Version = Tags.Version;
+        public const string Version = "version";
         public const string Package = "package";
         public const string DefaultFilename = "packages.config";
     }
