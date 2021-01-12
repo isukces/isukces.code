@@ -96,6 +96,18 @@ namespace iSukces.Code.Tests.Ammy
             Assert.Equal(expected, writer.Code);
         }
 
+        [Fact]
+        public void T12_should_create_binding_from_element_name()
+        {
+            var tmp = AmmyBindBuilder.FromElementName<SampleNestedClass>(a => a.AlphaValue.BetaValue,
+                XBindingMode.OneWay).Build();
+            var writer = new AmmyCodeWriter();
+            var ctx    = new ConversionCtx(writer);
+            tmp.WriteLineTo(writer, ctx);
+            var code = writer.FullCode.Trim();
+            Assert.Equal(@"bind ""BetaValue"" from ""AlphaValue"" set [Mode: OneWay]", code);
+
+        }
 
         [Theory]
         [MemberData(nameof(Data), 2)]

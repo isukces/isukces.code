@@ -19,6 +19,17 @@ namespace iSukces.Code.Ammy
             return tmp;
         }
 
+        public static AmmyBindBuilder FromElementName<T>(Expression<Func<T, object>> func, XBindingMode? mode = null)
+        {
+            var path        = ExpressionTools.GetBindingPath(func);
+            var elementName = path.GetUntilSeparator(".", out path);
+            var tmp = new AmmyBindBuilder(path)
+                .WithBindFromElementName(elementName);
+            if (mode != null)
+                tmp = tmp.WithMode(mode);
+            return tmp;
+        }
+
         public AmmyBind Build()
         {
             var ammyBind = new AmmyBind(Path)
