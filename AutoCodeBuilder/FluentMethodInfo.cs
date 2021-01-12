@@ -35,5 +35,7 @@ namespace AutoCodeBuilder
         public string DynamicResource => AddSuffix("DynamicResource");
         public string Ancestor       => AddSuffix("Ancestor");
         public string Self => AddSuffix("Self");
+        
+        public string ElementName => AddSuffix("ElementName");
     }
 }

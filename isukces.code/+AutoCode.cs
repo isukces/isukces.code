@@ -14,21 +14,21 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBind WithBindFrom(object from)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             From = from; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBind WithBindFromAncestor(System.Type ancestorType, int? level = null)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:186
+            // generator : FluentBindGenerator.AddFluentMethod:196
             From = new AncestorBindingSource(ancestorType, level); return this;
         }
 
         [AutocodeGenerated]
         public AmmyBind WithBindFromAncestor<TAncestor>(int? level = null)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:197
+            // generator : FluentBindGenerator.AddFluentMethod:207
             From = new AncestorBindingSource(typeof(TAncestor),  level); return this;
         }
 
@@ -37,6 +37,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             From = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyBind WithBindFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            From = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -49,7 +56,7 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBind WithBindFromSelf()
         {
-            // generator : FluentBindGenerator.AddFluentMethod:159
+            // generator : FluentBindGenerator.AddFluentMethod:169
             From = SelfBindingSource.Instance; return this;
         }
 
@@ -63,42 +70,42 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBind WithBindingGroupName(string bindingGroupName)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("BindingGroupName", bindingGroupName);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithBindingGroupName(object bindingGroupName)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("BindingGroupName", bindingGroupName);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithBindsDirectlyToSource(bool bindsDirectlyToSource)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("BindsDirectlyToSource", bindsDirectlyToSource);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithBindsDirectlyToSource(object bindsDirectlyToSource)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("BindsDirectlyToSource", bindsDirectlyToSource);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithConverter(object converter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("Converter", converter);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithConverterCulture(object converterCulture)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ConverterCulture", converterCulture);
         }
 
@@ -107,6 +114,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             return WithSetParameter("ConverterCulture", new AmmyDynamicResource(dynamicResourceName));
+        }
+
+        [AutocodeGenerated]
+        public AmmyBind WithConverterCultureFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            return WithSetParameter("ConverterCulture", new ElementNameBindingSource(elementName));
         }
 
         [AutocodeGenerated]
@@ -131,6 +145,13 @@ namespace iSukces.Code.Ammy
         }
 
         [AutocodeGenerated]
+        public AmmyBind WithConverterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            return WithSetParameter("Converter", new ElementNameBindingSource(elementName));
+        }
+
+        [AutocodeGenerated]
         public AmmyBind WithConverterFromResource(string staticResourceName)
         {
             // generator : FluentBindGenerator.AddFluentMethod:135
@@ -147,7 +168,7 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBind WithConverterParameter(object converterParameter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ConverterParameter", converterParameter);
         }
 
@@ -156,6 +177,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             return WithSetParameter("ConverterParameter", new AmmyDynamicResource(dynamicResourceName));
+        }
+
+        [AutocodeGenerated]
+        public AmmyBind WithConverterParameterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            return WithSetParameter("ConverterParameter", new ElementNameBindingSource(elementName));
         }
 
         [AutocodeGenerated]
@@ -175,175 +203,175 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBind WithIsAsync(bool isAsync)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("IsAsync", isAsync);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithIsAsync(object isAsync)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("IsAsync", isAsync);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode mode)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("Mode", mode);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithMode(object mode)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("Mode", mode);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithNotifyOnSourceUpdated(bool notifyOnSourceUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("NotifyOnSourceUpdated", notifyOnSourceUpdated);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithNotifyOnSourceUpdated(object notifyOnSourceUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("NotifyOnSourceUpdated", notifyOnSourceUpdated);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithNotifyOnTargetUpdated(bool notifyOnTargetUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("NotifyOnTargetUpdated", notifyOnTargetUpdated);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithNotifyOnTargetUpdated(object notifyOnTargetUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("NotifyOnTargetUpdated", notifyOnTargetUpdated);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithNotifyOnValidationError(bool notifyOnValidationError)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("NotifyOnValidationError", notifyOnValidationError);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithNotifyOnValidationError(object notifyOnValidationError)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("NotifyOnValidationError", notifyOnValidationError);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithPath(string path)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Path = path; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBind WithStringFormat(string stringFormat)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("StringFormat", stringFormat);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithStringFormat(object stringFormat)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("StringFormat", stringFormat);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithTargetNullValue(object targetNullValue)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("TargetNullValue", targetNullValue);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger updateSourceTrigger)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("UpdateSourceTrigger", updateSourceTrigger);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithUpdateSourceTrigger(object updateSourceTrigger)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("UpdateSourceTrigger", updateSourceTrigger);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithValidatesOnDataErrors(bool validatesOnDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ValidatesOnDataErrors", validatesOnDataErrors);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithValidatesOnDataErrors(object validatesOnDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ValidatesOnDataErrors", validatesOnDataErrors);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithValidatesOnExceptions(bool validatesOnExceptions)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ValidatesOnExceptions", validatesOnExceptions);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithValidatesOnExceptions(object validatesOnExceptions)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ValidatesOnExceptions", validatesOnExceptions);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithValidatesOnNotifyDataErrors(bool validatesOnNotifyDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ValidatesOnNotifyDataErrors", validatesOnNotifyDataErrors);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithValidatesOnNotifyDataErrors(object validatesOnNotifyDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ValidatesOnNotifyDataErrors", validatesOnNotifyDataErrors);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithValidationRules(object validationRules)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("ValidationRules", validationRules);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithXPath(string xPath)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("XPath", xPath);
         }
 
         [AutocodeGenerated]
         public AmmyBind WithXPath(object xPath)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             return WithSetParameter("XPath", xPath);
         }
 
@@ -352,6 +380,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             return WithSetParameter("XPath", new AmmyDynamicResource(dynamicResourceName));
+        }
+
+        [AutocodeGenerated]
+        public AmmyBind WithXPathFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            return WithSetParameter("XPath", new ElementNameBindingSource(elementName));
         }
 
         [AutocodeGenerated]
@@ -375,21 +410,21 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBindBuilder WithBindFrom(object from)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             From = from; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithBindFromAncestor(System.Type ancestorType, int? level = null)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:186
+            // generator : FluentBindGenerator.AddFluentMethod:196
             From = new AncestorBindingSource(ancestorType, level); return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithBindFromAncestor<TAncestor>(int? level = null)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:197
+            // generator : FluentBindGenerator.AddFluentMethod:207
             From = new AncestorBindingSource(typeof(TAncestor),  level); return this;
         }
 
@@ -398,6 +433,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             From = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyBindBuilder WithBindFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            From = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -410,7 +452,7 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBindBuilder WithBindFromSelf()
         {
-            // generator : FluentBindGenerator.AddFluentMethod:159
+            // generator : FluentBindGenerator.AddFluentMethod:169
             From = SelfBindingSource.Instance; return this;
         }
 
@@ -424,28 +466,28 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBindBuilder WithBindingGroupName(string bindingGroupName)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             BindingGroupName = bindingGroupName; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithBindsDirectlyToSource(bool? bindsDirectlyToSource)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             BindsDirectlyToSource = bindsDirectlyToSource; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithConverter(object converter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Converter = converter; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithConverterCulture(object converterCulture)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ConverterCulture = converterCulture; return this;
         }
 
@@ -454,6 +496,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             ConverterCulture = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyBindBuilder WithConverterCultureFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            ConverterCulture = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -478,6 +527,13 @@ namespace iSukces.Code.Ammy
         }
 
         [AutocodeGenerated]
+        public AmmyBindBuilder WithConverterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            Converter = new ElementNameBindingSource(elementName); return this;
+        }
+
+        [AutocodeGenerated]
         public AmmyBindBuilder WithConverterFromResource(string staticResourceName)
         {
             // generator : FluentBindGenerator.AddFluentMethod:135
@@ -494,7 +550,7 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBindBuilder WithConverterParameter(object converterParameter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ConverterParameter = converterParameter; return this;
         }
 
@@ -503,6 +559,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             ConverterParameter = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyBindBuilder WithConverterParameterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            ConverterParameter = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -522,56 +585,56 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBindBuilder WithIsAsync(bool? isAsync)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             IsAsync = isAsync; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? mode)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Mode = mode; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithNotifyOnSourceUpdated(bool? notifyOnSourceUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnSourceUpdated = notifyOnSourceUpdated; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithNotifyOnTargetUpdated(bool? notifyOnTargetUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnTargetUpdated = notifyOnTargetUpdated; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithNotifyOnValidationError(bool? notifyOnValidationError)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnValidationError = notifyOnValidationError; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithPath(string path)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Path = path; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithStringFormat(string stringFormat)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             StringFormat = stringFormat; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithTargetNullValue(object targetNullValue)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             TargetNullValue = targetNullValue; return this;
         }
 
@@ -580,6 +643,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             TargetNullValue = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyBindBuilder WithTargetNullValueFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            TargetNullValue = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -599,42 +669,42 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyBindBuilder WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             UpdateSourceTrigger = updateSourceTrigger; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithValidatesOnDataErrors(bool? validatesOnDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnDataErrors = validatesOnDataErrors; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithValidatesOnExceptions(bool? validatesOnExceptions)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnExceptions = validatesOnExceptions; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithValidatesOnNotifyDataErrors(bool? validatesOnNotifyDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnNotifyDataErrors = validatesOnNotifyDataErrors; return this;
         }
 
         [AutocodeGenerated]
         public AmmyBindBuilder WithXPath(string xPath)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             XPath = xPath; return this;
         }
 
         [AutocodeGenerated]
         private void SetupAmmyBind(AmmyBind bind)
         {
-            // generator : FluentBindGenerator.BuildPropertiesAndFluentMethods:240
+            // generator : FluentBindGenerator.BuildPropertiesAndFluentMethods:250
             if (Mode != null)
                 bind.WithMode(Mode);
             if (Converter != null)
@@ -742,28 +812,28 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBind WithBindingGroupName(string bindingGroupName)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             BindingGroupName = bindingGroupName; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithBindings(System.Collections.Generic.List<object> bindings)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Bindings = bindings; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithConverter(object converter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Converter = converter; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithConverterCulture(object converterCulture)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ConverterCulture = converterCulture; return this;
         }
 
@@ -772,6 +842,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             ConverterCulture = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyMultiBind WithConverterCultureFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            ConverterCulture = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -796,6 +873,13 @@ namespace iSukces.Code.Ammy
         }
 
         [AutocodeGenerated]
+        public AmmyMultiBind WithConverterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            Converter = new ElementNameBindingSource(elementName); return this;
+        }
+
+        [AutocodeGenerated]
         public AmmyMultiBind WithConverterFromResource(string staticResourceName)
         {
             // generator : FluentBindGenerator.AddFluentMethod:135
@@ -812,7 +896,7 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBind WithConverterParameter(object converterParameter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ConverterParameter = converterParameter; return this;
         }
 
@@ -821,6 +905,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             ConverterParameter = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyMultiBind WithConverterParameterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            ConverterParameter = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -840,42 +931,42 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBind WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? mode)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Mode = mode; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithNotifyOnSourceUpdated(bool? notifyOnSourceUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnSourceUpdated = notifyOnSourceUpdated; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithNotifyOnTargetUpdated(bool? notifyOnTargetUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnTargetUpdated = notifyOnTargetUpdated; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithNotifyOnValidationError(bool? notifyOnValidationError)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnValidationError = notifyOnValidationError; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithStringFormat(string stringFormat)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             StringFormat = stringFormat; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithTargetNullValue(object targetNullValue)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             TargetNullValue = targetNullValue; return this;
         }
 
@@ -884,6 +975,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             TargetNullValue = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyMultiBind WithTargetNullValueFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            TargetNullValue = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -903,28 +1001,28 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBind WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             UpdateSourceTrigger = updateSourceTrigger; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithValidatesOnDataErrors(bool? validatesOnDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnDataErrors = validatesOnDataErrors; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithValidatesOnExceptions(bool? validatesOnExceptions)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnExceptions = validatesOnExceptions; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBind WithValidatesOnNotifyDataErrors(bool? validatesOnNotifyDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnNotifyDataErrors = validatesOnNotifyDataErrors; return this;
         }
 
@@ -983,28 +1081,28 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithBindingGroupName(string bindingGroupName)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             BindingGroupName = bindingGroupName; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithBindings(System.Collections.Generic.List<object> bindings)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Bindings = bindings; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithConverter(object converter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Converter = converter; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithConverterCulture(object converterCulture)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ConverterCulture = converterCulture; return this;
         }
 
@@ -1013,6 +1111,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             ConverterCulture = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyMultiBindingBuilder WithConverterCultureFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            ConverterCulture = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -1037,6 +1142,13 @@ namespace iSukces.Code.Ammy
         }
 
         [AutocodeGenerated]
+        public AmmyMultiBindingBuilder WithConverterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            Converter = new ElementNameBindingSource(elementName); return this;
+        }
+
+        [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithConverterFromResource(string staticResourceName)
         {
             // generator : FluentBindGenerator.AddFluentMethod:135
@@ -1053,7 +1165,7 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithConverterParameter(object converterParameter)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ConverterParameter = converterParameter; return this;
         }
 
@@ -1062,6 +1174,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             ConverterParameter = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyMultiBindingBuilder WithConverterParameterFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            ConverterParameter = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -1081,42 +1200,42 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithMode(iSukces.Code.Compatibility.System.Windows.Data.XBindingMode? mode)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             Mode = mode; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithNotifyOnSourceUpdated(bool? notifyOnSourceUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnSourceUpdated = notifyOnSourceUpdated; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithNotifyOnTargetUpdated(bool? notifyOnTargetUpdated)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnTargetUpdated = notifyOnTargetUpdated; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithNotifyOnValidationError(bool? notifyOnValidationError)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             NotifyOnValidationError = notifyOnValidationError; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithStringFormat(string stringFormat)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             StringFormat = stringFormat; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithTargetNullValue(object targetNullValue)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             TargetNullValue = targetNullValue; return this;
         }
 
@@ -1125,6 +1244,13 @@ namespace iSukces.Code.Ammy
         {
             // generator : FluentBindGenerator.AddFluentMethod:146
             TargetNullValue = new AmmyDynamicResource(dynamicResourceName); return this;
+        }
+
+        [AutocodeGenerated]
+        public AmmyMultiBindingBuilder WithTargetNullValueFromElementName(string elementName)
+        {
+            // generator : FluentBindGenerator.AddFluentMethod:156
+            TargetNullValue = new ElementNameBindingSource(elementName); return this;
         }
 
         [AutocodeGenerated]
@@ -1144,35 +1270,35 @@ namespace iSukces.Code.Ammy
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithUpdateSourceTrigger(iSukces.Code.Compatibility.System.Windows.Data.XUpdateSourceTrigger? updateSourceTrigger)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             UpdateSourceTrigger = updateSourceTrigger; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithValidatesOnDataErrors(bool? validatesOnDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnDataErrors = validatesOnDataErrors; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithValidatesOnExceptions(bool? validatesOnExceptions)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnExceptions = validatesOnExceptions; return this;
         }
 
         [AutocodeGenerated]
         public AmmyMultiBindingBuilder WithValidatesOnNotifyDataErrors(bool? validatesOnNotifyDataErrors)
         {
-            // generator : FluentBindGenerator.AddFluentMethod:210
+            // generator : FluentBindGenerator.AddFluentMethod:220
             ValidatesOnNotifyDataErrors = validatesOnNotifyDataErrors; return this;
         }
 
         [AutocodeGenerated]
         private void SetupAmmyBind(AmmyMultiBind bind)
         {
-            // generator : FluentBindGenerator.BuildPropertiesAndFluentMethods:240
+            // generator : FluentBindGenerator.BuildPropertiesAndFluentMethods:250
             if (Mode != null)
                 bind.WithMode(Mode);
             if (Converter != null)

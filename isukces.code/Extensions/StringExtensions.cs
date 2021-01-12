@@ -107,6 +107,19 @@ namespace iSukces.Code
             return sb.ToString();
         }
 
+        public static string GetUntilSeparator(this string x, string separator, out string rest)
+        {
+            var idx = x.IndexOf(separator);
+            if (idx < 0)
+            {
+                rest = string.Empty;
+                return x;
+            }
+
+            rest = x.Substring(idx + separator.Length);
+            return x.Substring(0, idx);
+        }
+
         public static string CsEncode(this char i)
         {
             const string backslash = "\\";

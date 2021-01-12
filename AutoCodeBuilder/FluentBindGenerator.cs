@@ -150,6 +150,16 @@ namespace AutoCodeBuilder
                         .WithAutocodeGeneratedAttribute(_currentClass)
                         .AddParam<string>(argName, _currentClass);
                 }
+                {
+                    const string argName = "elementName";
+                    var          value   = $"new {nameof(ElementNameBindingSource)}({argName})";
+                    var code = CreateCodeWriter()
+                        .WriteLine(creator(paramName, value));
+                    _currentClass.AddMethod(mi.ElementName, _currentClass.Name)
+                        .WithBody(code)
+                        .WithAutocodeGeneratedAttribute(_currentClass)
+                        .AddParam<string>(argName, _currentClass);
+                }
             }
 
             void AddSelf(FluentMethodInfo mi)
