@@ -168,7 +168,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AmmyMainObjectStatement GetObjectDefinitionValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = ObjectDefinition.Evaluate(thread);
             var result = (AmmyMainObjectStatement)tmp;
             return result;
@@ -176,7 +176,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         public AmmyUsingStatementCollection GetUsingsValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = Usings.Evaluate(thread);
             var result = (AmmyUsingStatementCollection)tmp;
             return result;
@@ -190,20 +190,20 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var usings = GetUsingsValue(thread);
             var objectDefinition = GetObjectDefinitionValue(thread);
             var doEvaluateResult = new AmmyProgram(Span, usings, objectDefinition);
             return doEvaluateResult;
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 0, 1 };
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 0
         /// </summary>
@@ -212,7 +212,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
             get { return (AstUsingStatementCollection)ChildNodes[0]; }
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 1
         /// </summary>
@@ -230,7 +230,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AstAmmyValueNodeKinds GetNodeKind()
         {
-            // generator : AstClassesGenerator.Process_Alternative:199
+            // generator : AstClassesGenerator.Process_Alternative:203
             switch (OptionNode)
             {
                 // AstType = StringLiteral
@@ -257,13 +257,22 @@ namespace Samples.Irony.AmmyGrammar.Ast
             base.Init(context, treeNode);
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        protected override object DoEvaluate(ScriptThread thread)
+        {
+            // generator : ForAlternative.Create:44
+            var altValue = base.DoEvaluate(thread);
+            var nodeKind = GetNodeKind();
+            var doEvaluateResult = new AmmyValue(Span, altValue, nodeKind);
+            return doEvaluateResult;
+        }
+
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 0 };
         }
 
-        // created AstClassesGenerator.Process_Alternative:178
+        // created AstClassesGenerator.Process_Alternative:182
         public AstNode OptionNode
         {
             get { return ChildNodes[0]; }
@@ -278,7 +287,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AstBooleanValueNodeKinds GetNodeKind()
         {
-            // generator : AstClassesGenerator.Process_Alternative:199
+            // generator : AstClassesGenerator.Process_Alternative:203
             switch (OptionNode)
             {
             }
@@ -290,13 +299,22 @@ namespace Samples.Irony.AmmyGrammar.Ast
             base.Init(context, treeNode);
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        protected override object DoEvaluate(ScriptThread thread)
+        {
+            // generator : ForAlternative.Create:44
+            var altValue = base.DoEvaluate(thread);
+            var nodeKind = GetNodeKind();
+            var doEvaluateResult = new AmmyBooleanValue(Span, altValue, nodeKind);
+            return doEvaluateResult;
+        }
+
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 0 };
         }
 
-        // created AstClassesGenerator.Process_Alternative:178
+        // created AstClassesGenerator.Process_Alternative:182
         public AstNode OptionNode
         {
             get { return ChildNodes[0]; }
@@ -339,7 +357,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForPlusOrStar.Create:19
+            // generator : ForPlusOrStar.Create:44
             var items = EvaluateItems();
             var doEvaluateResult = new AmmyDomainStyleName(Span, items);
             return doEvaluateResult;
@@ -354,7 +372,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AmmyDomainStyleName GetBaseObjectTypeValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = BaseObjectType.Evaluate(thread);
             var result = (AmmyDomainStyleName)tmp;
             return result;
@@ -362,7 +380,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         public AmmyObjectBodyInCurlyBrackets GetBodyValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = Body.Evaluate(thread);
             var result = (AmmyObjectBodyInCurlyBrackets)tmp;
             return result;
@@ -370,7 +388,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         public string GetFullTypeNameValue()
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var result = FullTypeName.Value?.ToString();
             return result;
         }
@@ -383,7 +401,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var baseObjectType = GetBaseObjectTypeValue(thread);
             var fullTypeName = GetFullTypeNameValue();
             var body = GetBodyValue(thread);
@@ -391,13 +409,13 @@ namespace Samples.Irony.AmmyGrammar.Ast
             return doEvaluateResult;
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 0, 1, 2 };
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 0
         /// </summary>
@@ -406,7 +424,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
             get { return (AstDomainStyleName)ChildNodes[0]; }
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 1
         /// </summary>
@@ -415,7 +433,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
             get { return (LiteralValueNode)ChildNodes[1]; }
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 2
         /// </summary>
@@ -461,7 +479,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForPlusOrStar.Create:19
+            // generator : ForPlusOrStar.Create:44
             var items = EvaluateItems(thread);
             var doEvaluateResult = new AmmyObjectBody(Span, items);
             return doEvaluateResult;
@@ -476,7 +494,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AstObjectBodyElementNodeKinds GetNodeKind()
         {
-            // generator : AstClassesGenerator.Process_Alternative:199
+            // generator : AstClassesGenerator.Process_Alternative:203
             switch (OptionNode)
             {
                 // AstType = AstPropertySetStatement
@@ -498,13 +516,22 @@ namespace Samples.Irony.AmmyGrammar.Ast
             base.Init(context, treeNode);
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        protected override object DoEvaluate(ScriptThread thread)
+        {
+            // generator : ForAlternative.Create:44
+            var altValue = base.DoEvaluate(thread);
+            var nodeKind = GetNodeKind();
+            var doEvaluateResult = new AmmyObjectBodyElement(Span, altValue, nodeKind);
+            return doEvaluateResult;
+        }
+
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 0 };
         }
 
-        // created AstClassesGenerator.Process_Alternative:178
+        // created AstClassesGenerator.Process_Alternative:182
         public AstNode OptionNode
         {
             get { return ChildNodes[0]; }
@@ -519,7 +546,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AmmyObjectBody GetBodyValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = Body.Evaluate(thread);
             var result = (AmmyObjectBody)tmp;
             return result;
@@ -533,19 +560,19 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var body = GetBodyValue(thread);
             var doEvaluateResult = new AmmyObjectBodyInCurlyBrackets(Span, body);
             return doEvaluateResult;
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 1 };
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 1
         /// </summary>
@@ -591,7 +618,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForPlusOrStar.Create:19
+            // generator : ForPlusOrStar.Create:44
             var items = EvaluateItems(thread);
             var doEvaluateResult = new AmmyObjectBodyOneLine(Span, items);
             return doEvaluateResult;
@@ -612,7 +639,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var doEvaluateResult = new AmmyObjectName(Span);
             return doEvaluateResult;
         }
@@ -632,7 +659,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var doEvaluateResult = new AmmyObjectNameKeyPrefix(Span);
             return doEvaluateResult;
         }
@@ -649,7 +676,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
             base.Init(context, treeNode);
         }
 
-        // created AstClassesGenerator.Process_OptionAlternative:235
+        // created AstClassesGenerator.Process_OptionAlternative:239
         public AstObjectNameKeyPrefix Optional { get; private set; }
 
     }
@@ -664,7 +691,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
             base.Init(context, treeNode);
         }
 
-        // created AstClassesGenerator.Process_OptionAlternative:235
+        // created AstClassesGenerator.Process_OptionAlternative:239
         public AstObjectName Optional { get; private set; }
 
     }
@@ -676,7 +703,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AmmyObjectNameOptional GetObjectNameValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = ObjectName.Evaluate(thread);
             var result = (AmmyObjectNameOptional)tmp;
             return result;
@@ -684,7 +711,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         public AmmyDomainStyleName GetObjectTypeValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = ObjectType.Evaluate(thread);
             var result = (AmmyDomainStyleName)tmp;
             return result;
@@ -698,20 +725,20 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var objectType = GetObjectTypeValue(thread);
             var objectName = GetObjectNameValue(thread);
             var doEvaluateResult = new AmmyObjectStatement(Span, objectType, objectName);
             return doEvaluateResult;
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 0, 1 };
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 0
         /// </summary>
@@ -720,7 +747,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
             get { return (AstDomainStyleName)ChildNodes[0]; }
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 1
         /// </summary>
@@ -738,14 +765,14 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public string GetPropertyNameValue()
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var result = PropertyName.Symbol;
             return result;
         }
 
         public AmmyValue GetPropertyValueValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = PropertyValue.Evaluate(thread);
             var result = (AmmyValue)tmp;
             return result;
@@ -759,20 +786,20 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var propertyName = GetPropertyNameValue();
             var propertyValue = GetPropertyValueValue(thread);
             var doEvaluateResult = new AmmyPropertySetStatement(Span, propertyName, propertyValue);
             return doEvaluateResult;
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 0, 1 };
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 0
         /// </summary>
@@ -781,7 +808,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
             get { return (IdentifierNode)ChildNodes[0]; }
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 1
         /// </summary>
@@ -799,7 +826,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
     {
         public AmmyDomainStyleName GetNamespaceNameValue(ScriptThread thread)
         {
-            // generator : AstClassesGenerator.Process_SequenceRule:330
+            // generator : AstClassesGenerator.Process_SequenceRule:335
             var tmp = NamespaceName.Evaluate(thread);
             var result = (AmmyDomainStyleName)tmp;
             return result;
@@ -813,19 +840,19 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForSequenceRule.Create:19
+            // generator : ForSequenceRule.Create:44
             var namespaceName = GetNamespaceNameValue(thread);
             var doEvaluateResult = new AmmyUsingStatement(Span, namespaceName);
             return doEvaluateResult;
         }
 
-        // created AstClassesGenerator.Add_GetMap:92
+        // created AstClassesGenerator.Add_GetMap:96
         protected override int[] GetMap()
         {
             return new [] { 1 };
         }
 
-        // created AstClassesGenerator.Process_SequenceRule:309
+        // created AstClassesGenerator.Process_SequenceRule:314
         /// <summary>
         /// Index = 1
         /// </summary>
@@ -871,7 +898,7 @@ namespace Samples.Irony.AmmyGrammar.Ast
 
         protected override object DoEvaluate(ScriptThread thread)
         {
-            // generator : ForPlusOrStar.Create:19
+            // generator : ForPlusOrStar.Create:44
             var items = EvaluateItems(thread);
             var doEvaluateResult = new AmmyUsingStatementCollection(Span, items);
             return doEvaluateResult;

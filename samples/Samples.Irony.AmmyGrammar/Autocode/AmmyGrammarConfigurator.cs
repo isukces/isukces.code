@@ -249,23 +249,22 @@ namespace Samples.Irony.AmmyGrammar.Autocode
 
         public class MyDoEvaluateHelper : IDoEvaluateHelper
         {
-            public bool GetDataClassConstructorArgument(ConstructorBuilder.Argument argument, bool lastChance,
-                CsCodeWriter writer,
-                out CsExpression constructorCallExpression)
+            public bool GetDataClassConstructorArgument(Input34 input)
             {
-                if (lastChance)
+                if (input.LastChance)
                 {
-                    if (argument.Type == "SourceSpan")
+                    if (input.Argument.Type == "SourceSpan")
                     {
-                        constructorCallExpression = new CsExpression(nameof(AmmyStatement.Span));
+                        input.Expression = new CsExpression(nameof(AmmyStatement.Span));
                         return true;
                     }
                 }
 
-                constructorCallExpression = null;
+                
                 return false;
             }
-                
+
+            
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Irony.Interpreter;
 using iSukces.Code.AutoCode;
@@ -7,10 +8,34 @@ namespace iSukces.Code.Irony
 {
     public abstract partial class DoEvaluateMethodMakerBase
     {
-        protected DoEvaluateMethodMakerBase(CsClass astClass, NonTerminalInfo tokenInfo)
+        private bool AddConstructorArgument2(Func<bool> ac)
         {
-            _astClass  = astClass;
-            _tokenInfo = tokenInfo;
+            var last = _arg.Kind == ConstructorBuilder.Kinds.BaseConstructor;
+            var inp  = new Input34(_arg, last, body);
+            if (_helper.GetDataClassConstructorArgument(inp))
+            {
+                argumentBuilder.Add(inp.Expression);
+                return true;
+            }
+
+            if (_arg.Kind == ConstructorBuilder.Kinds.BaseConstructor)
+                return false;
+            if (ac())
+                return true;
+ 
+
+            inp = new Input34(_arg, true, body);
+            if (!_helper.GetDataClassConstructorArgument(inp))
+                return false;
+            argumentBuilder.Add(inp.Expression);
+            return true;
+        }
+        
+        protected DoEvaluateMethodMakerBase(CsClass astClass, NonTerminalInfo tokenInfo,IDoEvaluateHelper helper)
+        {
+            _astClass    = astClass;
+            _tokenInfo   = tokenInfo;
+            _helper = helper;
         }
 
         public void Create()
@@ -92,6 +117,7 @@ return r;
 
         protected readonly CsClass _astClass;
         protected readonly NonTerminalInfo _tokenInfo;
+        protected readonly IDoEvaluateHelper _helper;
 
         public struct Info
         {

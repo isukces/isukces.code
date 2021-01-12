@@ -45,6 +45,9 @@
       <Compile Update="DoEvaluateMethodMakerBase.ForPlusOrStar.cs">
         <DependentUpon>DoEvaluateMethodMakerBase.cs</DependentUpon>
       </Compile>
+      <Compile Update="DoEvaluateMethodMakerBase.ForAlternative.cs">
+        <DependentUpon>DoEvaluateMethodMakerBase.cs</DependentUpon>
+      </Compile>
     </ItemGroup>
 
     <ItemGroup>

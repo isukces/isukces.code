@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 
 namespace iSukces.Code.Irony
 {
@@ -8,8 +7,10 @@ namespace iSukces.Code.Irony
         public class ForPlusOrStar : DoEvaluateMethodMakerBase
         {
             public ForPlusOrStar(NonTerminalInfo tokenInfo, IDoEvaluateHelper helper, CsClass astClass)
-                : base(astClass, tokenInfo) =>
-                _helper = helper;
+                : base(astClass, tokenInfo, helper)
+            {
+            }
+
 
             protected override void CreateInternal()
             {
@@ -28,31 +29,20 @@ namespace iSukces.Code.Irony
                 Finish(className);
                 AddDoEvaluateMethod();
             }
-            
+
             private bool AddConstructorArgument()
             {
-                var last = _arg.Kind == ConstructorBuilder.Kinds.BaseConstructor;
-                if (_helper.GetDataClassConstructorArgument(_arg, last, body, out var constructorCallExpression))
+                return AddConstructorArgument2(() =>
                 {
-                    argumentBuilder.Add(constructorCallExpression);
-                    return true;
-                }
+                    if (MethodsMap.TryGetValue(_arg.Name, out var q))
+                    {
+                        CallOneArgument(q);
+                        return true;
+                    }
 
-                if (_arg.Kind == ConstructorBuilder.Kinds.BaseConstructor)
                     return false;
-                if (MethodsMap.TryGetValue(_arg.Name, out var q))
-                {
-                    CallOneArgument(q);
-                    return true;
-                }
-
-                if (!_helper.GetDataClassConstructorArgument(_arg, true, body, out constructorCallExpression))
-                    return false;
-                argumentBuilder.Add(constructorCallExpression);
-                return true;
+                });
             }
-
-            private readonly IDoEvaluateHelper _helper;
         }
     }
 }

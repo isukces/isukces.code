@@ -70,13 +70,17 @@ namespace iSukces.Code.Irony
                     DoEvaluateMethodMakerBase maker = null;
                     switch (i.Rule)
                     {
-                        case RuleBuilder.PlusOrStar plusOrStar:
+                        case RuleBuilder.ListAlternative _:
+                            maker = new DoEvaluateMethodMakerBase.ForAlternative(i, cew, _astClass);
+                            break;
+                        case RuleBuilder.PlusOrStar _:
                             maker = new DoEvaluateMethodMakerBase.ForPlusOrStar(i, cew, _astClass);
                             break;
-                        case RuleBuilder.SequenceRule sequenceRule:
+                        case RuleBuilder.SequenceRule _:
                             maker = new DoEvaluateMethodMakerBase.ForSequenceRule(i, cew, _astClass);
                             break;
                     }
+
                     maker?.Create();
                 }
             }
@@ -222,7 +226,8 @@ namespace iSukces.Code.Irony
                     b.WriteLine("return " + en.Name + "." + l[0].EnumName + ";");
                     var m = _astClass.AddMethod("GetNodeKind", en.Name)
                         .WithBody(b);
-                    rule.CreationInfo.Enum1 = en;
+                    rule.CreationInfo.Enum1               = en;
+                    _astClass.UserAnnotations[Exchange.X] = new Exchange.Du(m.Name);
                 }
             }
 
@@ -269,7 +274,8 @@ namespace iSukces.Code.Irony
                                 var m = _astClass.AddMethod("EvaluateItems", listType).WithBody(code);
                                 if (ex1.NeedScriptThread)
                                     m.AddParam<ScriptThread>("thread", _astClass);
-                                m.UserAnnotations[Exchange.MethodForEvaluatingPropertyKey] = new Exchange.MethodForEvaluatingProperty("Items", m.Name, ex1.NeedScriptThread);
+                                m.UserAnnotations[Exchange.MethodForEvaluatingPropertyKey] =
+                                    new Exchange.MethodForEvaluatingProperty("Items", m.Name, ex1.NeedScriptThread);
                             }
                         }
                         else
@@ -357,7 +363,8 @@ namespace iSukces.Code.Irony
                         .WithBody(codeWriter);
                     if (need)
                         m.AddParam<ScriptThread>("thread", _astClass);
-                    m.UserAnnotations[Exchange.MethodForEvaluatingPropertyKey] = new Exchange.MethodForEvaluatingProperty(i.Map?.PropertyName, m.Name, need);
+                    m.UserAnnotations[Exchange.MethodForEvaluatingPropertyKey] =
+                        new Exchange.MethodForEvaluatingProperty(i.Map?.PropertyName, m.Name, need);
                 }
             }
 
