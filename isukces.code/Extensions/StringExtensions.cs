@@ -137,6 +137,9 @@ namespace iSukces.Code
                 case '\"':
                     return backslash + quote;
                     break;
+                case '„':
+                case '“':
+                    return i.ToString();
                 default:
                     if (i < '\u2000')
                     {

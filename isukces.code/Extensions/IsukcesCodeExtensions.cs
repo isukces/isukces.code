@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using iSukces.Code.Interfaces;
 
 namespace iSukces.Code
 {
@@ -37,6 +39,21 @@ namespace iSukces.Code
             return di;
         }
 
+        public static CsMethod WithAggressiveInlining(this CsMethod method, ITypeNameResolver resolver, bool add = true)
+        {
+            if (!add)
+                return method;
+            var att = AggressiveInlining(resolver);
+            return method.WithAttribute(att);
+        }
 
+
+        private static CsAttribute AggressiveInlining(ITypeNameResolver resolver)
+        {
+            var att = CsAttribute.Make<MethodImplAttribute>(resolver)
+                .WithArgumentCode(resolver.GetTypeName<MethodImplOptions>() + "." +
+                                  nameof(MethodImplOptions.AggressiveInlining));
+            return att;
+        }
     }
 }
