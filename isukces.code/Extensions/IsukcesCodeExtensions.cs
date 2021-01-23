@@ -55,5 +55,28 @@ namespace iSukces.Code
                                   nameof(MethodImplOptions.AggressiveInlining));
             return att;
         }
+        
+        public static string GetTypeName(this ITypeNameResolver res, NamespaceAndName typeName)
+        {
+            if (res is INamespaceContainer container)
+                if (container.IsKnownNamespace(typeName.Namespace))
+                    return typeName.Name;
+            return typeName.FullName;
+        }
+
+        [Obsolete("use "+nameof(IsukcesCodeExtensions)+"."+nameof(GetTypeName))]
+        public static string ReduceTypenameIfPossible(this CsClass csClass, string typeName)
+        {
+            if (typeName is null || csClass is null)
+                return typeName;
+            
+            var referenceNamespace = csClass.GetNamespace();
+            if (string.IsNullOrEmpty(referenceNamespace))
+                return typeName;
+            var ns2 = NamespaceAndName.Parse(typeName);
+            if (referenceNamespace == ns2.Namespace)
+                return ns2.Name;
+            return typeName;
+        }
     }
 }

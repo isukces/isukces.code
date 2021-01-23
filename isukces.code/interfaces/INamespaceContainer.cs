@@ -47,6 +47,16 @@ namespace iSukces.Code.Interfaces
     public interface IClassOwner : INamespaceContainer, ITypeNameResolver
     {
     }
+    
+    public interface IEnumOwner : INamespaceContainer, ITypeNameResolver
+    {
+        /// <summary>
+        ///     Enums
+        /// </summary>
+        IReadOnlyList<CsEnum> Enums { get;  }
+
+        CsEnum AddEnum(CsEnum csEnum);
+    }
 
     public interface INamespaceOwner : INamespaceContainer, ITypeNameResolver
     {

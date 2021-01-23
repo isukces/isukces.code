@@ -6,7 +6,7 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code
 {
-    public class CsNamespace : IClassOwner, INamespaceCollection, IConditional
+    public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnumOwner
     {
         public CsNamespace(INamespaceOwner owner, string name)
         {
@@ -60,7 +60,7 @@ namespace iSukces.Code
         public string                 CompilerDirective { get; set; }
         
         /// <summary>
-        ///     Przestrzenie nazw
+        ///     Enums
         /// </summary>
         public IReadOnlyList<CsEnum> Enums { get;  } = new List<CsEnum>();
     }

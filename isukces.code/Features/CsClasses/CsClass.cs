@@ -9,7 +9,7 @@ using iSukces.Code.Interfaces;
 namespace iSukces.Code
 {
     public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver,
-        IAttributable, ICommentable, IAnnotableByUser
+        IAttributable, ICommentable, IAnnotableByUser, IEnumOwner
     {
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -186,6 +186,13 @@ namespace iSukces.Code
             return AddConst(name, "string", encodedValue);
         }
 
+        public CsEnum AddEnum(CsEnum csEnum)
+        {
+            ((List<CsEnum>)Enums).Add(csEnum);
+            csEnum.Owner = this;
+            return csEnum;
+        }
+
         public CsEvent AddEvent(string name, string type, string description = null)
         {
             // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
@@ -302,7 +309,10 @@ namespace iSukces.Code
             return result;
         }
 
-        public bool IsKnownNamespace(string namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
+        public bool IsKnownNamespace(string namespaceName)
+        {
+            return Owner?.IsKnownNamespace(namespaceName) ?? false;
+        }
 
         public void MakeCode(ICsCodeWriter writer)
         {
@@ -632,8 +642,8 @@ namespace iSukces.Code
         /// </summary>
         public string Name
         {
-            get { return _name; }
-            private set { _name = value?.Trim() ?? string.Empty; }
+            get => _name;
+            private set => _name = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -641,8 +651,8 @@ namespace iSukces.Code
         /// </summary>
         public string BaseClass
         {
-            get { return _baseClass; }
-            set { _baseClass = value?.Trim() ?? string.Empty; }
+            get => _baseClass;
+            set => _baseClass = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -657,16 +667,16 @@ namespace iSukces.Code
         /// </summary>
         public List<CsProperty> Properties
         {
-            get { return _properties; }
-            set { _properties = value ?? new List<CsProperty>(); }
+            get => _properties;
+            set => _properties = value ?? new List<CsProperty>();
         }
 
         /// <summary>
         /// </summary>
         public List<CsClassField> Fields
         {
-            get { return _fields; }
-            set { _fields = value ?? new List<CsClassField>(); }
+            get => _fields;
+            set => _fields = value ?? new List<CsClassField>();
         }
 
         /// <summary>
@@ -687,10 +697,7 @@ namespace iSukces.Code
         /// <summary>
         ///     emi as interface
         /// </summary>
-        public bool IsInterface
-        {
-            get { return Kind == CsNamespaceMemberKind.Interface; }
-        }
+        public bool IsInterface => Kind == CsNamespaceMemberKind.Interface;
 
         public CsNamespaceMemberKind Kind { get; set; }
 
@@ -707,17 +714,12 @@ namespace iSukces.Code
         /// </summary>
         public object GeneratorSource { get; set; }
 
-        public IReadOnlyList<CsMethod> Methods
-        {
-            get { return _methods; }
-        }
+        public IReadOnlyList<CsMethod> Methods => _methods;
 
-        public IReadOnlyList<CsEvent> Events
-        {
-            get { return _events; }
-        }
+        public IReadOnlyList<CsEvent> Events => _events;
 
         public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
+        public IReadOnlyList<CsEnum>       Enums           { get; } = new List<CsEnum>();
 
         private readonly StringBuilder _extraComment = new StringBuilder();
 
@@ -738,20 +740,5 @@ namespace iSukces.Code
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsClassField> _fields = new List<CsClassField>();
     }
-
-    public static class CsClassExt
-    {
-        public static string ReduceTypenameIfPossible(this CsClass csClass, string typeName)
-        {
-            if (typeName is null || csClass is null)
-                return typeName;
-            var referenceNamespace = csClass.GetNamespace();
-            if (string.IsNullOrEmpty(referenceNamespace))
-                return typeName;
-            var ns2 = NamespaceAndName.Parse(typeName);
-            if (referenceNamespace == ns2.Namespace)
-                return ns2.Name;
-            return typeName;
-        }
-    }
+    
 }
