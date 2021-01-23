@@ -579,15 +579,29 @@ namespace iSukces.Code
         private void Emit_nested(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
             // ReSharper disable once InvertIf
-            if (!_nestedClasses.Any()) return;
-            writer.EmptyLine(!addEmptyLineBeforeRegion);
-            Action(writer, _nestedClasses.OrderBy(a => a._name), "Nested classes",
-                i =>
-                {
-                    i.MakeCode(writer);
-                    writer.EmptyLine();
-                }
-            );
+            if (_nestedClasses.Any())
+            {
+                writer.EmptyLine(!addEmptyLineBeforeRegion);
+                Action(writer, _nestedClasses.OrderBy(a => a._name), "Nested classes",
+                    i =>
+                    {
+                        i.MakeCode(writer);
+                        writer.EmptyLine();
+                    }
+                );
+            }
+            
+            if (Enums.Any())
+            {
+                writer.EmptyLine(!addEmptyLineBeforeRegion);
+                Action(writer, Enums.OrderBy(a => a.Name), "Nested enums",
+                    i =>
+                    {
+                        i.MakeCode(writer);
+                        writer.EmptyLine();
+                    }
+                );
+            }
         }
 
         private bool Emit_properties(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
