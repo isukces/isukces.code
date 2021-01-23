@@ -39,7 +39,8 @@ namespace iSukces.Code
 
         public void MakeCode(ICsCodeWriter writer)
         {
-            CsClass.WriteAttributes(writer, Attributes);
+            writer.WriteSingleLineSummary(Description, true);
+            writer.WriteAttributes( Attributes);
             var def = $"{Visibility.ToCsCode()} enum {Name}";
             var ut  = UnderlyingType?.Trim();
             if (!string.IsNullOrEmpty(ut))

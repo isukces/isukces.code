@@ -31,14 +31,6 @@ namespace iSukces.Code
 
         public static CsAttribute MkAttribute(string attributeName) => new CsAttribute(attributeName);
 
-        public static void WriteAttributes(ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
-        {
-            if (attributes == null || attributes.Count == 0)
-                return;
-            foreach (var j in attributes)
-                writer.WriteLine("[{0}]", j.Code);
-        }
-
         private static void Emit_single_field(ICsCodeWriter writer, CsClassField field)
         {
             writer.OpenCompilerIf(field);
@@ -46,7 +38,7 @@ namespace iSukces.Code
             try
             {
                 WriteSummary(writer, field.Description);
-                WriteAttributes(writer, field.Attributes);
+                writer.WriteAttributes(field.Attributes);
                 if (field.IsConst)
                 {
                     var v = field.Visibility.ToCsCode();
@@ -319,7 +311,7 @@ namespace iSukces.Code
             writer.OpenCompilerIf(CompilerDirective);
             writer.WriteComment(this);
             WriteSummary(writer, Description);
-            WriteAttributes(writer, Attributes);
+            writer.WriteAttributes( Attributes);
             var def = string.Join(" ", DefAttributes());
             {
                 var dupa              = new HashSet<string>();
@@ -379,7 +371,7 @@ namespace iSukces.Code
                 var header       = GetPropertyHeader(prop);
 
                 WriteSummary(writer, prop.Description);
-                WriteAttributes(writer, prop.Attributes);
+                writer.WriteAttributes(prop.Attributes);
                 var emitField = prop.EmitField && !IsInterface;
                 if (IsInterface || prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
                     string.IsNullOrEmpty(prop.OwnGetter))
@@ -528,7 +520,7 @@ namespace iSukces.Code
                     try
                     {
                         WriteSummary(writer, ev.Description);
-                        WriteAttributes(writer, ev.Attributes);
+                        writer.WriteAttributes(ev.Attributes);
                         // public event EventHandler<BeforeSaveEventArgs> BeforeSave;
                         var v    = ev.Visibility.ToCsCode();
                         var code = $"{v} event {ev.Type} {ev.Name};".TrimStart();

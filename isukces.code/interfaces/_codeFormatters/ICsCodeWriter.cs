@@ -126,12 +126,28 @@ namespace iSukces.Code.Interfaces
             return _this;
         }
 
-        public static T WriteSingleLineSummary<T>(this T src, string x)
+        public static T WriteSingleLineSummary<T>(this T src, string x, bool skipIfEmpty = false)
             where T : ICsCodeWriter
 
+        {
+            if (x == null)
+            {
+                if (skipIfEmpty)
+                    return src;
+                return WriteMultiLineSummary(src, new string[0]);
+            }
+            var lines = x.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()))
+                .ToArray();
+            return WriteMultiLineSummary(src, lines, skipIfEmpty);
+        }
+        
+        public static T WriteMultiLineSummary<T>(this T src, IReadOnlyList<string> lines, bool skipIfEmpty = false)
+            where T : ICsCodeWriter
 
         {
-            var lines = x.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()));
+            lines = lines ?? new string[0];
+            if (lines.Count == 0 && skipIfEmpty)
+                return src;
             src.WriteLine("/// <summary>");
             foreach (var line in lines)
                 src.WriteSummary(line);

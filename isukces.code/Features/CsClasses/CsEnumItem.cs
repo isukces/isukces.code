@@ -22,19 +22,15 @@ namespace iSukces.Code
         public void MakeCode(ICsCodeWriter writer, bool addComma)
         {
             var commentLines = new List<string>();
+            if (!string.IsNullOrEmpty(Description))
+                commentLines.Add(Description);
+
             if (!string.IsNullOrEmpty(Label))
                 commentLines.Add(Label);
             if (EnumName != SerializeAs && !string.IsNullOrEmpty(SerializeAs))
                 commentLines.Add("serialized as " + SerializeAs);
-            if (commentLines.Any())
-            {
-                writer.WriteLine("/// <summary>");
-                foreach (var commentLine in commentLines)
-                    writer.WriteLine("/// " + commentLine.XmlEncode());
-                writer.WriteLine("/// </summary>");
-            }
-
-            CsClass.WriteAttributes(writer, Attributes);
+            writer.WriteMultiLineSummary(commentLines, true);
+            writer.WriteAttributes( Attributes);
 
             var code = EnumName;
             if (!string.IsNullOrEmpty(EncodedValue))

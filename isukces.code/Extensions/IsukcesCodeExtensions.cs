@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -54,6 +55,14 @@ namespace iSukces.Code
                 .WithArgumentCode(resolver.GetTypeName<MethodImplOptions>() + "." +
                                   nameof(MethodImplOptions.AggressiveInlining));
             return att;
+        }
+        
+        public static void WriteAttributes(this ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
+        {
+            if (attributes == null || attributes.Count == 0)
+                return;
+            foreach (var j in attributes)
+                writer.WriteLine("[{0}]", j.Code);
         }
         
         public static string GetTypeName(this ITypeNameResolver res, NamespaceAndName typeName)
