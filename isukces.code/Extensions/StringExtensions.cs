@@ -27,8 +27,44 @@ namespace iSukces.Code
                 var c = i.CsEncode();
                 sb.Append(c);
             }
+
             sb.Append(quote);
             return sb.ToString();
+        }
+
+        public static string CsEncode(this char i)
+        {
+            const string backslash = "\\";
+            const string quote     = "\"";
+            switch (i)
+            {
+                case '\\':
+                    return backslash + backslash;
+                case '\r':
+                    return backslash + "r";
+                case '\n':
+                    return backslash + "n";
+                case '\t':
+                    return backslash + "t";
+                case '\"':
+                    return backslash + quote;
+                case '„':
+                case '“':
+                case '≥':
+                case '≤':
+                case '≈':
+                    return i.ToString();
+                default:
+                    if (i < '\u2000')
+                    {
+                        return i.ToString();
+                    }
+                    else
+                    {
+                        var ord = ((int)i).ToString("x4", CultureInfo.InvariantCulture);
+                        return "\\u" + ord;
+                    }
+            }
         }
 
         /// <summary>
@@ -88,6 +124,19 @@ namespace iSukces.Code
 
         public static string FirstUpper(this string name) => name.Substring(0, 1).ToUpper() + name.Substring(1);
 
+        public static string GetUntilSeparator(this string x, string separator, out string rest)
+        {
+            var idx = x.IndexOf(separator);
+            if (idx < 0)
+            {
+                rest = string.Empty;
+                return x;
+            }
+
+            rest = x.Substring(idx + separator.Length);
+            return x.Substring(0, idx);
+        }
+
         public static string UnCapitalize(this string x) => x.Substring(0, 1).ToLower() + x.Substring(1);
 
         /// <summary>
@@ -105,52 +154,6 @@ namespace iSukces.Code
                     sb.Append(i);
 
             return sb.ToString();
-        }
-
-        public static string GetUntilSeparator(this string x, string separator, out string rest)
-        {
-            var idx = x.IndexOf(separator);
-            if (idx < 0)
-            {
-                rest = string.Empty;
-                return x;
-            }
-
-            rest = x.Substring(idx + separator.Length);
-            return x.Substring(0, idx);
-        }
-
-        public static string CsEncode(this char i)
-        {
-            const string backslash = "\\";
-            const string quote     = "\"";
-            switch (i)
-            {
-                case '\\':
-                    return backslash + backslash;
-                case '\r':
-                    return backslash + "r";
-                case '\n':
-                    return backslash + "n";
-                case '\t':
-                    return backslash + "t";
-                case '\"':
-                    return backslash + quote;
-                    break;
-                case '„':
-                case '“':
-                    return i.ToString();
-                default:
-                    if (i < '\u2000')
-                    {
-                        return i.ToString();
-                    }
-                    else
-                    {
-                        var ord = ((int)i).ToString("x4", CultureInfo.InvariantCulture);
-                        return "\\u" + ord;
-                    }
-            }
         }
     }
 }
