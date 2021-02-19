@@ -12,9 +12,12 @@ namespace iSukces.Code.Compatibility.Telerik
         public XBinding       DataMemberBinding { get; set; }
         public object         Header            { get; set; }
         public bool           IsReadOnly        { get; set; }
-        public GridViewLength Width             { get; set; }
-        public string         ColumnGroupName   { get; set; }
-        public TextAlignment  TextAlignment     { get; set; }
-        public string         DataFormatString  { get; set; }
+        public bool           IsSortable        { get; set; }
+        
+        public bool           IsResizable      { get; set; }
+        public GridViewLength Width            { get; set; }
+        public string         ColumnGroupName  { get; set; }
+        public TextAlignment  TextAlignment    { get; set; }
+        public string         DataFormatString { get; set; }
     }
 }

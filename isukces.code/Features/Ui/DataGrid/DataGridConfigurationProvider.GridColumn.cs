@@ -40,6 +40,12 @@ namespace iSukces.Code.Ui.DataGrid
                 return this;
             }
 
+            public GridColumn WithSortable(bool isSortable)
+            {
+                IsSortable = isSortable;
+                return this;
+            }
+
             public GridColumn WithLookup(LookupInfo info)
             {
                 Lookup = info;
@@ -69,22 +75,30 @@ namespace iSukces.Code.Ui.DataGrid
                 IsReadOnly = isReadOnly;
                 return this;
             }
-
-            public string       Name                 { get; set; }
-            public object       HeaderSource         { get; set; }
-            public int?         Width                { get; set; }
-            public object       CategoryHeaderSource { get; set; }
-            public string       CategoryName         { get; set; }
-            public LookupInfo   Lookup               { get; set; }
-            public object       CellTemplate         { get; set; }
-            public object       EditTemplate         { get; set; }
-            public string       DataFormatString     { get; set; }
-            public bool         IsReadOnly           { get; set; }
             
+            public GridColumn WithResizable(bool isResizable)
+            {
+                IsResizable = isResizable;
+                return this;
+            }
+
+            public string     Name                 { get; set; }
+            public object     HeaderSource         { get; set; }
+            public int?       Width                { get; set; }
+            public object     CategoryHeaderSource { get; set; }
+            public string     CategoryName         { get; set; }
+            public LookupInfo Lookup               { get; set; }
+            public object     CellTemplate         { get; set; }
+            public object     EditTemplate         { get; set; }
+            public string     DataFormatString     { get; set; }
+            public bool       IsReadOnly           { get; set; }
+            public bool       IsResizable          { get; set; } = true;
+            public bool       IsSortable           { get; set; } = true;
+
             /// <summary>
-            /// Reflected property if possible. For complicated paths can be declared in other than Row types 
+            ///     Reflected property if possible. For complicated paths can be declared in other than Row types
             /// </summary>
-            public PropertyInfo Member               { get; set; }
+            public PropertyInfo Member { get; set; }
 
             [NotNull]
             public AmmyBindBuilder Binding { get; } = new AmmyBindBuilder(null);

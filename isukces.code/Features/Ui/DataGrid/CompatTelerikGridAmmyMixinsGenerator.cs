@@ -192,6 +192,10 @@ namespace iSukces.Code.Ui.DataGrid
                 .WithProperty(a => a.Header, col.HeaderSource);
             if (col.IsReadOnly)
                 obj = obj.WithPropertyGeneric(a => a.IsReadOnly, true);
+            if (!col.IsSortable)
+                obj = obj.WithPropertyGeneric(a => a.IsSortable, false);
+            if (!col.IsResizable)
+                obj = obj.WithPropertyGeneric(a => a.IsResizable, false);
             if (col.Width.HasValue)
                 obj = obj.WithProperty(a => a.Width, col.Width);
 

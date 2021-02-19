@@ -29,18 +29,20 @@ namespace iSukces.Code.Ui.DataGrid
                         result.Categories.Add(new AttributeInfo(colDef.CategoryName, colDef.CategoryHeaderSource));
                     var col = new ColumnInfo
                     {
-                        Name               = propertyInfo?.Name ?? colDef.Name,
-                        Binding            = colDef.Binding,
-                        HeaderSource       = colDef.HeaderSource ?? propertyInfo?.Name,
-                        Width              = colDef.Width,
-                        CategoryName = result.Categories.LastOrDefault()?.Name,
-                        Type               = propertyInfo?.PropertyType ?? rowType,
-                        Lookup             = colDef.Lookup,
-                        CellTemplate       = colDef.CellTemplate,
-                        EditTemplate       = colDef.EditTemplate,
-                        DataFormatString   = colDef.DataFormatString,
-                        IsReadOnly         = colDef.IsReadOnly,
-                        CustomValues       = colDef.CustomValues
+                        Name             = propertyInfo?.Name ?? colDef.Name,
+                        Binding          = colDef.Binding,
+                        HeaderSource     = colDef.HeaderSource ?? propertyInfo?.Name,
+                        Width            = colDef.Width,
+                        CategoryName     = result.Categories.LastOrDefault()?.Name,
+                        Type             = propertyInfo?.PropertyType ?? rowType,
+                        Lookup           = colDef.Lookup,
+                        CellTemplate     = colDef.CellTemplate,
+                        EditTemplate     = colDef.EditTemplate,
+                        DataFormatString = colDef.DataFormatString,
+                        IsReadOnly       = colDef.IsReadOnly,
+                        IsSortable       = colDef.IsSortable,
+                        IsResizable      = colDef.IsResizable,
+                        CustomValues     = colDef.CustomValues
                     };
 
                     col.AlignRight = RightAligned.Contains(col.Type);

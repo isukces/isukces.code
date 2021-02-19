@@ -21,6 +21,8 @@ namespace iSukces.Code.Ui.DataGrid
             public object                     EditTemplate     { get; set; }
             public string                     DataFormatString { get; set; }
             public bool                       IsReadOnly       { get; set; }
+            public bool                       IsSortable       { get; set; }
+            public bool                       IsResizable      { get; set; }
             public AmmyBindBuilder            Binding          { get; set; } = new AmmyBindBuilder(null);
             public Dictionary<string, object> CustomValues     { get; set; }
         }
