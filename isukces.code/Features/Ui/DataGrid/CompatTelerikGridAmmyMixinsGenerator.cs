@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 using iSukces.Code.Ammy;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Compatibility.System.Windows;
@@ -190,12 +192,17 @@ namespace iSukces.Code.Ui.DataGrid
             obj = obj
                 .WithPropertyNotNull(a => a.DataMemberBinding, GetDataMemberBinding(col))
                 .WithProperty(a => a.Header, col.HeaderSource);
-            if (col.IsReadOnly)
-                obj = obj.WithPropertyGeneric(a => a.IsReadOnly, true);
-            if (!col.IsSortable)
-                obj = obj.WithPropertyGeneric(a => a.IsSortable, false);
-            if (!col.IsResizable)
-                obj = obj.WithPropertyGeneric(a => a.IsResizable, false);
+
+            void SetBool(Expression<Func<T, bool>> func, bool value, bool defaultValue)
+            {
+                var name = CodeUtils.GetMemberPath(func);
+                obj.WithProperty(name, value);
+            }
+
+            SetBool(a => a.IsReadOnly, col.IsReadOnly, false);
+            SetBool(a => a.IsSortable, col.IsSortable, true);
+            SetBool(a => a.IsResizable, col.IsResizable, true);
+
             if (col.Width.HasValue)
                 obj = obj.WithProperty(a => a.Width, col.Width);
 

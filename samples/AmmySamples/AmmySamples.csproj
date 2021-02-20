@@ -7,7 +7,5 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\iSukces.Code\iSukces.Code.csproj" />
-      <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
     </ItemGroup>
-
 </Project>
