@@ -422,7 +422,7 @@ namespace iSukces.Code
             addEmptyLineBeforeRegion = Action(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
                 i =>
                 {
-                    i.MakeCode(writer, IsInterface);
+                    i.MakeCode(writer, IsInterface, this);
                     writer.EmptyLine();
                 }
             );

@@ -35,7 +35,8 @@ namespace iSukces.Code.Ammy
 
 
     public partial class AmmyObjectBuilder<TPropertyBrowser> : AmmyObjectBuilder,
-        IAmmyObjectBuilder<TPropertyBrowser>
+        IAmmyObjectBuilder<TPropertyBrowser>,
+        IAmmyPropertyContainer<TPropertyBrowser>
     {
         public override IAmmyCodePiece ToAmmyCode(IConversionCtx ctx) => ToComplexAmmyCode(ctx);
 

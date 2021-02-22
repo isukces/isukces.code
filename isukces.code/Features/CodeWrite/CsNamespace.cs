@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
+using JetBrains.Annotations;
 
 namespace iSukces.Code
 {
+    [DebuggerDisplay("CsNamespace {" + nameof(Name) + "}")]
     public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnumOwner
     {
         public CsNamespace(INamespaceOwner owner, string name)
         {
             Owner = owner;
-            Name  = name;
+            Name  = name?.Trim() ?? string.Empty;
         }
 
         public CsClass AddClass(CsClass csClass)
@@ -55,6 +58,8 @@ namespace iSukces.Code
         public ISet<string> ImportNamespaces { get; } = new HashSet<string>();
 
         public INamespaceOwner        Owner             { get; set; }
+        
+        [NotNull]
         public string                 Name              { get; }
         public IReadOnlyList<CsClass> Classes           { get; } = new List<CsClass>();
         public string                 CompilerDirective { get; set; }

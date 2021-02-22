@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using iSukces.Code.Interfaces;
+using JetBrains.Annotations;
 
 namespace iSukces.Code
 {
-    public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser
+    public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGenericDefinition
     {
         static CsMethod()
         {
@@ -99,9 +100,19 @@ namespace iSukces.Code
         ///     Tworzy kod
         /// </summary>
         /// <param name="writer"></param>
+        /// <param name="inInterface"></param>
+        /// <param name="typeNameResolver"></param>
         /// <returns></returns>
-        public void MakeCode(ICsCodeWriter writer, bool inInterface)
+        public void MakeCode(ICsCodeWriter writer, bool inInterface, ITypeNameResolver typeNameResolver)
         {
+            if (IsConstructor)
+                if (GenericArguments != null)
+                    throw new Exception("Construction can't have generic arguments");
+
+            void AddG()
+            {
+            }
+
             WriteMethodDescription(writer);
             foreach (var i in Attributes)
                 writer.WriteLine("[{0}]", i);
@@ -110,14 +121,24 @@ namespace iSukces.Code
             writer.SplitWriteLine(AdditionalContentOverMethod);
             var query = from i in _parameters
                 select FormatMethodParameter(i);
-            var mDefinition = string.Format("{0}({1})",
+            var mDefinition = string.Format("{0}{2}({1})",
                 string.Join(" ", GetMethodAttributes(inInterface)),
-                string.Join(", ", query));
+                string.Join(", ", query),
+                GenericArguments.GetTriangleBracketsInfo());
             if (inInterface)
             {
                 if (IsConstructor || IsStatic)
                     return;
-                writer.WriteLine(mDefinition + ";");
+                if (GenericArguments.HasConstraints())
+                {
+                    writer.WriteLine(mDefinition);
+                    GenericArguments.WriteCode(writer, true, typeNameResolver);
+                }
+                else
+                {
+                    writer.WriteLine(mDefinition + ";");
+                }
+
                 return;
             }
 
@@ -128,9 +149,16 @@ namespace iSukces.Code
             }
 
             if (IsConstructor)
+            {
                 writer.OpenConstructor(mDefinition, _baseConstructorCall);
+            }
             else
-                writer.Open(mDefinition);
+            {
+                writer.WriteLine(mDefinition);
+                if (GenericArguments.HasConstraints()) GenericArguments.WriteCode(writer, false, typeNameResolver);
+                writer.WriteLine(writer.LangInfo.OpenText);
+                writer.IncIndent();
+            }
 
             writer.SplitWriteLine(_body);
             writer.Close();
@@ -212,8 +240,8 @@ namespace iSukces.Code
         /// </summary>
         public string Name
         {
-            get { return _name; }
-            set { _name = value?.Trim() ?? string.Empty; }
+            get => _name;
+            set => _name = value?.Trim() ?? string.Empty;
         }
 
 
@@ -221,16 +249,16 @@ namespace iSukces.Code
         /// </summary>
         public string ResultType
         {
-            get { return _resultType; }
-            set { _resultType = value?.Trim() ?? string.Empty; }
+            get => _resultType;
+            set => _resultType = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
         /// </summary>
         public List<CsMethodParameter> Parameters
         {
-            get { return _parameters; }
-            set { _parameters = value ?? new List<CsMethodParameter>(); }
+            get => _parameters;
+            set => _parameters = value ?? new List<CsMethodParameter>();
         }
 
         /// <summary>
@@ -250,8 +278,8 @@ namespace iSukces.Code
         /// </summary>
         public string Body
         {
-            get { return _body; }
-            set { _body = value?.Trim() ?? string.Empty; }
+            get => _body;
+            set => _body = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
@@ -259,9 +287,12 @@ namespace iSukces.Code
         /// </summary>
         public string BaseConstructorCall
         {
-            get { return _baseConstructorCall; }
-            set { _baseConstructorCall = value?.Trim() ?? string.Empty; }
+            get => _baseConstructorCall;
+            set => _baseConstructorCall = value?.Trim() ?? string.Empty;
         }
+
+        [CanBeNull]
+        public CsGenericArguments GenericArguments { get; set; }
 
         [Obsolete("Use add comment")]
         public string AdditionalContentOverMethod { get; set; }

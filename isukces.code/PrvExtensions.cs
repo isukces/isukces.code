@@ -19,5 +19,23 @@ namespace iSukces.Code
 
             return result;
         }
+
+        public static IReadOnlyList<T> CreateNewWithFirstElement<T>(this IReadOnlyList<T> els, T el)
+        {
+            if (els is null || els.Count == 0)
+                return new[] {el};
+            var r = new List<T>(els.Count + 1) {el};
+            r.AddRange(els);
+            return r;
+        }
+        public static IReadOnlyList<T> CreateNewWithLastElement<T>(this IReadOnlyList<T> els, T el)
+        {
+            if (els is null || els.Count == 0)
+                return new[] {el};
+            var r = new List<T>(els.Count + 1);
+            r.AddRange(els);
+            r.Add(el);
+            return r;
+        }
     }
 }

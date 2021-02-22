@@ -14,12 +14,23 @@ namespace iSukces.Code.Interfaces.Ammy
         [NotNull]
         IDictionary<string, object> Properties { get; }
     }
+    
+    public partial interface IAmmyPropertyContainer<TObject>: IAmmyPropertyContainer
+    {
+    }
+
+    public static partial class AmmyPropertyContainerExtensions
+    {
+        
+    }
 
     public interface IAmmyContentItemsContainer
     {
         [NotNull]
         IList<object> ContentItems { get; }
     }
+    
+ 
 
     public static class AmmyContainerExtension
     {

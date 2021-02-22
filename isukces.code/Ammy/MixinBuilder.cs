@@ -5,12 +5,10 @@ using iSukces.Code.Interfaces.Ammy;
 
 namespace iSukces.Code.Ammy
 {
-    public partial class MixinBuilder<TPropertyBrowser> : IAmmyContainer, IAmmyCodePieceConvertible
+    public partial class MixinBuilder<TPropertyBrowser> : IAmmyContainer, IAmmyCodePieceConvertible,
+        IAmmyPropertyContainer<TPropertyBrowser>
     {
-        public MixinBuilder(string mixinName)
-        {
-            WrappedMixin = new AmmyMixin(mixinName, typeof(TPropertyBrowser));
-        }
+        public MixinBuilder(string mixinName) => WrappedMixin = new AmmyMixin(mixinName, typeof(TPropertyBrowser));
 
         public MixinBuilder(AmmyMixin mixin)
         {
@@ -28,19 +26,13 @@ namespace iSukces.Code.Ammy
         }
 
         IAmmyCodePiece IAmmyCodePieceConvertible.ToAmmyCode(IConversionCtx ctx) => WrappedMixin.ToAmmyCode(ctx);
-        
+
         public AmmyMixin WrappedMixin { get; }
-        
-        IDictionary<string, object> IAmmyPropertyContainer.Properties
-        {
-            get { return WrappedMixin.Properties; }
-        }
+
+        IDictionary<string, object> IAmmyPropertyContainer.Properties => WrappedMixin.Properties;
 
         private IDictionary<string, object> CustomData { get; } = new Dictionary<string, object>();
 
-        IList<object> IAmmyContentItemsContainer.ContentItems
-        {
-            get { return WrappedMixin.ContentItems; }
-        }
+        IList<object> IAmmyContentItemsContainer.ContentItems => WrappedMixin.ContentItems;
     }
 }
