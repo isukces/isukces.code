@@ -279,7 +279,7 @@ namespace iSukces.Code.FeatureImplementers
 
             if (hasIntField)
             {
-                var field = _class.AddField(GetHashCodeFieldName, "int");
+                var field = _class.AddField(GetHashCodeFieldName, "int").WithVisibility(Visibilities.Private);
                 AddNeverBrowsable(field);
             }
 
