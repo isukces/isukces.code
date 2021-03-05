@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -70,14 +71,14 @@ namespace iSukces.Code
             }
 
             CreateAdditionalCode(names);
+            if ((Flags & DependsOnPropertyGeneratorF.GetDependentProperties) != 0)
+                MakeGetDependentProperties(names);
         }
 
         protected virtual string GetConstName(string propertyName) => propertyName + "Dependent";
 
-        protected void MakeGetDependedntProperties(Dictionary<string, Info> names)
+        private void MakeGetDependentProperties(Dictionary<string, Info> names)
         {
-            if (string.IsNullOrEmpty(GetDependedntPropertiesMethodName))
-                return;
             var wr = new CsCodeWriter();
             wr.Open("switch (propertyName)");
             foreach (var i in names.GroupBy(a => a.Value.ConstValue))
@@ -100,17 +101,21 @@ namespace iSukces.Code
             var at = CsAttribute.Make<MethodImplAttribute>(myClass)
                 .WithArgumentCode(myClass.GetEnumValueCode(MethodImplOptions.AggressiveInlining));
 
-            myClass.AddMethod(GetDependedntPropertiesMethodName, "string")
-                .WithVisibility(GetDependedntPropertiesMethodVisibility)
+            myClass.AddMethod(GetDependentPropertiesMethodName, "string")
+                .WithVisibility(Visibilities.Private)
                 .WithStatic()
                 .WithBody(wr)
                 .WithParameter(new CsMethodParameter("propertyName", "string"))
                 .WithAttributeFromName(at);
         }
 
-        public string GetDependedntPropertiesMethodName { get; set; } = "GetDependedntProperties";
 
-        public Visibilities GetDependedntPropertiesMethodVisibility { get; set; } = Visibilities.Private;
+        public string GetDependentPropertiesMethodName { get; set; } = "XGetDependentProperties";
+
+        public DependsOnPropertyGeneratorF Flags { get; set; }
+
+
+        public Visibilities GetDependentPropertiesMethodVisibility { get; set; } = Visibilities.Private;
 
         protected struct Info
         {
@@ -123,5 +128,12 @@ namespace iSukces.Code
             public string ConstName  { get; }
             public string ConstValue { get; }
         }
+    }
+
+    [Flags]
+    public enum DependsOnPropertyGeneratorF
+    {
+        None = 0,
+        GetDependentProperties = 1
     }
 }
