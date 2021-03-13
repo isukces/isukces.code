@@ -307,7 +307,7 @@ namespace iSukces.Code.FeatureImplementers
             if (useCalcMetod)
                 m.Visibility = Visibilities.Private;
             else
-                m.IsOverride = true;
+                m.Overriding = OverridingType.Override;
         }
 
 

@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace iSukces.Code
 {
-    public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGenericDefinition
+    public partial class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGenericDefinition
     {
         static CsMethod()
         {
@@ -142,7 +142,7 @@ namespace iSukces.Code
                 return;
             }
 
-            if (IsAbstract && !IsConstructor)
+            if (Overriding == OverridingType.Abstract && !IsConstructor)
             {
                 writer.WriteLine(mDefinition + ";");
                 return;
@@ -202,12 +202,22 @@ namespace iSukces.Code
             if (!IsConstructor)
             {
                 if (!inInterface)
-                {
-                    if (IsAbstract)
-                        a.Add("abstract");
-                    if (IsOverride)
-                        a.Add("override");
-                }
+                    switch (Overriding)
+                    {
+                        case OverridingType.None:
+                            break;
+                        case OverridingType.Virtual:
+                            a.Add("virtual");
+                            break;
+                        case OverridingType.Abstract:
+                            a.Add("abstract");
+                            break;
+                        case OverridingType.Override:
+                            a.Add("override");
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
 
                 a.Add(_resultType);
             }
@@ -261,13 +271,9 @@ namespace iSukces.Code
             set => _parameters = value ?? new List<CsMethodParameter>();
         }
 
-        /// <summary>
-        /// </summary>
-        public bool IsAbstract { get; set; }
 
-        /// <summary>
-        /// </summary>
-        public bool IsOverride { get; set; }
+        public OverridingType Overriding { get; set; }
+
 
         /// <summary>
         ///     Czy konstruktor
@@ -294,8 +300,6 @@ namespace iSukces.Code
         [CanBeNull]
         public CsGenericArguments GenericArguments { get; set; }
 
-        [Obsolete("Use add comment")]
-        public string AdditionalContentOverMethod { get; set; }
 
         public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 

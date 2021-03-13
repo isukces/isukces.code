@@ -212,13 +212,15 @@ namespace iSukces.Code
         }
 
         public CsMethod AddMethod(string name, Type type, string description = null) =>
-            AddMethod(name, GetTypeName(type), description);
+            AddMethod(name, type==null ? null : GetTypeName(type), description);
 
         public CsMethod AddMethod(string name, string type, string description = null)
         {
             var isConstructor = string.IsNullOrEmpty(name) || name == _name;
             if (isConstructor)
                 name = _name;
+            else if (string.IsNullOrEmpty(type))
+                type = "void";
             var m = new CsMethod(name, type)
             {
                 Description = description
@@ -615,7 +617,7 @@ namespace iSukces.Code
 
         private bool GetIsAbstract()
         {
-            return IsAbstract || _methods.Any(i => i.IsAbstract);
+            return IsAbstract || _methods.Any(i => i.Overriding == OverridingType.Abstract);
         }
 
         private string GetPropertyHeader(CsProperty prop)

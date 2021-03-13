@@ -64,6 +64,9 @@
     <Compile Update="Features\_expressions\CsExpression.Binary.cs">
       <DependentUpon>CsExpression.cs</DependentUpon>
     </Compile>
+    <Compile Update="Features\CsClasses\CsMethod.Obsolete.cs">
+      <DependentUpon>CsMethod.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Interfaces\CsEnumHelper+.tt">
