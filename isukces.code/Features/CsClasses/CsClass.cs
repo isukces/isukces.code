@@ -162,15 +162,17 @@ namespace iSukces.Code
 
         public CsMethod AddConstructor(string description = null)
         {
-            var n = _name.Split('<')[0].Trim();
-            var m = new CsMethod(n, Name)
+            var m = new CsMethod(GetConstructorName(), Name)
             {
                 Description = description
             };
             _methods.Add(m);
-            m.IsConstructor = true;
+            m.Kind = MethodKind.Constructor;
             return m;
         }
+
+        private string GetFinalizerName() => "~" + GetConstructorName();
+        private string GetConstructorName() => _name.Split('<')[0].Trim();
 
         public CsClassField AddConstString(string name, string plainValue)
         {
@@ -211,22 +213,33 @@ namespace iSukces.Code
             return field;
         }
 
+        public CsMethod AddFinalizer(string description = null)
+        {
+            var m = new CsMethod(GetFinalizerName(), Name)
+            {
+                Description = description
+            };
+            _methods.Add(m);
+            m.Kind     = MethodKind.Finalizer;
+            return m;
+        }
+
         public CsMethod AddMethod(string name, Type type, string description = null) =>
-            AddMethod(name, type==null ? null : GetTypeName(type), description);
+            AddMethod(name, type == null ? null : GetTypeName(type), description);
 
         public CsMethod AddMethod(string name, string type, string description = null)
         {
-            var isConstructor = string.IsNullOrEmpty(name) || name == _name;
-            if (isConstructor)
-                name = _name;
-            else if (string.IsNullOrEmpty(type))
+            if (string.IsNullOrEmpty(name) || name == GetConstructorName())
+                return AddConstructor(description);
+            if (name == GetFinalizerName())
+                return AddFinalizer(description);
+            if (string.IsNullOrEmpty(type))
                 type = "void";
             var m = new CsMethod(name, type)
             {
                 Description = description
             };
             _methods.Add(m);
-            m.IsConstructor = isConstructor;
             return m;
         }
 
@@ -303,17 +316,14 @@ namespace iSukces.Code
             return result;
         }
 
-        public bool IsKnownNamespace(string namespaceName)
-        {
-            return Owner?.IsKnownNamespace(namespaceName) ?? false;
-        }
+        public bool IsKnownNamespace(string namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
 
         public void MakeCode(ICsCodeWriter writer)
         {
             writer.OpenCompilerIf(CompilerDirective);
             writer.WriteComment(this);
             WriteSummary(writer, Description);
-            writer.WriteAttributes( Attributes);
+            writer.WriteAttributes(Attributes);
             var def = string.Join(" ", DefAttributes());
             {
                 var dupa              = new HashSet<string>();
@@ -500,8 +510,12 @@ namespace iSukces.Code
 
         private bool Emit_constructors(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
-            var c = _methods.Where(i => i.IsConstructor).ToArray();
-            if (!c.Any()) return addEmptyLineBeforeRegion;
+            var c = _methods
+                .Where(i => i.Kind == MethodKind.Constructor || i.Kind == MethodKind.Finalizer)
+                .OrderBy(a => a.Kind != MethodKind.Constructor)
+                .ToArray();
+            if (!c.Any())
+                return addEmptyLineBeforeRegion;
             var m = c.Where(i => !i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Constructors");
 
@@ -568,7 +582,10 @@ namespace iSukces.Code
 
         private bool Emit_methods(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
-            var c = _methods.Where(i => !i.IsConstructor).ToArray();
+            var c = _methods
+                .Where(i => i.Kind != MethodKind.Constructor && i.Kind != MethodKind.Finalizer)
+                .OrderBy(a=>a.Kind)
+                .ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
             var m = c.Where(i => !i.IsStatic);
             addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Methods");
@@ -592,7 +609,7 @@ namespace iSukces.Code
                     }
                 );
             }
-            
+
             if (Enums.Any())
             {
                 writer.EmptyLine(!addEmptyLineBeforeRegion);
@@ -748,5 +765,4 @@ namespace iSukces.Code
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsClassField> _fields = new List<CsClassField>();
     }
-    
 }

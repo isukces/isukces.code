@@ -58,19 +58,19 @@ namespace iSukces.Code.Interfaces
         }
 
 
-        public static ICodeWriter OpenConstructor(this ICodeWriter _this, string x, string baseOrThis = null)
+        public static ICodeWriter OpenConstructor(this ICodeWriter self, string x, string baseOrThis = null)
         {
-            _this.WriteLine(x);
+            self.WriteLine(x);
             if (!string.IsNullOrEmpty(baseOrThis))
             {
-                _this.Indent++;
-                _this.WriteLine(": " + baseOrThis);
-                _this.Indent--;
+                self.Indent++;
+                self.WriteLine(": " + baseOrThis);
+                self.Indent--;
             }
 
-            _this.WriteLine("{");
-            _this.Indent++;
-            return _this;
+            self.WriteLine("{");
+            self.Indent++;
+            return self;
         }
 
         public static T SingleLineIf<T>(this T src, string condition, string statement, string elseStatement = null)

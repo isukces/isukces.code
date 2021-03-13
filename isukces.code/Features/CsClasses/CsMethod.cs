@@ -40,6 +40,11 @@ namespace iSukces.Code
         {
             Name       = name;
             ResultType = resultType;
+            if (IsOperator(name))
+            {
+                Kind     = MethodKind.Operator;
+                IsStatic = true;
+            }
         }
 
         public static bool IsOperator(string name) => operators.Contains(name);
@@ -105,14 +110,7 @@ namespace iSukces.Code
         /// <returns></returns>
         public void MakeCode(ICsCodeWriter writer, bool inInterface, ITypeNameResolver typeNameResolver)
         {
-            if (IsConstructor)
-                if (GenericArguments != null)
-                    throw new Exception("Construction can't have generic arguments");
-
-            void AddG()
-            {
-            }
-
+            Check();
             WriteMethodDescription(writer);
             foreach (var i in Attributes)
                 writer.WriteLine("[{0}]", i);
@@ -127,12 +125,12 @@ namespace iSukces.Code
                 GenericArguments.GetTriangleBracketsInfo());
             if (inInterface)
             {
-                if (IsConstructor || IsStatic)
+                if (Kind != MethodKind.Normal || IsStatic)
                     return;
                 if (GenericArguments.HasConstraints())
                 {
                     writer.WriteLine(mDefinition);
-                    GenericArguments.WriteCode(writer, true, typeNameResolver);
+                    GenericArguments?.WriteCode(writer, true, typeNameResolver);
                 }
                 else
                 {
@@ -142,26 +140,53 @@ namespace iSukces.Code
                 return;
             }
 
-            if (Overriding == OverridingType.Abstract && !IsConstructor)
+            if (Overriding == OverridingType.Abstract && Kind == MethodKind.Normal)
             {
                 writer.WriteLine(mDefinition + ";");
                 return;
             }
 
-            if (IsConstructor)
+            if (Kind == MethodKind.Constructor)
             {
                 writer.OpenConstructor(mDefinition, _baseConstructorCall);
             }
             else
             {
                 writer.WriteLine(mDefinition);
-                if (GenericArguments.HasConstraints()) GenericArguments.WriteCode(writer, false, typeNameResolver);
+                if (GenericArguments.HasConstraints())
+                    GenericArguments?.WriteCode(writer, false, typeNameResolver);
                 writer.WriteLine(writer.LangInfo.OpenText);
                 writer.IncIndent();
             }
 
             writer.SplitWriteLine(_body);
             writer.Close();
+        }
+
+        private void Check()
+        {
+            if (GenericArguments != null)
+            {
+                if (Kind == MethodKind.Constructor)
+                    throw new Exception("Construction can't have generic arguments");
+                if (Kind == MethodKind.Finalizer)
+                    throw new Exception("Finalizer can't have generic arguments");
+            }
+
+            var g = Kind.GetStaticInstanceStatus();
+            switch (g)
+            {
+                case StaticInstanceStatus.Instance
+                    when IsStatic:
+                    throw new Exception("Method marked as " + Kind + " can't be static");
+                case StaticInstanceStatus.Static
+                    when !IsStatic:
+                    throw new Exception("Method marked as " + Kind + " have to be static");
+            }
+
+            if (Kind == MethodKind.Constructor || Kind == MethodKind.Finalizer)
+                if (Overriding != OverridingType.None)
+                    throw new Exception("Constructor nor finalizer can't be " + Overriding);
         }
 
 
@@ -193,13 +218,22 @@ namespace iSukces.Code
                 return a.ToArray();
             }
 
-            if (!(IsConstructor && IsStatic))
-                if (!inInterface)
-                    if (Visibility != Visibilities.InterfaceDefault)
-                        a.Add(Visibility.ToString().ToLower());
+            bool EmitVisibility()
+            {
+                if (Visibility == Visibilities.InterfaceDefault)
+                    return false;
+                if (Kind == MethodKind.Finalizer)
+                    return false;
+                if (Kind == MethodKind.Constructor)
+                    return !IsStatic;
+                return !inInterface;
+            }
+
+            if (EmitVisibility())
+                a.Add(Visibility.ToString().ToLower());
             if (IsStatic)
                 a.Add("static");
-            if (!IsConstructor)
+            if (Kind == MethodKind.Normal)
             {
                 if (!inInterface)
                     switch (Overriding)
@@ -251,7 +285,31 @@ namespace iSukces.Code
         public string Name
         {
             get => _name;
-            set => _name = value?.Trim() ?? string.Empty;
+            set
+            {
+                value = value?.Trim() ?? string.Empty;
+                if (_name == value)
+                    return;
+                _name = value;
+                if (_name == Implicit)
+                {
+                    Kind       = MethodKind.Implicit;
+                    IsStatic   = true;
+                    Overriding = OverridingType.None;
+                }
+                else if (_name == Explicit)
+                {
+                    Kind       = MethodKind.Explicit;
+                    Overriding = OverridingType.None;
+                    IsStatic   = true;
+                }
+                else if (IsOperator(_name))
+                {
+                    Kind       = MethodKind.Operator;
+                    Overriding = OverridingType.None;
+                    IsStatic   = true;
+                }
+            }
         }
 
 
@@ -276,11 +334,6 @@ namespace iSukces.Code
 
 
         /// <summary>
-        ///     Czy konstruktor
-        /// </summary>
-        public bool IsConstructor { get; set; }
-
-        /// <summary>
         /// </summary>
         public string Body
         {
@@ -303,6 +356,40 @@ namespace iSukces.Code
 
         public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
+
+        public MethodKind Kind
+        {
+            get => _kind;
+            set
+            {
+                if (_kind == value)
+                    return;
+                _kind = value;
+                switch (value)
+                {
+                    case MethodKind.Explicit:
+                        Name       = Explicit;
+                        Overriding = OverridingType.None;
+                        break;
+                    case MethodKind.Implicit:
+                        Name       = Implicit;
+                        Overriding = OverridingType.None;
+                        break;
+                }
+
+                var s = Kind.GetStaticInstanceStatus();
+                switch (s)
+                {
+                    case StaticInstanceStatus.Instance:
+                        IsStatic = false;
+                        break;
+                    case StaticInstanceStatus.Static:
+                        IsStatic = true;
+                        break;
+                }
+            }
+        }
+
         private static readonly HashSet<string> operators;
 
         public static string Implicit = "implicit";
@@ -314,17 +401,6 @@ namespace iSukces.Code
         private List<CsMethodParameter> _parameters = new List<CsMethodParameter>();
         private string _body = string.Empty;
         private string _baseConstructorCall = string.Empty;
+        private MethodKind _kind;
     }
-
-    /*
-    public enum MethodKind
-    {
-        Normal,
-        Constructor,
-        Operator,
-        // np.  public static implicit operator double(Force src)
-        Implicit,
-        Explicit
-    }
-    */
 }

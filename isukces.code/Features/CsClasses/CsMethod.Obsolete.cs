@@ -24,5 +24,6 @@ namespace iSukces.Code
             get => Overriding == OverridingType.Override;
             set => Overriding = value ? OverridingType.Override : OverridingType.None;
         }
+
     }
 }

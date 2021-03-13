@@ -98,6 +98,11 @@ namespace iSukces.Code.AutoCode
             return new Cast(type, expression);
         }
 
+        public CsExpression TypeCast(string type)
+        {
+            return new Cast(type, this);
+        }
+
         public CsExpression CallMethod(string methodName, params CsExpression[] args)
         {
             var code = GetCode(CsOperatorPrecendence.Expression, ExpressionAppend.Before);
