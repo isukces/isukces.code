@@ -13,7 +13,7 @@ namespace iSukces.Code.Ammy
                 a.Properties.Add(i.Key, i.Value);
             foreach (var i in UserAnnotations)
                 a.UserAnnotations.Add(i.Key, i.Value);
-            foreach (var i in ContentItems) 
+            foreach (var i in ContentItems)
                 a.ContentItems.Add(i);
 
             a.Name     = Name;
@@ -38,6 +38,9 @@ namespace iSukces.Code.Ammy
         IAmmyObjectBuilder<TPropertyBrowser>,
         IAmmyPropertyContainer<TPropertyBrowser>
     {
+        public AmmyBuilderExtender<AmmyObjectBuilder<TPropertyBrowser>, TPropertyBrowser> Extend() =>
+            new AmmyBuilderExtender<AmmyObjectBuilder<TPropertyBrowser>, TPropertyBrowser>(this);
+
         public override IAmmyCodePiece ToAmmyCode(IConversionCtx ctx) => ToComplexAmmyCode(ctx);
 
         public IComplexAmmyCodePiece ToComplexAmmyCode(IConversionCtx ctx)

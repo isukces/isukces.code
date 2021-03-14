@@ -67,6 +67,9 @@
     <Compile Update="Features\CsClasses\CsMethod.Obsolete.cs">
       <DependentUpon>CsMethod.cs</DependentUpon>
     </Compile>
+    <Compile Update="Interfaces\Ammy\_fluent\AmmyBuilderExtender.DataContextBinder.cs">
+      <DependentUpon>SomeExtender.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Interfaces\CsEnumHelper+.tt">

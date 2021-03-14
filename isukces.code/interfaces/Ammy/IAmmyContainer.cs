@@ -14,23 +14,30 @@ namespace iSukces.Code.Interfaces.Ammy
         [NotNull]
         IDictionary<string, object> Properties { get; }
     }
-    
-    public partial interface IAmmyPropertyContainer<TObject>: IAmmyPropertyContainer
+
+    public interface IAmmyPropertyContainer<TObject> : IAmmyPropertyContainer
     {
     }
 
-    public static partial class AmmyPropertyContainerExtensions
+     
+    public static class AmmyPropertyContainerExtensions
     {
-        
+        public static AmmyBuilderExtender<TBuilder, TPropertyBrowser >
+            ExtendAny<TBuilder, TPropertyBrowser>(this TBuilder src) 
+            where TBuilder : IAmmyCodePieceConvertible, IAmmyPropertyContainer<TPropertyBrowser>, IAmmyContentItemsContainer
+        {
+            return new AmmyBuilderExtender<TBuilder, TPropertyBrowser>(src);
+        }
+
     }
+   
 
     public interface IAmmyContentItemsContainer
     {
         [NotNull]
         IList<object> ContentItems { get; }
     }
-    
- 
+
 
     public static class AmmyContainerExtension
     {
