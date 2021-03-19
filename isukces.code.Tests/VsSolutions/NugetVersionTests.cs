@@ -1,4 +1,4 @@
-using iSukces.Code.vssolutions;
+using iSukces.Code.VsSolutions;
 using Xunit;
 
 namespace iSukces.Code.Tests.VsSolutions

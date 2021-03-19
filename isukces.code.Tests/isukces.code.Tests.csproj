@@ -27,7 +27,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <ProjectReference Include="..\iSukces.Code.Serenity\iSukces.Code.Serenity.csproj" />
-    <ProjectReference Include="..\iSukces.Code.vssolutions\iSukces.Code.vssolutions.csproj" />
+    <ProjectReference Include="..\iSukces.Code.VsSolutions\iSukces.Code.VsSolutions.csproj" />
     <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>

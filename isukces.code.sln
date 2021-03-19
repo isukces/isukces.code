@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.Serenity", "iS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoCodeBuilder", "AutoCodeBuilder\AutoCodeBuilder.csproj", "{3A555F64-5F1A-4757-8F73-97E92C7B0385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.vssolutions", "iSukces.Code.vssolutions\iSukces.Code.vssolutions.csproj", "{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.VsSolutions", "iSukces.Code.VsSolutions\iSukces.Code.VsSolutions.csproj", "{B4E816A6-04FD-4529-83A1-5D0ED68BEF3E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitbrains.AmmyParser", "Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj", "{62B93CA3-CE40-4E2C-8F53-CE186B1BDFAD}"
 EndProject
