@@ -144,7 +144,7 @@ namespace iSukces.Code
             _extraComment.AppendLine(x);
         }
 
-        // Public Methods 
+        // Public Methods 
 
         public CsClassField AddConst(string name, string type, string encodedValue)
         {

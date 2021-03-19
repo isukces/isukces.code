@@ -7,9 +7,15 @@ namespace iSukces.Code.vssolutions
 {
     public sealed class SolutionProject : IEquatable<SolutionProject>
     {
-        public static bool operator ==(SolutionProject left, SolutionProject right) => Equals(left, right);
+        public static bool operator ==(SolutionProject left, SolutionProject right)
+        {
+            return Equals(left, right);
+        }
 
-        public static bool operator !=(SolutionProject left, SolutionProject right) => !Equals(left, right);
+        public static bool operator !=(SolutionProject left, SolutionProject right)
+        {
+            return !Equals(left, right);
+        }
 
         private static VsProjectKind FindProjectType(XDocument x)
         {
@@ -17,6 +23,48 @@ namespace iSukces.Code.vssolutions
             if (root == null) return VsProjectKind.Unknown;
             var isNew = root.Name.LocalName == "Project" && Tags.MicrosoftNetSdk == (string)root.Attribute(Tags.Sdk);
             return isNew ? VsProjectKind.Core : VsProjectKind.Old;
+        }
+
+        private static string FindTargetFrameworkVersion(XDocument xDocument)
+        {
+            var g = FindProjectType(xDocument);
+            if (g != VsProjectKind.Old)
+                return null;
+            var root = xDocument?.Root;
+            if (root == null) return null;
+            var ns = root.Name.Namespace;
+            foreach (var i in root.Elements(ns + "PropertyGroup"))
+            foreach (var j in i.Elements(ns + "TargetFrameworkVersion"))
+            {
+                var result = j.Value.Trim();
+                if (!string.IsNullOrEmpty(result))
+                    return result;
+            }
+
+            return null;
+        }
+
+        private static NugetPackage[] ReadNugetPackagesFromCsProj(XDocument doc)
+        {
+            var root = doc?.Root;
+            if (root is null)
+                return new NugetPackage[0];
+            var ns = root.Name.Namespace;
+            var refNodes = root.Elements(ns + Tags.ItemGroup)
+                .SelectMany(q => q.Elements(ns + Tags.PackageReference))
+                .ToArray();
+            return refNodes.Select(q =>
+            {
+                var r = new NugetPackage
+                {
+                    Id = (string)q.Attribute(Tags.Include)
+                };
+                var ver = (string)q.Attribute(Tags.Version);
+
+                if (!string.IsNullOrEmpty(ver))
+                    r.Version = NugetVersion.Parse(ver);
+                return r;
+            }).ToArray();
         }
 
         public bool Equals(SolutionProject other)
@@ -32,6 +80,7 @@ namespace iSukces.Code.vssolutions
             if (ReferenceEquals(this, obj)) return true;
             return obj.GetType() == GetType() && Equals((SolutionProject)obj);
         }
+ 
 
         public override int GetHashCode()
         {
@@ -39,7 +88,10 @@ namespace iSukces.Code.vssolutions
             return tmp != null ? tmp.GetHashCode() : 0;
         }
 
-        public override string ToString() => string.Format("Project {0}", Location);
+        public override string ToString()
+        {
+            return string.Format("Project {0}", Location);
+        }
 
         private IEnumerable<AssemblyBinding> AssemblyBindingsInternal()
         {
@@ -73,87 +125,73 @@ namespace iSukces.Code.vssolutions
 
         private NugetPackage[] NugetPackagesInternal()
         {
+            var doc1       = FileHelper.Load(Location);
+            var fromCsProj = ReadNugetPackagesFromCsProj(doc1);
             if (Kind == VsProjectKind.Core)
-            {
                 /*<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net461</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\conexx.translate\conexx.translate.csproj">
-      <Project>{794DB2FD-85E2-456E-8DCA-A54EE5C037B9}</Project>
-      <Name>conexx.translate</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-</Project>*/
-                var doc = FileHelper.Load(Location);
-                var refNodes = doc?.Root?.Elements(Tags.ItemGroup).SelectMany(q => q.Elements(Tags.PackageReference))
-                                   .ToArray() ??
-                               new XElement[0];
-                return refNodes.Select(q =>
-                {
-                    var r = new NugetPackage
-                    {
-                        Id = (string)q.Attribute(Tags.Include)
-                    };
-                    var ver = (string)q.Attribute(Tags.Version);
-
-                    if (!string.IsNullOrEmpty(ver))
-                        r.Version = NugetVersion.Parse(ver);
-                    return r;
-                }).ToArray();
-            }
+      <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net461</TargetFramework>
+      </PropertyGroup>
+      <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+      </ItemGroup>
+      <ItemGroup>
+        <ProjectReference Include="..\conexx.translate\conexx.translate.csproj">
+          <Project>{794DB2FD-85E2-456E-8DCA-A54EE5C037B9}</Project>
+          <Name>conexx.translate</Name>
+        </ProjectReference>
+      </ItemGroup>
+      <ItemGroup>
+        <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+          <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+      </ItemGroup>
+    </Project>*/
+                return fromCsProj;
 
             // ReSharper disable once PossibleNullReferenceException
             var configFileInfo = Location.GetPackagesConfigFile();
             if (!configFileInfo.Exists)
-                return new NugetPackage[0];
+                return fromCsProj;
             var xml  = FileHelper.Load(configFileInfo);
             var root = xml.Root;
             if (root == null || root.Name.LocalName != "packages")
-                return new NugetPackage[0];
+                return fromCsProj;
             var packages = root.Elements(root.Name.Namespace + "package");
+            var result   = packages.Select(NugetPackage.Parse).ToArray();
+            if (fromCsProj.Any()) return result.Concat(fromCsProj).ToArray();
 
-            return packages.Select(NugetPackage.Parse).ToArray();
+            return result;
         }
 
-        public List<AssemblyBinding> AssemblyBindings
-        {
-            get { return _assemblyBindings ?? (_assemblyBindings = AssemblyBindingsInternal().ToList()); }
-        }
 
-        public NugetPackage[] NugetPackages
-        {
-            get { return _nugetPackages ?? (_nugetPackages = NugetPackagesInternal()); }
-        }
+        public List<AssemblyBinding> AssemblyBindings =>
+            _assemblyBindings ?? (_assemblyBindings = AssemblyBindingsInternal().ToList());
 
-        public List<ProjectReference> References
-        {
-            get { return _references ?? (_references = GetReferences()); }
-        }
+        public NugetPackage[] NugetPackages => _nugetPackages ?? (_nugetPackages = NugetPackagesInternal());
+
+        public List<ProjectReference> References => _references ?? (_references = GetReferences());
 
         public FileName Location
         {
-            get { return _location; }
+            get => _location;
             set
             {
                 if (_location == value)
                     return;
                 _location = value;
-                Kind = value.Exists
-                    ? FindProjectType(FileHelper.Load(value))
-                    : VsProjectKind.Unknown;
+                var l = value.Exists ? FileHelper.Load(value) : null;
+                Kind = l is null
+                    ? VsProjectKind.Unknown
+                    : FindProjectType(l);
+                TargetFrameworkVersion = l is null
+                    ? null
+                    : FindTargetFrameworkVersion(l);
             }
         }
+
+        public string TargetFrameworkVersion { get; set; }
 
         public VsProjectKind Kind { get; private set; }
 

@@ -5,7 +5,7 @@ namespace iSukces.Code.vssolutions
 {
     public class ProjectReference
     {
-        // Public Methods 
+        // Public Methods 
 
         public static ProjectReference FromNode(XElement reference, DirectoryInfo baseDir)
         {

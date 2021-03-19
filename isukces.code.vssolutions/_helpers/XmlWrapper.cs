@@ -6,7 +6,10 @@ namespace iSukces.Code.vssolutions
 {
     public abstract class XmlWrapper
     {
-        public XmlWrapper(XDocument document) => Document = document;
+        public XmlWrapper(XDocument document)
+        {
+            Document = document;
+        }
 
         protected XElement FindElementByPath(string path)
         {

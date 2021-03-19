@@ -14,21 +14,20 @@ namespace iSukces.Code.vssolutions
         private FileName(string fullName)
         {
             FullName = fullName;
-#if PLATFORM_UNIX
-            _hash = _fullName.GetHashCode();
-#else
-            _nameForCompare = FullName.ToLowerInvariant();
-            _hash           = _nameForCompare.GetHashCode();
-#endif
+            _hash    = FileNameComparer.GetHashCode(fullName);
         }
 
-        public static bool operator ==(FileName left, FileName right) => Equals(left, right);
+        public static bool operator ==(FileName left, FileName right)
+        {
+            return Equals(left, right);
+        }
 
-        // Public Methods 
 
-        public static bool operator !=(FileName left, FileName right) => !Equals(left, right);
+        public static bool operator !=(FileName left, FileName right)
+        {
+            return !Equals(left, right);
+        }
 
-        // Public Methods 
 
         public int CompareTo(FileName other)
         {
@@ -36,22 +35,14 @@ namespace iSukces.Code.vssolutions
                 return 0;
             if (other == null)
                 return -1;
-#if PLATFORM_UNIX
-            return _fullName.CompareTo(other._fullName);
-#else
-            return _nameForCompare.CompareTo(other._nameForCompare);
-#endif
+            return FileNameComparer.Compare(FullName, other.FullName);
         }
 
         public bool Equals(FileName other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-#if PLATFORM_UNIX
-            return string.Equals(_fullName, other._fullName);
-#else
-            return string.Equals(_nameForCompare, other._nameForCompare);
-#endif
+            return FileNameComparer.Equals(FullName, other.FullName);
         }
 
         public override bool Equals(object obj)
@@ -62,30 +53,36 @@ namespace iSukces.Code.vssolutions
             return Equals((FileName)obj);
         }
 
-        public override int GetHashCode() => _hash;
+        public override int GetHashCode()
+        {
+            return _hash;
+        }
 
-        public override string ToString() => FullName;
+        public override string ToString()
+        {
+            return FullName;
+        }
 
         public string FullName { get; }
 
-        public string Name
-        {
-            get { return new FileInfo(FullName).Name; }
-        }
+        public string Name => GetFileInfo().Name;
 
-        public bool Exists
-        {
-            get { return File.Exists(FullName); }
-        }
+        public bool Exists => File.Exists(FullName);
 
-        public DirectoryInfo Directory
-        {
-            get { return new FileInfo(FullName).Directory; }
-        }
-#if !PLATFORM_UNIX
-        private readonly string _nameForCompare;
+        public DirectoryInfo Directory => new FileInfo(FullName).Directory;
+
+
+#if PLATFORM_UNIX
+        public static StringComparer FileNameComparer = StringComparer.Ordinal;
+#else
+        public static StringComparer FileNameComparer = StringComparer.OrdinalIgnoreCase;
 #endif
 
         private readonly int _hash;
+
+        public FileInfo GetFileInfo()
+        {
+            return new FileInfo(FullName);
+        }
     }
 }

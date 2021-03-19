@@ -6,7 +6,7 @@ namespace iSukces.Code.vssolutions
 {
     public class NuspecCache
     {
-        #region Static Methods
+        #region Static Methods
 
         public static Dictionary<string, Nuspec> GetForDirectory(DirectoryInfo directory)
         {

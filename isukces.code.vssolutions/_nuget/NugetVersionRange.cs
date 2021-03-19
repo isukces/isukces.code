@@ -33,7 +33,7 @@ namespace iSukces.Code.vssolutions
                 : result.VersionMin;
             return result;
         }
-        // Private Methods 
+        // Private Methods 
 
         private static RangeEdge ParseRangeEdge(char c, char t, char f) =>
             c == t ? RangeEdge.Inclusive : c == f ? RangeEdge.Exclusive : RangeEdge.None;
@@ -51,7 +51,7 @@ namespace iSukces.Code.vssolutions
             return "";
         }
 
-        // Public Methods 
+        // Public Methods 
 
         public VersionCheckResult CheckVersion(NugetVersion x)
         {

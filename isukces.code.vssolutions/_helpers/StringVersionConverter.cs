@@ -10,8 +10,8 @@ namespace iSukces.Code.vssolutions
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
             JsonSerializer serializer)
         {
-            var value = reader.Value;
-            return value == null ? null : Version.Parse(value.ToString());
+            var value = reader.Value?.ToString();
+            return value == null ? null : Version.Parse(value);
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

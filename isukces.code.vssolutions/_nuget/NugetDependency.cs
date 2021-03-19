@@ -14,7 +14,7 @@ namespace iSukces.Code.vssolutions
             };
         }
 
-        // Public Methods 
+        // Public Methods 
         public override string ToString() => string.Format("NugetDependency {0} {1}", Id, Versions);
 
         public string Id { get; private set; }

@@ -17,13 +17,13 @@ namespace iSukces.Code.vssolutions
         public static bool operator <(NugetVersion a, NugetVersion b) => a.CompareTo(b) < 0;
 
         public static bool operator <=(NugetVersion a, NugetVersion b) => a.CompareTo(b) <= 0;
-        // Public Methods 
+        // Public Methods 
 
         public static NugetVersion Parse(string ver)
         {
             if (ver == null) throw new ArgumentNullException(nameof(ver));
             ver = ver.Trim();
-            var i      = ver.IndexOf("-");
+            var i      = ver.IndexOfAny(new[] {'-', '+'});
             var result = new NugetVersion();
             if (i >= 0)
             {
@@ -39,7 +39,7 @@ namespace iSukces.Code.vssolutions
             return result;
         }
 
-        // Public Methods 
+        // Public Methods 
 
         public int CompareTo(NugetVersion other)
         {

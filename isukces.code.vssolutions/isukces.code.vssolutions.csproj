@@ -4,8 +4,8 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2021</Copyright>
-    <TargetFrameworks>net451;netstandard2.0;netcoreapp3.1</TargetFrameworks>
-    <SignAssembly>false</SignAssembly>
+    <TargetFrameworks>net451;net47;netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>iSukces.Code</Product>
     <PackageId>iSukces.Code.VsSolutions</PackageId>
@@ -25,6 +25,7 @@
     <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
     <LangVersion>7</LangVersion>
+    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
