@@ -123,6 +123,25 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
           Assert.Equal(expected, code);
         }
         
+        
+           [Fact]
+        public void T04_Should_not_allow_to_exclude_master_property()
+        {
+            var gen = new Code.DependsOnPropertyGenerator
+            {
+                Flags                                  = DependsOnPropertyGeneratorFlags.GetDependentProperties,
+                GetDependentPropertiesMethodName       = "TestGetDependentProperties",
+                GetDependentPropertiesMethodVisibility = Visibilities.Protected
+            };
+
+            var q = new TestContext();
+            Assert.Throws<DependsOnPropertyGeneratorException>(() =>
+            {
+                gen.Generate(typeof(WrongClass), q);
+            });
+        }
+        
+        
         private class Test
         {
             public int Master { get; set; }
@@ -170,6 +189,18 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             public string FullNameB1 => FullNameB + "?";
 
         }
+    }
+
+
+    public class WrongClass
+    {
+        [DependsOnProperty(Flags = DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod)]
+        public string FirstName { get; set; }
+        public string LastName  { get; set; }
+            
+        
+        [DependsOnProperty(nameof(FirstName), nameof(LastName))]
+        public string FullName => FirstName + " " + LastName;
     }
 
 }

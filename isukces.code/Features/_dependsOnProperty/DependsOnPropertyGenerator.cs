@@ -10,7 +10,7 @@ namespace iSukces.Code
 {
     public class DependsOnPropertyGenerator : Generators.SingleClassGenerator
     {
-        protected virtual void CreateAdditionalCode(Dictionary<string, Info> names)
+        protected virtual void CreateAdditionalCode(Dictionary<string, Info> infoByMasterPropertyName)
         {
         }
 
@@ -49,7 +49,7 @@ namespace iSukces.Code
             if (slavesForMaster is null)
                 return;
 
-            var names = new Dictionary<string, Info>();
+            var infoByMasterPropertyName = new Dictionary<string, Info>();
 
             void ScanDeep(string key, HashSet<string> scanned, List<string> sink)
             {
@@ -69,7 +69,7 @@ namespace iSukces.Code
                 var value     = string.Join(",", sink.Distinct());
                 var constName = GetConstName(i.Key);
 
-                names[i.Key] = new Info(constName, value);
+                infoByMasterPropertyName[i.Key] = new Info(constName, value);
                 flags.TryGetValue(i.Key, out var flags1); 
                 var doCreateConst = (flags1 & DependsOnPropertyFlags.SkipCreatingConstants) == 0;
                 if (doCreateConst)
@@ -86,9 +86,36 @@ namespace iSukces.Code
                 }
             }
 
-            CreateAdditionalCode(names);
+            bool IsMasterProperty(string propertyName)
+            {
+                foreach (var i in slavesForMaster.Values)
+                {
+                    if (i.Contains(propertyName))
+                        return false;
+                }
+
+                return true;
+            }
+            foreach (var i in flags)
+            {
+                if ((i.Value & DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod) != 0)
+                {
+                    if (IsMasterProperty(i.Key))
+                    {
+                        var message = string.Format("Property {0} can't have flag {1}. It's dangerous!",
+                            i.Key,
+                            nameof(DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod));
+                        throw new DependsOnPropertyGeneratorException(message);
+                    }
+
+
+                }
+                
+            }
+
+            CreateAdditionalCode(infoByMasterPropertyName);
             if ((Flags & DependsOnPropertyGeneratorFlags.GetDependentProperties) != 0)
-                MakeGetDependentProperties(names, flags);
+                MakeGetDependentProperties(infoByMasterPropertyName, flags);
         }
 
         protected virtual string GetConstName(string propertyName) => propertyName + "Dependent";
