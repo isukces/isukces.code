@@ -1,8 +1,8 @@
 namespace iSukces.Code
 {
-    public sealed class ConditionsPair
+    public sealed class CsConditionsPair
     {
-        public ConditionsPair(string condition, string inversed = null)
+        public CsConditionsPair(string condition, string inversed = null)
         {
             Condition = condition;
             if (inversed is null)
@@ -10,9 +10,9 @@ namespace iSukces.Code
             Inversed = inversed;
         }
 
-        public static ConditionsPair FromInversed(string inversed)
+        public static CsConditionsPair FromInversed(string inversed)
         {
-            return new ConditionsPair($"!({inversed})", inversed);
+            return new CsConditionsPair($"!({inversed})", inversed);
         }
 
         public bool IsAlwaysTrue
@@ -30,16 +30,16 @@ namespace iSukces.Code
             }
         }
 
-        public static ConditionsPair FromIsNull(string variable)
+        public static CsConditionsPair FromIsNull(string variable)
         {
-            return new ConditionsPair($"{variable} is null");
+            return new CsConditionsPair($"{variable} is null");
         }
 
-        public static implicit operator ConditionsPair(bool x)
+        public static implicit operator CsConditionsPair(bool x)
         {
             return x
-                ? new ConditionsPair("true", "false")
-                : new ConditionsPair("false", "true");
+                ? new CsConditionsPair("true", "false")
+                : new CsConditionsPair("false", "true");
         }
 
         public override string ToString()

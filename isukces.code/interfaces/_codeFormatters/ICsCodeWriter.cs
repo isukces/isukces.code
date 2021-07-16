@@ -23,38 +23,38 @@ namespace iSukces.Code.Interfaces
         }
 
 
-        public static void CloseCompilerIf(this ICsCodeWriter _this, string directive)
+        public static void CloseCompilerIf(this ICsCodeWriter self, string directive)
         {
             if (!string.IsNullOrEmpty(directive))
-                _this.WritelineNoIndent("#endif");
+                self.WritelineNoIndent("#endif");
         }
 
-        public static void CloseCompilerIf(this ICsCodeWriter _this, IConditional conditional)
+        public static void CloseCompilerIf(this ICsCodeWriter self, IConditional conditional)
         {
-            _this.CloseCompilerIf(conditional?.CompilerDirective);
+            self.CloseCompilerIf(conditional?.CompilerDirective);
         }
 
-        public static T EmptyLine<T>(this T _this, bool skip = false)
+        public static T EmptyLine<T>(this T self, bool skip = false)
             where T : ICodeWriter
         {
             if (!skip)
-                _this.Append("\r\n");
-            return _this;
+                self.Append("\r\n");
+            return self;
         }
 
-        public static string GetIndent(this ICodeWriter _this) =>
-            _this.Indent > 0 ? new string(' ', _this.Indent * 4) : "";
+        public static string GetIndent(this ICodeWriter self) =>
+            self.Indent > 0 ? new string(' ', self.Indent * 4) : "";
 
 
-        public static void OpenCompilerIf(this ICsCodeWriter _this, string directive)
+        public static void OpenCompilerIf(this ICsCodeWriter self, string directive)
         {
             if (!string.IsNullOrEmpty(directive))
-                _this.WritelineNoIndent("#if " + directive);
+                self.WritelineNoIndent("#if " + directive);
         }
 
-        public static void OpenCompilerIf(this ICsCodeWriter _this, IConditional conditional)
+        public static void OpenCompilerIf(this ICsCodeWriter self, IConditional conditional)
         {
-            _this.OpenCompilerIf(conditional?.CompilerDirective);
+            self.OpenCompilerIf(conditional?.CompilerDirective);
         }
 
 
@@ -71,6 +71,19 @@ namespace iSukces.Code.Interfaces
             self.WriteLine("{");
             self.Indent++;
             return self;
+        }
+
+        public static T OpenIf<T>(this T src, string condition)
+            where T : ICsCodeWriter
+        {
+            src.Open($"if ({condition})");
+            return src;
+        }
+        public static T OpenSwitch<T>(this T src, string expression)
+            where T : ICsCodeWriter
+        {
+            src.Open($"switch ({expression})");
+            return src;
         }
 
         public static T SingleLineIf<T>(this T src, string condition, string statement, string elseStatement = null)
@@ -109,21 +122,21 @@ namespace iSukces.Code.Interfaces
         }
 
 
-        public static T WriteIndent<T>(this T _this)
+        public static T WriteIndent<T>(this T self)
             where T : ICodeWriter
         {
-            if (_this.Indent > 0)
-                _this.Append(new string(' ', _this.Indent * 4));
-            return _this;
+            if (self.Indent > 0)
+                self.Append(new string(' ', self.Indent * 4));
+            return self;
         }
 
-        public static T WriteNewLineAndIndent<T>(this T _this)
+        public static T WriteNewLineAndIndent<T>(this T self)
             where T : ICodeWriter
         {
-            _this.WriteLine();
-            if (_this.Indent > 0)
-                _this.Append(new string(' ', _this.Indent * 4));
-            return _this;
+            self.WriteLine();
+            if (self.Indent > 0)
+                self.Append(new string(' ', self.Indent * 4));
+            return self;
         }
 
         public static T WriteSingleLineSummary<T>(this T src, string x, bool skipIfEmpty = false)

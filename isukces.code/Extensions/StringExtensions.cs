@@ -157,3 +157,5 @@ namespace iSukces.Code
         }
     }
 }
+
+// Console.Write("");

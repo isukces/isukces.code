@@ -9,7 +9,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
         public void T01_Should_generate_simple()
         {
             var gen = new Code.DependsOnPropertyGenerator();
-            gen.Flags = DependsOnPropertyGeneratorF.None;
+            gen.Flags = DependsOnPropertyGeneratorFlags.None;
 
             var q = new TestContext();
             gen.Generate(typeof(Test), q);
@@ -36,7 +36,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
         {
             var gen = new Code.DependsOnPropertyGenerator
             {
-                Flags                                  = DependsOnPropertyGeneratorF.GetDependentProperties,
+                Flags                                  = DependsOnPropertyGeneratorFlags.GetDependentProperties,
                 GetDependentPropertiesMethodName       = "TestGetDependentProperties",
                 GetDependentPropertiesMethodVisibility = Visibilities.Protected
             };
@@ -70,6 +70,65 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             Assert.Equal(exp, q.Code);
         }
         
+        
+        [Fact]
+        public void T03_Should_generate_with_GetDependedntProperties()
+        {
+            var gen = new Code.DependsOnPropertyGenerator
+            {
+                Flags                                  = DependsOnPropertyGeneratorFlags.GetDependentProperties,
+                GetDependentPropertiesMethodName       = "TestGetDependentProperties",
+                GetDependentPropertiesMethodVisibility = Visibilities.Protected
+            };
+
+            var q = new TestContext();
+            gen.Generate(typeof(TestCascade), q);
+         
+          const string expected = @"// ReSharper disable All
+namespace iSukces.Code.Tests.DependsOnPropertyGenerator
+{
+    partial class DependsOnPropertyGeneratorTests
+    {
+        partial class TestCascade
+        {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+            private static string TestGetDependentProperties(string propertyName)
+            {
+                switch (propertyName)
+                {
+                    case nameof(Master): return MasterDependent; // Slave,DeepSlave,EvenDeeperSlave
+                    case nameof(Slave): return SlaveDependent; // DeepSlave,EvenDeeperSlave
+                    case nameof(DeepSlave): return DeepSlaveDependent; // EvenDeeperSlave
+                    case nameof(FirstName):
+                    case nameof(LastName): return LastNameDependent; // FullNameA,FullNameB,FullNameA1,FullNameB1
+                    case nameof(FullNameA): return ""FullNameA1"";
+                }
+                return null;
+            }
+
+            public const string MasterDependent = ""Slave,DeepSlave,EvenDeeperSlave"";
+
+            public const string SlaveDependent = ""DeepSlave,EvenDeeperSlave"";
+
+            public const string DeepSlaveDependent = ""EvenDeeperSlave"";
+
+            public const string FirstNameDependent = ""FullNameA,FullNameB,FullNameA1,FullNameB1"";
+
+            public const string LastNameDependent = FirstNameDependent;
+
+            public const string FullNameADependent = ""FullNameA1"";
+
+            public const string FullNameBDependent = ""FullNameB1"";
+
+        }
+
+    }
+}
+";
+          var code = q.Code;
+          Assert.Equal(expected, code);
+        }
+        
         private class Test
         {
             public int Master { get; set; }
@@ -77,5 +136,63 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             [DependsOnProperty(nameof(Master))]
             public int Slave => Master + 1;
         }
+        
+        
+        [DependsOnProperty2(SkipCreatingConstants = true)]
+        private class TestCascade
+        {
+            public int Master { get; set; }
+
+            [DependsOnProperty(nameof(Master), Flags = DependsOnPropertyFlags.SkipCreatingConstants)]
+            public int Slave => Master + 1;
+            
+            [DependsOnProperty(nameof(Slave))]
+            public int DeepSlave => Slave + 1;
+            
+            
+            [DependsOnProperty(nameof(DeepSlave))]
+            public int EvenDeeperSlave => DeepSlave + 1;
+            
+            
+            public string FirstName { get; set; }
+            public string LastName  { get; set; }
+            
+            [DependsOnProperty(nameof(FirstName), nameof(LastName), Flags = DependsOnPropertyFlags.SkipCreatingConstants)]
+            public string FullNameA  => FirstName + " " + LastName;
+            
+            
+            
+            [DependsOnProperty(nameof(FirstName), nameof(LastName), Flags = DependsOnPropertyFlags.SkipCreatingConstants|DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod)]
+            public string FullNameB => FirstName + " " + LastName;
+
+
+
+
+
+            [DependsOnProperty(nameof(FullNameA),  Flags = DependsOnPropertyFlags.SkipCreatingConstants)]
+            public string FullNameA1 => FullNameA + "?";
+            
+            [DependsOnProperty(nameof(FullNameB),  Flags = DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod)]
+            public string FullNameB1 => FullNameB + "?";
+
+        }
+    }
+
+    public class Person
+    {
+        
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        public Person()
+        {
+            FirstName = "Piotr";
+            LastName  = "Stęclik";
+        }
+    }
+
+    public class Dog
+    {
+        public string Name { get; set; }
     }
 }

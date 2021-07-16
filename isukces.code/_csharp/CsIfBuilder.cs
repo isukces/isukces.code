@@ -3,9 +3,9 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code
 {
-    internal sealed class IfCollector
+    internal sealed class CsIfBuilder
     {
-        public IfCollector(ConditionsPair condition)
+        public CsIfBuilder(CsConditionsPair condition)
         {
             Condition = condition;
         }
@@ -96,7 +96,7 @@ namespace iSukces.Code
             return statementLines;
         }
 
-        public ConditionsPair Condition { get; }
+        public CsConditionsPair Condition { get; }
         public CsCodeWriter   Statement { get; } = new CsCodeWriter();
         public CsCodeWriter   Else      { get; } = new CsCodeWriter();
     }

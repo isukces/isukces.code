@@ -90,6 +90,22 @@ namespace iSukces.Code
             OwnGetter = ownGetter;
             return this;
         }
+        
+        public CsProperty WithOwnGetterAsExpression(string ownGetter)
+        {
+            OwnGetter             = ownGetter;
+            OwnGetterIsExpression = true;
+            return this;
+        }
+        
+        public CsProperty AsCalculatedFromExpression(string expression)
+        {
+            EmitField             = false;
+            OwnGetter             = expression;
+            IsPropertyReadOnly    = true;
+            OwnGetterIsExpression = true;
+            return this;
+        }
 
         /// <summary>
         /// </summary>
