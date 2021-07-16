@@ -40,13 +40,23 @@ namespace isukces.code.vssolutions
 
         public static FrameworkVersion[] Parse(string x)
         {
-            // var tmp = NuGet.Frameworks.
-            var portable = "portable-";
-            if (x.StartsWith(portable))
             {
-                var xx = x.Substring(portable.Length).Split('+');
-                return xx.Select(Parse1).ToArray();
+                var portable = "portable-";
+                if (x.StartsWith(portable))
+                {
+                    var xx = x.Substring(portable.Length).Split('+');
+                    return xx.Select(Parse1).ToArray();
+                }
             }
+            {
+                var portable = "portable40-";
+                if (x.StartsWith(portable))
+                {
+                    var xx = x.Substring(portable.Length).Split('+');
+                    return xx.Select(Parse1).ToArray();
+                }
+            }
+
 
             return new[] {Parse1(x)};
         }

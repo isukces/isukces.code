@@ -61,8 +61,14 @@ namespace iSukces.Code.VsSolutions
                 };
                 var ver = (string)q.Attribute(Tags.Version);
 
-                if (!string.IsNullOrEmpty(ver))
-                    r.Version = NugetVersion.Parse(ver);
+                if (string.IsNullOrEmpty(ver))
+                {
+                    ver = (string)q.Element(q.Name.Namespace+"Version")?.Value;
+                }
+
+                if (string.IsNullOrEmpty(ver))
+                    throw new Exception("Unable to get version");
+                r.Version = NugetVersion.Parse(ver);
                 return r;
             }).ToArray();
         }

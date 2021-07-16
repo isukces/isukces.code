@@ -2,8 +2,6 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace iSukces.Code.VsSolutions
 {
