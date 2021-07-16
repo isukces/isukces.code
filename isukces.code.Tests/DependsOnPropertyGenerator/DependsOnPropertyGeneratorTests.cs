@@ -97,7 +97,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
                 switch (propertyName)
                 {
                     case nameof(Master): return MasterDependent; // Slave,DeepSlave,EvenDeeperSlave
-                    case nameof(Slave): return SlaveDependent; // DeepSlave,EvenDeeperSlave
+                    case nameof(Slave): return ""DeepSlave,EvenDeeperSlave"";
                     case nameof(DeepSlave): return DeepSlaveDependent; // EvenDeeperSlave
                     case nameof(FirstName):
                     case nameof(LastName): return LastNameDependent; // FullNameA,FullNameB,FullNameA1,FullNameB1
@@ -108,17 +108,11 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 
             public const string MasterDependent = ""Slave,DeepSlave,EvenDeeperSlave"";
 
-            public const string SlaveDependent = ""DeepSlave,EvenDeeperSlave"";
-
             public const string DeepSlaveDependent = ""EvenDeeperSlave"";
 
             public const string FirstNameDependent = ""FullNameA,FullNameB,FullNameA1,FullNameB1"";
 
             public const string LastNameDependent = FirstNameDependent;
-
-            public const string FullNameADependent = ""FullNameA1"";
-
-            public const string FullNameBDependent = ""FullNameB1"";
 
         }
 
@@ -178,21 +172,4 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
         }
     }
 
-    public class Person
-    {
-        
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-
-        public Person()
-        {
-            FirstName = "Piotr";
-            LastName  = "Stęclik";
-        }
-    }
-
-    public class Dog
-    {
-        public string Name { get; set; }
-    }
 }

@@ -61,7 +61,7 @@ namespace iSukces.Code
                     ScanDeep(ii, scanned, sink);
             }
 
-            var added = new Dictionary<string, string>();
+            var constNamesByValue = new Dictionary<string, string>();
             foreach (var i in slavesForMaster)
             {
                 var sink = new List<string>();
@@ -70,14 +70,19 @@ namespace iSukces.Code
                 var constName = GetConstName(i.Key);
 
                 names[i.Key] = new Info(constName, value);
-                if (added.TryGetValue(value, out var previousConstName))
+                flags.TryGetValue(i.Key, out var flags1); 
+                var doCreateConst = (flags1 & DependsOnPropertyFlags.SkipCreatingConstants) == 0;
+                if (doCreateConst)
                 {
-                    Class.AddConst(constName, "string", previousConstName);
-                }
-                else
-                {
-                    Class.AddConstString(constName, value);
-                    added[value] = constName;
+                    if (constNamesByValue.TryGetValue(value, out var previousConstName))
+                    {
+                        Class.AddConst(constName, "string", previousConstName);
+                    }
+                    else
+                    {
+                        Class.AddConstString(constName, value);
+                        constNamesByValue[value] = constName;
+                    }
                 }
             }
 
@@ -93,44 +98,44 @@ namespace iSukces.Code
         {
             var wr = new CsCodeWriter();
             wr.Open("switch (propertyName)");
-            foreach (var i in names.GroupBy(a => a.Value.ConstValue))
+            foreach (var byAffectedFieldList in names.GroupBy(a => a.Value.FieldsList))
             {
-                var properties = i
+                var properties = byAffectedFieldList
                     .Where(pair =>
                     {
-                        dependsOnPropertyFlagsMap.TryGetValue(i.Key, out var flag1);
+                        dependsOnPropertyFlagsMap.TryGetValue(pair.Key, out var flag1);
                         return (flag1 & DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod) == 0;
                     })
                     .OrderBy(a => a.Key).ToArray();
                 var left       = properties.Length;
-                foreach (var ii in properties)
+                foreach (KeyValuePair<string, Info> pair in properties)
                 {
                     string GetConstCode()
                     {
-                        dependsOnPropertyFlagsMap.TryGetValue(i.Key, out var flag1);
+                        dependsOnPropertyFlagsMap.TryGetValue(pair.Key, out var flag1);
                         if ((flag1 & DependsOnPropertyFlags.SkipCreatingConstants) == 0)
-                            return ii.Value.ConstName;
+                            return pair.Value.ConstName;
 
                         // search other existing consts
                         var other = properties.Where(a
                                 =>
                             {
-                                dependsOnPropertyFlagsMap.TryGetValue(i.Key, out var flag2);
+                                dependsOnPropertyFlagsMap.TryGetValue(a.Key, out var flag2);
                                 return (flag2 & DependsOnPropertyFlags.SkipCreatingConstants) == 0;
                             })
                             .ToArray();
                         if (other.Length > 0)
                             return other[0].Value.ConstName;
-                        return ii.Value.ConstValue.CsEncode();
+                        return pair.Value.FieldsList.CsEncode();
                     }
-                    var caseTxt = $"case nameof({ii.Key}):";
+                    var caseTxt = $"case nameof({pair.Key}):";
                     if (--left == 0)
                     {
                         var value = GetConstCode();
                         caseTxt += $" return {value};";
 
                         if (!value.StartsWith("\"", StringComparison.Ordinal)) 
-                            caseTxt += $" // {ii.Value.ConstValue}";
+                            caseTxt += $" // {pair.Value.FieldsList}";
                     }
                     wr.WriteLine(caseTxt);
                 }
@@ -164,11 +169,11 @@ namespace iSukces.Code
             public Info(string constName, string constValue)
             {
                 ConstName  = constName;
-                ConstValue = constValue;
+                FieldsList = constValue;
             }
 
             public string ConstName  { get; }
-            public string ConstValue { get; }
+            public string FieldsList { get; }
         }
     }
 
