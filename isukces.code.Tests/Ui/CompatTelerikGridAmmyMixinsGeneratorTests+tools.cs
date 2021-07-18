@@ -42,7 +42,7 @@ namespace iSukces.Code.Tests.Ui
 
         private sealed class GridDefinition1 : DataGridConfigurationProvider<TModel>
         {
-            public override IEnumerable<GridColumn> GetColumns()
+            public override IEnumerable<WpfDataGridColumn> GetColumns()
             {
                 yield return Col(a => a.Number, "Number", 160).WithReadOnly();
                 yield return Col(a => a.Name, new SampleStaticTextSource("*Name"), 160).WithReadOnly();
@@ -58,7 +58,7 @@ namespace iSukces.Code.Tests.Ui
 
         private sealed class GridDefinition2 : DataGridConfigurationProvider<TModel>
         {
-            public override IEnumerable<GridColumn> GetColumns()
+            public override IEnumerable<WpfDataGridColumn> GetColumns()
             {
                 var bind = new AmmyBind(nameof(TModel.Flag), XBindingMode.TwoWay)
                     .WithUpdateSourceTrigger(XUpdateSourceTrigger.PropertyChanged);
@@ -78,7 +78,7 @@ namespace iSukces.Code.Tests.Ui
 
         private sealed class GridDefinition3 : DataGridConfigurationProvider<TModel>
         {
-            public override IEnumerable<GridColumn> GetColumns()
+            public override IEnumerable<WpfDataGridColumn> GetColumns()
             {
                 yield return Col(a => a.Obj.Name, "Name", 160);
                 yield return Col(a => ((Derived)a.Obj).Number, "Number", 130);

@@ -11,7 +11,7 @@ namespace iSukces.Code.Ui.DataGrid
 {
     public abstract partial class DataGridConfigurationProvider
     {
-        public abstract IEnumerable<GridColumn> GetColumns();
+        public abstract IEnumerable<WpfDataGridColumn> GetColumns();
         public abstract bool AddExpandColumn { get; }
     }
 
@@ -43,13 +43,13 @@ namespace iSukces.Code.Ui.DataGrid
         }
 
 
-        protected GridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
+        protected WpfDataGridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
         {
             var bindingPath  = CodeUtils.GetMemberPath(func);
             var propertyInfo = GetPropertyInfo(func, bindingPath);
 
-            var result = new GridColumn
+            var result = new WpfDataGridColumn
             {
                 Name = bindingPath,
                 Binding =
@@ -71,7 +71,7 @@ namespace iSukces.Code.Ui.DataGrid
             return result;
         }
 
-        protected GridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, int width)
+        protected WpfDataGridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, int width)
         {
             var col = Col(func, null, width);
             return col;
