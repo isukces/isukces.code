@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace iSukces.Code.Ui.DataGrid
 {
-    public class WpfDataGridColumn:AbstractDataGridColumn
+    public class WpfDataGridColumn:BasicDataGridColumn
     {
    
 
@@ -57,10 +57,7 @@ namespace iSukces.Code.Ui.DataGrid
         public object     CellTemplate { get; set; }
         public object     EditTemplate { get; set; }
 
-        /// <summary>
-        ///     Reflected property if possible. For complicated paths can be declared in other than Row types
-        /// </summary>
-        public PropertyInfo Member { get; set; }
+
 
         [NotNull]
         public AmmyBindBuilder Binding { get; } = new AmmyBindBuilder(null);

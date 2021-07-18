@@ -40,7 +40,7 @@ namespace iSukces.Code.Tests.Ui
             public DirectoryInfo GetBaseDirectory(Assembly assembly) => throw new NotImplementedException();
         }
 
-        private sealed class GridDefinition1 : DataGridConfigurationProvider<TModel>
+        private sealed class GridDefinition1 : DataGridConfigurationProvider<TModel, WpfDataGridColumn>
         {
             public override IEnumerable<WpfDataGridColumn> GetColumns()
             {
@@ -56,7 +56,7 @@ namespace iSukces.Code.Tests.Ui
             }
         }
 
-        private sealed class GridDefinition2 : DataGridConfigurationProvider<TModel>
+        private sealed class GridDefinition2 : DataGridConfigurationProvider<TModel, WpfDataGridColumn>
         {
             public override IEnumerable<WpfDataGridColumn> GetColumns()
             {
@@ -76,7 +76,7 @@ namespace iSukces.Code.Tests.Ui
             }
         }
 
-        private sealed class GridDefinition3 : DataGridConfigurationProvider<TModel>
+        private sealed class GridDefinition3 : DataGridConfigurationProvider<TModel, WpfDataGridColumn>
         {
             public override IEnumerable<WpfDataGridColumn> GetColumns()
             {

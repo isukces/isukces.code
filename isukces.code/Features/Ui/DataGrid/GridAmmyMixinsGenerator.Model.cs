@@ -18,9 +18,9 @@ namespace iSukces.Code.Ui.DataGrid
                     return null;
                 var result = new Model();
 
-                var instance = (DataGridConfigurationProvider)Activator.CreateInstance(type);
+                var instance = (BasicDataGridConfigurationProvider)Activator.CreateInstance(type);
                 result.AddExpandColumn = instance.AddExpandColumn;
-                var columnDefinitions = instance.GetColumns().ToList();
+                var columnDefinitions = instance.GetColumnsGeneral().ToList();
 
                 foreach (var colDef in columnDefinitions)
                 {
@@ -30,20 +30,24 @@ namespace iSukces.Code.Ui.DataGrid
                     var col = new ColumnInfo
                     {
                         Name             = propertyInfo?.Name ?? colDef.Name,
-                        Binding          = colDef.Binding,
                         HeaderSource     = colDef.HeaderSource ?? propertyInfo?.Name,
                         Width            = colDef.Width,
                         CategoryName     = result.Categories.LastOrDefault()?.Name,
                         Type             = propertyInfo?.PropertyType ?? rowType,
-                        Lookup           = colDef.Lookup,
-                        CellTemplate     = colDef.CellTemplate,
-                        EditTemplate     = colDef.EditTemplate,
+                        
                         DataFormatString = colDef.DataFormatString,
                         IsReadOnly       = colDef.IsReadOnly,
                         IsSortable       = colDef.IsSortable,
                         IsResizable      = colDef.IsResizable,
                         CustomValues     = colDef.CustomValues
                     };
+                    if (colDef is WpfDataGridColumn wpf)
+                    {
+                        col.Binding      = wpf.Binding;
+                        col.Lookup       = wpf.Lookup;
+                        col.CellTemplate = wpf.CellTemplate;
+                        col.EditTemplate = wpf.EditTemplate;
+                    }
 
                     col.AlignRight = RightAligned.Contains(col.Type);
                     result.Columns.Add(col);

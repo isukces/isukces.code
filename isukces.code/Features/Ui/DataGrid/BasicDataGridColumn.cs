@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Reflection;
 using JetBrains.Annotations;
 
 namespace iSukces.Code.Ui.DataGrid
 {
-    public class AbstractDataGridColumn
+    public class BasicDataGridColumn
     {
         public string Name  { get; set; }
         public int?   Width { get; set; }   
@@ -18,8 +19,13 @@ namespace iSukces.Code.Ui.DataGrid
 
         public bool IsResizable { get; set; } = true;
             
-        public object CategoryHeaderSource { get; set; }
         public string CategoryName         { get; set; }
+        public object CategoryHeaderSource { get; set; }
+        
+        /// <summary>
+        ///     Reflected property if possible. For complicated paths can be declared in other than Row types
+        /// </summary>
+        public PropertyInfo Member { get; set; }
 
         [NotNull]
         public Dictionary<string, object> CustomValues { get; } = new Dictionary<string, object>();

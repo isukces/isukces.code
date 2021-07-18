@@ -9,13 +9,24 @@ using JetBrains.Annotations;
 
 namespace iSukces.Code.Ui.DataGrid
 {
-    public abstract partial class DataGridConfigurationProvider
-    {
-        public abstract IEnumerable<WpfDataGridColumn> GetColumns();
+    
+    public abstract class BasicDataGridConfigurationProvider {
+        public abstract IEnumerable<BasicDataGridColumn> GetColumnsGeneral();
+
         public abstract bool AddExpandColumn { get; }
     }
+    public abstract class BasicDataGridConfigurationProvider<TColumn>: BasicDataGridConfigurationProvider
+        where TColumn:BasicDataGridColumn
+    {
+        public abstract IEnumerable<TColumn> GetColumns();
+        public override IEnumerable<BasicDataGridColumn> GetColumnsGeneral()
+        {
+            return GetColumns();
+        }
+    }
 
-    public abstract class DataGridConfigurationProvider<TRow> : DataGridConfigurationProvider
+    public abstract class DataGridConfigurationProvider<TRow, TColumn> : BasicDataGridConfigurationProvider<TColumn>
+        where TColumn : BasicDataGridColumn, new()
     {
         protected static PropertyInfo GetPropertyInfo<TValue>(Expression<Func<TRow, TValue>> func, string bindingPath)
         {
@@ -43,23 +54,22 @@ namespace iSukces.Code.Ui.DataGrid
         }
 
 
-        protected WpfDataGridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
+        protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
         {
             var bindingPath  = CodeUtils.GetMemberPath(func);
             var propertyInfo = GetPropertyInfo(func, bindingPath);
 
-            var result = new WpfDataGridColumn
+            var result = new TColumn
             {
-                Name = bindingPath,
-                Binding =
-                {
-                    Path = bindingPath,
-                },
+                Name         = bindingPath,
                 HeaderSource = GetColumnHeaderSource(bindingPath, headerSource, propertyInfo),
                 Width        = width,
-                Member       = propertyInfo
+                Member       = propertyInfo,
             };
+
+            if (result is WpfDataGridColumn col) 
+                col.Binding.Path = bindingPath;
 
             if (propertyInfo != null)
             {
@@ -71,7 +81,7 @@ namespace iSukces.Code.Ui.DataGrid
             return result;
         }
 
-        protected WpfDataGridColumn Col<TValue>(Expression<Func<TRow, TValue>> func, int width)
+        protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, int width)
         {
             var col = Col(func, null, width);
             return col;

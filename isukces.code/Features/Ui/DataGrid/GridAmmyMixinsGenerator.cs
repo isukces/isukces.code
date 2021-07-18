@@ -43,7 +43,7 @@ namespace iSukces.Code.Ui.DataGrid
 
         private static Type GetRowType(Type t)
         {
-            if (t == typeof(DataGridConfigurationProvider<>))
+            if (t == typeof(DataGridConfigurationProvider<,>))
                 return null;
             while (t != null)
             {
@@ -56,7 +56,7 @@ namespace iSukces.Code.Ui.DataGrid
                 if (ti.IsGenericType)
                 {
                     var tt = t.GetGenericTypeDefinition();
-                    if (tt == typeof(DataGridConfigurationProvider<>))
+                    if (tt == typeof(DataGridConfigurationProvider<,>))
                         return ti.GetGenericArguments()[0];
                 }
 
