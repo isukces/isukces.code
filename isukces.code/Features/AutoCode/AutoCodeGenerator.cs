@@ -90,9 +90,12 @@ namespace iSukces.Code.AutoCode
             
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
-            /*var context = CreateAutoCodeGeneratorContext(_csFile);
-            foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
-                i.AssemblyStart(assembly, context);*/
+            {
+                var contextWrapper = GetTarget(null);
+                var context        = contextWrapper.Context;
+                foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
+                    i.AssemblyStart(assembly, context);
+            }
 
             for (int index = 0, length = types.Length; index < length; index++)
             {

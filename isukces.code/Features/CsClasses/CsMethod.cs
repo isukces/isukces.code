@@ -110,6 +110,7 @@ namespace iSukces.Code
         /// <returns></returns>
         public void MakeCode(ICsCodeWriter writer, bool inInterface, ITypeNameResolver typeNameResolver)
         {
+            writer.OpenCompilerIf(CompilerDirective);
             Check();
             WriteMethodDescription(writer);
             foreach (var i in Attributes)
@@ -161,6 +162,7 @@ namespace iSukces.Code
 
             writer.SplitWriteLine(_body);
             writer.Close();
+            writer.CloseCompilerIf(CompilerDirective);
         }
 
         private void Check()
