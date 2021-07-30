@@ -168,6 +168,7 @@ namespace iSukces.Code.AutoCode
 
         public const BindingFlags AllVisibility = BindingFlags.NonPublic | BindingFlags.Public;
         public const BindingFlags AllInstance = BindingFlags.Instance | AllVisibility;
+        public const BindingFlags AllStatic = BindingFlags.Static | AllVisibility;
         public const BindingFlags All = AllInstance | BindingFlags.Static;
         public const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
 

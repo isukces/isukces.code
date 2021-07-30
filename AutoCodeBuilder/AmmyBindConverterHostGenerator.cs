@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using iSukces.Code;
-using iSukces.Code.Ammy;
-using iSukces.Code.AutoCode;
-using iSukces.Code.Interfaces;
-using iSukces.Code.Interfaces.Ammy;
-using JetBrains.Annotations;
 /*
 namespace AutoCodeBuilder
 {
@@ -30,3 +22,5 @@ namespace AutoCodeBuilder
     }
 }
 */
+
+

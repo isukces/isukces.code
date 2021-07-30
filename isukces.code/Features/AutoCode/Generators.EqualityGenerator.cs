@@ -388,7 +388,10 @@ namespace iSukces.Code.AutoCode
 
             protected virtual bool IsToHeavyToGetHashCode(Type type)
             {
-                bool CheckInterface(Type gt) => gt == typeof(IReadOnlyList<>) || gt == typeof(IEnumerable<>);
+                bool CheckInterface(Type gt)
+                {
+                    return gt == typeof(IReadOnlyList<>) || gt == typeof(IEnumerable<>);
+                }
 
                 type = type.StripNullable();
                 if (IsSimpleType(type))

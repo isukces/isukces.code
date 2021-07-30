@@ -16,13 +16,12 @@ namespace Samples.Irony.AmmyGrammar
             var dirProvider = SlnAssemblyBaseDirectoryProvider.Make<Program>("isukces.code.sln", "samples");
             var file        = new CsFile();
             IronyGrammarConfigurator.AddImportNamespaces(file);
-            var classes = new Dictionary<TypeProvider, CsClass>();
 
             IAutoCodeGeneratorContext ctx =
                 new AutoCodeGenerator.SimpleAutoCodeGeneratorContext(file,
                     type =>
                     {
-                        var c = file.GetOrCreateClass(type, classes);
+                        var c = file.GetOrCreateClass(type);
                         c.IsPartial = true;
                         return c;
                     });

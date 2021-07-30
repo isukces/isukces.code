@@ -13,7 +13,7 @@ namespace iSukces.Code.Tests
             var c     = new CsFile();
             var type  = TypeProvider.FromType(typeof(ParentGeneric<>.Nested));
             var cache = new Dictionary<TypeProvider, CsClass>();
-            c.GetOrCreateClass(type, cache);
+            c.GetOrCreateClass(type);
             var code = c.GetCode();
             Assert.Equal(@"// ReSharper disable All
 namespace iSukces.Code.Tests
@@ -35,7 +35,7 @@ namespace iSukces.Code.Tests
             var c     = new CsFile();
             var type  = TypeProvider.FromType(typeof(ParentGeneric<>.Nested));
             var cache = new Dictionary<TypeProvider, CsClass>();
-            var myClass = c.GetOrCreateClass(type, cache);
+            var myClass = c.GetOrCreateClass(type);
             myClass.AddComment("Line");
             {
                 var p = myClass.AddProperty("Count", "int");

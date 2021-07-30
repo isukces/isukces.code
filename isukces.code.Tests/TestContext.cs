@@ -21,7 +21,7 @@ namespace iSukces.Code.Tests
         {
             if (_file == null)
                 _file = new CsFile();
-            return _file.GetOrCreateClass(type, new Dictionary<TypeProvider, CsClass>());
+            return _file.GetOrCreateClass(type);
         }
 
         public CsNamespace GetOrCreateNamespace(string namespaceName) => _file.GetOrCreateNamespace(namespaceName);

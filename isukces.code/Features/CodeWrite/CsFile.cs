@@ -24,16 +24,18 @@ namespace iSukces.Code.CodeWrite
             return ns.GetOrCreateClass(className);
         }
 
-        public CsClass GetOrCreateClass(TypeProvider typeP, Dictionary<TypeProvider, CsClass> classesCache)
+        public CsClass GetOrCreateClass(TypeProvider typeP)
         {
-            return GetOrCreateClass(typeP, classesCache, out _);
+            return GetOrCreateClass(typeP, out _);
         }
+
+        private readonly Dictionary<TypeProvider, CsClass> _classesCache = new Dictionary<TypeProvider, CsClass>();
         
-        public CsClass GetOrCreateClass(TypeProvider typeP, Dictionary<TypeProvider, CsClass> classesCache, out bool isCreatedNew)
+        public CsClass GetOrCreateClass(TypeProvider typeP, out bool isCreatedNew)
         {
             if (typeP.IsEmpty)
                 throw new ArgumentException("Value can't be empty", nameof(typeP));
-            if (classesCache.TryGetValue(typeP, out var c))
+            if (_classesCache.TryGetValue(typeP, out var c))
             {
                 if (c.DotNetType == null && typeP.Type != null)
                     c.DotNetType = typeP.Type;
@@ -88,12 +90,12 @@ namespace iSukces.Code.CodeWrite
                         isCreatedNew = false;
 
                     existing.DotNetType = type;
-                    classesCache[typeP] = existing;
+                    _classesCache[typeP] = existing;
                     return existing;
                 }
 
                 {
-                    var parent   = GetOrCreateClass(TypeProvider.FromType(type.DeclaringType), classesCache);
+                    var parent   = GetOrCreateClass(TypeProvider.FromType(type.DeclaringType));
                     var existing = parent.GetOrCreateNested(name, out isCreatedNew);
                     existing.IsPartial  = true;
                     existing.DotNetType = type;
@@ -115,10 +117,10 @@ namespace iSukces.Code.CodeWrite
                 if (result != null)
                 {
                     isCreatedNew = false;
-                    return classesCache[typeP] = result;
+                    return _classesCache[typeP] = result;
                 }
 
-                result = classesCache[typeP] = new CsClass(name)
+                result = _classesCache[typeP] = new CsClass(name)
                 {
                     IsPartial = true,
                     // DotNetType = type, // UNKNOWN
@@ -148,7 +150,7 @@ namespace iSukces.Code.CodeWrite
             return !string.IsNullOrEmpty(namespaceName) && _importNamespaces.Contains(namespaceName);
         }
 
-        public void MakeCode(ICsCodeWriter writer)
+        public void MakeCode(ICsCodeWriter writer, bool isEmbedded=false)
         {
             if (Namespaces == null || Namespaces.Count == 0)
                 return;
@@ -156,8 +158,9 @@ namespace iSukces.Code.CodeWrite
             const string emptyNamespace = "";
             if (!string.IsNullOrEmpty(BeginContent))
                 writer.WriteLine(BeginContent);
-            foreach (var i in _importNamespaces.OrderBy(i => i))
-                writer.WriteLine("using {0};", i);
+            if (!isEmbedded)
+                foreach (var i in _importNamespaces.OrderBy(i => i))
+                    writer.WriteLine("using {0};", i);
             if (_importNamespaces.Any())
                 writer.EmptyLine();
             var classByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
@@ -215,12 +218,12 @@ namespace iSukces.Code.CodeWrite
 
         public bool SaveIfDifferent(string filename, bool addBom = false)
         {
-            return CodeFileUtils.SaveIfDifferent(GetCode(), filename, addBom);
+            return CodeFileUtils.SaveIfDifferent(GetCode(false), filename, addBom);
         }
 
         public override string ToString()
         {
-            return GetCode();
+            return GetCode(false);
         }
 
         public string GetTypeName(Type type)
@@ -228,10 +231,10 @@ namespace iSukces.Code.CodeWrite
             return GeneratorsHelper.GetTypeName(this, type);
         }
 
-        public string GetCode()
+        public string GetCode(bool isEmbedded = false)
         {
             var writer = new CsCodeWriter();
-            MakeCode(writer);
+            MakeCode(writer, isEmbedded);
             return writer.Code;
         }
 

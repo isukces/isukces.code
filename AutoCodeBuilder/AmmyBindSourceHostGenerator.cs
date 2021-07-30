@@ -1,9 +1,3 @@
-using System;
-using iSukces.Code;
-using iSukces.Code.AutoCode;
-using iSukces.Code.Interfaces;
-using iSukces.Code.Interfaces.Ammy;
-
 /*
 namespace AutoCodeBuilder
 {
@@ -27,3 +21,5 @@ namespace AutoCodeBuilder
     }
 }
 */
+
+

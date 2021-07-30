@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace iSukces.Code.IO
@@ -8,8 +9,8 @@ namespace iSukces.Code.IO
     {
         public static bool AreEqual(byte[] a, byte[] b)
         {
-            a = a ?? new byte[0];
-            b = b ?? new byte[0];
+            a ??= new byte[0];
+            b ??= new byte[0];
             var al = a.Length;
             var bl = b.Length;
             if (al != bl) return false;
@@ -23,6 +24,11 @@ namespace iSukces.Code.IO
             return true;
         }
 
+        public static string GetCallerFilePath([CallerFilePath] string file = null)
+        {
+            return file;
+        }
+        
         public static byte[] Encode(string txt, bool addBom)
         {
             var bytes = Encoding.UTF8.GetBytes(txt);

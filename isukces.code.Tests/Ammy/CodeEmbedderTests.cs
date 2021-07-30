@@ -6,11 +6,11 @@ using Xunit.Abstractions;
 
 namespace iSukces.Code.Tests.Ammy
 {
-    public class CodeEmbederTests
+    public class CodeEmbedderTests
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
-        public CodeEmbederTests(ITestOutputHelper testOutputHelper)
+        public CodeEmbedderTests(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
         }
