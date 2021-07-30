@@ -17,7 +17,7 @@ namespace Sample.AppWithCSharpCodeEmbedding
             IAssemblyFilenameProvider provider = new SimpleAssemblyFilenameProvider(prov2, "--Autocode--.cs");
             var                       gen         = new DemoAutoCodeGenerator(provider);
             gen.WithGenerator(new Generators.EqualityGenerator(new JetbrainsAttributeNullValueChecker()));
-            gen.ClassBased = new CodeFilePathContextProvider();
+            gen.TypeBasedOutputProvider = new CodeFilePathContextProvider();
             gen.Make<DemoAutoCodeGenerator>();
         }
     }

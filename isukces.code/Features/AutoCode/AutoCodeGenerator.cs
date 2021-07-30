@@ -51,14 +51,11 @@ namespace iSukces.Code.AutoCode
             Make(assembly);
         }
         
-        public ICsOutputProvider ClassBased { get; set; }
-
-        private Dictionary<string, ContextWrapper> _outputs = new Dictionary<string, ContextWrapper>(StringComparer.OrdinalIgnoreCase);
-
+        
 
         public void Make(Assembly assembly)
         {
-            ContextWrapper GetTarget(CsOutputFileInfo src)
+            ContextWrapper GetContextWrapper(CsOutputFileInfo src)
             {
                 if (src is null)
                 {
@@ -74,24 +71,20 @@ namespace iSukces.Code.AutoCode
                 }
 
                 result = new ContextWrapper(CreateAutoCodeGeneratorContext, src);
-                
-                if (!src.IsEmbedded)
-                {
-                    foreach (var i in FileNamespaces)
-                        result.File.AddImportNamespace(i);
-                }
+
+
+                foreach (var i in FileNamespaces)
+                    result.File.AddImportNamespace(i);
 
                 _outputs[src.FileName] = result;
                 return result;
             }
             
             
-            
-            
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
             {
-                var contextWrapper = GetTarget(null);
+                var contextWrapper = GetContextWrapper(null);
                 var context        = contextWrapper.Context;
                 foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
                     i.AssemblyStart(assembly, context);
@@ -101,15 +94,15 @@ namespace iSukces.Code.AutoCode
             {
                 var type = types[index];
 
-                var file    = ClassBased?.GeOutputFileInfo(type);
-                var contextWrapper = GetTarget(file);
+                var file    = TypeBasedOutputProvider?.GeOutputFileInfo(type);
+                var contextWrapper = GetContextWrapper(file);
 
                 foreach (var i in CodeGenerators.OfType<IAutoCodeGenerator>())
                     i.Generate(type, contextWrapper.Context);
             }
 
             foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
-                i.AssemblyEnd(assembly, GetTarget(null).Context);
+                i.AssemblyEnd(assembly, GetContextWrapper(null).Context);
 
             var fileName     = _filenameProvider.GetFilename(assembly).FullName;
             var eventHandler = BeforeSave;
@@ -155,6 +148,7 @@ namespace iSukces.Code.AutoCode
                 if (context.AnyFileSaved)
                     AnyFileSaved = true;
             }
+            _outputs.Clear();
         }
 
         protected virtual IFinalizableAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file)
@@ -200,7 +194,13 @@ namespace iSukces.Code.AutoCode
         private readonly Dictionary<Type, object> _configs = new Dictionary<Type, object>();
 
         
+        /// <summary>
+        /// Allows to specify separate output cs file for some types
+        /// </summary>
+        public ICsOutputProvider TypeBasedOutputProvider { get; set; }
 
+        private readonly Dictionary<string, ContextWrapper> _outputs = new Dictionary<string, ContextWrapper>(StringComparer.OrdinalIgnoreCase);
+        
         public event EventHandler<BeforeSaveEventArgs> BeforeSave;
 
         public class BeforeSaveEventArgs : EventArgs
