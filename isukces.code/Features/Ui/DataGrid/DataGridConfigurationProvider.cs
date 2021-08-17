@@ -53,7 +53,6 @@ namespace iSukces.Code.Ui.DataGrid
             return new AmmyBind(name, mode);
         }
 
-
         protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
         {
@@ -87,10 +86,10 @@ namespace iSukces.Code.Ui.DataGrid
             return col;
         }
 
-        protected object GetColumnHeaderSource([CanBeNull] string propertyName, [CanBeNull] object suggestedHeader,
+        protected virtual object GetColumnHeaderSource([CanBeNull] string propertyName, [CanBeNull] object suggestedHeader,
             [CanBeNull] PropertyInfo property)
         {
-            if (!(suggestedHeader is null))
+            if (suggestedHeader is not null)
                 switch (suggestedHeader)
                 {
                     case string s when s.Length > 0:
