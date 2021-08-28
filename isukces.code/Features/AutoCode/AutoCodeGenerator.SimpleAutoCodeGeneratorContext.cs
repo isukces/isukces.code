@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
 
@@ -36,7 +37,7 @@ namespace iSukces.Code.AutoCode
                 AnyFileSaved = true;
             }
 
-            public virtual void Finalize()
+            public virtual void FinalizeContext(Assembly assembly)
             {
             }
 

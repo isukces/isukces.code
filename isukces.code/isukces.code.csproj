@@ -34,10 +34,6 @@
     <Reference Include="WindowsBase" Condition="'$(TargetFramework)' == 'net451'" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Ammy\_extension" />
-    <Folder Include="Features\Ui\FakeTelerik" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2020.3.0" />
   </ItemGroup>
   <ItemGroup>

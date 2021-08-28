@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using iSukces.Code.CodeWrite;
 
 namespace iSukces.Code.AutoCode
@@ -8,11 +9,13 @@ namespace iSukces.Code.AutoCode
         private sealed class ContextWrapper 
         {
 
-            public ContextWrapper(Func<CsFile, IAutoCodeGeneratorContext> contextFactory, CsOutputFileInfo sourceInfo)
+            public ContextWrapper(Func<CsFile, Assembly, IAutoCodeGeneratorContext> contextFactory, 
+                CsOutputFileInfo sourceInfo,
+                Assembly assembly)
             {
                 SourceInfo = sourceInfo;
                 File          = new CsFile();
-                Context  = contextFactory(File);
+                Context  = contextFactory(File, assembly);
             }
 
             public IAutoCodeGeneratorContext Context    { get; }

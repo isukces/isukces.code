@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
@@ -25,7 +26,7 @@ namespace iSukces.Code.AutoCode
 
     public interface IFinalizableAutoCodeGeneratorContext:IAutoCodeGeneratorContext
     {
-        void Finalize();
+        void FinalizeContext(Assembly assembly);
     }
 
     public static class AutoCodeGeneratorContextExtensions

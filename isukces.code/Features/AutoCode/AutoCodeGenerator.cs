@@ -70,7 +70,7 @@ namespace iSukces.Code.AutoCode
                     return result;
                 }
 
-                result = new ContextWrapper(CreateAutoCodeGeneratorContext, src);
+                result = new ContextWrapper(CreateAutoCodeGeneratorContext, src, assembly);
 
 
                 foreach (var i in FileNamespaces)
@@ -144,14 +144,14 @@ namespace iSukces.Code.AutoCode
 
                 var context = wrapper.Context;
                 if (context is IFinalizableAutoCodeGeneratorContext fin)
-                    fin.Finalize();
+                    fin.FinalizeContext(assembly);
                 if (context.AnyFileSaved)
                     AnyFileSaved = true;
             }
             _outputs.Clear();
         }
 
-        protected virtual IFinalizableAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file)
+        protected virtual IFinalizableAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file, Assembly assembly)
         {
             var context = new SimpleAutoCodeGeneratorContext(file, file.GetOrCreateClass);
             return context;
