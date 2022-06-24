@@ -50,8 +50,11 @@ namespace iSukces.Code.AutoCode
                 .Assembly;
             Make(assembly);
         }
-        
-        
+
+        protected virtual void AfterCreateFile(CsFile file)
+        {
+            
+        }
 
         public void Make(Assembly assembly)
         {
@@ -75,7 +78,7 @@ namespace iSukces.Code.AutoCode
 
                 foreach (var i in FileNamespaces)
                     result.File.AddImportNamespace(i);
-
+                AfterCreateFile(result.File);
                 _outputs[src.FileName] = result;
                 return result;
             }

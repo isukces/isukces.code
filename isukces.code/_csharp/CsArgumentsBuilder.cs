@@ -22,6 +22,7 @@ namespace iSukces.Code
         }
 
         public CsArgumentsBuilder AddValue(string text) => AddCode(text.CsEncode());
+        public CsArgumentsBuilder AddValue(int value) => AddCode(value.ToCsString());
 
         public bool Any() => Items.Count > 0;
 
