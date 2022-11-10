@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 
 namespace iSukces.Code.Interfaces.Ammy
@@ -94,3 +95,4 @@ namespace iSukces.Code.Interfaces.Ammy
         }
     }
 }
+#endif

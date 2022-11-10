@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +18,11 @@ namespace AutoCodeBuilder
             BindingParams      = CreateBindingParams();
             MultiBindingParams = CreateMultiBindingParams();
         }
+#if AMMY
 
         public static bool IgnoreWithConverterStatic(Type type) =>
             type == typeof(AmmyBind) || type == typeof(AmmyBindBuilder);
+#endif
 
         private static BindingParamInfoCollection CreateBindingParams()
         {
@@ -80,6 +83,7 @@ namespace AutoCodeBuilder
 
         public void Generate(Type type, IAutoCodeGeneratorContext context)
         {
+#if AMMY
             if (type == typeof(AmmyBind))
             {
                 _currentClass = context.GetOrCreateClass(type);
@@ -100,10 +104,13 @@ namespace AutoCodeBuilder
             {
                 BuildPropertiesAndFluentMethods(context, type, BindingParams, typeof(AmmyBind));
             }
-            else if (type == typeof(XMultiBinding))
+            else 
+#endif
+            if (type == typeof(XMultiBinding))
             {
                 BuildPropertiesAndFluentMethods(context, type, MultiBindingParams, null, false);
             }
+#if AMMY
             else if (type == typeof(AmmyMultiBindingBuilder))
             {
                 BuildPropertiesAndFluentMethods(context, type, MultiBindingParams, typeof(AmmyMultiBind));
@@ -112,6 +119,7 @@ namespace AutoCodeBuilder
             {
                 BuildPropertiesAndFluentMethods(context, type, MultiBindingParams, null);
             }
+#endif
         }
 
         private void AddFluentMethod(Func<string, string, string> creator, Type type, string paramName,
@@ -129,6 +137,7 @@ namespace AutoCodeBuilder
                         .WithAutocodeGeneratedAttribute(_currentClass)
                         .AddParam<string>(argName, _currentClass);
                 }
+#if AMMY
                 {
                     const string argName = "staticResourceName";
                     var          value   = $"new {nameof(AmmyStaticResource)}({argName})";
@@ -150,6 +159,8 @@ namespace AutoCodeBuilder
                         .WithAutocodeGeneratedAttribute(_currentClass)
                         .AddParam<string>(argName, _currentClass);
                 }
+#endif
+#if AMMY
                 {
                     const string argName = "elementName";
                     var          value   = $"new {nameof(ElementNameBindingSource)}({argName})";
@@ -160,8 +171,10 @@ namespace AutoCodeBuilder
                         .WithAutocodeGeneratedAttribute(_currentClass)
                         .AddParam<string>(argName, _currentClass);
                 }
+#endif
             }
 
+#if ElementNameBindingSource
             void AddSelf(FluentMethodInfo mi)
             {
                 const string value = nameof(SelfBindingSource) + "." + nameof(SelfBindingSource.Instance);
@@ -188,6 +201,7 @@ namespace AutoCodeBuilder
                 }*/
                
             }
+#endif
 
             void AddAncestor(FluentMethodInfo mi)
             {
@@ -239,7 +253,9 @@ namespace AutoCodeBuilder
             if (flu.AllowAncestor)
             {
                 AddAncestor(flu);
+#if ElementNameBindingSource
                 AddSelf(flu);
+#endif
             }
         }
 
@@ -379,3 +395,4 @@ namespace AutoCodeBuilder
         }
     }
 }
+#endif

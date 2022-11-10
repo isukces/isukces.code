@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace iSukces.Code.Interfaces
 
             writer.Append(openingCode + " " + openingBracket);
             writer.Indent++;
-            var separatorBeforeContent                  = Separators.Space;
+            var separatorBeforeContent           = Separators.Space;
             var addNewLineBeforeClose            = false;
             var needAddNewLineForPreviousContent = true;
             foreach (var i in codePieces)
@@ -62,7 +63,7 @@ namespace iSukces.Code.Interfaces
                     writer.WriteLine();
                     addNewLineBeforeClose            = true;
                     needAddNewLineForPreviousContent = false;
-                    separatorBeforeContent                  = Separators.Indent;
+                    separatorBeforeContent           = Separators.Indent;
                 }
                 else
                 {
@@ -96,7 +97,7 @@ namespace iSukces.Code.Interfaces
                     }
 
                     needAddNewLineForPreviousContent = true;
-                    separatorBeforeContent                  = Separators.Comma;
+                    separatorBeforeContent           = Separators.Comma;
                 }
 
             if (addNewLineBeforeClose && needAddNewLineForPreviousContent)
@@ -164,3 +165,4 @@ namespace iSukces.Code.Interfaces
         Indent
     }
 }
+#endif

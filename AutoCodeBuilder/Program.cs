@@ -61,6 +61,7 @@ namespace AutoCodeBuilder
             IAssemblyFilenameProvider provider          = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
             var                       autoCodeGenerator = new AutoCodeGenerator(provider);
             autoCodeGenerator.FileNamespaces.Add("iSukces.Code");
+#if AMMY
             var ammyPropertyContainerMethodGenerator = new AmmyPropertyContainerMethodGenerator()
                 .WithSkip<AmmyContainerBase>()
                 .WithSkip<AmmyMixin>();
@@ -68,8 +69,9 @@ namespace AutoCodeBuilder
 
             // autoCodeGenerator.CodeGenerators.Add(new AmmyBindConverterHostGenerator());
             // autoCodeGenerator.CodeGenerators.Add(new AmmyBindSourceHostGenerator());
-            autoCodeGenerator.CodeGenerators.Add(new FluentBindGenerator());
-            autoCodeGenerator.CodeGenerators.Add(new SystemColorsGenerator());
+            // autoCodeGenerator.CodeGenerators.Add(new FluentBindGenerator());
+            // autoCodeGenerator.CodeGenerators.Add(new SystemColorsGenerator());
+#endif
 
             var scanAssembly = typeof(CsLangInfo).Assembly;
             autoCodeGenerator.Make(scanAssembly);

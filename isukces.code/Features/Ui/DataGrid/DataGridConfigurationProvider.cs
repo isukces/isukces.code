@@ -47,11 +47,13 @@ namespace iSukces.Code.Ui.DataGrid
                 .GetProperty(bindingPath);
         }
 
+#if AMMY
         protected AmmyBind BindToModel<TValue>(Expression<Func<TRow, TValue>> func, XBindingMode? mode = null)
         {
             var name = CodeUtils.GetMemberPath(func);
             return new AmmyBind(name, mode);
         }
+#endif
 
         protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
@@ -67,8 +69,10 @@ namespace iSukces.Code.Ui.DataGrid
                 Member       = propertyInfo,
             };
 
+#if AMMY
             if (result is WpfDataGridColumn col) 
                 col.Binding.Path = bindingPath;
+#endif
 
             if (propertyInfo != null)
             {

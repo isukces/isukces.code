@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if AMMY
+using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
 
@@ -72,3 +73,4 @@ namespace iSukces.Code.Ammy
         Key
     }
 }
+#endif

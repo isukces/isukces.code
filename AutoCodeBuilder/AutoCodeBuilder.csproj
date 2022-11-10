@@ -2,12 +2,17 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net48</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj" />
       <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="PresentationFramework" />
+      <Reference Include="WindowsBase" />
     </ItemGroup>
 
 </Project>

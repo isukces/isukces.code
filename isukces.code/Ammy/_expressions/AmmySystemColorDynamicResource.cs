@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Interfaces.Ammy;
 
 namespace iSukces.Code.Ammy
@@ -85,3 +86,4 @@ namespace iSukces.Code.Ammy
         InactiveSelectionHighlightTextBrush
     }
 }
+#endif

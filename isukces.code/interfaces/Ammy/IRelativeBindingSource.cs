@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Interfaces.Ammy
 {
     public interface IRelativeBindingSource
@@ -5,3 +6,4 @@ namespace iSukces.Code.Interfaces.Ammy
         IComplexAmmyCodePiece GetObjectSyntaxCode(IConversionCtx ctx);
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Linq;
 using System.Reflection;
@@ -140,3 +141,4 @@ namespace iSukces.Code.Ammy
         public static string UriForbiddenChars = "_-./\\";
     }
 }
+#endif

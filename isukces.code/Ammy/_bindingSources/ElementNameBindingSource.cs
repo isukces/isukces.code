@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
 
@@ -19,3 +20,4 @@ namespace iSukces.Code.Ammy
         private readonly string _elementName;
     }
 }
+#endif

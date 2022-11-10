@@ -1,3 +1,4 @@
+#if AMMY
 using System.Linq;
 using iSukces.Code.Compatibility.System.Windows.Data;
 using iSukces.Code.Interfaces.Ammy;
@@ -28,3 +29,4 @@ namespace iSukces.Code.Ammy
 
     }
 }
+#endif

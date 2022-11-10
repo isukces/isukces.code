@@ -1,3 +1,4 @@
+#if AMMY
 using System.Globalization;
 using System.Linq;
 using iSukces.Code.Interfaces.Ammy;
@@ -47,3 +48,4 @@ namespace iSukces.Code.Ammy
         }
     }
 }
+#endif

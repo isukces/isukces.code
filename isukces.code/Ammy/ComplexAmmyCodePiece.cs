@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using iSukces.Code.Interfaces.Ammy;
 
@@ -9,7 +10,7 @@ namespace iSukces.Code.Ammy
         {
             _codePieces = codePieces;
             OpeningCode = openingCode;
-            Brackets = brackets;
+            Brackets    = brackets;
         }
 
         public IReadOnlyList<IAmmyCodePiece> GetNestedCodePieces()
@@ -30,3 +31,4 @@ namespace iSukces.Code.Ammy
         private readonly IReadOnlyList<IAmmyCodePiece> _codePieces;
     }
 }
+#endif

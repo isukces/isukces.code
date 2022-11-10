@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using iSukces.Code;
@@ -19,11 +20,13 @@ namespace AutoCodeBuilder
 
             context.AddNamespace("System.Linq.Expressions");
             context.AddNamespace("System");
-            context.AddNamespace("iSukces.Code.Interfaces.Ammy");
-            context.AddNamespace("iSukces.Code.Ammy");
             context.AddNamespace("iSukces.Code");
             context.AddNamespace<KeyValuePair<string, string>>();
+#if AMMY
+            context.AddNamespace("iSukces.Code.Interfaces.Ammy");
+            context.AddNamespace("iSukces.Code.Ammy");
             context.AddNamespace(typeof(AmmyHelper));
+#endif
             context.AddNamespace<NotNullAttribute>();
 
             var cl = context.GetOrCreateClass(type);
@@ -201,3 +204,4 @@ namespace AutoCodeBuilder
         }
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
@@ -40,7 +41,7 @@ namespace iSukces.Code.Tests.Ammy
 
             var writer = new AmmyCodeWriter();
             writer.AddNamespace<SampleUserControl>();
-            var ctx    = new ConversionCtx(writer);
+            var ctx = new ConversionCtx(writer);
             ctx.OnResolveSeparateLines += (a, bb) => { bb.WriteInSeparateLines = true; };
             m.AppendTo(writer, ctx);
 
@@ -71,3 +72,4 @@ namespace iSukces.Code.Tests.Ammy
         }
     }
 }
+#endif

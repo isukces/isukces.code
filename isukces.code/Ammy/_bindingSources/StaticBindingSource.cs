@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using iSukces.Code.Interfaces.Ammy;
 
@@ -7,7 +8,7 @@ namespace iSukces.Code.Ammy
     {
         public StaticBindingSource(Type ownerType, string propertyName)
         {
-            OwnerType     = ownerType;
+            OwnerType    = ownerType;
             PropertyName = propertyName;
         }
 
@@ -31,3 +32,4 @@ namespace iSukces.Code.Ammy
         public string PropertyName { get; }
     }
 }
+#endif

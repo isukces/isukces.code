@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using iSukces.Code.Ammy;
@@ -63,3 +64,4 @@ namespace iSukces.Code.Interfaces.Ammy
         }
     }
 }
+#endif

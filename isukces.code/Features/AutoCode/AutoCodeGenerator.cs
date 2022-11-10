@@ -107,14 +107,15 @@ namespace iSukces.Code.AutoCode
             foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
                 i.AssemblyEnd(assembly, GetContextWrapper(null).Context);
 
-            var fileName     = _filenameProvider.GetFilename(assembly).FullName;
+            var fileNameAssembly     = _filenameProvider.GetFilename(assembly).FullName;
             var eventHandler = BeforeSave;
             foreach (var pair in _outputs)
             {
                 // context = i.Context;
-                var wrapper     = pair.Value;
-                var info        = wrapper.SourceInfo;
-                var csFile = wrapper.File;
+                var wrapper  = pair.Value;
+                var info     = wrapper.SourceInfo;
+                var csFile   = wrapper.File;
+                var fileName = string.IsNullOrEmpty(pair.Key) ? fileNameAssembly : pair.Key;
                 if (eventHandler != null)
                 {
                     var args = new BeforeSaveEventArgs

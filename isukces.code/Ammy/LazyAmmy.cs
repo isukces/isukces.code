@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using iSukces.Code.Interfaces.Ammy;
 
@@ -23,3 +24,4 @@ namespace iSukces.Code.Ammy
         private readonly Func<IConversionCtx, T> _builder;
     }
 }
+#endif

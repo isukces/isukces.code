@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using System.Linq;
 
@@ -74,3 +75,4 @@ namespace iSukces.Code.Ammy
         NullToNone
     }
 }
+#endif

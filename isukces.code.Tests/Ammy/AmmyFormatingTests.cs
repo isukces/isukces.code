@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using iSukces.Code.Compatibility.System.Windows.Data;
 using iSukces.Code.Interfaces.Ammy;
@@ -96,3 +97,4 @@ namespace iSukces.Code.Tests.Ammy
         }
     }
 }
+#endif

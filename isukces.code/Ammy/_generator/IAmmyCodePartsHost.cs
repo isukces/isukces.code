@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
@@ -26,3 +27,4 @@ namespace iSukces.Code.Ammy
  
     }
 }
+#endif

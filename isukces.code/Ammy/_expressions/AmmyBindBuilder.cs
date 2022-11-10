@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -67,3 +68,4 @@ namespace iSukces.Code.Ammy
         public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
     }
 }
+#endif

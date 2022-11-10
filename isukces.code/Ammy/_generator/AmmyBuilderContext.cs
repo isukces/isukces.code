@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,6 +49,7 @@ namespace iSukces.Code.Ammy
 
         public string GetFullMixinName(string shortName) => MixinNamePrefix + shortName;
 
+#if AMMY
         public MixinBuilder<T> RegisterMixin<T>(string name, bool globalName = false, bool overwrite = false)
         {
             if (!globalName)
@@ -70,12 +72,14 @@ namespace iSukces.Code.Ammy
             return mixinBuilder;
         }
 
+
         public AmmyBuilderContext RegisterVariable(string name, int value, bool globalName = false) =>
             RegisterVariable(name, value.ToCsString(), globalName);
 
         public AmmyBuilderContext RegisterVariable(string name, double value, bool globalName = false) =>
             RegisterVariable(name, value.ToCsString(), globalName);
 
+ 
         public AmmyBuilderContext RegisterVariable(string name, string value, bool globalName = false)
         {
             if (!globalName)
@@ -87,6 +91,7 @@ namespace iSukces.Code.Ammy
 
         public override string ToString() =>
             $"{nameof(AmmyBuilderContext)} {Variables.Count} variable(s), {Mixins.Count} mixin(s)";
+
 
 
         protected virtual void AfterAddMixin<T>(MixinBuilder<T> mixinBuilder)
@@ -102,6 +107,7 @@ namespace iSukces.Code.Ammy
         {
             get { return _variables; }
         }
+#endif
 
         public string MixinNamePrefix { get; }
 
@@ -112,8 +118,11 @@ namespace iSukces.Code.Ammy
             get { return _namespaces; }
         }
 
+#if AMMY
         private readonly List<AmmyMixin> _mixins = new List<AmmyMixin>();
         private readonly List<AmmyVariableDefinition> _variables = new List<AmmyVariableDefinition>();
+#endif
         private readonly HashSet<string> _namespaces = new HashSet<string>();
     }
 }
+#endif

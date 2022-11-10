@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using Xunit;
 
@@ -38,7 +39,7 @@ mixin GridDefinition1() for RadGridView
         combine MergedDictionaries: [ ResourceDictionary {Source: ""pack://application:,,,/MyApplication;component/resources/gridviewstyles.g.xaml""} ]
     }
     IsLocalizationLanguageRespected: false
-    #MyGridProperties
+    MyGridProperties
     combine Columns: [
         GridViewDataColumn { DataMemberBinding: bind ""Number"", Header: ""Number"", IsReadOnly: true, Width: 160, TextAlignment: Right }
         GridViewDataColumn { DataMemberBinding: bind ""Name"", Header: ""*Name"", IsReadOnly: true, Width: 160 }
@@ -109,7 +110,7 @@ mixin GridDefinition2() for RadGridView
         combine MergedDictionaries: [ ResourceDictionary {Source: ""pack://application:,,,/MyApplication;component/resources/gridviewstyles.g.xaml""} ]
     }
     IsLocalizationLanguageRespected: false
-    #MyGridProperties
+    MyGridProperties
     combine Columns: [
         GridViewDataColumn { DataMemberBinding: bind ""Flag"", Header: ""Flag1"", Width: 160
             CellTemplate: System.Windows.DataTemplate {
@@ -189,7 +190,7 @@ mixin GridDefinition3() for RadGridView
         combine MergedDictionaries: [ ResourceDictionary {Source: ""pack://application:,,,/MyApplication;component/resources/gridviewstyles.g.xaml""} ]
     }
     IsLocalizationLanguageRespected: false
-    #MyGridProperties
+    MyGridProperties
     combine Columns: [
         GridViewDataColumn { DataMemberBinding: bind ""Obj.Name"", Header: ""Name"", Width: 160 }
         GridViewDataColumn { DataMemberBinding: bind ""Obj.Number"", Header: ""Number"", Width: 130 }
@@ -226,3 +227,4 @@ namespace iSukces.Code.Tests.Ui
         }
     }
 }
+#endif

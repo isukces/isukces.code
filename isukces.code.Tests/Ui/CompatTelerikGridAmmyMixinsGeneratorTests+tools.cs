@@ -56,6 +56,7 @@ namespace iSukces.Code.Tests.Ui
             }
         }
 
+#if AMMY
         private sealed class GridDefinition2 : DataGridConfigurationProvider<TModel, WpfDataGridColumn>
         {
             public override IEnumerable<WpfDataGridColumn> GetColumns()
@@ -75,7 +76,8 @@ namespace iSukces.Code.Tests.Ui
                 get { return false; }
             }
         }
-
+        
+#endif
         private sealed class GridDefinition3 : DataGridConfigurationProvider<TModel, WpfDataGridColumn>
         {
             public override IEnumerable<WpfDataGridColumn> GetColumns()

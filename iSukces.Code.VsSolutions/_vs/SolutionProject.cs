@@ -67,10 +67,12 @@ namespace iSukces.Code.VsSolutions
                 }
 
                 if (string.IsNullOrEmpty(ver))
-                    throw new Exception("Unable to get version");
+                    ver = "0.0.0.0";
+                    //throw new Exception("Unable to get version");
                 r.Version = NugetVersion.Parse(ver);
                 return r;
-            }).ToArray();
+            })
+                .ToArray();
         }
 
         public bool Equals(SolutionProject other)

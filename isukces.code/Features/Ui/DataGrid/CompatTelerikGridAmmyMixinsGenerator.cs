@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -21,6 +22,7 @@ namespace iSukces.Code.Ui.DataGrid
             base(directoryProvider)
         {
         }
+#if AMMY
 
         protected AmmyObjectBuilder<T> AddTemplates<T>(AmmyObjectBuilder<T> obj, ColumnInfo col)
             where T : GridViewColumn
@@ -64,6 +66,7 @@ namespace iSukces.Code.Ui.DataGrid
         protected virtual void AfterConvertColumn(AmmyContainerBase builder, ColumnInfo col)
         {
         }
+#endif
 
         protected virtual void AfterStartMixin(string name, IConversionCtx ctx, Model model)
         {
@@ -72,6 +75,7 @@ namespace iSukces.Code.Ui.DataGrid
         protected virtual void BeforeEndMixin(string name, IConversionCtx ctx, Model model)
         {
         }
+#if AMMY
 
         protected virtual IAmmyCodePieceConvertible ConvertColumn(ColumnInfo col)
         {
@@ -107,6 +111,7 @@ namespace iSukces.Code.Ui.DataGrid
                 return obj;
             }
         }
+#endif
 
         protected virtual IConversionCtx CreateConversionContext()
         {
@@ -122,6 +127,7 @@ namespace iSukces.Code.Ui.DataGrid
             return binding.Build();
         }
 
+#if AMMY
         protected virtual object TemplatesProcess(object src)
         {
             switch (src)
@@ -214,5 +220,8 @@ namespace iSukces.Code.Ui.DataGrid
                 obj = obj.WithPropertyGeneric(a => a.DataFormatString, col.DataFormatString);
             return obj;
         }
+        
+#endif
     }
 }
+#endif

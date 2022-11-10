@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Interfaces.Ammy
 {
     public interface IAmmyObjectBuilder<TPropertyBrowser>: 
@@ -9,3 +10,4 @@ namespace iSukces.Code.Interfaces.Ammy
         
     }
 }
+#endif

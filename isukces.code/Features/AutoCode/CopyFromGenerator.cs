@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
@@ -41,7 +40,7 @@ namespace iSukces.Code.AutoCode
             var l = constr.GetParameters()
                 .Select(i =>
                 {
-                    if (props.TryGetValue(i.Name, out var pi))
+                    if (props.TryGetValue(i.Name ?? throw new InvalidOperationException(), out var pi))
                         return pi.Name;
                     throw new Exception("Unable to find property related to constructor parameter " + i.Name);
                 }).ToArray();
@@ -261,7 +260,7 @@ namespace iSukces.Code.AutoCode
                 return;
             }
 #if !COREFX
-            if (ptg == typeof(Point[]))
+            if (ptg == typeof(System.Windows.Point[]))
             {
                 CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
                 return;

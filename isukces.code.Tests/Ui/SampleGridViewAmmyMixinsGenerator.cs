@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Linq;
 using iSukces.Code.Ammy;
@@ -19,6 +20,7 @@ namespace iSukces.Code.Tests.Ui
         }
 
         public string GetFullCode() => Mixins.FullCode;
+#if AMMY
 
         protected override void AfterConvertColumn(AmmyContainerBase builder, ColumnInfo col)
         {
@@ -37,6 +39,7 @@ namespace iSukces.Code.Tests.Ui
             t.WithPropertyGeneric(q => q.EditTriggers, GridViewEditTriggers.CellClick);
             return t;
         }
+#endif
 
         private static UiTestTextSourceInfo GetText(object textSource)
         {
@@ -102,6 +105,7 @@ namespace iSukces.Code.Tests.Ui
             Mixins.WriteLine(respectedName + ": false");
             Mixins.WriteLine("#MyGridProperties");
         }
+#if AMMY
 
         protected override IConversionCtx CreateConversionContext()
         {
@@ -109,6 +113,7 @@ namespace iSukces.Code.Tests.Ui
             ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
             return ctx;
         }
+#endif
 
         protected override LookupInfo GetLookupSource(Type t)
         {
@@ -122,11 +127,14 @@ namespace iSukces.Code.Tests.Ui
             }
         }
 
+#if AMMY
         protected override void WriteAmmyMixin(string name, Model model)
         {
             Mixins.AddNamespace<GridViewColumnGroup>();
             Mixins.AddNamespace<GridViewToggleRowDetailsColumn>();
             base.WriteAmmyMixin(name, model);
         }
+#endif
     }
 }
+#endif

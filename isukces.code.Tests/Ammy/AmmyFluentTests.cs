@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using iSukces.Code.Compatibility.System.Windows.Data;
 using iSukces.Code.Compatibility.Telerik;
@@ -24,6 +25,7 @@ namespace iSukces.Code.Tests.Ammy
             return writer.FullCode;
         }
 
+#if AMMY
         [Fact]
         public void T01_Should_create_code_with_fluent_from_static_resource()
         {
@@ -215,6 +217,7 @@ namespace iSukces.Code.Tests.Ammy
 }";
             Assert.Equal(expected, code);
         }
+#endif
 
 
         private class SomeOtherWpfControl
@@ -239,3 +242,4 @@ namespace iSukces.Code.Tests.Ammy
         }
     }
 }
+#endif

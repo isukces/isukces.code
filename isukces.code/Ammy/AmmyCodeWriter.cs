@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if AMMY
+using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
@@ -37,3 +38,4 @@ namespace iSukces.Code.Ammy
         private readonly HashSet<string> _namespaces = new HashSet<string>();
     }
 }
+#endif

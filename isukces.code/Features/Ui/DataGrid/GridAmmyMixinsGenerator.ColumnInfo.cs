@@ -23,7 +23,9 @@ namespace iSukces.Code.Ui.DataGrid
             public bool                       IsReadOnly       { get; set; }
             public bool                       IsSortable       { get; set; }
             public bool                       IsResizable      { get; set; }
-            public AmmyBindBuilder            Binding          { get; set; } = new AmmyBindBuilder(null);
+#if AMMY
+            public AmmyBindBuilder Binding { get; set; } = new AmmyBindBuilder(null);
+#endif
             public Dictionary<string, object> CustomValues     { get; set; }
         }
     }

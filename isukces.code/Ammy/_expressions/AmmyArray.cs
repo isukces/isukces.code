@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if AMMY
+using System.Collections.Generic;
 using iSukces.Code.Interfaces.Ammy;
 
 namespace iSukces.Code.Ammy
@@ -33,3 +34,4 @@ namespace iSukces.Code.Ammy
         public List<object> Items { get; } = new List<object>();
     }
 }
+#endif

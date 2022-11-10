@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -121,8 +122,10 @@ namespace iSukces.Code.Ammy
                     info.AddImportNamespace(i);
             }
 
+#if AMMY
             foreach (var mixin in ctx.Mixins)
                 cp.AddMixin(mixin);
+#endif
             foreach (var variableDefinition in ctx.Variables)
                 cp.AddVariable(variableDefinition);
         }
@@ -175,3 +178,4 @@ namespace iSukces.Code.Ammy
         Alias
     }
 }
+#endif

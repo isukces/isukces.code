@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if AMMY
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using iSukces.Code.Ammy;
@@ -22,6 +23,7 @@ namespace iSukces.Code.Interfaces.Ammy
 
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx) => Builder.ToAmmyCode(ctx);
 
+#if AMMY
         public DataContextBinder<TDataContext> WithDataContext<TDataContext>(AmmyBind bind)
         {
             Builder.WithProperty(DataContextPropertyName, bind);
@@ -36,6 +38,7 @@ namespace iSukces.Code.Interfaces.Ammy
                 .WithMode(mode);
             return WithDataContext<TDataContext>(bind);
         }
+#endif
 
         public DataContextBinder<TDataContext> WithDataContextFromAncestor<TDataContext>(
             XBindingMode mode = XBindingMode.OneWay)
@@ -143,7 +146,7 @@ namespace iSukces.Code.Interfaces.Ammy
                     XBindingMode? mode = null)
                 {
                     var propertyName = ExpressionTools.GetBindingPath(func1);
-                    var path2                   = ExpressionTools.GetBindingPath(func2);
+                    var path2        = ExpressionTools.GetBindingPath(func2);
                     var bind = new AmmyBindBuilder(path2)
                     {
                         From = new ElementNameBindingSource(PropertyName),
@@ -178,3 +181,4 @@ namespace iSukces.Code.Interfaces.Ammy
         }
     }
 }
+#endif

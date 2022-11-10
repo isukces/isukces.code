@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using Xunit;
 
@@ -22,3 +23,4 @@ namespace iSukces.Code.Tests.Ammy
         }
     }
 }
+#endif

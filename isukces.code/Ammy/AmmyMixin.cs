@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
@@ -22,3 +23,4 @@ namespace iSukces.Code.Ammy
         public Type   MixinTargetType { get; }
     }
 }
+#endif

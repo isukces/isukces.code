@@ -1,4 +1,5 @@
-﻿// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+﻿#if AMMY
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,7 @@ namespace iSukces.Code.Ammy
         public static AmmyBind FromAncestor<T>(Expression<Func<T, object>> func, XBindingMode mode)
         {
             var path = CodeUtils.GetMemberPath(func);
-            var tmp  = new AmmyBindBuilder(path)
+            var tmp = new AmmyBindBuilder(path)
                 .WithMode(mode)
                 .WithBindFromAncestor(typeof(T));
             return tmp.Build();
@@ -272,3 +273,4 @@ namespace iSukces.Code.Ammy
         public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
     }
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if AMMY
+using System;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
 
@@ -53,3 +54,4 @@ namespace iSukces.Code.Ammy
         }
     }
 }
+#endif

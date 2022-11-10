@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Ammy;
@@ -19,7 +20,8 @@ namespace iSukces.Code.Interfaces.Ammy
     {
     }
 
-     
+
+#if AMMY
     public static class AmmyPropertyContainerExtensions
     {
         public static AmmyBuilderExtender<TBuilder, TPropertyBrowser >
@@ -30,7 +32,8 @@ namespace iSukces.Code.Interfaces.Ammy
         }
 
     }
-   
+    
+#endif
 
     public interface IAmmyContentItemsContainer
     {
@@ -79,3 +82,4 @@ namespace iSukces.Code.Interfaces.Ammy
         }
     }
 }
+#endif

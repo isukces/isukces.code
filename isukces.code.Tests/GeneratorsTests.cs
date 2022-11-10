@@ -70,6 +70,7 @@ namespace iSukces.Code.Tests
             Assert.Equal("!OtherValue.Equals(Foo)", code);
         }
 
+#if AMMY
         [Fact]
         public void T06_Should_convert_generic_type_name()
         {
@@ -77,6 +78,7 @@ namespace iSukces.Code.Tests
             var tn = new CsFile().GetTypeName(t);
             Assert.Equal("iSukces.Code.Ammy.AmmyObjectBuilder<TPropertyBrowser>", tn);
         }
+#endif
 
         [Auto.ShouldSerializeInfoAttribute("!{0}.Equals(Foo)")]
         public struct SampleStruct

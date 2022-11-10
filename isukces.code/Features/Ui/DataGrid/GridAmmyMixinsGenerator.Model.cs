@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +30,11 @@ namespace iSukces.Code.Ui.DataGrid
                         result.Categories.Add(new AttributeInfo(colDef.CategoryName, colDef.CategoryHeaderSource));
                     var col = new ColumnInfo
                     {
-                        Name             = propertyInfo?.Name ?? colDef.Name,
-                        HeaderSource     = colDef.HeaderSource ?? propertyInfo?.Name,
-                        Width            = colDef.Width,
-                        CategoryName     = result.Categories.LastOrDefault()?.Name,
-                        Type             = propertyInfo?.PropertyType ?? rowType,
+                        Name         = propertyInfo?.Name ?? colDef.Name,
+                        HeaderSource = colDef.HeaderSource ?? propertyInfo?.Name,
+                        Width        = colDef.Width,
+                        CategoryName = result.Categories.LastOrDefault()?.Name,
+                        Type         = propertyInfo?.PropertyType ?? rowType,
                         
                         DataFormatString = colDef.DataFormatString,
                         IsReadOnly       = colDef.IsReadOnly,
@@ -43,7 +44,9 @@ namespace iSukces.Code.Ui.DataGrid
                     };
                     if (colDef is WpfDataGridColumn wpf)
                     {
-                        col.Binding      = wpf.Binding;
+#if AMMY
+                        col.Binding = wpf.Binding;
+#endif
                         col.Lookup       = wpf.Lookup;
                         col.CellTemplate = wpf.CellTemplate;
                         col.EditTemplate = wpf.EditTemplate;
@@ -56,11 +59,12 @@ namespace iSukces.Code.Ui.DataGrid
                 return result;
             }
 
-            public bool                        AddExpandColumn { get; private set; }
-            public List<AttributeInfo>         Categories      { get; } = new List<AttributeInfo>();
-            public List<ColumnInfo>            Columns         { get; } = new List<ColumnInfo>();
+            public bool                AddExpandColumn { get; private set; }
+            public List<AttributeInfo> Categories      { get; } = new List<AttributeInfo>();
+            public List<ColumnInfo>    Columns         { get; } = new List<ColumnInfo>();
             
             public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
         }
     }
 }
+#endif

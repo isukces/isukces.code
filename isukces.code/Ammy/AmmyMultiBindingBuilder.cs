@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Compatibility.System.Windows.Data;
@@ -9,7 +10,7 @@ namespace iSukces.Code.Ammy
     {
         public AmmyMultiBindingBuilder()
         {
-            Bindings=new List<object>();
+            Bindings = new List<object>();
         }
 
         public IAmmyCodePiece ToAmmyCode(IConversionCtx ctx)
@@ -38,3 +39,4 @@ namespace iSukces.Code.Ammy
  
     }
 }
+#endif

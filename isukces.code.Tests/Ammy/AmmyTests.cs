@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
@@ -14,13 +15,13 @@ namespace iSukces.Code.Tests.Ammy
             b.WithProperty("Number", 1);                       
             b.WithProperty("Text", "bla");
             var writer = new AmmyCodeWriter();
-            var ctx= new ConversionCtx(writer);                        
+            var ctx    = new ConversionCtx(writer);                        
             b.AppendTo(writer, ctx);
             Assert.Equal("object { Number: 1, Text: \"bla\" }", writer.GetCodeTrim());
             
             // every in separate line
-            writer   = new AmmyCodeWriter();
-            ctx = new ConversionCtx(writer);
+            writer                     =  new AmmyCodeWriter();
+            ctx                        =  new ConversionCtx(writer);
             ctx.OnResolveSeparateLines += (a, bb) => { bb.WriteInSeparateLines = true; };            
             b.AppendTo(writer, ctx);
             var expected = @"object {
@@ -38,7 +39,7 @@ namespace iSukces.Code.Tests.Ammy
             ctx.OnResolveSeparateLines += (a, bb) => { bb.WriteInSeparateLines = true; };
             
             
-            var b = new AmmyObjectBuilder<object>();
+            var b      = new AmmyObjectBuilder<object>();
             var nested = new AmmyObjectBuilder<object>();
             b.WithProperty("Number", 1);
             b.WithProperty("Other", 2);
@@ -112,3 +113,4 @@ namespace iSukces.Code.Tests.Ammy
 
     }
 }
+#endif

@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Globalization;
 using iSukces.Code.Interfaces.Ammy;
@@ -57,3 +58,4 @@ namespace iSukces.Code.Ammy
         private readonly int? _level;
     }
 }
+#endif

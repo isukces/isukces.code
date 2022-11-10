@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 
 namespace iSukces.Code.Ammy
@@ -82,3 +83,4 @@ namespace iSukces.Code.Ammy
         public string               Name { get; }
     }
 }
+#endif

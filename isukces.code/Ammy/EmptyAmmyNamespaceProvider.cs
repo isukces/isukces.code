@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using iSukces.Code.Interfaces.Ammy;
 
@@ -8,3 +9,4 @@ namespace iSukces.Code.Ammy
         public ISet<string> Namespaces { get; } = new HashSet<string>();
     }
 }
+#endif

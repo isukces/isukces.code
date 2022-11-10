@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if AMMY
+using System;
 using System.Linq.Expressions;
 using iSukces.Code.Ammy;
 using iSukces.Code.Compatibility.System.Windows.Data;
@@ -77,3 +78,4 @@ namespace iSukces.Code.Interfaces.Ammy
         }
     }
 }
+#endif

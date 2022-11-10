@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Interfaces.Ammy
 {
     public sealed class AmmyNone : IAmmyCodePieceConvertible
@@ -25,3 +26,4 @@ namespace iSukces.Code.Interfaces.Ammy
         public string Code                 => "none";
     }
 }
+#endif

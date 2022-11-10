@@ -1,4 +1,5 @@
-﻿using iSukces.Code.Interfaces.Ammy;
+﻿#if AMMY
+using iSukces.Code.Interfaces.Ammy;
 
 namespace iSukces.Code.Ammy
 {
@@ -17,3 +18,4 @@ namespace iSukces.Code.Ammy
         public string VariableName { get; }
     }
 }
+#endif

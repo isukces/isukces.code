@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
@@ -12,7 +13,7 @@ namespace iSukces.Code.Tests.Ammy
         [InlineData(true, "resource dyn System.Windows.SystemColors.WindowBrushKey")]
         public void T01_Should_create_dynamic_resource(bool fullNamespaces, string expected)
         {
-            var resource = new AmmySystemColorDynamicResource(SystemColorsKeys.WindowBrush);
+            var resource   = new AmmySystemColorDynamicResource(SystemColorsKeys.WindowBrush);
             var nsProvider = new AmmyNamespaceProvider();
             nsProvider.Namespaces.Add("System.Windows");
             IConversionCtx ctx  = new ConversionCtx(nsProvider, fullNamespaces);
@@ -34,7 +35,7 @@ namespace iSukces.Code.Tests.Ammy
             var ctx = new ConversionCtx(nsProvider);
             ctx.OnResolveSeparateLines += AmmyPretty.VeryPretty;
 
-            var writer= new AmmyCodeWriter();
+            var writer = new AmmyCodeWriter();
             mixinBuilder.WrappedMixin.AppendTo(writer, ctx);
             var code = writer.FullCode;
             string expected = @"mixin mixinName() for object {
@@ -46,3 +47,4 @@ namespace iSukces.Code.Tests.Ammy
         }
     }
 }
+#endif

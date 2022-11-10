@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
@@ -23,3 +24,4 @@ namespace iSukces.Code.Ammy
         public string Value { get; }
     }
 }
+#endif

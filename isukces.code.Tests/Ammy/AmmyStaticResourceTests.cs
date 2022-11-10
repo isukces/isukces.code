@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Ammy;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Interfaces.Ammy;
@@ -21,14 +22,15 @@ namespace iSukces.Code.Tests.Ammy
         [Fact]
         public void T02_Should_create_complex()
         {
-            var writer = new AmmyCodeWriter();
-            IConversionCtx ctx = new ConversionCtx(writer);
+            var            writer = new AmmyCodeWriter();
+            IConversionCtx ctx    = new ConversionCtx(writer);
 
             var a1 = new AmmyStaticResource("Bla");
-            var a = a1.GetObjectSyntaxCode(ctx);
+            var a  = a1.GetObjectSyntaxCode(ctx);
             writer.AppendComplex(a);
             const string expected = @"StaticResource { ResourceKey: ""Bla"" }";
             Assert.Equal(expected, writer.Code);
         }
     }
 }
+#endif

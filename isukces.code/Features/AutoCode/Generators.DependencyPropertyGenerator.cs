@@ -3,6 +3,10 @@ using System.Linq;
 using System.Reflection;
 using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
+#if COREFX
+#else
+using System.Windows;
+#endif
 
 namespace iSukces.Code.AutoCode
 {
