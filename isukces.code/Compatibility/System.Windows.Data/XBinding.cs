@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using iSukces.Code.Ammy;
 
@@ -21,3 +22,4 @@ namespace iSukces.Code.Compatibility.System.Windows.Data
         }
     }
 }
+#endif

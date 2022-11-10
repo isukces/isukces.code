@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Compatibility.System.Windows.Data;
 
 namespace iSukces.Code.Compatibility.Telerik
@@ -12,3 +13,4 @@ namespace iSukces.Code.Compatibility.Telerik
         public string   SelectedValueMemberPath { get; set; }
     }
 }
+#endif

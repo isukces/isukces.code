@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using iSukces.Code.AutoCode;
+﻿using iSukces.Code.AutoCode;
 using Sample.AppWithCSharpCodeEmbedding.AutoCode;
 
 namespace Sample.AppWithCSharpCodeEmbedding

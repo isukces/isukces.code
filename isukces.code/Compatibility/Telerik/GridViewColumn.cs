@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Compatibility.System.Windows;
 using iSukces.Code.Compatibility.System.Windows.Controls;
 
@@ -15,3 +16,4 @@ namespace iSukces.Code.Compatibility.Telerik
         public GridViewEditTriggers EditTriggers { get; set; }
     }
 }
+#endif

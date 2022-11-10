@@ -1,5 +1,4 @@
 using Irony.Parsing;
-using iSukces.Code;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Irony;
 using Samples.Irony.AmmyGrammar.Ast;

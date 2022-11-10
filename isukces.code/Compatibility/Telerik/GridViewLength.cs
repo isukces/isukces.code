@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Compatibility.Telerik
 {
     /// <summary>
@@ -8,3 +9,4 @@ namespace iSukces.Code.Compatibility.Telerik
     {
     }
 }
+#endif

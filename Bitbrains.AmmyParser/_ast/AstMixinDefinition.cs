@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Irony.Ast;
 using Irony.Interpreter;
 using Irony.Parsing;

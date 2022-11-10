@@ -1,9 +1,3 @@
-using System;
-using System.Linq;
-using iSukces.Code.Ammy;
-using iSukces.Code.AutoCode;
-using System.Windows;
-
 namespace AutoCodeBuilder
 {
 #if AMMY

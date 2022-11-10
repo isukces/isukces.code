@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 
 namespace iSukces.Code.Compatibility.Telerik
@@ -40,3 +41,4 @@ namespace iSukces.Code.Compatibility.Telerik
         Default = TextInput | F2 | CurrentCellClick, // 0x0000001C
     }
 }
+#endif

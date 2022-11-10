@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using iSukces.Code.Interfaces;
-using iSukces.Code.Interfaces.Ammy;
 using JetBrains.Annotations;
 
 namespace iSukces.Code.AutoCode
@@ -60,6 +59,7 @@ namespace iSukces.Code.AutoCode
 
         public static string GetTypeName(this INamespaceContainer container, Type type)
         {
+#if AMMY
             var emitTypeAttribute = EmitTypeAttribute.GetAttribute(type);
             if (emitTypeAttribute != null)
             {
@@ -69,6 +69,7 @@ namespace iSukces.Code.AutoCode
                     return shortName;
                 return namespaceName + "." + shortName;
             }
+#endif
 
             //todo: Generic types
             if (type == null)

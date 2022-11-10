@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using Irony.Parsing;
-using iSukces.Code;
 using iSukces.Code.AutoCode;
 using iSukces.Code.CodeWrite;
 using iSukces.Code.Irony;

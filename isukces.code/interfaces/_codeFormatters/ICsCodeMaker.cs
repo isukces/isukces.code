@@ -1,7 +1,4 @@
-﻿using System;
-using JetBrains.Annotations;
-
-namespace iSukces.Code.Interfaces
+﻿namespace iSukces.Code.Interfaces
 {
     /*
    

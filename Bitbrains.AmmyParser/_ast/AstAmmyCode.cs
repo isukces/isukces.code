@@ -1,4 +1,3 @@
-using System;
 using Irony.Interpreter;
 
 namespace Bitbrains.AmmyParser

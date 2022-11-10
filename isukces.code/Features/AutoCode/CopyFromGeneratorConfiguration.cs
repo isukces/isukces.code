@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection;
-using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.AutoCode
 {

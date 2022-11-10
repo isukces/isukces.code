@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Compatibility.System.Windows.Controls;
 
 namespace iSukces.Code.Compatibility.Telerik
@@ -10,3 +11,4 @@ namespace iSukces.Code.Compatibility.Telerik
     {
     }
 }
+#endif

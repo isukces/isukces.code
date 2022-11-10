@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Compatibility.Telerik
 {
     /// <summary>
@@ -9,3 +10,4 @@ namespace iSukces.Code.Compatibility.Telerik
         public GridViewToggleRowDetailsColumnExpandMode ExpandMode { get; set; }
     }
 }
+#endif

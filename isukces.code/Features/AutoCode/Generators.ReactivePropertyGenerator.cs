@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
-using System.Windows;
-using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.AutoCode

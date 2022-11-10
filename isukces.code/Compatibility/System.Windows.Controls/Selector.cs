@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Compatibility.System.Windows.Controls
 {
     [EmitType("System.Windows.Controls.Primitives")]
@@ -7,3 +8,4 @@ namespace iSukces.Code.Compatibility.System.Windows.Controls
         public object SelectedValue     { get; set; }
     }
 }
+#endif

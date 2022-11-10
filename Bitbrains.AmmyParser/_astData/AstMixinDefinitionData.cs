@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Irony.Parsing;
 
 namespace Bitbrains.AmmyParser

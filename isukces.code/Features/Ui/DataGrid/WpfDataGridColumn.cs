@@ -1,7 +1,3 @@
-using System.Reflection;
-using iSukces.Code.Ammy;
-using JetBrains.Annotations;
-
 namespace iSukces.Code.Ui.DataGrid
 {
     public class WpfDataGridColumn:BasicDataGridColumn

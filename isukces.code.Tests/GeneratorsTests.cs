@@ -1,7 +1,5 @@
 using System;
-using iSukces.Code.Ammy;
 using iSukces.Code.AutoCode;
-using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
 using Xunit;
 

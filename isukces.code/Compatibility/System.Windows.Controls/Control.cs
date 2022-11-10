@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Compatibility.System.Windows.Controls
 {
     [EmitType("System.Windows.Controls")]
@@ -5,3 +6,4 @@ namespace iSukces.Code.Compatibility.System.Windows.Controls
     {
     }
 }
+#endif

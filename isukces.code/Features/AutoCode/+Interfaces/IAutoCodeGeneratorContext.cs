@@ -43,11 +43,13 @@ namespace iSukces.Code.AutoCode
             CsNamespaceMemberKind kind) =>
             self.GetOrCreateClass(TypeProvider.FromTypeName(typeName, kind));
     }
+ 
 
     public static class AutoCodeGeneratorContextExt
     {
         public static void AddNamespace(this IAutoCodeGeneratorContext src, Type type)
         {
+#if AMMY
             var at = EmitTypeAttribute.GetAttribute(type);
             if (at?.Namespace is null)
             {
@@ -59,6 +61,11 @@ namespace iSukces.Code.AutoCode
             {
                 src.AddNamespace(at.Namespace);
             }
+#else
+            var ns = type.Namespace;
+            if (!string.IsNullOrEmpty(ns))
+                src.AddNamespace(ns);
+#endif
         }
 
         public static void AddNamespace<T>(this IAutoCodeGeneratorContext src)
@@ -66,4 +73,6 @@ namespace iSukces.Code.AutoCode
             AddNamespace(src, typeof(T));
         }
     }
+    
+ 
 }

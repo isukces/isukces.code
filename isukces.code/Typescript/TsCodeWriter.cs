@@ -1,4 +1,3 @@
-using System;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Typescript

@@ -1,11 +1,9 @@
+#if AMMY
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using iSukces.Code.Ammy;
 using iSukces.Code.AutoCode;
-using iSukces.Code.Compatibility.System.Windows.Data;
-using iSukces.Code.Tests.Ammy;
 using iSukces.Code.Ui.DataGrid;
 
 namespace iSukces.Code.Tests.Ui
@@ -94,3 +92,4 @@ namespace iSukces.Code.Tests.Ui
         }
     }
 }
+#endif

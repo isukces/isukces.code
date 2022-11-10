@@ -1,3 +1,4 @@
+#if AMMY
 using iSukces.Code.Compatibility.System.Windows;
 using iSukces.Code.Compatibility.System.Windows.Data;
 
@@ -27,3 +28,4 @@ namespace iSukces.Code.Compatibility.Telerik
         public string         DataFormatString { get; set; }
     }
 }
+#endif

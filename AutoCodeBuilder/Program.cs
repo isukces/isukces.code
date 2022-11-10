@@ -1,6 +1,4 @@
-﻿using Bitbrains.AmmyParser;
-using iSukces.Code;
-using iSukces.Code.Ammy;
+﻿using iSukces.Code;
 using iSukces.Code.AutoCode;
 
 namespace AutoCodeBuilder
@@ -51,7 +49,9 @@ namespace AutoCodeBuilder
 
         private static void Make1()
         {
+#if AMMY
             EmitTypeAttribute.IgnoreEmitTypeAttribute = true;
+#endif
 
             var myAssembly  = typeof(Program).Assembly;
             var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "iSukces.Code.sln");

@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections.Generic;
 using iSukces.Code.Compatibility.System.Windows;
 
@@ -11,7 +12,7 @@ namespace iSukces.Code.Compatibility.Telerik
     {
         public object Header { get; set; }
         
-        public string Name   { get; set; }
+        public string Name { get; set; }
 
         public IList<GridViewColumnGroup> ChildGroups { get; set; }
 
@@ -20,3 +21,4 @@ namespace iSukces.Code.Compatibility.Telerik
         public Style HeaderStyle { get; set; }
     }
 }
+#endif

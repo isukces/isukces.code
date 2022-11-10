@@ -1,3 +1,4 @@
+#if AMMY
 using System.Collections;
 
 namespace iSukces.Code.Compatibility.System.Windows.Controls
@@ -9,3 +10,4 @@ namespace iSukces.Code.Compatibility.System.Windows.Controls
         public string      DisplayMemberPath { get; set; }
     }
 }
+#endif

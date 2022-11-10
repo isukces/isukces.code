@@ -1,3 +1,4 @@
+#if AMMY
 namespace iSukces.Code.Compatibility.System.Windows.Data
 {
     /// <summary>
@@ -13,3 +14,4 @@ namespace iSukces.Code.Compatibility.System.Windows.Data
         Default
     }
 }
+#endif

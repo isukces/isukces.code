@@ -1,3 +1,4 @@
+#if AMMY
 using System;
 using System.Reflection;
 
@@ -31,3 +32,4 @@ namespace iSukces.Code
         }
     }
 }
+#endif

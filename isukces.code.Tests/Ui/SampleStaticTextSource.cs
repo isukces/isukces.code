@@ -1,5 +1,3 @@
-using iSukces.Code.Ui.DataGrid;
-
 namespace iSukces.Code.Tests.Ui
 {
     public class SampleStaticTextSource

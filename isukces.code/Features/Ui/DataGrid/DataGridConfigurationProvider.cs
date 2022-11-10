@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+#if AMMY
 using iSukces.Code.Ammy;
 using iSukces.Code.Compatibility.System.Windows.Data;
+#endif
 using JetBrains.Annotations;
 
 namespace iSukces.Code.Ui.DataGrid
