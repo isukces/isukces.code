@@ -1,7 +1,7 @@
 ﻿using System;
 using Irony.Parsing;
+using iSukces.Code;
 using iSukces.Code.AutoCode;
-using iSukces.Code.CodeWrite;
 using iSukces.Code.Irony;
 using Samples.Irony.AmmyGrammar.Autocode;
 

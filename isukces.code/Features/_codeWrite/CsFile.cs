@@ -8,7 +8,7 @@ using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 using iSukces.Code.IO;
 
-namespace iSukces.Code.CodeWrite
+namespace iSukces.Code
 {
     public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     {

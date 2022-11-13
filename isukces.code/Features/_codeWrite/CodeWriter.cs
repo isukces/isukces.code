@@ -1,4 +1,4 @@
-﻿namespace iSukces.Code.CodeWrite
+﻿namespace iSukces.Code
 {
     /*
     public class CodeWriter : ICodeWriter

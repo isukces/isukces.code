@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using iSukces.Code.AutoCode;
-using iSukces.Code.CodeWrite;
 using Xunit;
 
 namespace iSukces.Code.Tests

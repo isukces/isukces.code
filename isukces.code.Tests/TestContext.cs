@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using iSukces.Code.AutoCode;
-using iSukces.Code.CodeWrite;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Tests
