@@ -198,5 +198,73 @@ namespace My123
             });
             Assert.Equal(exp, code);
         }
+
+
+        [Fact]
+        public void T10a_Should_create_expression_body_method()
+        {
+            const string exp = @"// ReSharper disable All
+namespace My123
+{
+    public class MyClass
+    {
+        public void Bla() => SetSomeValue();
+
+    }
+}
+";
+            var code = TestCode(cs =>
+            {
+                cs.Features |= LanguageFeatures.ExpressionBody;
+                var m = cs.AddMethod("Bla", "void").WithBodyAsExpression("SetSomeValue()");
+            });
+            Assert.Equal(exp, code);
+        }
+
+        [Fact]
+        public void T10b_Should_create_expression_body_method()
+        {
+            const string exp = @"// ReSharper disable All
+namespace My123
+{
+    public class MyClass
+    {
+        public void Bla()
+        {
+            SetSomeValue();
+        }
+
+    }
+}
+";
+            var code = TestCode(cs =>
+            {
+                var m = cs.AddMethod("Bla", "void").WithBodyAsExpression("SetSomeValue()");
+            });
+            Assert.Equal(exp, code);
+        }
+
+        [Fact]
+        public void T10c_Should_create_expression_body_method()
+        {
+            const string exp = @"// ReSharper disable All
+namespace My123
+{
+    public class MyClass
+    {
+        public int Bla()
+        {
+            return SetSomeValue();
+        }
+
+    }
+}
+";
+            var code = TestCode(cs =>
+            {
+                var m = cs.AddMethod("Bla", "int").WithBodyAsExpression("SetSomeValue()");
+            });
+            Assert.Equal(exp, code);
+        }
     }
 }

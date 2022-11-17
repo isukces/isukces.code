@@ -141,17 +141,17 @@ namespace iSukces.Code.Interfaces
             return _this;
         }
 
-        public static T SplitWriteLine<T>(this T _this, string text)
+        public static T SplitWriteLine<T>(this T x, string text)
             where T : ICodeWriter
         {
             if (string.IsNullOrEmpty(text))
-                return _this;
+                return x;
             var query = from i in text.Split('\r', '\n')
                 where !string.IsNullOrEmpty(i)
                 select i.TrimEnd();
             foreach (var i in query)
-                _this.WriteLine(i);
-            return _this;
+                x.WriteLine(i);
+            return x;
         }
 
 

@@ -30,7 +30,7 @@
         
         public static CsMethod WithParameter(this CsMethod method, string name, string type = null, string description = null)
         {
-            parameter = new CsMethodParameter(name, type, desctiption)
+            var parameter = new CsMethodParameter(name, type, description);
             method.Parameters.Add(parameter);
             return method;
         }

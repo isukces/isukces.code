@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Irony.Interpreter.Ast;
 using iSukces.Code;
-using iSukces.Code.Compatibility.System.Windows.Data;
 using X=Bitbrains.AmmyParser.AmmyGrammar;
 
 namespace Bitbrains.AmmyParser
@@ -213,7 +212,7 @@ namespace Bitbrains.AmmyParser
             yield return Build<object>("Mode", "");
             */
 
-            yield return Build<XBindingMode>("Mode");
+            // yield return Build<XBindingMode>("Mode");
             // yield return Build<object>("Converter");
             // yield return Build<object>("ConverterCulture");
             // yield return Build<object>("ConverterParameter");

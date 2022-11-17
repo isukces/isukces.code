@@ -71,7 +71,7 @@ namespace iSukces.Code
         /// </summary>
         /// <param name="other">obiekt do porównania z obiektem bieżącym</param>
         /// <returns><c>true</c> jeśli wskazany obiekt jest równy bieżącemu; w przeciwnym wypadku<c>false</c></returns>
-        public override bool Equals(object other) => other is CsMethodParameter && Equals((CsMethodParameter)other);
+        public override bool Equals(object other) => other is CsMethodParameter parameter && Equals(parameter);
 
         /// <summary>
         ///     Zwraca kod HASH obiektu

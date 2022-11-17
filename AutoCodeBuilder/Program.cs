@@ -1,28 +1,27 @@
-﻿using iSukces.Code;
-using iSukces.Code.AutoCode;
-
-namespace AutoCodeBuilder
+﻿namespace AutoCodeBuilder
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
+#if OLD
             Make1();
             Make2();
+#endif
         }
-        
+#if OLD
         private static void Make2()
         {
-            #if DEBUG
+#if DEBUG
 
             EmitTypeAttribute.IgnoreEmitTypeAttribute = true;
 
-            var myAssembly  = typeof(Program).Assembly;
+            var myAssembly = typeof(Program).Assembly;
             var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "iSukces.Code.sln");
             if (solutionDir == null)
                 return;
-            var                       dirProvider       = SlnAssemblyBaseDirectoryProvider.Make<Program>("iSukces.Code.sln");
-            IAssemblyFilenameProvider provider          = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
+            var                       dirProvider = SlnAssemblyBaseDirectoryProvider.Make<Program>("iSukces.Code.sln");
+            IAssemblyFilenameProvider provider = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
             var                       autoCodeGenerator = new AutoCodeGenerator(provider);
             
             
@@ -44,7 +43,7 @@ namespace AutoCodeBuilder
             var scanAssembly = typeof(AmmyGrammarAutogeneratorInfo).Assembly;
             autoCodeGenerator.Make(scanAssembly);
 
-            #endif
+#endif
         }
 
         private static void Make1()
@@ -53,12 +52,12 @@ namespace AutoCodeBuilder
             EmitTypeAttribute.IgnoreEmitTypeAttribute = true;
 #endif
 
-            var myAssembly  = typeof(Program).Assembly;
+            var myAssembly = typeof(Program).Assembly;
             var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, "iSukces.Code.sln");
             if (solutionDir == null)
                 return;
-            var                       dirProvider       = SlnAssemblyBaseDirectoryProvider.Make<Program>("iSukces.Code.sln");
-            IAssemblyFilenameProvider provider          = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
+            var                       dirProvider = SlnAssemblyBaseDirectoryProvider.Make<Program>("iSukces.Code.sln");
+            IAssemblyFilenameProvider provider = new SimpleAssemblyFilenameProvider(dirProvider, "+AutoCode.cs");
             var                       autoCodeGenerator = new AutoCodeGenerator(provider);
             autoCodeGenerator.FileNamespaces.Add("iSukces.Code");
 #if AMMY
@@ -76,5 +75,6 @@ namespace AutoCodeBuilder
             var scanAssembly = typeof(CsLangInfo).Assembly;
             autoCodeGenerator.Make(scanAssembly);
         }
+#endif
     }
 }

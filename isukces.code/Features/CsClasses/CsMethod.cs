@@ -28,7 +28,10 @@ namespace iSukces.Code
         ///     Tworzy instancję obiektu
         ///     <param name="name">Nazwa metody</param>
         /// </summary>
-        public CsMethod(string name) => Name = name;
+        public CsMethod(string name)
+        {
+            Name = name;
+        }
 
 
         /// <summary>
@@ -46,8 +49,6 @@ namespace iSukces.Code
                 IsStatic = true;
             }
         }
-
-        public static bool IsOperator(string name) => operators.Contains(name);
 
         private static string FormatMethodParameter(CsMethodParameter i)
         {
@@ -76,6 +77,11 @@ namespace iSukces.Code
             return sb.ToString();
         }
 
+        public static bool IsOperator(string name)
+        {
+            return operators.Contains(name);
+        }
+
 
         public void AddComment(string x)
         {
@@ -89,80 +95,16 @@ namespace iSukces.Code
             return parameter;
         }
 
-        public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null) =>
-            AddParam(name, typeof(T), owner, description);
+        public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null)
+        {
+            return AddParam(name, typeof(T), owner, description);
+        }
 
         public CsMethodParameter AddParam(string name, Type type, CsClass owner, string description = null)
         {
             var parameter = new CsMethodParameter(name, owner.GetTypeName(type), description);
             _parameters.Add(parameter);
             return parameter;
-        }
-
-        public string GetComments() => _extraComment.ToString();
-
-        /// <summary>
-        ///     Tworzy kod
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="inInterface"></param>
-        /// <param name="typeNameResolver"></param>
-        /// <returns></returns>
-        public void MakeCode(ICsCodeWriter writer, bool inInterface, ITypeNameResolver typeNameResolver)
-        {
-            writer.OpenCompilerIf(CompilerDirective);
-            Check();
-            WriteMethodDescription(writer);
-            foreach (var i in Attributes)
-                writer.WriteLine("[{0}]", i);
-            // ================
-            writer.WriteComment(this);
-            writer.SplitWriteLine(AdditionalContentOverMethod);
-            var query = from i in _parameters
-                select FormatMethodParameter(i);
-            var mDefinition = string.Format("{0}{2}({1})",
-                string.Join(" ", GetMethodAttributes(inInterface)),
-                string.Join(", ", query),
-                GenericArguments.GetTriangleBracketsInfo());
-            if (inInterface)
-            {
-                if (Kind != MethodKind.Normal || IsStatic)
-                    return;
-                if (GenericArguments.HasConstraints())
-                {
-                    writer.WriteLine(mDefinition);
-                    GenericArguments?.WriteCode(writer, true, typeNameResolver);
-                }
-                else
-                {
-                    writer.WriteLine(mDefinition + ";");
-                }
-
-                return;
-            }
-
-            if (Overriding == OverridingType.Abstract && Kind == MethodKind.Normal)
-            {
-                writer.WriteLine(mDefinition + ";");
-                return;
-            }
-
-            if (Kind == MethodKind.Constructor)
-            {
-                writer.OpenConstructor(mDefinition, _baseConstructorCall);
-            }
-            else
-            {
-                writer.WriteLine(mDefinition);
-                if (GenericArguments.HasConstraints())
-                    GenericArguments?.WriteCode(writer, false, typeNameResolver);
-                writer.WriteLine(writer.LangInfo.OpenText);
-                writer.IncIndent();
-            }
-
-            writer.SplitWriteLine(_body);
-            writer.Close();
-            writer.CloseCompilerIf(CompilerDirective);
         }
 
         private void Check()
@@ -189,6 +131,11 @@ namespace iSukces.Code
             if (Kind == MethodKind.Constructor || Kind == MethodKind.Finalizer)
                 if (Overriding != OverridingType.None)
                     throw new Exception("Constructor nor finalizer can't be " + Overriding);
+        }
+
+        public string GetComments()
+        {
+            return _extraComment.ToString();
         }
 
 
@@ -262,6 +209,123 @@ namespace iSukces.Code
             return a.ToArray();
         }
 
+        /// <summary>
+        ///     Tworzy kod
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="inInterface"></param>
+        /// <param name="typeNameResolver"></param>
+        /// <param name="features"></param>
+        /// <returns></returns>
+        public void MakeCode(ICsCodeWriter writer, bool inInterface, ITypeNameResolver typeNameResolver, LanguageFeatures features)
+        {
+            writer.OpenCompilerIf(CompilerDirective);
+            Check();
+            WriteMethodDescription(writer);
+            foreach (var i in Attributes)
+                writer.WriteLine("[{0}]", i);
+            // ================
+            writer.WriteComment(this);
+            writer.SplitWriteLine(AdditionalContentOverMethod);
+            var query = from i in _parameters
+                select FormatMethodParameter(i);
+            var mDefinition = string.Format("{0}{2}({1})",
+                string.Join(" ", GetMethodAttributes(inInterface)),
+                string.Join(", ", query),
+                GenericArguments.GetTriangleBracketsInfo());
+            if (inInterface)
+            {
+                if (Kind != MethodKind.Normal || IsStatic)
+                    return;
+                if (GenericArguments.HasConstraints())
+                {
+                    writer.WriteLine(mDefinition);
+                    GenericArguments?.WriteCode(writer, true, typeNameResolver);
+                }
+                else
+                {
+                    writer.WriteLine(mDefinition + ";");
+                }
+
+                return;
+            }
+
+            if (Overriding == OverridingType.Abstract && Kind == MethodKind.Normal)
+            {
+                writer.WriteLine(mDefinition + ";");
+                return;
+            }
+
+            string[] GetLines(string text)
+            {
+                var strings = (text ?? "").Split('\r', '\n');
+                return (from i in strings
+                    where !string.IsNullOrWhiteSpace(i)
+                    select i.TrimEnd()).ToArray();
+            }
+
+            var bodyLines        = GetLines(_body);
+            var isExpressionBody = bodyLines.Length == 1 && IsExpressionBody;
+            var allowExpressionBody = isExpressionBody
+                                      && (features & LanguageFeatures.ExpressionBody) != 0
+                                      && Kind != MethodKind.Constructor;
+
+            if (isExpressionBody && !allowExpressionBody)
+            {
+                var line = bodyLines[0].TrimEnd(';').TrimEnd();
+                bodyLines[0] = ResultType is "" or "void"
+                    ? line + ";"
+                    : $"return {line};";
+            }
+
+            if (Kind == MethodKind.Constructor)
+            {
+                writer.OpenConstructor(mDefinition, _baseConstructorCall);
+            }
+            else
+            {
+                void WriteStarting(ICsCodeWriter w)
+                {
+                    w.WriteLine(mDefinition);
+                    if (GenericArguments.HasConstraints())
+                        GenericArguments?.WriteCode(w, false, typeNameResolver);
+                }
+
+                if (allowExpressionBody)
+                {
+                    var w = new CsCodeWriter();
+                    WriteStarting(w);
+                    w.WriteLine("=>");
+                    w.WriteLine(bodyLines[0]);
+                    var codeLines = GetLines(w.Code).Select(a => a.Trim());
+                    var t         = string.Join(" ", codeLines).TrimEnd(';').TrimEnd();
+                    writer.WriteLine(t + ";");
+                }
+                else
+                {
+                    WriteStarting(writer);
+                    writer.WriteLine(writer.LangInfo.OpenText);
+                    writer.IncIndent();
+                }
+            }
+
+            if (!allowExpressionBody)
+            {
+                foreach (var i in bodyLines)
+                    writer.WriteLine(i);
+                writer.Close();
+            }
+
+            writer.CloseCompilerIf(CompilerDirective);
+        }
+
+        public CsMethod WithBodyAsExpression(string body)
+        {
+            IsExpressionBody = true;
+            Body             = body;
+            return this;
+        }
+
         private void WriteMethodDescription(ICsCodeWriter writer)
         {
             var anyParameterHasDescription = _parameters.Any(a => !string.IsNullOrEmpty(a.Description));
@@ -280,6 +344,8 @@ namespace iSukces.Code
                 writer.WriteLine("/// <param name=\"{0}\">{1}</param>", i.Name.XmlEncode(),
                     i.Description.XmlEncode());
         }
+
+        #region properties
 
         /// <summary>
         ///     Nazwa metody
@@ -331,7 +397,6 @@ namespace iSukces.Code
             set => _parameters = value ?? new List<CsMethodParameter>();
         }
 
-
         public OverridingType Overriding { get; set; }
 
 
@@ -352,12 +417,7 @@ namespace iSukces.Code
             set => _baseConstructorCall = value?.Trim() ?? string.Empty;
         }
 
-        [CanBeNull]
-        public CsGenericArguments GenericArguments { get; set; }
-
-
-        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
-
+        public bool IsExpressionBody { get; set; }
 
         public MethodKind Kind
         {
@@ -392,6 +452,15 @@ namespace iSukces.Code
             }
         }
 
+        #endregion
+
+        public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
+
+        [CanBeNull]
+        public CsGenericArguments GenericArguments { get; set; }
+
+        #region Fields
+
         private static readonly HashSet<string> operators;
 
         public static string Implicit = "implicit";
@@ -404,5 +473,7 @@ namespace iSukces.Code
         private string _body = string.Empty;
         private string _baseConstructorCall = string.Empty;
         private MethodKind _kind;
+
+        #endregion
     }
 }

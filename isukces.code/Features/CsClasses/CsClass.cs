@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iSukces.Code.FeatureImplementers;
 using iSukces.Code.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -427,22 +428,22 @@ namespace iSukces.Code
 
 
         private bool _wm(ICsCodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
-            string region)
+            string region, LanguageFeatures features)
         {
             var csMethods = m as CsMethod[] ?? m.ToArray();
             if (!csMethods.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = Action(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
+            addEmptyLineBeforeRegion = WriteMethodAction(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
                 i =>
                 {
-                    i.MakeCode(writer, IsInterface, this);
+                    i.MakeCode(writer, IsInterface, this, features);
                     writer.EmptyLine();
                 }
             );
             return addEmptyLineBeforeRegion;
         }
 
-        private bool Action<T>(ICsCodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
+        private bool WriteMethodAction<T>(ICsCodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
         {
             var enumerable = list as IList<T> ?? list.ToList();
             if (!enumerable.Any()) return false;
@@ -518,10 +519,10 @@ namespace iSukces.Code
             if (!c.Any())
                 return addEmptyLineBeforeRegion;
             var m = c.Where(i => !i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Constructors");
+            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Constructors", Features);
 
             m                        = c.Where(i => i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static constructors");
+            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static constructors", Features);
             return addEmptyLineBeforeRegion;
         }
 
@@ -530,7 +531,7 @@ namespace iSukces.Code
             if (!_events.Any())
                 return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = Action(writer, _events.OrderBy(a => a.Name), "Events",
+            addEmptyLineBeforeRegion = WriteMethodAction(writer, _events.OrderBy(a => a.Name), "Events",
                 ev =>
                 {
                     writer.OpenCompilerIf(ev);
@@ -575,7 +576,7 @@ namespace iSukces.Code
             if (!all.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
 
-            addEmptyLineBeforeRegion = Action(writer, all, "Fields",
+            addEmptyLineBeforeRegion = WriteMethodAction(writer, all, "Fields",
                 field => { Emit_single_field(writer, field); }
             );
             return addEmptyLineBeforeRegion;
@@ -589,10 +590,10 @@ namespace iSukces.Code
                 .ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
             var m = c.Where(i => !i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Methods");
+            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Methods", Features);
 
             m                        = c.Where(i => i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static methods");
+            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static methods", Features);
             return addEmptyLineBeforeRegion;
         }
 
@@ -602,7 +603,7 @@ namespace iSukces.Code
             if (_nestedClasses.Any())
             {
                 writer.EmptyLine(!addEmptyLineBeforeRegion);
-                Action(writer, _nestedClasses.OrderBy(a => a._name), "Nested classes",
+                WriteMethodAction(writer, _nestedClasses.OrderBy(a => a._name), "Nested classes",
                     i =>
                     {
                         i.MakeCode(writer);
@@ -614,7 +615,7 @@ namespace iSukces.Code
             if (Enums.Any())
             {
                 writer.EmptyLine(!addEmptyLineBeforeRegion);
-                Action(writer, Enums.OrderBy(a => a.Name), "Nested enums",
+                WriteMethodAction(writer, Enums.OrderBy(a => a.Name), "Nested enums",
                     i =>
                     {
                         i.MakeCode(writer);
@@ -628,7 +629,7 @@ namespace iSukces.Code
         {
             if (!_properties.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = Action(writer, _properties, "Properties",
+            addEmptyLineBeforeRegion = WriteMethodAction(writer, _properties, "Properties",
                 i => _EmitProperty(i, writer));
             return addEmptyLineBeforeRegion;
         }
