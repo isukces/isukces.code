@@ -49,7 +49,7 @@ namespace iSukces.Code
                 ? new CodeLines(new[] {string.Format("{0};", PropertyFieldName)}, true)
                 : new CodeLines(OwnGetter.Split('\r', '\n'), OwnGetterIsExpression);
             if (allowExpressionBodies)
-                return tmp;
+                return tmp.AddSemicolon();
             return tmp.MakeReturnNoExpressionBody();
         }
 
@@ -190,5 +190,13 @@ namespace iSukces.Code
 
         public string[] Lines            { get; set; }
         public bool     IsExpressionBody { get; set; }
+
+        public CodeLines AddSemicolon()
+        {
+            if (Lines is null || Lines.Length == 0)
+                return this;
+            Lines[0] = Lines[0].TrimEnd(';').TrimEnd() + ";";
+            return this;
+        }
     }
 }
