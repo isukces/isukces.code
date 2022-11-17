@@ -95,11 +95,13 @@ namespace iSukces.Code
             Visibilities? memberVisibility)
         {
             if (code?.Lines == null || code.Lines.Length == 0) return;
+            keyWord = OptionalVisibility(memberVisibility) + keyWord; 
             if (code.IsExpressionBody)
             {
                 if (code.Lines.Length == 1)
                 {
-                    writer.WriteLine("{0}{1} => {2}", OptionalVisibility(memberVisibility), keyWord, code.Lines[0]);
+                    var singleLine = code.Lines[0]?.Trim();
+                    writer.WriteLine($"{keyWord} => {singleLine}");
                 }
                 else
                 {
@@ -113,8 +115,8 @@ namespace iSukces.Code
             {
                 if (code.Lines.Length == 1)
                 {
-                    writer.WriteLine("{0}{1} {{ {2} }}", OptionalVisibility(memberVisibility), keyWord,
-                        code.Lines[0]?.Trim());
+                    var singleLine = code.Lines[0]?.Trim();
+                    writer.WriteLine($"{keyWord} {{ {singleLine} }}");
                 }
                 else
                 {

@@ -27,6 +27,13 @@
             method.Parameters.Add(parameter);
             return method;
         }
+        
+        public static CsMethod WithParameter(this CsMethod method, string name, string type = null, string description = null)
+        {
+            parameter = new CsMethodParameter(name, type, desctiption)
+            method.Parameters.Add(parameter);
+            return method;
+        }
 
         public static CsMethod WithVirtual(this CsMethod method, bool isVirtual = true)
         {
