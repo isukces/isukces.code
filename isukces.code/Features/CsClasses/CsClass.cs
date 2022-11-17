@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using iSukces.Code.FeatureImplementers;
 using iSukces.Code.Interfaces;
 
 // ReSharper disable once CheckNamespace
@@ -15,7 +14,10 @@ namespace iSukces.Code
         ///     Tworzy instancję obiektu
         ///     <param name="name">Nazwa klasy</param>
         /// </summary>
-        public CsClass(string name) => Name = name;
+        public CsClass(string name)
+        {
+            Name = name;
+        }
 
         /// <summary>
         ///     Tworzy instancję obiektu
@@ -27,9 +29,6 @@ namespace iSukces.Code
             Name      = name;
             BaseClass = baseClass;
         }
-
-
-        public static CsAttribute MkAttribute(string attributeName) => new CsAttribute(attributeName);
 
         private static void Emit_single_field(ICsCodeWriter writer, CsClassField field)
         {
@@ -85,6 +84,12 @@ namespace iSukces.Code
             }
         }
 
+
+        public static CsAttribute MkAttribute(string attributeName)
+        {
+            return new CsAttribute(attributeName);
+        }
+
         private static string OptionalVisibility(Visibilities? memberVisibility)
         {
             var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
@@ -96,7 +101,7 @@ namespace iSukces.Code
             Visibilities? memberVisibility)
         {
             if (code?.Lines == null || code.Lines.Length == 0) return;
-            keyWord = OptionalVisibility(memberVisibility) + keyWord; 
+            keyWord = OptionalVisibility(memberVisibility) + keyWord;
             if (code.IsExpressionBody)
             {
                 if (code.Lines.Length == 1)
@@ -138,238 +143,6 @@ namespace iSukces.Code
             foreach (var line in lines)
                 writer.WriteLine("/// " + line.XmlEncode());
             writer.WriteLine("/// </summary>");
-        }
-
-
-        public void AddComment(string x)
-        {
-            _extraComment.AppendLine(x);
-        }
-
-        // Public Methods 
-
-        public CsClassField AddConst(string name, string type, string encodedValue)
-        {
-            var constValue = new CsClassField(name, type)
-            {
-                ConstValue = encodedValue,
-                IsConst    = true
-            };
-            Fields.Add(constValue);
-            return constValue;
-        }
-
-        public CsClassField AddConstInt(string name, int encodedValue) =>
-            AddConst(name, "int", encodedValue.ToCsString());
-
-        public CsMethod AddConstructor(string description = null)
-        {
-            var m = new CsMethod(GetConstructorName(), Name)
-            {
-                Description = description
-            };
-            _methods.Add(m);
-            m.Kind = MethodKind.Constructor;
-            return m;
-        }
-
-        private string GetFinalizerName() => "~" + GetConstructorName();
-        private string GetConstructorName() => _name.Split('<')[0].Trim();
-
-        public CsClassField AddConstString(string name, string plainValue)
-        {
-            var encodedValue = plainValue == null ? "null" : plainValue.CsEncode();
-            return AddConst(name, "string", encodedValue);
-        }
-
-        public CsEnum AddEnum(CsEnum csEnum)
-        {
-            ((List<CsEnum>)Enums).Add(csEnum);
-            csEnum.Owner = this;
-            return csEnum;
-        }
-
-        public CsEvent AddEvent(string name, string type, string description = null)
-        {
-            // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
-            var ev = new CsEvent(name, type, description);
-            _events.Add(ev);
-            return ev;
-        }
-
-        public CsEvent AddEvent<T>(string name, string description = null)
-        {
-            // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
-            var type = this.GetTypeName<T>();
-            var ev   = new CsEvent(name, type, description);
-            _events.Add(ev);
-            return ev;
-        }
-
-        public CsClassField AddField(string fieldName, Type type) => AddField(fieldName, GetTypeName(type));
-
-        public CsClassField AddField(string fieldName, string type)
-        {
-            var field = new CsClassField(fieldName, type);
-            Fields.Add(field);
-            return field;
-        }
-
-        public CsMethod AddFinalizer(string description = null)
-        {
-            var m = new CsMethod(GetFinalizerName(), Name)
-            {
-                Description = description
-            };
-            _methods.Add(m);
-            m.Kind     = MethodKind.Finalizer;
-            return m;
-        }
-
-        public CsMethod AddMethod(string name, Type type, string description = null) =>
-            AddMethod(name, type == null ? null : GetTypeName(type), description);
-
-        public CsMethod AddMethod(string name, string type, string description = null)
-        {
-            if (string.IsNullOrEmpty(name) || name == GetConstructorName())
-                return AddConstructor(description);
-            if (name == GetFinalizerName())
-                return AddFinalizer(description);
-            if (string.IsNullOrEmpty(type))
-                type = "void";
-            var m = new CsMethod(name, type)
-            {
-                Description = description
-            };
-            _methods.Add(m);
-            return m;
-        }
-
-        public CsProperty AddProperty(string propertyName, Type type)
-            => AddProperty(propertyName, GetTypeName(type));
-
-        public CsProperty AddProperty(string propertyName, string type)
-        {
-            propertyName = propertyName?.Trim();
-            if (string.IsNullOrEmpty(propertyName))
-                throw new ArgumentException("propertyName is empty");
-            var property = new CsProperty(propertyName, type);
-            if (propertyName.Contains('.'))
-            {
-                property.Visibility = Visibilities.InterfaceDefault;
-                property.EmitField  = false;
-            }
-
-            Properties.Add(property);
-            return property;
-        }
-
-        public string GetComments() => _extraComment.ToString();
-
-        public string GetNamespace()
-        {
-            var owner = Owner;
-            while (true)
-                switch (owner)
-                {
-                    case null:
-                    case CsFile _:
-                        return string.Empty;
-                    case CsNamespace ns:
-                        return ns.Name;
-                    case CsClass cl:
-                        owner = cl.Owner;
-                        continue;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(owner));
-                }
-        }
-
-        public CsClass GetOrCreateNested(string typeName) => GetOrCreateNested(typeName, out _);
-
-        public CsClass GetOrCreateNested(string typeName, out bool isCreatedNew)
-        {
-            var existing = _nestedClasses
-                .FirstOrDefault(csClass => csClass.Name == typeName);
-            if (existing != null)
-            {
-                isCreatedNew = false;
-                return existing;
-            }
-
-            existing = new CsClass(typeName)
-            {
-                Owner = this
-            };
-            _nestedClasses.Add(existing);
-            isCreatedNew = true;
-            return existing;
-        }
-
-        public string GetTypeName(Type type)
-        {
-            if (Owner == null)
-                throw new NullReferenceException(nameof(Owner));
-            var result = Owner.GetTypeName(type);
-            if (!(Owner is CsClass cl)) return result;
-            var cutBegin = cl.Name + ".";
-            if (result.StartsWith(cutBegin, StringComparison.Ordinal))
-                result = result.Substring(cutBegin.Length);
-            return result;
-        }
-
-        public bool IsKnownNamespace(string namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
-
-        public void MakeCode(ICsCodeWriter writer)
-        {
-            writer.OpenCompilerIf(CompilerDirective);
-            writer.WriteComment(this);
-            WriteSummary(writer, Description);
-            writer.WriteAttributes(Attributes);
-            var def = string.Join(" ", DefAttributes());
-            {
-                var dupa              = new HashSet<string>();
-                var baseAndInterfaces = new List<string>();
-                if (!string.IsNullOrEmpty(_baseClass))
-                {
-                    baseAndInterfaces.Add(_baseClass);
-                    dupa.Add(_baseClass);
-                }
-
-                for (var index = 0; index < ImplementedInterfaces.Count; index++)
-                {
-                    var interfaceName = ImplementedInterfaces[index];
-                    if (dupa.Add(interfaceName))
-                        baseAndInterfaces.Add(interfaceName);
-                }
-
-                if (baseAndInterfaces.Any())
-                    def += " : " + string.Join(", ", baseAndInterfaces);
-            }
-            writer.Open(def);
-            // Constructors
-            var addEmptyLineBeforeRegion = Emit_constructors(writer, false);
-            // Methods
-            addEmptyLineBeforeRegion = Emit_methods(writer, addEmptyLineBeforeRegion);
-            //Properties
-            addEmptyLineBeforeRegion = Emit_properties(writer, addEmptyLineBeforeRegion);
-            // Fields
-            addEmptyLineBeforeRegion = Emit_fields(writer, addEmptyLineBeforeRegion);
-            // Events
-            addEmptyLineBeforeRegion = Emit_events(writer, addEmptyLineBeforeRegion);
-            // Nested
-            Emit_nested(writer, addEmptyLineBeforeRegion);
-            writer.Close();
-            writer.CloseCompilerIf(CompilerDirective);
-        }
-
-
-        public override string ToString() => "csClass " + _name;
-
-        public CsClass WithBaseClass(string baseClass)
-        {
-            BaseClass = baseClass;
-            return this;
         }
 
         private void _EmitProperty(CsProperty prop, ICsCodeWriter writer)
@@ -427,38 +200,133 @@ namespace iSukces.Code
         }
 
 
-        private bool _wm(ICsCodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
-            string region, LanguageFeatures features)
+        public void AddComment(string x)
         {
-            var csMethods = m as CsMethod[] ?? m.ToArray();
-            if (!csMethods.Any()) return addEmptyLineBeforeRegion;
-            writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = WriteMethodAction(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
-                i =>
-                {
-                    i.MakeCode(writer, IsInterface, this, features);
-                    writer.EmptyLine();
-                }
-            );
-            return addEmptyLineBeforeRegion;
+            _extraComment.AppendLine(x);
         }
 
-        private bool WriteMethodAction<T>(ICsCodeWriter writer, IEnumerable<T> list, string region, Action<T> action)
+        // Public Methods 
+
+        public CsClassField AddConst(string name, string type, string encodedValue)
         {
-            var enumerable = list as IList<T> ?? list.ToList();
-            if (!enumerable.Any()) return false;
-            var hasRegions = Features.HasFlag(LanguageFeatures.Regions);
-            if (hasRegions)
+            var constValue = new CsClassField(name, type)
             {
-                writer.WriteLine("#region " + region);
-                writer.EmptyLine();
+                ConstValue = encodedValue,
+                IsConst    = true
+            };
+            Fields.Add(constValue);
+            return constValue;
+        }
+
+        public CsClassField AddConstInt(string name, int encodedValue)
+        {
+            return AddConst(name, "int", encodedValue.ToCsString());
+        }
+
+        public CsMethod AddConstructor(string description = null)
+        {
+            var m = new CsMethod(GetConstructorName(), Name)
+            {
+                Description = description
+            };
+            _methods.Add(m);
+            m.Kind = MethodKind.Constructor;
+            return m;
+        }
+
+        public CsClassField AddConstString(string name, string plainValue)
+        {
+            var encodedValue = plainValue == null ? "null" : plainValue.CsEncode();
+            return AddConst(name, "string", encodedValue);
+        }
+
+        public CsEnum AddEnum(CsEnum csEnum)
+        {
+            ((List<CsEnum>)Enums).Add(csEnum);
+            csEnum.Owner = this;
+            return csEnum;
+        }
+
+        public CsEvent AddEvent(string name, string type, string description = null)
+        {
+            // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
+            var ev = new CsEvent(name, type, description);
+            _events.Add(ev);
+            return ev;
+        }
+
+        public CsEvent AddEvent<T>(string name, string description = null)
+        {
+            // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
+            var type = this.GetTypeName<T>();
+            var ev   = new CsEvent(name, type, description);
+            _events.Add(ev);
+            return ev;
+        }
+
+        public CsClassField AddField(string fieldName, Type type)
+        {
+            return AddField(fieldName, GetTypeName(type));
+        }
+
+        public CsClassField AddField(string fieldName, string type)
+        {
+            var field = new CsClassField(fieldName, type);
+            Fields.Add(field);
+            return field;
+        }
+
+        public CsMethod AddFinalizer(string description = null)
+        {
+            var m = new CsMethod(GetFinalizerName(), Name)
+            {
+                Description = description
+            };
+            _methods.Add(m);
+            m.Kind = MethodKind.Finalizer;
+            return m;
+        }
+
+        public CsMethod AddMethod(string name, Type type, string description = null)
+        {
+            return AddMethod(name, type == null ? null : GetTypeName(type), description);
+        }
+
+        public CsMethod AddMethod(string name, string type, string description = null)
+        {
+            if (string.IsNullOrEmpty(name) || name == GetConstructorName())
+                return AddConstructor(description);
+            if (name == GetFinalizerName())
+                return AddFinalizer(description);
+            if (string.IsNullOrEmpty(type))
+                type = "void";
+            var m = new CsMethod(name, type)
+            {
+                Description = description
+            };
+            _methods.Add(m);
+            return m;
+        }
+
+        public CsProperty AddProperty(string propertyName, Type type)
+        {
+            return AddProperty(propertyName, GetTypeName(type));
+        }
+
+        public CsProperty AddProperty(string propertyName, string type)
+        {
+            propertyName = propertyName?.Trim();
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentException("propertyName is empty");
+            var property = new CsProperty(propertyName, type);
+            if (propertyName.Contains('.'))
+            {
+                property.Visibility = Visibilities.InterfaceDefault;
+                property.EmitField  = false;
             }
 
-            foreach (var i in enumerable)
-                action(i);
-            if (hasRegions)
-                writer.WriteLine("#endregion");
-            return hasRegions;
+            Properties.Add(property);
+            return property;
         }
 
         private string[] DefAttributes()
@@ -512,6 +380,7 @@ namespace iSukces.Code
 
         private bool Emit_constructors(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
+            var w = new CsClassWriter(this);
             var c = _methods
                 .Where(i => i.Kind == MethodKind.Constructor || i.Kind == MethodKind.Finalizer)
                 .OrderBy(a => a.Kind != MethodKind.Constructor)
@@ -519,10 +388,10 @@ namespace iSukces.Code
             if (!c.Any())
                 return addEmptyLineBeforeRegion;
             var m = c.Where(i => !i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Constructors", Features);
+            addEmptyLineBeforeRegion = w.WriteMethods(writer, addEmptyLineBeforeRegion, m, "Constructors");
 
             m                        = c.Where(i => i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static constructors", Features);
+            addEmptyLineBeforeRegion = w.WriteMethods(writer, addEmptyLineBeforeRegion, m, "Static constructors");
             return addEmptyLineBeforeRegion;
         }
 
@@ -531,7 +400,9 @@ namespace iSukces.Code
             if (!_events.Any())
                 return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = WriteMethodAction(writer, _events.OrderBy(a => a.Name), "Events",
+            CsClassWriter w = new CsClassWriter(this);
+
+            addEmptyLineBeforeRegion = w.WriteMethodAction(writer, _events.OrderBy(a => a.Name), "Events",
                 ev =>
                 {
                     writer.OpenCompilerIf(ev);
@@ -566,7 +437,8 @@ namespace iSukces.Code
 
         private bool Emit_fields(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
-            var all = _fields.OrderBy(a => a.IsConst).ToList();
+            CsClassWriter w   = new CsClassWriter(this);
+            var           all = _fields.OrderBy(a => a.IsConst).ToList();
             foreach (var i in _events.Where(a => a.LongDefinition))
             {
                 var eventField = new CsClassField(i.FieldName, i.Type, i.GetFieldDescription());
@@ -576,7 +448,7 @@ namespace iSukces.Code
             if (!all.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
 
-            addEmptyLineBeforeRegion = WriteMethodAction(writer, all, "Fields",
+            addEmptyLineBeforeRegion = w.WriteMethodAction(writer, all, "Fields",
                 field => { Emit_single_field(writer, field); }
             );
             return addEmptyLineBeforeRegion;
@@ -584,26 +456,28 @@ namespace iSukces.Code
 
         private bool Emit_methods(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
+            CsClassWriter w = new CsClassWriter(this);
             var c = _methods
                 .Where(i => i.Kind != MethodKind.Constructor && i.Kind != MethodKind.Finalizer)
-                .OrderBy(a=>a.Kind)
+                .OrderBy(a => a.Kind)
                 .ToArray();
             if (!c.Any()) return addEmptyLineBeforeRegion;
             var m = c.Where(i => !i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Methods", Features);
+            addEmptyLineBeforeRegion = w.WriteMethods(writer, addEmptyLineBeforeRegion, m, "Methods");
 
             m                        = c.Where(i => i.IsStatic);
-            addEmptyLineBeforeRegion = _wm(writer, addEmptyLineBeforeRegion, m, "Static methods", Features);
+            addEmptyLineBeforeRegion = w.WriteMethods(writer, addEmptyLineBeforeRegion, m, "Static methods");
             return addEmptyLineBeforeRegion;
         }
 
         private void Emit_nested(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
+            CsClassWriter w = new CsClassWriter(this);
             // ReSharper disable once InvertIf
             if (_nestedClasses.Any())
             {
                 writer.EmptyLine(!addEmptyLineBeforeRegion);
-                WriteMethodAction(writer, _nestedClasses.OrderBy(a => a._name), "Nested classes",
+                w.WriteMethodAction(writer, _nestedClasses.OrderBy(a => a._name), "Nested classes",
                     i =>
                     {
                         i.MakeCode(writer);
@@ -615,7 +489,7 @@ namespace iSukces.Code
             if (Enums.Any())
             {
                 writer.EmptyLine(!addEmptyLineBeforeRegion);
-                WriteMethodAction(writer, Enums.OrderBy(a => a.Name), "Nested enums",
+                w.WriteMethodAction(writer, Enums.OrderBy(a => a.Name), "Nested enums",
                     i =>
                     {
                         i.MakeCode(writer);
@@ -627,16 +501,75 @@ namespace iSukces.Code
 
         private bool Emit_properties(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
         {
+            CsClassWriter w = new CsClassWriter(this);
             if (!_properties.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
-            addEmptyLineBeforeRegion = WriteMethodAction(writer, _properties, "Properties",
+            addEmptyLineBeforeRegion = w.WriteMethodAction(writer, _properties, "Properties",
                 i => _EmitProperty(i, writer));
             return addEmptyLineBeforeRegion;
+        }
+
+        public string GetComments()
+        {
+            return _extraComment.ToString();
+        }
+
+        private string GetConstructorName()
+        {
+            return _name.Split('<')[0].Trim();
+        }
+
+        private string GetFinalizerName()
+        {
+            return "~" + GetConstructorName();
         }
 
         private bool GetIsAbstract()
         {
             return IsAbstract || _methods.Any(i => i.Overriding == OverridingType.Abstract);
+        }
+
+        public string GetNamespace()
+        {
+            var owner = Owner;
+            while (true)
+                switch (owner)
+                {
+                    case null:
+                    case CsFile _:
+                        return string.Empty;
+                    case CsNamespace ns:
+                        return ns.Name;
+                    case CsClass cl:
+                        owner = cl.Owner;
+                        continue;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(owner));
+                }
+        }
+
+        public CsClass GetOrCreateNested(string typeName)
+        {
+            return GetOrCreateNested(typeName, out _);
+        }
+
+        public CsClass GetOrCreateNested(string typeName, out bool isCreatedNew)
+        {
+            var existing = _nestedClasses
+                .FirstOrDefault(csClass => csClass.Name == typeName);
+            if (existing != null)
+            {
+                isCreatedNew = false;
+                return existing;
+            }
+
+            existing = new CsClass(typeName)
+            {
+                Owner = this
+            };
+            _nestedClasses.Add(existing);
+            isCreatedNew = true;
+            return existing;
         }
 
         private string GetPropertyHeader(CsProperty prop)
@@ -659,6 +592,80 @@ namespace iSukces.Code
             var header = string.Join(" ", list);
             return header;
         }
+
+        public string GetTypeName(Type type)
+        {
+            if (Owner == null)
+                throw new NullReferenceException(nameof(Owner));
+            var result = Owner.GetTypeName(type);
+            if (Owner is not CsClass cl) return result;
+            var cutBegin = cl.Name + ".";
+            if (result.StartsWith(cutBegin, StringComparison.Ordinal))
+                result = result.Substring(cutBegin.Length);
+            return result;
+        }
+
+        public bool IsKnownNamespace(string namespaceName)
+        {
+            return Owner?.IsKnownNamespace(namespaceName) ?? false;
+        }
+
+        public void MakeCode(ICsCodeWriter writer)
+        {
+            writer.OpenCompilerIf(CompilerDirective);
+            writer.WriteComment(this);
+            WriteSummary(writer, Description);
+            writer.WriteAttributes(Attributes);
+            var def = string.Join(" ", DefAttributes());
+            {
+                var dupa              = new HashSet<string>();
+                var baseAndInterfaces = new List<string>();
+                if (!string.IsNullOrEmpty(_baseClass))
+                {
+                    baseAndInterfaces.Add(_baseClass);
+                    dupa.Add(_baseClass);
+                }
+
+                for (var index = 0; index < ImplementedInterfaces.Count; index++)
+                {
+                    var interfaceName = ImplementedInterfaces[index];
+                    if (dupa.Add(interfaceName))
+                        baseAndInterfaces.Add(interfaceName);
+                }
+
+                if (baseAndInterfaces.Any())
+                    def += " : " + string.Join(", ", baseAndInterfaces);
+            }
+            writer.Open(def);
+            // Constructors
+            var addEmptyLineBeforeRegion = Emit_constructors(writer, false);
+            // Methods
+            addEmptyLineBeforeRegion = Emit_methods(writer, addEmptyLineBeforeRegion);
+            //Properties
+            addEmptyLineBeforeRegion = Emit_properties(writer, addEmptyLineBeforeRegion);
+            // Fields
+            addEmptyLineBeforeRegion = Emit_fields(writer, addEmptyLineBeforeRegion);
+            // Events
+            addEmptyLineBeforeRegion = Emit_events(writer, addEmptyLineBeforeRegion);
+            // Nested
+            Emit_nested(writer, addEmptyLineBeforeRegion);
+            writer.Close();
+            writer.CloseCompilerIf(CompilerDirective);
+        }
+
+
+        public override string ToString()
+        {
+            return "csClass " + _name;
+        }
+
+        public CsClass WithBaseClass(string baseClass)
+        {
+            BaseClass = baseClass;
+            return this;
+        }
+
+        #region properties
 
         public static LanguageFeatures DefaultLanguageFeatures { get; set; }
 
@@ -745,8 +752,12 @@ namespace iSukces.Code
 
         public IReadOnlyList<CsEvent> Events => _events;
 
+        #endregion
+
         public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
         public IReadOnlyList<CsEnum>       Enums           { get; } = new List<CsEnum>();
+
+        #region Fields
 
         private readonly StringBuilder _extraComment = new StringBuilder();
 
@@ -766,5 +777,7 @@ namespace iSukces.Code
 
         private List<CsProperty> _properties = new List<CsProperty>();
         private List<CsClassField> _fields = new List<CsClassField>();
+
+        #endregion
     }
 }
