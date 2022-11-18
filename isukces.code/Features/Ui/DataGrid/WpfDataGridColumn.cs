@@ -10,14 +10,6 @@ namespace iSukces.Code.Ui.DataGrid
             return this;
         }
 
-#if AMMY
-        public WpfDataGridColumn WithDataMemberBinding(string dataMemberBindingName)
-        {
-            Binding.Path = dataMemberBindingName;
-            return this;
-        }
-#endif
-
         public WpfDataGridColumn WithEditTemplate(object template)
         {
             EditTemplate = template;
@@ -55,12 +47,5 @@ namespace iSukces.Code.Ui.DataGrid
         public object     CellTemplate { get; set; }
         public object     EditTemplate { get; set; }
 
-#if AMMY
-
-
-        [NotNull]
-        public AmmyBindBuilder Binding { get; } = new AmmyBindBuilder(null);
-#endif
-            
     }
 }

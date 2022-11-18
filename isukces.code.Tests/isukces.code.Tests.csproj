@@ -38,8 +38,5 @@
     <Compile Update="EqualityGenerator\EqualityGeneratorTests.Classes.cs">
       <DependentUpon>EqualityGeneratorTests.cs</DependentUpon>
     </Compile>
-    <Compile Update="Ui\CompatTelerikGridAmmyMixinsGeneratorTests+tools.cs">
-      <DependentUpon>CompatTelerikGridAmmyMixinsGeneratorTests.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
 </Project>

@@ -49,23 +49,9 @@ namespace iSukces.Code.AutoCode
     {
         public static void AddNamespace(this IAutoCodeGeneratorContext src, Type type)
         {
-#if AMMY
-            var at = EmitTypeAttribute.GetAttribute(type);
-            if (at?.Namespace is null)
-            {
-                var ns = type.Namespace;
-                if (!string.IsNullOrEmpty(ns))
-                    src.AddNamespace(ns);
-            }
-            else
-            {
-                src.AddNamespace(at.Namespace);
-            }
-#else
             var ns = type.Namespace;
             if (!string.IsNullOrEmpty(ns))
                 src.AddNamespace(ns);
-#endif
         }
 
         public static void AddNamespace<T>(this IAutoCodeGeneratorContext src)

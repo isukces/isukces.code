@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
-#if AMMY
-using iSukces.Code.Ammy;
-using iSukces.Code.Compatibility.System.Windows.Data;
-#endif
 using JetBrains.Annotations;
 
 namespace iSukces.Code.Ui.DataGrid
@@ -49,14 +45,6 @@ namespace iSukces.Code.Ui.DataGrid
                 .GetProperty(bindingPath);
         }
 
-#if AMMY
-        protected AmmyBind BindToModel<TValue>(Expression<Func<TRow, TValue>> func, XBindingMode? mode = null)
-        {
-            var name = CodeUtils.GetMemberPath(func);
-            return new AmmyBind(name, mode);
-        }
-#endif
-
         protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
             int? width = null)
         {
@@ -70,11 +58,6 @@ namespace iSukces.Code.Ui.DataGrid
                 Width        = width,
                 Member       = propertyInfo,
             };
-
-#if AMMY
-            if (result is WpfDataGridColumn col) 
-                col.Binding.Path = bindingPath;
-#endif
 
             if (propertyInfo != null)
             {
