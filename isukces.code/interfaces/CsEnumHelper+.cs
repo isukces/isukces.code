@@ -127,7 +127,7 @@ namespace iSukces.Code.Interfaces
                 }
                 return result;
             }            
-            return new ushort[0];
+            return XArray.Empty<ushort>();
         }
         // ================================
 

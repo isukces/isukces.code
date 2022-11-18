@@ -58,7 +58,6 @@ namespace iSukces.Code
             return tmp != 0 ? tmp : Type.CompareTo(other.Type);
         }
 
-
         /// <summary>
         ///     Sprawdza, czy wskazany obiekt jest równy bieżącemu
         /// </summary>
@@ -71,7 +70,7 @@ namespace iSukces.Code
         /// </summary>
         /// <param name="other">obiekt do porównania z obiektem bieżącym</param>
         /// <returns><c>true</c> jeśli wskazany obiekt jest równy bieżącemu; w przeciwnym wypadku<c>false</c></returns>
-        public override bool Equals(object other) => other is CsMethodParameter parameter && Equals(parameter);
+        public override bool Equals(object other) => other is CsMethodParameter && Equals((CsMethodParameter)other);
 
         /// <summary>
         ///     Zwraca kod HASH obiektu
@@ -93,7 +92,6 @@ namespace iSukces.Code
                     _constValue);
             return string.Format("{0} {1} {2}", Visibility.ToString().ToLower(), Type, Name);
         }
-
 
         /// <summary>
         ///     Realizuje interfejs IComparable

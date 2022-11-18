@@ -215,8 +215,9 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                cs.Features |= LanguageFeatures.ExpressionBody;
-                var m = cs.AddMethod("Bla", "void").WithBodyAsExpression("SetSomeValue()");
+
+                cs.Formatting = cs.Formatting.With(CodeFormattingFeatures.ExpressionBody);
+                var m                     = cs.AddMethod("Bla", "void").WithBodyAsExpression("SetSomeValue()");
             });
             Assert.Equal(exp, code);
         }

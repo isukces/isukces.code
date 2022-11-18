@@ -272,7 +272,7 @@ namespace iSukces.Code.AutoCode
 
                     if (Class.Fields.All(a => a.Name != ErrorMessageConstName))
                     {
-                        var msg = $"Lazy not initialized. Call {GeneratorsHelper.AutoCodeInitMethodName} method in constructor.";
+                        const string msg = $"Lazy not initialized. Call {GeneratorsHelper.AutoCodeInitMethodName} method in constructor.";
                         Class.AddField(ErrorMessageConstName, "string")
                             .WithVisibility(Visibilities.Private)
                             .WithConstValue(msg.CsEncode()).IsConst = true;
@@ -280,9 +280,7 @@ namespace iSukces.Code.AutoCode
 
                     var exception = Class.GetTypeName<Exception>();
                     var cw = new CsCodeWriter()
-                        //.WritelineNoIndent("#if DEBUG")
                         .WriteLine($"if (ReferenceEquals({fieldName}, null)) throw new {exception}({ErrorMessageConstName});")
-                        // .WritelineNoIndent("#endif")
                         .WriteLine($"return {fieldName}.Value;");
                     code = cw.Code;
                 }

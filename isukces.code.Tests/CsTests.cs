@@ -27,10 +27,10 @@ namespace iSukces.Code.Tests
         {
             var cl = new CsClass("Src1");
             cl.Kind = CsNamespaceMemberKind.Struct;
-            var m = cl.AddMethod("*", "Result")
-                .WithBody("return new Result(left.Value * right.Value);");
-            m.AddParam("left", "Src1");
-            m.AddParam("right", "Src2");
+            cl.AddMethod("*", "Result")
+                .WithBodyAsExpression("new Result(left.Value * right.Value)")
+                .WithParameter("left", "Src1")
+                .WithParameter("right", "Src2");
             // odwrotny
 
             ICsCodeWriter w = new CsCodeWriter();

@@ -32,7 +32,7 @@ namespace iSukces.Code
         
         public IReadOnlyList<string> GetLines(bool addComma, ITypeNameResolver typeNameResolver)
         {
-            if (Constraints.Count == 0) return addComma ? new[] {";"} : new string[0];
+            if (Constraints.Count == 0) return addComma ? new[] {";"} : XArray.Empty<string>();
             var result = new List<string>();
             var q = Constraints.GroupBy(a => a.TypeName)
                 .ToDictionary(a => a.Key, a => a.ToArray());

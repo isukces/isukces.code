@@ -21,7 +21,7 @@ namespace iSukces.Code.VsSolutions
         private static XElement[] GetDependentAssemblyElements(XElement xAssemblyBinding)
         {
             if (xAssemblyBinding == null)
-                return new XElement[0];
+                return XArray.Empty<XElement>();
             var dependentAssemblys = xAssemblyBinding
                 .Elements(xAssemblyBinding.Name.Namespace + Tags.AppCfg.DependentAssembly)
                 .ToArray();
@@ -57,7 +57,7 @@ namespace iSukces.Code.VsSolutions
         {
             var xAssemblyBinding = GetXAssemblyBinding();
             return xAssemblyBinding == null
-                ? new AssemblyBinding[0]
+                ? XArray.Empty<AssemblyBinding>()
                 : ParseAssemblyBinding(xAssemblyBinding);
         }
 

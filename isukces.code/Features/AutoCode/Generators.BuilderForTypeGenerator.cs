@@ -164,9 +164,8 @@ namespace iSukces.Code.AutoCode
                         var prop1 = _class.AddProperty(propName, "bool")
                             .WithNoEmitField();
                         var v = $"{propertyTypeName}.{enumName}";
-                        prop1.OwnGetter = $"return ({info.PropertyName} & {v}) != 0;";
-                        prop1.OwnSetter =
-                            $"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};";
+                        prop1.WithOwnGetterAsExpression($"({info.PropertyName} & {v}) != 0");
+                        prop1.WithOwnSetterAsExpression($"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};");
                         // metoda
                         if (!info.SkipWithMethod)
                             AddWithMethod(propName, typeof(bool));

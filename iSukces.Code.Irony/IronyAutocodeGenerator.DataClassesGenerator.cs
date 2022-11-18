@@ -51,11 +51,10 @@ namespace iSukces.Code.Irony
 
             private void AddToString(string expression)
             {
-                var body = $"return {expression};";
-                var m = _dataClass.AddMethod("ToString", "string")
+                _dataClass.AddMethod("ToString", "string")
                     .WithOverride()
                     .WithVisibility(Visibilities.Public)
-                    .WithBody(body);
+                    .WithBodyAsExpression(expression);
             }
 
             private void Create()

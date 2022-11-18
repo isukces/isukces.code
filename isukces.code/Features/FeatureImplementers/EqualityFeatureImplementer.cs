@@ -75,12 +75,13 @@ namespace iSukces.Code.FeatureImplementers
         {
             var tn1 = _class.GetTypeName(typeof(DebuggerBrowsableAttribute));
             var tn2 = _class.GetTypeName(typeof(DebuggerBrowsableState));
-            field.Attributes.Add(new CsAttribute(tn1).WithArgument(new CsDirectCode(tn2 + ".Never")));
+            field.Attributes.Add(new CsAttribute(tn1).WithArgument(new CsDirectCode($"{tn2}.Never")));
         }
 
-        private void AddOperatorMethod(string opertatorName, string body)
+        private void AddOperatorMethod(string opertatorName, string body, bool isExpression)
         {
             var m = _class.AddMethod(opertatorName, "bool").WithStatic().WithBody(body);
+            m.IsExpressionBody = isExpression;
             m.Parameters.Add(new CsProperty("left", MyTypeName));
             m.Parameters.Add(new CsProperty("right", MyTypeName));
         }
@@ -101,7 +102,7 @@ namespace iSukces.Code.FeatureImplementers
                     else if (CanBeNull)
                         cs.WriteLine($"if (ReferenceEquals(left, right)) return {resultIfEqual};");
                     cs.WriteLine($"return {methodName}(left, right) {oper} 0;");
-                    AddOperatorMethod(oper, cs.Code);
+                    AddOperatorMethod(oper, cs.Code, false);
                 }
             }
             else
@@ -125,7 +126,7 @@ namespace iSukces.Code.FeatureImplementers
                     }
 
                     cs.WriteLine($"return left.CompareTo(right) {oper} 0;");
-                    AddOperatorMethod(oper, cs.Code);
+                    AddOperatorMethod(oper, cs.Code, false);
                 }
             }
         }
@@ -147,8 +148,8 @@ namespace iSukces.Code.FeatureImplementers
                 {
                     if (!comparers.TryGetValue(c1.Instance, out var variableName))
                     {
-                        comparers[c1.Instance] = variableName = "comparer" + GetSuffix(comparers.Count);
-                        cs.WriteLine("var " + variableName + " = " + c1.Instance + ";");
+                        comparers[c1.Instance] = variableName = $"comparer{GetSuffix(comparers.Count)}";
+                        cs.WriteLine($"var {variableName} = {c1.Instance};");
                     }
 
                     expr = expr.Format(variableName);
@@ -189,8 +190,8 @@ namespace iSukces.Code.FeatureImplementers
 
         private void WriteEqualityOperators()
         {
-            AddOperatorMethod("==", "return Equals(left, right);");
-            AddOperatorMethod("!=", "return !Equals(left, right);");
+            AddOperatorMethod("==", "Equals(left, right)", true);
+            AddOperatorMethod("!=", "!Equals(left, right)", true);
         }
 
         private void WriteEqualsWithMyType()
@@ -206,7 +207,7 @@ namespace iSukces.Code.FeatureImplementers
             {
                 var getHashCodeExpression = CachedGetHashCodeImplementation == GetHashCodeImplementationKind.Precomputed
                     ? GetHashCodeFieldName
-                    : nameof(GetHashCode) + "()";
+                    : $"{nameof(GetHashCode)}()";
 
                 cw.WriteLine(
                     $"if ({getHashCodeExpression} != {OtherArgName}.{getHashCodeExpression}) return false;");
@@ -237,7 +238,7 @@ namespace iSukces.Code.FeatureImplementers
 
         private void WriteEqualsWithObject()
         {
-            var gettype = nameof(GetType) + "()";
+            var gettype = $"{nameof(GetType)}()";
             if (_type.GetTypeInfo().IsSealed)
                 gettype = string.Format("typeof({0})", MyTypeName);
             var cw = new CsCodeWriter();
@@ -298,7 +299,7 @@ namespace iSukces.Code.FeatureImplementers
                 case GetHashCodeImplementationKind.Precomputed:
                     _class.AddMethod("GetHashCode", "int")
                         .WithOverride()
-                        .WithBody($"return {GetHashCodeFieldName};");
+                        .WithBodyAsExpression($"{GetHashCodeFieldName}");
                     break;
             }
 

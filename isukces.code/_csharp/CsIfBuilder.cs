@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using iSukces.Code.Interfaces;
 
@@ -90,7 +91,7 @@ namespace iSukces.Code
         public static string[] SplitCode(string code)
         {
             if (string.IsNullOrWhiteSpace(code))
-                return new string[0];
+                return XArray.Empty<string>();
             var statementLines = code.Split('\r', '\n')
                 .Where(a => !string.IsNullOrWhiteSpace(a)).ToArray();
             return statementLines;

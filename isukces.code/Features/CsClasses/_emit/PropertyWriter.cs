@@ -1,0 +1,174 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using iSukces.Code.Interfaces;
+
+namespace iSukces.Code
+{
+    internal class PropertyWriter
+    {
+        public PropertyWriter(CsClass csClass, CsProperty property)
+        {
+            _csClass               = csClass;
+            _property              = property;
+            _allowExpressionBodies = (_csClass.Formatting.Flags & CodeFormattingFeatures.ExpressionBody) != 0;
+        }
+
+        private static string OptionalVisibility(Visibilities? memberVisibility)
+        {
+            var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
+            return v;
+        }
+
+
+        internal void EmitProperty(ICsCodeWriter writer)
+        {
+            writer.OpenCompilerIf(_property);
+            try
+            {
+                writer.WriteComment(_property);
+
+                var emitField = WriteProperty(writer);
+
+                if (emitField && !IsInterface)
+                {
+                    var f = new[]
+                    {
+                        _property.FieldVisibility.ToString().ToLower(),
+                        _property.IsStatic ? "static" : null,
+                        _property.IsReadOnly ? "readonly" : null,
+                        _property.Type,
+                        _property.PropertyFieldName,
+                        string.IsNullOrWhiteSpace(_property.ConstValue) ? null : $"= {_property.ConstValue}"
+                    };
+
+                    var code = string.Join(" ", f.Where(a => !string.IsNullOrWhiteSpace(a))) + ";";
+                    writer.EmptyLine().WriteLine(code);
+                }
+            }
+            finally
+            {
+                writer.CloseCompilerIf(_property);
+            }
+
+            writer.EmptyLine();
+        }
+
+        private string GetPropertyHeader()
+        {
+            var list = new List<string>();
+            if (!IsInterface && _property.Visibility != Visibilities.InterfaceDefault)
+                list.Add(_property.Visibility.ToString().ToLower());
+            if (_property.IsStatic)
+                list.Add("static");
+            if (!IsInterface)
+            {
+                if (_property.IsOverride)
+                    list.Add("override");
+                else if (_property.IsVirtual)
+                    list.Add("virtual");
+            }
+
+            list.Add(_property.Type);
+            list.Add(_property.Name);
+            var header = string.Join(" ", list);
+            return header;
+        }
+
+        private void WriteGetterOrSetter(ICsCodeWriter writer, GsKind kind)
+        {
+            var isGetter = kind is GsKind.Getter;
+            var lines    = isGetter ? _property.GetGetterLines() : _property.GetSetterLines();
+            if (lines is null || lines.IsEmpty) return;
+            var keyWord          = isGetter ? "get" : "set";
+            var memberVisibility = isGetter ? _property.GetterVisibility : _property.SetterVisibility;
+            keyWord = OptionalVisibility(memberVisibility) + keyWord;
+            if (lines.IsExpressionBody && _allowExpressionBodies)
+            {
+                if (lines.Lines.Count == 1)
+                    lines.WriteExpressionLines(keyWord + " =>", true, writer);
+                else
+                    throw new NotSupportedException("Multiline expression getter/setter");
+                return;
+            }
+
+            if (lines.Lines.Count == 1)
+            {
+                var singleLine = lines.Lines[0].Trim();
+                if (lines.IsExpressionBody)
+                    singleLine = isGetter ? $"return {singleLine};" : $"{singleLine};";
+
+                writer.WriteLine($"{keyWord} {{ {singleLine} }}");
+            }
+            else
+            {
+                if (lines.IsExpressionBody)
+                    throw new NotSupportedException("Multiline expression getter/setter");
+                writer.Open(keyWord);
+                foreach (var iii in lines.Lines)
+                    writer.WriteLine(iii);
+                writer.Close();
+            }
+        }
+
+        private bool WriteProperty(ICsCodeWriter writer)
+        {
+            var header = GetPropertyHeader();
+            CsClass.WriteSummary(writer, _property.Description);
+            writer.WriteAttributes(_property.Attributes);
+
+            if (IsInterface || _property.MakeAutoImplementIfPossible && string.IsNullOrEmpty(_property.OwnSetter) &&
+                string.IsNullOrEmpty(_property.OwnGetter))
+            {
+                var gs = _property.IsPropertyReadOnly
+                    ? $"{{ {OptionalVisibility(_property.GetterVisibility)}get; }}"
+                    : $"{{ {OptionalVisibility(_property.GetterVisibility)}get; {OptionalVisibility(_property.SetterVisibility)}set; }}";
+                var c = header + " " + gs;
+                if (!IsInterface && !string.IsNullOrEmpty(_property.ConstValue))
+                    c += " = " + _property.ConstValue + ";";
+                writer.WriteLine(c);
+                return false;
+            }
+
+            if (_allowExpressionBodies && _property.IsPropertyReadOnly)
+            {
+                var lines = _property.GetGetterLines();
+                if (lines.IsExpressionBody)
+                {
+                    writer.WriteLambda(header, lines.GetExpression(), _csClass.Formatting.MaxLineLength, true);
+                    return _property.EmitField;
+                }
+            }
+
+            writer.Open(header);
+            {
+                WriteGetterOrSetter(writer, GsKind.Getter);
+                if (!_property.IsPropertyReadOnly) 
+                    WriteGetterOrSetter(writer, GsKind.Setter);
+            }
+            writer.Close();
+
+            return _property.EmitField;
+        }
+
+        #region properties
+
+        private bool IsInterface => _csClass.IsInterface;
+
+        #endregion
+
+        #region Fields
+
+        private readonly CsClass _csClass;
+        private readonly CsProperty _property;
+        private readonly bool _allowExpressionBodies;
+
+        #endregion
+
+        private enum GsKind
+        {
+            Getter,
+            Setter
+        }
+    }
+}

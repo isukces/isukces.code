@@ -34,9 +34,9 @@ namespace AutoCodeBuilder
         private static void GenerateGetMap(IReadOnlyCollection<int> map, CsClass grammarClass)
         {
             if (map == null || map.Count == 0) return;
-            var body = "return new [] { " + string.Join(", ", map) + " };";
+            var expression = "new [] { " + string.Join(", ", map) + " }";
             grammarClass.AddMethod("GetMap", "int[]")
-                .WithBody(body)
+                .WithBodyAsExpression(expression)
                 .WithOverride()
                 .WithVisibility(Visibilities.Protected);
         }

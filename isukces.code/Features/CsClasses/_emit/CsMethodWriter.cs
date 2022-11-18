@@ -66,6 +66,17 @@ namespace iSukces.Code
                     throw new Exception("Constructor nor finalizer can't be " + Overriding);
         }
 
+        private string GetMDefinition(bool inInterface)
+        {
+            var query = from i in _method.Parameters
+                select FormatMethodParameter(i);
+            var mDefinition = string.Format("{0}{2}({1})",
+                string.Join(" ", GetMethodAttributes(inInterface)),
+                string.Join(", ", query),
+                _method.GenericArguments.GetTriangleBracketsInfo());
+            return mDefinition;
+        }
+
         private string[] GetMethodAttributes(bool inInterface)
         {
             var a = new List<string>();
@@ -146,7 +157,7 @@ namespace iSukces.Code
         public void MakeCode(ICsCodeWriter writer, CsClass owner)
         {
             var inInterface = owner.IsInterface;
-            var features    = owner.Features;
+            var features    = owner.Formatting;
             writer.OpenCompilerIf(_method.CompilerDirective);
             Check();
             WriteMethodDescription(writer);
@@ -155,96 +166,83 @@ namespace iSukces.Code
             // ================
             writer.WriteComment(_method);
             writer.SplitWriteLine(_method.AdditionalContentOverMethod);
-            var query = from i in _method.Parameters
-                select FormatMethodParameter(i);
-            var mDefinition = string.Format("{0}{2}({1})",
-                string.Join(" ", GetMethodAttributes(inInterface)),
-                string.Join(", ", query),
-                _method.GenericArguments.GetTriangleBracketsInfo());
-            if (inInterface)
+            var mDefinition = GetMDefinition(inInterface);
+            WriteBody();
+            writer.CloseCompilerIf(_method.CompilerDirective);
+
+            void WriteBody()
             {
-                if (Kind != MethodKind.Normal || _method.IsStatic)
-                    return;
-                if (_method.GenericArguments.HasConstraints())
+                if (inInterface)
                 {
-                    writer.WriteLine(mDefinition);
-                    _method.GenericArguments?.WriteCode(writer, true, owner);
+                    if (Kind != MethodKind.Normal || _method.IsStatic) return;
+                    if (_method.GenericArguments.HasConstraints())
+                    {
+                        writer.WriteLine(mDefinition);
+                        _method.GenericArguments?.WriteCode(writer, true, owner);
+                    }
+                    else
+                        writer.WriteLine(mDefinition + ";");
+
+                    return;
                 }
-                else
+
+                if (Overriding == OverridingType.Abstract && Kind == MethodKind.Normal)
                 {
                     writer.WriteLine(mDefinition + ";");
+                    return;
                 }
 
-                return;
-            }
+                var bodyLines = CodeLines.Parse(_method.Body, _method.IsExpressionBody);
+                if (bodyLines.IsExpressionBody)
+                    if (bodyLines.LinesCount != 1)
+                        throw new Exception("Expression body should have exactly one line");
 
-            if (Overriding == OverridingType.Abstract && Kind == MethodKind.Normal)
-            {
-                writer.WriteLine(mDefinition + ";");
-                return;
-            }
+                var isExpressionBody = bodyLines.IsExpressionBody;
+                var allowExpressionBody = isExpressionBody
+                                          && (features.Flags & CodeFormattingFeatures.ExpressionBody) != 0
+                                          && Kind != MethodKind.Constructor;
 
-            string[] GetLines(string text)
-            {
-                var strings = (text ?? "").Split('\r', '\n');
-                return (from i in strings
-                    where !string.IsNullOrWhiteSpace(i)
-                    select i.TrimEnd()).ToArray();
-            }
-
-            var bodyLines        = GetLines(_method.Body);
-            var isExpressionBody = bodyLines.Length == 1 && _method.IsExpressionBody;
-            var allowExpressionBody = isExpressionBody
-                                      && (features & LanguageFeatures.ExpressionBody) != 0
-                                      && Kind != MethodKind.Constructor;
-
-            if (isExpressionBody && !allowExpressionBody)
-            {
-                var line = bodyLines[0].TrimEnd(';').TrimEnd();
-                bodyLines[0] = _method.ResultType is "" or "void"
-                    ? line + ";"
-                    : $"return {line};";
-            }
-
-            if (Kind == MethodKind.Constructor)
-            {
-                writer.OpenConstructor(mDefinition, _method.BaseConstructorCall);
-            }
-            else
-            {
-                void WriteStarting(ICsCodeWriter w)
+                if (isExpressionBody && !allowExpressionBody)
                 {
-                    w.WriteLine(mDefinition);
-                    if (_method.GenericArguments.HasConstraints())
-                        _method.GenericArguments?.WriteCode(w, false, owner);
+                    var line = bodyLines.GetExpression();
+                    var c    = _method.ResultType is "" or "void" ? $"{line};" : $"return {line};";
+                    bodyLines = new CodeLines(new[] { c });
+                }
+
+                if (Kind == MethodKind.Constructor)
+                {
+                    writer.OpenConstructor(mDefinition, _method.BaseConstructorCall);
+                    writer.WriteLines(bodyLines.Lines).Close();
+                    return;
                 }
 
                 if (allowExpressionBody)
                 {
-                    var w = new CsCodeWriter();
-                    WriteStarting(w);
-                    w.WriteLine("=>");
-                    w.WriteLine(bodyLines[0]);
-                    var codeLines = GetLines(w.Code).Select(a => a.Trim());
-                    var t         = string.Join(" ", codeLines).TrimEnd(';').TrimEnd();
-                    writer.WriteLine(t + ";");
+                    if (_method.GenericArguments.HasConstraints())
+                    {
+                        var w = new CsCodeWriter();
+                        WriteMDefinition(w);
+                        writer.WriteLambda("", bodyLines.GetExpressionLines("", false), features.MaxLineLength);
+                    }
+                    else
+                        writer.WriteLambda(mDefinition, bodyLines.GetExpression(), features.MaxLineLength, true);
                 }
                 else
                 {
-                    WriteStarting(writer);
+                    WriteMDefinition(writer);
                     writer.WriteLine(writer.LangInfo.OpenText);
-                    writer.IncIndent();
+                    writer.IncIndent().WriteLines(bodyLines.Lines).Close();
+
+                }
+                    
+                void WriteMDefinition(ICsCodeWriter xWriter)
+                {
+                    xWriter.WriteLine(mDefinition);
+                    var gen = _method.GenericArguments;
+                    if (gen.HasConstraints())
+                        gen?.WriteCode(xWriter, false, owner);
                 }
             }
-
-            if (!allowExpressionBody)
-            {
-                foreach (var i in bodyLines)
-                    writer.WriteLine(i);
-                writer.Close();
-            }
-
-            writer.CloseCompilerIf(_method.CompilerDirective);
         }
 
         private void WriteMethodDescription(ICsCodeWriter writer)

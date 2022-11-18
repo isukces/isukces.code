@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -14,7 +15,7 @@ namespace iSukces.Code.VsSolutions
         {
             var tmp = ScanItemGroups(Tags.ProjectReference).ToArray();
             if (tmp.Length == 0)
-                return new ProjectReference[0];
+                return XArray.Empty<ProjectReference>();
             return tmp.Select(ProjectReference.FromNode);
  
         }
@@ -123,4 +124,5 @@ namespace iSukces.Code.VsSolutions
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
 */
+
 }

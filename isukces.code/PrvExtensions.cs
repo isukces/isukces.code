@@ -7,7 +7,7 @@ namespace iSukces.Code
     {
         public static TOut[] MapToArray<TIn, TOut>(this IReadOnlyList<TIn> src, Func<TIn, TOut> map)
         {
-            if (src is null || src.Count == 0) return new TOut[0];
+            if (src is null || src.Count == 0) return XArray.Empty<TOut>();
             var result = new TOut[src.Count];
             // ReSharper disable once LoopCanBeConvertedToQuery
             for (var i = 0; i < src.Count; i++)

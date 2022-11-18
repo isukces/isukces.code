@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code
@@ -40,24 +39,33 @@ namespace iSukces.Code
         {
             _extraComment.AppendLine(x);
         }
-        
-        public string GetComments() => _extraComment.ToString();
 
-        public CodeLines GetGetterLines(bool allowExpressionBodies)
+        public CsProperty AsCalculatedFromExpression(string expression)
         {
-            var tmp = string.IsNullOrEmpty(OwnGetter)
-                ? new CodeLines(new[] {string.Format("{0};", PropertyFieldName)}, true)
-                : new CodeLines(OwnGetter.Split('\r', '\n'), OwnGetterIsExpression);
-            if (allowExpressionBodies)
-                return tmp.AddSemicolon();
-            return tmp.MakeReturnNoExpressionBody();
+            EmitField             = false;
+            OwnGetter             = expression;
+            IsPropertyReadOnly    = true;
+            OwnGetterIsExpression = true;
+            return this;
         }
 
-        public CodeLines GetSetterLines(bool allowExpressionBodies)
+        public string GetComments()
+        {
+            return _extraComment.ToString();
+        }
+
+        public CodeLines GetGetterLines()
+        {
+            return string.IsNullOrEmpty(OwnGetter)
+                ? CodeLines.FromExpression(PropertyFieldName)
+                : new CodeLines(OwnGetter.Split('\r', '\n'), OwnGetterIsExpression);
+        }
+
+        public CodeLines GetSetterLines()
         {
             var tmp = string.IsNullOrEmpty(OwnSetter)
-                ? new CodeLines(new[] {string.Format("{0} = value;", PropertyFieldName)}, allowExpressionBodies)
-                : new CodeLines(OwnSetter.Split('\r', '\n'), OwnSetterIsExpression && allowExpressionBodies);
+                ? new CodeLines(new[] { $"{PropertyFieldName} = value" }, true)
+                : new CodeLines(OwnSetter.Split('\r', '\n'), OwnSetterIsExpression);
             return tmp;
         }
 
@@ -65,7 +73,10 @@ namespace iSukces.Code
         ///     Zwraca tekstową reprezentację obiektu
         /// </summary>
         /// <returns>Tekstowa reprezentacja obiektu</returns>
-        public override string ToString() => string.Format("property {0} {1}", Name, Type);
+        public override string ToString()
+        {
+            return string.Format("property {0} {1}", Name, Type);
+        }
 
         public CsProperty WithIsPropertyReadOnly(bool isPropertyReadOnly = true)
         {
@@ -90,22 +101,28 @@ namespace iSukces.Code
             OwnGetter = ownGetter;
             return this;
         }
-        
+
         public CsProperty WithOwnGetterAsExpression(string ownGetter)
         {
             OwnGetter             = ownGetter;
             OwnGetterIsExpression = true;
             return this;
         }
-        
-        public CsProperty AsCalculatedFromExpression(string expression)
+
+        public CsProperty WithOwnSetter(string ownSetter)
         {
-            EmitField             = false;
-            OwnGetter             = expression;
-            IsPropertyReadOnly    = true;
-            OwnGetterIsExpression = true;
+            OwnSetter = ownSetter;
             return this;
         }
+
+        public CsProperty WithOwnSetterAsExpression(string ownSetter)
+        {
+            OwnSetter             = ownSetter;
+            OwnSetterIsExpression = true;
+            return this;
+        }
+
+        #region properties
 
         /// <summary>
         /// </summary>
@@ -115,16 +132,16 @@ namespace iSukces.Code
         /// </summary>
         public string OwnGetter
         {
-            get { return _ownGetter; }
-            set { _ownGetter = value?.Trim() ?? string.Empty; }
+            get => _ownGetter;
+            set => _ownGetter = value?.Trim() ?? string.Empty;
         }
 
         /// <summary>
         /// </summary>
         public string OwnSetter
         {
-            get { return _ownSetter; }
-            set { _ownSetter = value?.Trim() ?? string.Empty; }
+            get => _ownSetter;
+            set => _ownSetter = value?.Trim() ?? string.Empty;
         }
 
         public bool OwnGetterIsExpression { get; set; }
@@ -133,10 +150,7 @@ namespace iSukces.Code
         /// <summary>
         ///     nazwa zmiennej dla własności; własność jest tylko do odczytu.
         /// </summary>
-        public string PropertyFieldName
-        {
-            get { return Name.PropertyBackingFieldName(); }
-        }
+        public string PropertyFieldName => Name.PropertyBackingFieldName();
 
         /// <summary>
         /// </summary>
@@ -154,49 +168,18 @@ namespace iSukces.Code
         public Visibilities? GetterVisibility { get; set; }
         public Visibilities  FieldVisibility  { get; set; } = Visibilities.Private;
 
+        #endregion
+
         public string CompilerDirective { get; set; }
+
+        #region Fields
 
         private readonly StringBuilder _extraComment = new StringBuilder();
 
 
         private string _ownGetter = string.Empty;
         private string _ownSetter = string.Empty;
-    }
 
-    public class CodeLines
-    {
-        public CodeLines(string[] lines, bool isExpressionBody = false)
-        {
-            Lines            = lines?.Where(a => a != null && a.Trim() != "").ToArray();
-            IsExpressionBody = isExpressionBody;
-        }
-
-        public CodeLines MakeReturnNoExpressionBody()
-        {
-            if (!IsExpressionBody || Lines == null || Lines.Length == 0)
-                return this;
-            Lines[0]         = "return " + Lines[0].TrimEnd(' ', ';') + ";";
-            IsExpressionBody = false;
-            return this;
-        }
-
-
-        public override string ToString()
-        {
-            if (IsExpressionBody)
-                return "=>" + string.Join("\r\n", Lines);
-            return string.Join("\r\n", Lines);
-        }
-
-        public string[] Lines            { get; set; }
-        public bool     IsExpressionBody { get; set; }
-
-        public CodeLines AddSemicolon()
-        {
-            if (Lines is null || Lines.Length == 0)
-                return this;
-            Lines[0] = Lines[0].TrimEnd(';').TrimEnd() + ";";
-            return this;
-        }
+        #endregion
     }
 }

@@ -1,5 +1,6 @@
 #define _AutoCloseText
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
@@ -56,13 +57,13 @@ namespace iSukces.Code.Interfaces
 
 
 
-        public static void DoWithKeepingIndent(this ICodeWriter _this, Action action)
+        public static void DoWithKeepingIndent(this ICodeWriter obj, Action action)
         {
-            var indentBefore = _this.Indent;
+            var indentBefore = obj.Indent;
             action();
-            if (_this.Indent == indentBefore) return;
+            if (obj.Indent == indentBefore) return;
             // some warning should be created here
-            _this.Indent = indentBefore;
+            obj.Indent = indentBefore;
         }
 
         [NotNull]
@@ -98,47 +99,55 @@ namespace iSukces.Code.Interfaces
             src.IncIndent();
         }
 
-        public static T DecIndent<T>(this T _this)
+        public static T DecIndent<T>(this T obj)
             where T : ICodeWriter
         {
-            _this.Indent--;
-            return _this;
+            obj.Indent--;
+            return obj;
         }
 
-        public static T IncIndent<T>(this T _this)
+        public static T IncIndent<T>(this T obj)
             where T : ICodeWriter
         {
-            _this.Indent++;
-            return _this;
+            obj.Indent++;
+            return obj;
         }
 
         [Obsolete]
-        public static T WithOpen<T>(this T _this, string text)
+        public static T WithOpen<T>(this T obj, string text)
             where T : ICodeWriter
         {
-            _this.Open(text);
-            return _this;
+            obj.Open(text);
+            return obj;
         }
 
-        public static T WithClose<T>(this T _this)
+        public static T WithClose<T>(this T obj)
             where T : ICodeWriter
         {
-            _this.Close();
-            return _this;
+            obj.Close();
+            return obj;
         }
 
-        public static T WriteLine<T>(this T _this)
+        public static T WriteLine<T>(this T obj)
             where T : ICodeWriter
         {
-            _this.Append("\r\n");
-            return _this;
+            obj.Append("\r\n");
+            return obj;
         }
 
-        public static T WriteLine<T>(this T _this, string text)
+        public static T WriteLine<T>(this T obj, string text)
             where T : ICodeWriter
         {
-            _this.WriteIndent().Append(text + "\r\n");
-            return _this;
+            obj.WriteIndent().Append(text + "\r\n");
+            return obj;
+        }
+        
+        public static T WriteLines<T>(this T obj, IEnumerable<string> texts)
+            where T : ICodeWriter
+        {
+            foreach (var line in texts)
+                WriteLine(obj, line);
+            return obj;
         }
 
         public static T SplitWriteLine<T>(this T x, string text)
@@ -162,14 +171,14 @@ namespace iSukces.Code.Interfaces
             return src.WriteLine(text);
         }
 
-        public static T WritelineNoIndent<T>(this T _this, string compilerCode)
+        public static T WritelineNoIndent<T>(this T obj, string compilerCode)
             where T : ICodeWriter
         {
-            var indentBefore = _this.Indent;
-            _this.Indent = 0;
-            _this.WriteLine(compilerCode);
-            _this.Indent = indentBefore;
-            return _this;
+            var indentBefore = obj.Indent;
+            obj.Indent = 0;
+            obj.WriteLine(compilerCode);
+            obj.Indent = indentBefore;
+            return obj;
         }
     }
 }

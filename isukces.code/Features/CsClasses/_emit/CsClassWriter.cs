@@ -12,7 +12,6 @@ internal sealed class CsClassWriter
         Class = @class;
     }
 
-
     public bool WriteMethods(ICsCodeWriter writer, bool addEmptyLineBeforeRegion, IEnumerable<CsMethod> m,
         string region)
     {
@@ -34,7 +33,7 @@ internal sealed class CsClassWriter
     {
         var enumerable = list as IList<T> ?? list.ToList();
         if (!enumerable.Any()) return false;
-        var hasRegions = Features.HasFlag(LanguageFeatures.Regions);
+        var hasRegions = Features.Flags.HasFlag(CodeFormattingFeatures.Regions);
         if (hasRegions)
         {
             writer.WriteLine("#region " + region);
@@ -52,9 +51,8 @@ internal sealed class CsClassWriter
 
     public CsClass Class { get; }
 
-    private LanguageFeatures Features => Class.Features;
+    private CodeFormatting Features => Class.Formatting;
 
-    private bool IsInterface => Class.IsInterface;
 
     #endregion
 }

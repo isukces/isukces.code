@@ -1,15 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace iSukces.Code.IO
 {
-    public class CodeFileUtils
+    public static class CodeFileUtils
     {
         public static bool AreEqual(byte[] a, byte[] b)
         {
-            a ??= new byte[0];
-            b ??= new byte[0];
+            a ??= XArray.Empty<byte>();
+            b ??= XArray.Empty<byte>();
             var al = a.Length;
             var bl = b.Length;
             if (al != bl) return false;
@@ -33,12 +34,10 @@ namespace iSukces.Code.IO
             var bytes = Encoding.UTF8.GetBytes(txt);
             if (!addBom)
                 return bytes;
-            using (var stream = new MemoryStream())
-            {
-                stream.Write(Bom, 0, Bom.Length);
-                stream.Write(bytes, 0, bytes.Length);
-                return stream.ToArray();
-            }
+            using var stream = new MemoryStream();
+            stream.Write(Bom, 0, Bom.Length);
+            stream.Write(bytes, 0, bytes.Length);
+            return stream.ToArray();
         }
 
         public static bool SaveIfDifferent(string content, string filename, bool addBom)

@@ -114,7 +114,7 @@ namespace iSukces.Code.AutoCode
                 _canBeNull = !NullChecker.TypeIsAlwaysNotNull(type);
                 var properties = typeInfo.GetProperties(GeneratorsHelper.AllInstance);
                 var fields = string.IsNullOrEmpty(_attEq?.UseOnlyPropertiesOrFields)
-                    ? new FieldInfo[0]
+                    ? XArray.Empty<FieldInfo>()
                     : typeInfo.GetFields(GeneratorsHelper.AllInstance);
                 _propsAll = properties.Select(PropertyOrFieldInfo.FromProperty)
                     .Concat(fields.Select(PropertyOrFieldInfo.FromField))
@@ -443,7 +443,7 @@ namespace iSukces.Code.AutoCode
                 [CanBeNull] Auto.EqualityGeneratorAttribute att)
             {
                 if (att is null)
-                    return new PropertyOrFieldInfo[0];
+                    return XArray.Empty<PropertyOrFieldInfo>();
 
                 var useOnly = !string.IsNullOrEmpty(att.UseOnlyPropertiesOrFields)
                     ? att.UseOnlyPropertiesOrFields.Split(',').ToHashSet()

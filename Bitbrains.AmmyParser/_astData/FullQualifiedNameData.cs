@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Irony.Parsing;
@@ -10,7 +11,7 @@ namespace Bitbrains.AmmyParser
         {
             Span = span;
             if (result is null)
-                Parts = new string[0];
+                Parts = Array.Empty<string>();
             else
                 Parts = result as IReadOnlyList<string> ?? result.ToArray();
         }

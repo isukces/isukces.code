@@ -1,5 +1,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,8 +43,10 @@ namespace iSukces.Code.Interfaces
             return self;
         }
 
-        public static string GetIndent(this ICodeWriter self) =>
-            self.Indent > 0 ? new string(' ', self.Indent * 4) : "";
+        public static string GetIndent(this ICodeWriter self)
+        {
+            return self.Indent > 0 ? new string(' ', self.Indent * 4) : "";
+        }
 
 
         public static void OpenCompilerIf(this ICsCodeWriter self, string directive)
@@ -79,6 +82,7 @@ namespace iSukces.Code.Interfaces
             src.Open($"if ({condition})");
             return src;
         }
+
         public static T OpenSwitch<T>(this T src, string expression)
             where T : ICsCodeWriter
         {
@@ -126,8 +130,68 @@ namespace iSukces.Code.Interfaces
             where T : ICodeWriter
         {
             if (self.Indent > 0)
-                self.Append(new string(' ', self.Indent * 4));
+                self.Append(new string(' ', self.Indent * CodeFormatting.IndentSpaces));
             return self;
+        }
+
+        public static void WriteLambda(this ICsCodeWriter writer, string header, string expression, int maxLineLength,
+            bool addSemiColon)
+        {
+            var emptyHeader = string.IsNullOrEmpty(header);
+            if (emptyHeader)
+            {
+                writer.WriteLine($"=> {expression};");
+                return;
+            }
+
+            if (addSemiColon)
+                expression += ";";
+
+            header = $"{header} => ";
+            var lineLength = header.Length + expression.Length + writer.Indent * CodeFormatting.IndentSpaces;
+            if (lineLength <= maxLineLength)
+                writer.WriteLine(header + expression);
+            else
+                writer.WriteLine(header).IncIndent().WriteLine(expression).DecIndent();
+        }
+
+
+        public static void WriteLambda(this ICsCodeWriter writer, string header, IReadOnlyList<string> expression, int maxLineLength)
+        {
+            switch (expression.Count)
+            {
+                case 0:
+                    throw new InvalidOperationException("No expression lines");
+                case 1:
+                    WriteLambda(writer, header, expression.Single(), maxLineLength, true);
+                    return;
+            }
+
+            WriteLambda(writer, header, expression[0], maxLineLength, false);
+            writer.IncIndent();
+            for (var index = 1; index < expression.Count; index++)
+            {
+                var line = expression[index];
+                if (index == expression.Count - 1)
+                    line += ";";
+                writer.WriteLine(line);
+            }
+
+            writer.DecIndent();
+        }
+
+        public static T WriteMultiLineSummary<T>(this T src, IReadOnlyList<string> lines, bool skipIfEmpty = false)
+            where T : ICsCodeWriter
+
+        {
+            lines = lines ?? XArray.Empty<string>();
+            if (lines.Count == 0 && skipIfEmpty)
+                return src;
+            src.WriteLine("/// <summary>");
+            foreach (var line in lines)
+                src.WriteSummary(line);
+            src.WriteLine("/// </summary>");
+            return src;
         }
 
         public static T WriteNewLineAndIndent<T>(this T self)
@@ -135,7 +199,7 @@ namespace iSukces.Code.Interfaces
         {
             self.WriteLine();
             if (self.Indent > 0)
-                self.Append(new string(' ', self.Indent * 4));
+                self.Append(new string(' ', self.Indent * CodeFormatting.IndentSpaces));
             return self;
         }
 
@@ -147,25 +211,12 @@ namespace iSukces.Code.Interfaces
             {
                 if (skipIfEmpty)
                     return src;
-                return WriteMultiLineSummary(src, new string[0]);
+                return WriteMultiLineSummary(src, XArray.Empty<string>());
             }
+
             var lines = x.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()))
                 .ToArray();
             return WriteMultiLineSummary(src, lines, skipIfEmpty);
-        }
-        
-        public static T WriteMultiLineSummary<T>(this T src, IReadOnlyList<string> lines, bool skipIfEmpty = false)
-            where T : ICsCodeWriter
-
-        {
-            lines = lines ?? new string[0];
-            if (lines.Count == 0 && skipIfEmpty)
-                return src;
-            src.WriteLine("/// <summary>");
-            foreach (var line in lines)
-                src.WriteSummary(line);
-            src.WriteLine("/// </summary>");
-            return src;
         }
 
 

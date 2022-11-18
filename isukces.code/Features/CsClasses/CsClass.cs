@@ -90,51 +90,8 @@ namespace iSukces.Code
             return new CsAttribute(attributeName);
         }
 
-        private static string OptionalVisibility(Visibilities? memberVisibility)
-        {
-            var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
-            return v;
-        }
 
-
-        private static void WriteGetterOrSetter(ICsCodeWriter writer, CodeLines code, string keyWord,
-            Visibilities? memberVisibility)
-        {
-            if (code?.Lines == null || code.Lines.Length == 0) return;
-            keyWord = OptionalVisibility(memberVisibility) + keyWord;
-            if (code.IsExpressionBody)
-            {
-                if (code.Lines.Length == 1)
-                {
-                    var singleLine = code.Lines[0]?.Trim().TrimEnd(';').TrimEnd() + ";";
-                    writer.WriteLine($"{keyWord} => {singleLine}");
-                }
-                else
-                {
-                    writer.Indent++;
-                    foreach (var iii in code.Lines)
-                        writer.WriteLine(iii);
-                    writer.Indent--;
-                }
-            }
-            else
-            {
-                if (code.Lines.Length == 1)
-                {
-                    var singleLine = code.Lines[0]?.Trim();
-                    writer.WriteLine($"{keyWord} {{ {singleLine} }}");
-                }
-                else
-                {
-                    writer.Open(keyWord);
-                    foreach (var iii in code.Lines)
-                        writer.WriteLine(iii);
-                    writer.Close();
-                }
-            }
-        }
-
-        private static void WriteSummary(ICsCodeWriter writer, string description)
+        public static void WriteSummary(ICsCodeWriter writer, string description)
         {
             description = description?.Trim();
             if (string.IsNullOrEmpty(description)) return;
@@ -143,60 +100,6 @@ namespace iSukces.Code
             foreach (var line in lines)
                 writer.WriteLine("/// " + line.XmlEncode());
             writer.WriteLine("/// </summary>");
-        }
-
-        private void _EmitProperty(CsProperty prop, ICsCodeWriter writer)
-        {
-            writer.OpenCompilerIf(prop);
-            try
-            {
-                writer.WriteComment(prop);
-
-                var fieldName = prop.PropertyFieldName;
-
-                var getterLines2 = prop.GetGetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody));
-                var header       = GetPropertyHeader(prop);
-
-                WriteSummary(writer, prop.Description);
-                writer.WriteAttributes(prop.Attributes);
-                var emitField = prop.EmitField && !IsInterface;
-                if (IsInterface || prop.MakeAutoImplementIfPossible && string.IsNullOrEmpty(prop.OwnSetter) &&
-                    string.IsNullOrEmpty(prop.OwnGetter))
-                {
-                    var gs = prop.IsPropertyReadOnly
-                        ? $"{{ {OptionalVisibility(prop.GetterVisibility)}get; }}"
-                        : $"{{ {OptionalVisibility(prop.GetterVisibility)}get; {OptionalVisibility(prop.SetterVisibility)}set; }}";
-                    var c = header + " " + gs;
-                    if (!IsInterface && !string.IsNullOrEmpty(prop.ConstValue))
-                        c += " = " + prop.ConstValue + ";";
-                    writer.WriteLine(c);
-                    emitField = false;
-                }
-                else
-                {
-                    writer.Open(header);
-                    {
-                        WriteGetterOrSetter(writer, getterLines2, "get", prop.GetterVisibility);
-                        if (!prop.IsPropertyReadOnly)
-                            WriteGetterOrSetter(writer,
-                                prop.GetSetterLines(Features.HasFlag(LanguageFeatures.ExpressionBody)), "set",
-                                prop.SetterVisibility);
-                    }
-                    writer.Close();
-                }
-
-                if (emitField)
-                    writer
-                        .EmptyLine()
-                        //.WriteLine("// ReSharper disable once InconsistentNaming")
-                        .WriteLine($"{prop.FieldVisibility.ToString().ToLower()} {prop.Type} {fieldName};");
-            }
-            finally
-            {
-                writer.CloseCompilerIf(prop);
-            }
-
-            writer.EmptyLine();
         }
 
 
@@ -505,7 +408,11 @@ namespace iSukces.Code
             if (!_properties.Any()) return addEmptyLineBeforeRegion;
             writer.EmptyLine(!addEmptyLineBeforeRegion);
             addEmptyLineBeforeRegion = w.WriteMethodAction(writer, _properties, "Properties",
-                i => _EmitProperty(i, writer));
+                i =>
+                {
+                    var tmp = new PropertyWriter(this, i);
+                    tmp.EmitProperty(writer);
+                });
             return addEmptyLineBeforeRegion;
         }
 
@@ -570,27 +477,6 @@ namespace iSukces.Code
             _nestedClasses.Add(existing);
             isCreatedNew = true;
             return existing;
-        }
-
-        private string GetPropertyHeader(CsProperty prop)
-        {
-            var list = new List<string>();
-            if (!IsInterface && prop.Visibility != Visibilities.InterfaceDefault)
-                list.Add(prop.Visibility.ToString().ToLower());
-            if (prop.IsStatic)
-                list.Add("static");
-            if (!IsInterface)
-            {
-                if (prop.IsOverride)
-                    list.Add("override");
-                else if (prop.IsVirtual)
-                    list.Add("virtual");
-            }
-
-            list.Add(prop.Type);
-            list.Add(prop.Name);
-            var header = string.Join(" ", list);
-            return header;
         }
 
         public string GetTypeName(Type type)
@@ -667,7 +553,7 @@ namespace iSukces.Code
 
         #region properties
 
-        public static LanguageFeatures DefaultLanguageFeatures { get; set; }
+        public static CodeFormatting DefaultCodeFormatting { get; set; } = new CodeFormatting(CodeFormattingFeatures.None, 100);
 
         public IClassOwner Owner { get; set; }
 
@@ -729,13 +615,13 @@ namespace iSukces.Code
         public bool IsSealed { get; set; }
 
         /// <summary>
-        ///     emi as interface
+        ///     emit as interface
         /// </summary>
         public bool IsInterface => Kind == CsNamespaceMemberKind.Interface;
 
         public CsNamespaceMemberKind Kind { get; set; }
 
-        public LanguageFeatures Features { get; set; } = DefaultLanguageFeatures;
+        public CodeFormatting Formatting { get; set; } = DefaultCodeFormatting;
 
         /// <summary>
         ///     Własność jest tylko do odczytu.

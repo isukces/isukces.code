@@ -10,10 +10,10 @@ namespace iSukces.Code.AutoCode
             private static void Single(CsClass csClass, Auto.ReactivePropertyAttribute attribute)
             {
                 var p = csClass.AddProperty(attribute.Name, attribute.PropertyType);
-                p.Description = attribute.Description;
-                p.EmitField = true;
-                p.OwnGetter = $"return {p.PropertyFieldName};";
-                p.OwnSetter = $"this.RaiseAndSetIfChanged(ref {p.PropertyFieldName}, value);";
+                p.Description   = attribute.Description;
+                p.EmitField     = true;
+                p.WithOwnGetterAsExpression(p.PropertyFieldName);
+                p.WithOwnSetterAsExpression($"this.RaiseAndSetIfChanged(ref {p.PropertyFieldName}, value)");
 
                 p.SetterVisibility = attribute.SetterVisibility;
                 p.GetterVisibility = attribute.GetterVisibility;

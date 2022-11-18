@@ -48,7 +48,7 @@ namespace iSukces.Code.VsSolutions
         {
             var root = doc?.Root;
             if (root is null)
-                return new NugetPackage[0];
+                return XArray.Empty<NugetPackage>();
             var ns = root.Name.Namespace;
             var refNodes = root.Elements(ns + Tags.ItemGroup)
                 .SelectMany(q => q.Elements(ns + Tags.PackageReference))
@@ -121,7 +121,7 @@ namespace iSukces.Code.VsSolutions
             {
                 var doc = FileHelper.Load(Location);
                 var refNodes = doc?.Root?.Elements(Tags.ItemGroup).SelectMany(q => q.Elements("Reference")).ToArray() ??
-                               new XElement[0];
+                               XArray.Empty<XElement>();
                 return refNodes.Select(q => { return ProjectReference.FromNode(q, Location.Directory); }).ToList();
             }
 

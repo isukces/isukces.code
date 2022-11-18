@@ -90,9 +90,10 @@ namespace iSukces.Code.Irony
                 var map = (_terminal.Rule as IMap12)?.Map;
                 if (map == null || map.Count <= 0) return;
                 var map2 = string.Join(", ", map.Select(a => a.AstIndex));
+                var expression = $"new [] {{ {map2} }}";
                 var m = _astClass.AddMethod("GetMap", "int[]").WithVisibility(Visibilities.Protected)
                     .WithOverride()
-                    .WithBody($"return new [] {{ {map2} }};");
+                    .WithBodyAsExpression(expression);
                 m.AddCommentLocation<AstClassesGenerator>("created");
             }
 

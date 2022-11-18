@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -13,7 +14,7 @@ namespace iSukces.Code.Irony
             {
                 AlternativeInterfaceName = alternativeInterfaceName;
                 Map                      = map;
-                Alternatives             = alternatives ?? new ICsExpression[0];
+                Alternatives             = alternatives ?? XArray.Empty<ICsExpression>();
             }
 
             public bool Contains(TokenName tokenName)

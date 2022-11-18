@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -25,7 +26,7 @@ namespace iSukces.Code.VsSolutions
         {
             var root = Document?.Root;
             if (root == null)
-                return new PackagesConfigItem[0];
+                return XArray.Empty<PackagesConfigItem>();
             return root.Elements(Package).Select(PackagesConfigItem.FromXElement);
         }
 

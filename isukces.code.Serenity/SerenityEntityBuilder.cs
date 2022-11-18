@@ -93,8 +93,8 @@ namespace iSukces.Code.Serenity
                     var propertyType = row.TypeName(types.Facade);
                     var p            = row.AddProperty(property.Name, propertyType);
                     p.EmitField = false;
-                    p.OwnGetter = $"return {Cast(fieldType, propertyType)}Fields.{property.Name}[this];";
-                    p.OwnSetter = $"Fields.{property.Name}[this] = {Cast(propertyType, fieldType)}value;";
+                    p.WithOwnGetterAsExpression($"{Cast(fieldType, propertyType)}Fields.{property.Name}[this]");
+                    p.WithOwnSetterAsExpression($"Fields.{property.Name}[this] = {Cast(propertyType, fieldType)}value");
                     CopyAttributesAndReduceName(property.GetAllAttributes(), p, kns);
 
                     // var rowFieldType = property.RowFieldType;
