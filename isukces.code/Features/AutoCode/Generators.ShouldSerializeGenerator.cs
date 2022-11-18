@@ -91,19 +91,17 @@ namespace iSukces.Code.AutoCode
                     if (i.Item1.DeclaringType != Type)
                         continue;
                     var propertyName = i.Item1.Name;
-                    var m         = Class.AddMethod("ShouldSerialize" + propertyName, "bool");
-                    var writer    = new CsCodeWriter();
                     var condition = i.Item2.Condition;
                     if (string.IsNullOrEmpty(condition))
                         condition = MakeShouldSerializeCondition(i.Item1);
                     else
                     {
-                        var typeName = this.Class.GetTypeName(i.Item1.PropertyType); 
+                        var typeName = Class.GetTypeName(i.Item1.PropertyType); 
                         condition = string.Format(condition, propertyName, typeName);
                     }
 
-                    writer.WriteLine("return {0};", condition);
-                    m.Body = writer.Code;
+                    Class.AddMethod("ShouldSerialize" + propertyName, "bool")
+                        .WithBodyAsExpression(condition);
                 }
             }
 
