@@ -246,8 +246,7 @@ namespace iSukces.Code.FeatureImplementers
             if (CanBeNull)
             {
                 cw.WriteLine($"if (ReferenceEquals(this, {OtherArgName})) return true;");
-                cw.WriteLine(
-                    $"return {OtherArgName} is {MyTypeName} {OtherArgName}Casted && Equals({OtherArgName}Casted);");
+                cw.WriteLine($"return {OtherArgName} is {MyTypeName} {OtherArgName}Casted && Equals({OtherArgName}Casted);");
             }
             else
             {
@@ -292,12 +291,12 @@ namespace iSukces.Code.FeatureImplementers
                         .WriteLine($"{GetHashCodeFieldName} = {calculateHashCode}();")
                         .WriteLine($"{flagFieldName} = true;")
                         .WriteLine($"return {GetHashCodeFieldName};");
-                    _class.AddMethod("GetHashCode", "int")
+                    _class.AddMethod(nameof(GetHashCode), "int")
                         .WithOverride()
                         .WithBody(cw1);
                     break;
                 case GetHashCodeImplementationKind.Precomputed:
-                    _class.AddMethod("GetHashCode", "int")
+                    _class.AddMethod(nameof(GetHashCode), "int")
                         .WithOverride()
                         .WithBodyAsExpression($"{GetHashCodeFieldName}");
                     break;
@@ -311,16 +310,20 @@ namespace iSukces.Code.FeatureImplementers
                 m.Overriding = OverridingType.Override;
         }
 
+ 
+
+
 
         private CsMethod WriteGetHashCode(string methodName)
         {
-            CsCodeWriter WriteGetHashCodeInternal()
+            CsCodeWriter WriteGetHashCodeInternal(out bool isExpr)
             {
                 var cw          = new CsCodeWriter();
                 var expressions = GetHashCodeExpressions;
                 if (expressions.Count == 0)
                 {
-                    cw.WriteLine("return 0;");
+                    cw.WriteLine("0");
+                    isExpr = true;
                     return cw;
                 }
 
@@ -329,20 +332,25 @@ namespace iSukces.Code.FeatureImplementers
                     if (expressions.Count == 1)
                     {
                         var q = expressions[0].Code.ExpressionWithOffset;
-                        cw.WriteLine($"return {IsEmptyObjectPropertyName} ? 0 : {q};");
+                        cw.WriteLine($"{IsEmptyObjectPropertyName} ? 0 : {q}");
+                        isExpr = true;
                         return cw;
+
                     }
 
                     cw.WriteLine($"if ({IsEmptyObjectPropertyName}) return 0;");
                 }
 
                 GetHashCodeEmiter.Write(expressions, cw);
+                isExpr = false;
                 return cw;
+
             }
 
-            var cw1 = WriteGetHashCodeInternal();
+            var q = WriteGetHashCodeInternal(out var isExpression);
             var m = _class.AddMethod(methodName, "int")
-                .WithBody(cw1);
+                .WithBody(q);
+            m.IsExpressionBody = isExpression;
 
             return m;
         }

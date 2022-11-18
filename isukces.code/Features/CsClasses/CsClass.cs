@@ -101,7 +101,16 @@ namespace iSukces.Code
                 writer.WriteLine("/// " + line.XmlEncode());
             writer.WriteLine("/// </summary>");
         }
+        
+        
+        public CsMethod AddBinaryOperator(string operatorName, string returnType)
+        {
+            var m = AddMethod(operatorName, returnType)
+                .WithStatic()
+                .WithParameter("left", Name).WithParameter("right", Name);
 
+            return m;
+        }
 
         public void AddComment(string x)
         {
