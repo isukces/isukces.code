@@ -269,6 +269,8 @@ namespace iSukces.Code
                     x.Add("interface");
                     break;
                 case CsNamespaceMemberKind.Struct:
+                    if (IsReadOnlyStruct)
+                        x.Add("readonly");
                     if (IsPartial)
                         x.Add("partial");
                     x.Add("struct");
@@ -613,6 +615,11 @@ namespace iSukces.Code
         ///     is class sealed
         /// </summary>
         public bool IsSealed { get; set; }
+
+        /// <summary>
+        ///     is read only struct
+        /// </summary>
+        public bool IsReadOnlyStruct { get; set; }
 
         /// <summary>
         ///     emit as interface
