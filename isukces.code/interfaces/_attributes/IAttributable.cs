@@ -8,7 +8,11 @@ namespace iSukces.Code.Interfaces
 {
     public interface IAttributable
     {
+        #region properties
+
         IList<ICsAttribute> Attributes { get; }
+
+        #endregion
     }
 
     public static class AttributableExt
@@ -20,7 +24,8 @@ namespace iSukces.Code.Interfaces
             return name;
         }
 
-        public static void RemoveAttribute<T>(this T self, string className) where T : IAttributable
+        public static void RemoveAttribute<T>(this T self, string className)
+            where T : IAttributable
         {
             for (var index = self.Attributes.Count - 1; index >= 0; index--)
             {
@@ -37,7 +42,8 @@ namespace iSukces.Code.Interfaces
             return element.WithAttribute(new CsAttribute(tn));
         }
 
-        public static T WithAttribute<T>(this T attributable, ICsAttribute attribute) where
+        public static T WithAttribute<T>(this T attributable, ICsAttribute attribute)
+            where
             T : IAttributable
         {
             attributable.Attributes.Add(attribute);
@@ -58,6 +64,12 @@ namespace iSukces.Code.Interfaces
             return WithAttribute(self, at);
         }
 
+        public static FluentAttributesBuilder<T> WithAttributeBuilder<T>(this T element, INamespaceContainer nsProvider)
+            where T : IAttributable
+        {
+            return new FluentAttributesBuilder<T>(element, nsProvider);
+        }
+
         public static T WithAttributeFromName<T>(this T self, string className)
             where T : IAttributable
         {
@@ -76,8 +88,10 @@ namespace iSukces.Code.Interfaces
         public static T WithAutocodeGeneratedAttribute<T>(this T attributable,
             [NotNull] ITypeNameResolver resolver,
             SourceCodeLocation location)
-            where T : IAttributable =>
-            WithAutocodeGeneratedAttribute(attributable, resolver, location.ToString());
+            where T : IAttributable
+        {
+            return WithAutocodeGeneratedAttribute(attributable, resolver, location.ToString());
+        }
 
         public static T WithAutocodeGeneratedAttribute<T>(this T attributable,
             ITypeNameResolver resolver,
@@ -103,8 +117,12 @@ namespace iSukces.Code.Interfaces
             return WithAutocodeGeneratedAttribute(attributable, resolver, gen.ToString());
         }
 
+        #region Fields
+
         private static readonly int AttributeSuffixLength = AttributeSuffix.Length;
 
         private const string AttributeSuffix = "Attribute";
+
+        #endregion
     }
 }

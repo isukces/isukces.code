@@ -82,7 +82,6 @@ namespace iSukces.Code
             if (values.Length == 0)
                 return name;
             return string.Format("{0}({1})", name, string.Join(", ", values));
-            // [PrimaryKey("Id", autoIncrement = false)]
         }
 
         public CsAttribute WithArgument(object value)
