@@ -3,7 +3,7 @@
     public enum VsProjectKind
     {
         Unknown,
-        Old,
+        Legacy,
         Core
     }
 }

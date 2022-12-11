@@ -22,13 +22,13 @@ namespace iSukces.Code.VsSolutions
             var root = x?.Root;
             if (root == null) return VsProjectKind.Unknown;
             var isNew = root.Name.LocalName == "Project" && Tags.MicrosoftNetSdk == (string)root.Attribute(Tags.Sdk);
-            return isNew ? VsProjectKind.Core : VsProjectKind.Old;
+            return isNew ? VsProjectKind.Core : VsProjectKind.Legacy;
         }
 
         private static string FindTargetFrameworkVersion(XDocument xDocument)
         {
             var g = FindProjectType(xDocument);
-            if (g != VsProjectKind.Old)
+            if (g != VsProjectKind.Legacy)
                 return null;
             var root = xDocument?.Root;
             if (root == null) return null;

@@ -3,8 +3,8 @@
   <PropertyGroup>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright by Internet Sukces Piotr Stęclik 2016-2021</Copyright>
-    <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2022</Copyright>
+    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>iSukces.Code.Serenity</Product>
@@ -13,9 +13,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.21073.80</AssemblyVersion>
-    <Version>1.0.21073.80</Version>
-    <FileVersion>1.0.21073.80</FileVersion>
+    <AssemblyVersion>1.0.22330.81</AssemblyVersion>
+    <Version>1.0.22330.81</Version>
+    <FileVersion>1.0.22330.81</FileVersion>
     <Description>Serenity extension for iSukces.Code</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
@@ -25,7 +25,7 @@
     <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <TargetFrameworks>net451;netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
+    <TargetFrameworks>net451;netcoreapp3.1;netcoreapp2.2;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />

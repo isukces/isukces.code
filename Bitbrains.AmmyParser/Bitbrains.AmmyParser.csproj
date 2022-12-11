@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFrameworks>net471;netstandard2.1</TargetFrameworks>
+        <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <ItemGroup>
