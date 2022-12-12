@@ -2,7 +2,7 @@ using System;
 
 namespace iSukces.Code
 {
-    partial class CsMethod
+    /*partial class CsMethod
     {
         [Obsolete("Use add comment")]
         public string AdditionalContentOverMethod { get; set; }
@@ -25,5 +25,5 @@ namespace iSukces.Code
             set => Overriding = value ? OverridingType.Override : OverridingType.None;
         }
 
-    }
+    }*/
 }

@@ -66,7 +66,7 @@ namespace iSukces.Code
                     throw new Exception("Constructor nor finalizer can't be " + Overriding);
         }
 
-        private string GetMDefinition(bool inInterface)
+        private string GetMethodDefinition(bool inInterface)
         {
             var query = from i in _method.Parameters
                 select FormatMethodParameter(i);
@@ -140,6 +140,8 @@ namespace iSukces.Code
                             throw new ArgumentOutOfRangeException();
                     }
 
+                if (_method.IsAsync)
+                    a.Add("async");
                 a.Add(ResultType);
             }
 
@@ -165,8 +167,8 @@ namespace iSukces.Code
                 writer.WriteLine("[{0}]", i);
             // ================
             writer.WriteComment(_method);
-            writer.SplitWriteLine(_method.AdditionalContentOverMethod);
-            var mDefinition = GetMDefinition(inInterface);
+            writer.SplitWriteLine(_method.GetComments());
+            var mDefinition = GetMethodDefinition(inInterface);
             WriteBody();
             writer.CloseCompilerIf(_method.CompilerDirective);
 

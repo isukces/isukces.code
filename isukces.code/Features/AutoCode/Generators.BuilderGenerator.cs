@@ -84,15 +84,8 @@ namespace iSukces.Code.AutoCode
 
             private IReadOnlyList<PropertyInfo> GetInstanceProperties()
             {
-                const BindingFlags allInstanceProperties =
-                    BindingFlags.Instance
-                    | BindingFlags.Public
-                    | BindingFlags.NonPublic;
-                return Type
-#if COREFX
-                    .GetTypeInfo()
-#endif
-                    .GetProperties(allInstanceProperties);
+                return Type.GetInstanceProperties();
+                
             }
 
           

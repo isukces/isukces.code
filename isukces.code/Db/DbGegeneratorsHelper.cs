@@ -34,7 +34,7 @@ public class DbGegeneratorsHelper
         IAutoCodeGeneratorContext context, 
         Type propertyType,
         AutoNavigationAttribute attr,
-        Action<CsProperty> addOptionalAttributes = null)
+        Action<CsClass, CsProperty> addOptionalAttributes = null)
     {
         if (attr.GenerateInverse == InverseKind.None)
             return;
@@ -57,8 +57,9 @@ public class DbGegeneratorsHelper
         var invp = csClassI.AddProperty(propertyName, typeName)
             .WithAttributeBuilder(csClassI)
             .WithAttribute<NavigationPropertyAttribute>()
-            .WithAttribute<NavigationPropertyAttribute>()
             .End();
+        if (addOptionalAttributes is not null)
+            addOptionalAttributes(csClassI, invp);
         
         // invp.Attributes.Add(new CsAttribute(csClassI.GetTypeName<JsonIgnoreAttribute>()));
         invp.Description                 = SourceCodeLocation.Make().ToString();

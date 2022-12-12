@@ -52,7 +52,7 @@ namespace iSukces.Code
         {
             return operators.Contains(name);
         }
-        
+
         public void AddComment(string x)
         {
             _extraComment.AppendLine(x);
@@ -80,6 +80,12 @@ namespace iSukces.Code
         public string GetComments()
         {
             return _extraComment.ToString();
+        }
+
+        public CsMethod WithAsync(bool isAsync = true)
+        {
+            IsAsync = isAsync;
+            return this;
         }
 
         public CsMethod WithBodyAsExpression(string body)
@@ -197,6 +203,8 @@ namespace iSukces.Code
                 }
             }
         }
+
+        public bool IsAsync { get; set; }
 
         #endregion
 

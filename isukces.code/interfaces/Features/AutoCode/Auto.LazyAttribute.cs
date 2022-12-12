@@ -18,7 +18,7 @@ namespace iSukces.Code.Interfaces
 
             public string ClearMethodName { get; set; }
             /// <summary>
-            /// Implement with Lazy<> if possible
+            /// Implement with Lazy&lt;&gt; if possible
             /// </summary>
             public bool UseLazyObject { get; set; } = true;
 
