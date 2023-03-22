@@ -30,10 +30,10 @@ namespace iSukces.Code.VsSolutions
             }
         }
 
-        // Public Methods 
+         
 
         public override string ToString() => string.Format("Solution {0}", SolutionFile.Name);
-        // Private Methods 
+         
 
         private SolutionProject TryParseProject(string line)
         {

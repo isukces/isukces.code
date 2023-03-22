@@ -27,21 +27,30 @@ namespace iSukces.Code.VsSolutions
 
         private static string FindTargetFrameworkVersion(XDocument xDocument)
         {
-            var g = FindProjectType(xDocument);
-            if (g != VsProjectKind.Legacy)
-                return null;
-            var root = xDocument?.Root;
-            if (root == null) return null;
-            var ns = root.Name.Namespace;
-            foreach (var i in root.Elements(ns + "PropertyGroup"))
-            foreach (var j in i.Elements(ns + "TargetFrameworkVersion"))
+            string GetPropertyGroup(string name)
             {
-                var result = j.Value.Trim();
-                if (!string.IsNullOrEmpty(result))
-                    return result;
-            }
+                var root = xDocument?.Root;
+                if (root == null) return null;
+                var ns = root.Name.Namespace;
+                foreach (var i in root.Elements(ns + "PropertyGroup"))
+                foreach (var j in i.Elements(ns + name))
+                {
+                    var result = j.Value.Trim();
+                    if (!string.IsNullOrEmpty(result))
+                        return result;
+                }
 
-            return null;
+                return null;
+            }
+            var g = FindProjectType(xDocument);
+            switch (g)
+            {
+                case VsProjectKind.Legacy: 
+                    return GetPropertyGroup("TargetFrameworkVersion");
+                case VsProjectKind.Core: 
+                    return GetPropertyGroup("TargetFramework");
+                default: return null;
+            }
         }
 
         private static NugetPackage[] ReadNugetPackagesFromCsProj(XDocument doc)

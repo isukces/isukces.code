@@ -14,9 +14,25 @@ namespace iSukces.Code.Interfaces
                 Name = null;
         }
 
-        public static bool operator ==(NamespaceAndName left, NamespaceAndName right) => left.Equals(right);
+        public static NamespaceAndName FromType<T>()
+        {
+            return new NamespaceAndName(typeof(T).Namespace, typeof(T).Name);
+        }
 
-        public static bool operator !=(NamespaceAndName left, NamespaceAndName right) => !left.Equals(right);
+        public static NamespaceAndName FromType(Type t)
+        {
+            return new NamespaceAndName(t.Namespace, t.Name);
+        }
+
+        public static bool operator ==(NamespaceAndName left, NamespaceAndName right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(NamespaceAndName left, NamespaceAndName right)
+        {
+            return !left.Equals(right);
+        }
 
         public static NamespaceAndName Parse(string fullClassName)
         {
@@ -26,9 +42,15 @@ namespace iSukces.Code.Interfaces
             return new NamespaceAndName(fullClassName.Substring(0, idx), fullClassName.Substring(idx + 1));
         }
 
-        public bool Equals(NamespaceAndName other) => Namespace == other.Namespace && Name == other.Name;
+        public bool Equals(NamespaceAndName other)
+        {
+            return Namespace == other.Namespace && Name == other.Name;
+        }
 
-        public override bool Equals(object obj) => obj is NamespaceAndName other && Equals(other);
+        public override bool Equals(object obj)
+        {
+            return obj is NamespaceAndName other && Equals(other);
+        }
 
         public override int GetHashCode()
         {
@@ -39,7 +61,10 @@ namespace iSukces.Code.Interfaces
             }
         }
 
-        public override string ToString() => FullName;
+        public override string ToString()
+        {
+            return FullName;
+        }
 
         public string FullName
         {

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2022</Copyright>
+    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
     <TargetFramework>net472</TargetFramework>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>

@@ -8,7 +8,8 @@ namespace iSukces.Code
         None = 0,
         ExpressionBody = 1,
         Regions = 2,
-        IsNotNull = 4
+        IsNotNull = 4,
+        MakeAutoImplementIfPossible = 8
     }
 
     public struct CodeFormatting

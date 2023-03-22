@@ -5,6 +5,12 @@ namespace iSukces.Code
 {
     public sealed class IfCollector
     {
+        public IfCollector(string condition, string inversed = null)
+            : this(new ConditionsPair(condition, inversed))
+        {
+
+        }
+
         public IfCollector(ConditionsPair condition)
         {
             Condition = condition;

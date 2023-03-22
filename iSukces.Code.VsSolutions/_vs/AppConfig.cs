@@ -16,7 +16,7 @@ namespace iSukces.Code.VsSolutions
             if (fileName.Exists) _xml = FileHelper.Load(fileName);
         }
 
-        // Private Methods 
+         
 
         private static XElement[] GetDependentAssemblyElements(XElement xAssemblyBinding)
         {

@@ -17,7 +17,7 @@ namespace iSukces.Code.VsSolutions
         public static bool operator <(NugetVersion a, NugetVersion b) => a.CompareTo(b) < 0;
 
         public static bool operator <=(NugetVersion a, NugetVersion b) => a.CompareTo(b) <= 0;
-        // Public Methods 
+         
 
         public static NugetVersion Parse(string ver)
         {
@@ -39,7 +39,7 @@ namespace iSukces.Code.VsSolutions
             return result;
         }
 
-        // Public Methods 
+         
 
         public int CompareTo(NugetVersion other)
         {

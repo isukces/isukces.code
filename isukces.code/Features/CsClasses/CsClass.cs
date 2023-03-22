@@ -237,6 +237,9 @@ namespace iSukces.Code
                 property.EmitField  = false;
             }
 
+            if ((DefaultCodeFormatting.Flags & CodeFormattingFeatures.MakeAutoImplementIfPossible) != 0)
+                property.WithMakeAutoImplementIfPossible();
+
             Properties.Add(property);
             return property;
         }
@@ -564,7 +567,8 @@ namespace iSukces.Code
 
         #region properties
 
-        public static CodeFormatting DefaultCodeFormatting { get; set; } = new CodeFormatting(CodeFormattingFeatures.None, 100);
+        public static CodeFormatting DefaultCodeFormatting { get; set; }
+            = new CodeFormatting(CodeFormattingFeatures.MakeAutoImplementIfPossible, 100);
 
         public IClassOwner Owner { get; set; }
 

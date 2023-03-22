@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2022</Copyright>
+    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
     <TargetFrameworks>net451;net48;net5.0;net6.0;netcoreapp2.2;netcoreapp3.1;netstandard2.0</TargetFrameworks>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.22346.195</AssemblyVersion>
-    <Version>1.0.22346.195</Version>
-    <FileVersion>1.0.22346.195</FileVersion>
+    <AssemblyVersion>1.0.22346.197</AssemblyVersion>
+    <Version>1.0.22346.197</Version>
+    <FileVersion>1.0.22346.197</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>

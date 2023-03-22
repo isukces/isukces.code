@@ -1,4 +1,6 @@
-﻿namespace iSukces.Code
+﻿using System;
+
+namespace iSukces.Code
 {
     public sealed class ConditionsPair
     {
@@ -28,6 +30,18 @@
             {
                 return Condition == "false";
             }
+        }
+
+        public static ConditionsPair FromIs(string variable, string type, string variableName = null)
+        {
+            if (!string.IsNullOrEmpty(variableName))
+                variableName = " " + variableName;
+            var condition = $"{variable} is {type}{variableName}";
+            if ((CsClass.DefaultCodeFormatting.Flags & CodeFormattingFeatures.IsNotNull) != 0)
+                return new ConditionsPair(condition, $"{variable} is not {type}{variableName}");
+            if (!string.IsNullOrEmpty(variableName))
+                throw new NotSupportedException();
+            return new ConditionsPair(condition, $"!({condition})");
         }
 
         public static ConditionsPair FromIsNull(string variable)

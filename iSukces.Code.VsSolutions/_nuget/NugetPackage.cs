@@ -4,7 +4,7 @@ namespace iSukces.Code.VsSolutions
 {
     public class NugetPackage
     {
-        // Public Methods 
+         
 
         public static NugetPackage Parse(XElement packageXElement)
         {
@@ -22,7 +22,7 @@ namespace iSukces.Code.VsSolutions
             };
         }
 
-        // Public Methods 
+         
 
         public override string ToString() => string.Format("{0} {1} {2}", Id, Version, TargetFramework);
 
