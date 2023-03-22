@@ -1,4 +1,7 @@
-﻿using System;
+﻿#if !COREFX || NET70
+#define HAS_ICLONEABLE
+#endif
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -90,7 +93,7 @@ namespace iSukces.Code.AutoCode
 
         private static void GenerateMethodClone(Type type, CsClass csClass)
         {
-            csClass.ImplementedInterfaces.Add("ICloneable");
+            csClass.ImplementedInterfaces.Add(nameof(ICloneable));
             var cm     = csClass.AddMethod("Clone", "object", "Makes clone of object");
             var constr = GetConstructor(type);
             var pars   = GetConstructorParameters(type, constr);
@@ -101,6 +104,8 @@ namespace iSukces.Code.AutoCode
             writer.WriteLine("return a;");
             cm.Body = writer.Code;
         }
+        
+         
 
         protected override void GenerateInternal()
         {
@@ -128,7 +133,8 @@ namespace iSukces.Code.AutoCode
             if (_doCloneable)
                 GenerateMethodClone(Type, Class);
         }
-
+        
+        
         protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeWriter writer)
         {
             ITypeNameResolver resolver = Class;
@@ -265,7 +271,10 @@ namespace iSukces.Code.AutoCode
                 CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
                 return;
             }
+#endif
+            
 
+#if HAS_ICLONEABLE
             {
                 var interf = pi.PropertyType.GetInterfaces();
                 if (interf.Any(a => a == typeof(ICloneable)))
@@ -360,7 +369,7 @@ namespace iSukces.Code.AutoCode
         private void CloneWithValuesProcessor(PropertyInfo pi, ICsCodeWriter writer, ITypeNameResolver resolver)
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
-#if !COREFX
+#if HAS_ICLONEABLE
 
             var isCloneable = pi.PropertyType == typeof(ICloneable)
                               || pi.PropertyType.GetInterfaces().Any(a => a == typeof(ICloneable));

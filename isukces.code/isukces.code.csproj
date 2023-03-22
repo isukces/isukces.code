@@ -4,7 +4,7 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
-    <TargetFrameworks>net451;net48;net5.0;net6.0;netcoreapp2.2;netcoreapp3.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net451;net48;net6.0;netcoreapp2.2;netcoreapp3.1;netstandard2.0;net7.0</TargetFrameworks>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -14,9 +14,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.22346.197</AssemblyVersion>
-    <Version>1.0.22346.197</Version>
-    <FileVersion>1.0.22346.197</FileVersion>
+    <AssemblyVersion>1.0.23081.198</AssemblyVersion>
+    <Version>1.0.23081.198</Version>
+    <FileVersion>1.0.23081.198</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
@@ -24,16 +24,21 @@
     <PackageTags>C#</PackageTags>
     <Title>Source code generators</Title>
     <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
     <LangVersion>default</LangVersion>
     <PublicSign>true</PublicSign>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
     <Reference Include="System" />
-    <Reference Include="WindowsBase" Condition="'$(TargetFramework)' == 'net451' or'$(TargetFramework)' == 'net48'" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
     <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
   </ItemGroup>
   <ItemGroup>
@@ -70,10 +75,13 @@
       <LastGenOutput>CsEnumHelper+.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <DefineConstants>COREFX;COREFX20</DefineConstants>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
+    <DefineConstants>COREFX;COREFX20;NET70</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0-windows' ">
+    <DefineConstants>COREFX;COREFX20;NET70</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
     <DefineConstants>COREFX;COREFX20</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
