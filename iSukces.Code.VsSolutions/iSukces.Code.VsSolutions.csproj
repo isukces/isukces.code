@@ -4,7 +4,7 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
-    <TargetFrameworks>net48;netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net48;netstandard2.0;netcoreapp3.1;net7.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>iSukces.Code</Product>
@@ -12,9 +12,9 @@
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.21009.13</AssemblyVersion>
-    <Version>1.0.21009.13</Version>
-    <FileVersion>1.0.21009.13</FileVersion>
+    <AssemblyVersion>1.0.23082.14</AssemblyVersion>
+    <Version>1.0.23082.14</Version>
+    <FileVersion>1.0.23082.14</FileVersion>
     <Description>small C# code generating framework</Description>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
