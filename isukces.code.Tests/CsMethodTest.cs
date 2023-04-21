@@ -267,5 +267,60 @@ namespace My123
             });
             Assert.Equal(exp, code);
         }
+        
+        [Fact]
+        public void T11c_Should_add_two_lines_comment()
+        {
+            const string exp = @"// ReSharper disable All
+namespace My123
+{
+    public class MyClass
+    {
+        /*
+        first line
+        second line
+        */
+        public int Bla()
+        {
+            return SetSomeValue();
+        }
+
     }
+}
+";
+            var code = TestCode(cs =>
+            {
+                var m = cs.AddMethod("Bla", "int").WithBodyAsExpression("SetSomeValue()");
+                m.AddComment("first line");
+                m.AddComment("second line");
+            });
+            Assert.Equal(exp, code);
+        }
+        
+        [Fact]
+        public void T11c_Should_add_comment()
+        {
+            const string exp = @"// ReSharper disable All
+namespace My123
+{
+    public class MyClass
+    {
+        // one line
+        public int Bla()
+        {
+            return SetSomeValue();
+        }
+
+    }
+}
+";
+            var code = TestCode(cs =>
+            {
+                var m = cs.AddMethod("Bla", "int").WithBodyAsExpression("SetSomeValue()");
+                m.AddComment("one line");
+            });
+            Assert.Equal(exp, code);
+        }
+    }
+    
 }

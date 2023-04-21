@@ -54,13 +54,7 @@ namespace iSukces.Code.Tests
             line1
             line2
             */
-            public int Count
-            {
-                get { return _count; }
-                set { _count = value; }
-            }
-
-            private int _count;
+            public int Count { get; set; }
 
         }
 

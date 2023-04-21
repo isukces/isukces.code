@@ -167,7 +167,7 @@ namespace iSukces.Code
                 writer.WriteLine("[{0}]", i);
             // ================
             writer.WriteComment(_method);
-            writer.SplitWriteLine(_method.GetComments());
+            // writer.SplitWriteLine(_method.GetComments());
             var mDefinition = GetMethodDefinition(inInterface);
             WriteBody();
             writer.CloseCompilerIf(_method.CompilerDirective);
