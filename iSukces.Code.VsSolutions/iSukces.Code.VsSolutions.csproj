@@ -22,7 +22,7 @@
     <PackageTags>C#</PackageTags>
     <Title>Microsoft Visual Studio solution related structures</Title>
     <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
     <LangVersion>7</LangVersion>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>

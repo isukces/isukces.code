@@ -142,44 +142,51 @@ namespace iSukces.Code.VsSolutions
 
         private NugetPackage[] NugetPackagesInternal()
         {
-            var doc1       = FileHelper.Load(Location);
-            var fromCsProj = ReadNugetPackagesFromCsProj(doc1);
-            if (Kind == VsProjectKind.Core)
-                /*<Project Sdk="Microsoft.NET.Sdk">
-      <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net461</TargetFramework>
-      </PropertyGroup>
-      <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-      </ItemGroup>
-      <ItemGroup>
-        <ProjectReference Include="..\conexx.translate\conexx.translate.csproj">
-          <Project>{794DB2FD-85E2-456E-8DCA-A54EE5C037B9}</Project>
-          <Name>conexx.translate</Name>
-        </ProjectReference>
-      </ItemGroup>
-      <ItemGroup>
-        <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
-          <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-        </Reference>
-      </ItemGroup>
-    </Project>*/
-                return fromCsProj;
+            try
+            {
+                var doc1       = FileHelper.Load(Location);
+                var fromCsProj = ReadNugetPackagesFromCsProj(doc1);
+                if (Kind == VsProjectKind.Core)
+                    /*<Project Sdk="Microsoft.NET.Sdk">
+          <PropertyGroup>
+            <OutputType>Exe</OutputType>
+            <TargetFramework>net461</TargetFramework>
+          </PropertyGroup>
+          <ItemGroup>
+            <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+          </ItemGroup>
+          <ItemGroup>
+            <ProjectReference Include="..\conexx.translate\conexx.translate.csproj">
+              <Project>{794DB2FD-85E2-456E-8DCA-A54EE5C037B9}</Project>
+              <Name>conexx.translate</Name>
+            </ProjectReference>
+          </ItemGroup>
+          <ItemGroup>
+            <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+              <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+            </Reference>
+          </ItemGroup>
+        </Project>*/
+                    return fromCsProj;
 
-            // ReSharper disable once PossibleNullReferenceException
-            var configFileInfo = Location.GetPackagesConfigFile();
-            if (!configFileInfo.Exists)
-                return fromCsProj;
-            var xml  = FileHelper.Load(configFileInfo);
-            var root = xml.Root;
-            if (root == null || root.Name.LocalName != "packages")
-                return fromCsProj;
-            var packages = root.Elements(root.Name.Namespace + "package");
-            var result   = packages.Select(NugetPackage.Parse).ToArray();
-            if (fromCsProj.Any()) return result.Concat(fromCsProj).ToArray();
+                // ReSharper disable once PossibleNullReferenceException
+                var configFileInfo = Location.GetPackagesConfigFile();
+                if (!configFileInfo.Exists)
+                    return fromCsProj;
+                var xml  = FileHelper.Load(configFileInfo);
+                var root = xml.Root;
+                if (root == null || root.Name.LocalName != "packages")
+                    return fromCsProj;
+                var packages = root.Elements(root.Name.Namespace + "package");
+                var result   = packages.Select(NugetPackage.Parse).ToArray();
+                if (fromCsProj.Any()) return result.Concat(fromCsProj).ToArray();
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Unable to find nuget packages in project " + this.Location.Name + ".\r\n" + e.Message);
+            }
         }
 
 

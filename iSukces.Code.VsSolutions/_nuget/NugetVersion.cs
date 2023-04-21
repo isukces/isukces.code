@@ -17,26 +17,32 @@ namespace iSukces.Code.VsSolutions
         public static bool operator <(NugetVersion a, NugetVersion b) => a.CompareTo(b) < 0;
 
         public static bool operator <=(NugetVersion a, NugetVersion b) => a.CompareTo(b) <= 0;
-         
 
         public static NugetVersion Parse(string ver)
         {
-            if (ver == null) throw new ArgumentNullException(nameof(ver));
-            ver = ver.Trim();
-            var i      = ver.IndexOfAny(new[] {'-', '+'});
-            var result = new NugetVersion();
-            if (i >= 0)
+            try
             {
-                result.Version = Version.Parse(ver.Substring(0, i));
-                result.Suffix  = ver.Substring(i + 1).Trim();
-            }
-            else
-            {
-                result.Version = Version.Parse(ver);
-                result.Suffix  = "";
-            }
+                if (ver == null) throw new ArgumentNullException(nameof(ver));
+                ver = ver.Trim();
+                var i      = ver.IndexOfAny(new[] { '-', '+' });
+                var result = new NugetVersion();
+                if (i >= 0)
+                {
+                    result.Version = Version.Parse(ver.Substring(0, i));
+                    result.Suffix  = ver.Substring(i + 1).Trim();
+                }
+                else
+                {
+                    result.Version = Version.Parse(ver);
+                    result.Suffix  = "";
+                }
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw new ArgumentException($"'{ver}' is not valid version");
+            }
         }
 
          
