@@ -185,7 +185,7 @@ namespace iSukces.Code.VsSolutions
             }
             catch (Exception e)
             {
-                throw new Exception("Unable to find nuget packages in project " + this.Location.Name + ".\r\n" + e.Message);
+                throw new Exception("Unable to find nuget packages in project " + Location.Name + ".\r\n" + e.Message);
             }
         }
 
