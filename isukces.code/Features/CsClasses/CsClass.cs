@@ -101,8 +101,8 @@ namespace iSukces.Code
                 writer.WriteLine("/// " + line.XmlEncode());
             writer.WriteLine("/// </summary>");
         }
-        
-        
+
+
         public CsMethod AddBinaryOperator(string operatorName, string returnType)
         {
             var m = AddMethod(operatorName, returnType)
@@ -559,13 +559,29 @@ namespace iSukces.Code
             return "csClass " + _name;
         }
 
+        public bool TrySeal(bool replaceStatic = false)
+        {
+            if (IsStatic)
+            {
+                if (replaceStatic)
+                    IsStatic = false;
+                else
+                    throw new InvalidOperationException();
+            }
+
+            if (IsSealed)
+                return false;
+            IsSealed = true;
+            return true;
+        }
+
         public CsClass WithBaseClass(string baseClass)
         {
             BaseClass = baseClass;
             return this;
         }
 
-        #region properties
+        #region Properties
 
         public static CodeFormatting DefaultCodeFormatting { get; set; }
             = new CodeFormatting(CodeFormattingFeatures.MakeAutoImplementIfPossible, 100);
