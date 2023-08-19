@@ -57,32 +57,6 @@ namespace iSukces.Code.AutoCode
 
         public void Make(Assembly assembly)
         {
-            ContextWrapper GetContextWrapper(CsOutputFileInfo src)
-            {
-                if (src is null)
-                {
-                    var fn = _filenameProvider.GetFilename(assembly).FullName;
-                    src = new CsOutputFileInfo(fn, false);
-                }
-
-                if (_outputs.TryGetValue(src.FileName, out var result))
-                {
-                    if (result.SourceInfo.IsEmbedded != src.IsEmbedded)
-                        throw new Exception("File " + src.FileName + " is both embedded and not embedded");
-                    return result;
-                }
-
-                result = new ContextWrapper(CreateAutoCodeGeneratorContext, src, assembly);
-
-
-                foreach (var i in FileNamespaces)
-                    result.File.AddImportNamespace(i);
-                AfterCreateFile(result.File);
-                _outputs[src.FileName] = result;
-                return result;
-            }
-            
-            
             var types = assembly.GetTypes();
             types = types.OrderBy(GetNamespace).ToArray();
             {
@@ -94,33 +68,40 @@ namespace iSukces.Code.AutoCode
 
             for (int index = 0, length = types.Length; index < length; index++)
             {
-                var type = types[index];
-
-                var file    = TypeBasedOutputProvider?.GeOutputFileInfo(type);
+                var type           = types[index];
+                var file           = TypeBasedOutputProvider?.GetOutputFileInfo(type);
                 var contextWrapper = GetContextWrapper(file);
-
+                var context        = contextWrapper.Context;
                 foreach (var i in CodeGenerators.OfType<IAutoCodeGenerator>())
-                    i.Generate(type, contextWrapper.Context);
+                {
+                    i.Generate(type, context);
+                }
+                if (context.AnyFileSaved)
+                    AnyFileSaved = true;
             }
 
             foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
-                i.AssemblyEnd(assembly, GetContextWrapper(null).Context);
+            {
+                var contextWrapper = GetContextWrapper(null);
+                var context        = contextWrapper.Context;
+                i.AssemblyEnd(assembly, context);
+                if (context.AnyFileSaved)
+                    AnyFileSaved = true;
+            }
 
             var fileNameAssembly     = _filenameProvider.GetFilename(assembly).FullName;
             var eventHandler = BeforeSave;
-            foreach (var pair in _outputs)
+            foreach (var (key, wrapper) in _outputs)
             {
-                // context = i.Context;
-                var wrapper  = pair.Value;
                 var info     = wrapper.SourceInfo;
                 var csFile   = wrapper.File;
-                var fileName = string.IsNullOrEmpty(pair.Key) ? fileNameAssembly : pair.Key;
+                var fileName = string.IsNullOrEmpty(key) ? fileNameAssembly : key;
                 if (eventHandler != null)
                 {
                     var args = new BeforeSaveEventArgs
                     {
                         File       = csFile,
-                        FileName   = string.IsNullOrEmpty(pair.Key) ? fileName : pair.Key,
+                        FileName   = string.IsNullOrEmpty(key) ? fileName : key,
                         IsEmbedded = info.IsEmbedded
                     };
                     eventHandler(this, args);
@@ -152,6 +133,30 @@ namespace iSukces.Code.AutoCode
                     AnyFileSaved = true;
             }
             _outputs.Clear();
+            return;
+
+            ContextWrapper GetContextWrapper(CsOutputFileInfo src)
+            {
+                if (src is null)
+                {
+                    var fn = _filenameProvider.GetFilename(assembly).FullName;
+                    src = new CsOutputFileInfo(fn, false);
+                }
+
+                if (_outputs.TryGetValue(src.FileName, out var result))
+                {
+                    if (result.SourceInfo.IsEmbedded != src.IsEmbedded)
+                        throw new Exception("File " + src.FileName + " is both embedded and not embedded");
+                    return result;
+                }
+
+                result = new ContextWrapper(CreateAutoCodeGeneratorContext, src, assembly);
+                foreach (var i in FileNamespaces)
+                    result.File.AddImportNamespace(i);
+                AfterCreateFile(result.File);
+                _outputs[src.FileName] = result;
+                return result;
+            }
         }
 
         protected virtual IFinalizableAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file, Assembly assembly)
@@ -159,8 +164,6 @@ namespace iSukces.Code.AutoCode
             var context = new SimpleAutoCodeGeneratorContext(file, file.GetOrCreateClass);
             return context;
         }
-
- 
 
         public AutoCodeGenerator WithGenerator(IAutoCodeGeneratorBase generator)
         {

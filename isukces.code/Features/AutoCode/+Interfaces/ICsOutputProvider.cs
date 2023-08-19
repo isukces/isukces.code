@@ -7,7 +7,7 @@ namespace iSukces.Code.AutoCode
     public interface ICsOutputProvider
     {
         [CanBeNull]
-         CsOutputFileInfo GeOutputFileInfo(Type type);
+         CsOutputFileInfo GetOutputFileInfo(Type type);
     }
     
     [ImmutableObject(true)]
