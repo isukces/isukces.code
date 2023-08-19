@@ -105,7 +105,16 @@ namespace iSukces.Code.AutoCode
             cm.Body = writer.Code;
         }
         
-         
+        [CanBeNull]
+        protected internal static Type TryGetRankOneArrayElement(Type type)
+        {
+            if (!type.IsArray) return null;
+            var rank = type.GetArrayRank();
+            if (rank != 1) return null;
+            var el = type.GetElementType();
+            if (el is null) return null;
+            return el.IsValueType || el == typeof(string) ? el : null;
+        }
 
         protected override void GenerateInternal()
         {
@@ -260,24 +269,15 @@ namespace iSukces.Code.AutoCode
                 return;
             }
 
-            if (ptg.IsArray)
             {
-                
-
-                if (ptg == typeof(double[]))
+                var el = TryGetRankOneArrayElement(ptg);
+                if (el is not null)
                 {
-                    CopyArray(pi, "double", writer, resolver);
+                    var tn = resolver.GetTypeName(el);
+                    CopyArray(pi, tn, writer, resolver);
                     return;
                 }
-#if !COREFX && false
-                if (ptg == typeof(System.Windows.Point[]))
-                {
-                    CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
-                    return;
-                }
-#endif
             }
-
 
 #if HAS_ICLONEABLE
             {

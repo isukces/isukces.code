@@ -5,7 +5,7 @@
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
     <Product>iSukces.Code</Product>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
     <AssemblyVersion>1.0.23082.14</AssemblyVersion>
     <FileVersion>1.0.23082.14</FileVersion>
