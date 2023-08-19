@@ -91,8 +91,10 @@ namespace iSukces.Code.AutoCode
 
             var fileNameAssembly     = _filenameProvider.GetFilename(assembly).FullName;
             var eventHandler = BeforeSave;
-            foreach (var (key, wrapper) in _outputs)
+            foreach (var kv in _outputs)
             {
+                var key      = kv.Key;
+                var wrapper  = kv.Value;
                 var info     = wrapper.SourceInfo;
                 var csFile   = wrapper.File;
                 var fileName = string.IsNullOrEmpty(key) ? fileNameAssembly : key;
