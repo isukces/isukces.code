@@ -1,44 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFrameworks>net451;netstandard2.0;netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="iSukces.Code" Version="1.0.20363.167" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp2.2'">
-      <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-      <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-      <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
-    </ItemGroup>
-
-    <ItemGroup Condition="'$(TargetFramework)' == 'net451'">
-      <PackageReference Include="Irony.Interpreter" Version="1.1.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Remove="iSukces.Code.Irony.csproj.DotSettings" />
-      <None Remove="iSukces.Code.Irony2.csproj.DotSettings" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="IronyAutocodeGenerator.DataClassesGenerator.cs">
-        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
-      </Compile>
-      <Compile Update="IronyAutocodeGenerator.AstClassesGenerator.cs">
-        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
-      </Compile>
-      <Compile Update="IronyAutocodeGenerator.NestedGeneratorBase.cs">
-        <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
-      </Compile>
-    </ItemGroup>
-
+  <PropertyGroup>
+    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023</Copyright>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="iSukces.Code" Version="1.0.20363.167" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="IronyAutocodeGenerator.AstClassesGenerator.cs">
+      <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+    </Compile>
+    <Compile Update="IronyAutocodeGenerator.DataClassesGenerator.cs">
+      <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+    </Compile>
+    <Compile Update="IronyAutocodeGenerator.NestedGeneratorBase.cs">
+      <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
+    </Compile>
+    <None Remove="iSukces.Code.Irony.csproj.DotSettings" />
+    <None Remove="iSukces.Code.Irony2.csproj.DotSettings" />
+  </ItemGroup>
 </Project>

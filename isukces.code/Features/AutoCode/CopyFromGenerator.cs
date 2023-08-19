@@ -260,19 +260,24 @@ namespace iSukces.Code.AutoCode
                 return;
             }
 
-            if (ptg == typeof(double[]))
+            if (ptg.IsArray)
             {
-                CopyArray(pi, "double", writer, resolver);
-                return;
-            }
-#if !COREFX
-            if (ptg == typeof(System.Windows.Point[]))
-            {
-                CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
-                return;
-            }
+                
+
+                if (ptg == typeof(double[]))
+                {
+                    CopyArray(pi, "double", writer, resolver);
+                    return;
+                }
+#if !COREFX && false
+                if (ptg == typeof(System.Windows.Point[]))
+                {
+                    CopyArray(pi, "System.Windows.Point", writer, resolver); // todo: external copy
+                    return;
+                }
 #endif
-            
+            }
+
 
 #if HAS_ICLONEABLE
             {

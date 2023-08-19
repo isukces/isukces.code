@@ -1,36 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <AssemblyName>iSukces.Code.VsSolutions</AssemblyName>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
-    <TargetFrameworks>net48;netstandard2.0;netcoreapp3.1;net7.0</TargetFrameworks>
-    <SignAssembly>true</SignAssembly>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>iSukces.Code</Product>
-    <PackageId>iSukces.Code.VsSolutions</PackageId>
+    <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
+    <AssemblyVersion>1.0.23082.14</AssemblyVersion>
+    <FileVersion>1.0.23082.14</FileVersion>
+    <Version>1.0.23082.14</Version>
+    <LangVersion>7</LangVersion>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <Description>small C# code generating framework</Description>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.23082.14</AssemblyVersion>
-    <Version>1.0.23082.14</Version>
-    <FileVersion>1.0.23082.14</FileVersion>
-    <Description>small C# code generating framework</Description>
-    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageTags>C#</PackageTags>
-    <Title>Microsoft Visual Studio solution related structures</Title>
-    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageId>iSukces.Code.VsSolutions</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageTags>C#</PackageTags>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <LangVersion>7</LangVersion>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
-    <AssemblyName>iSukces.Code.VsSolutions</AssemblyName>
-    <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
+    <Title>Microsoft Visual Studio solution related structures</Title>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>

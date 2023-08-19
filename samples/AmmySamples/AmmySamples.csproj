@@ -1,11 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\iSukces.Code\iSukces.Code.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023</Copyright>
+    <TargetFramework>net7.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\iSukces.Code\iSukces.Code.csproj" />
+  </ItemGroup>
 </Project>

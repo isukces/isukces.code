@@ -1,49 +1,65 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
-    <TargetFrameworks>net451;net48;net6.0;netcoreapp2.2;netcoreapp3.1;netstandard2.0;net7.0</TargetFrameworks>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>iSukces.Code</Product>
-    <PackageId>iSukces.Code</PackageId>
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+    <AssemblyVersion>1.0.23111.199</AssemblyVersion>
+    <FileVersion>1.0.23111.199</FileVersion>
+    <Version>1.0.23111.199</Version>
+    <LangVersion>default</LangVersion>
+    <UseWPF>false</UseWPF>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <NoWarn>1701;1702;1591</NoWarn>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <Description>iSukces.Code</Description>
+    <Description>small C# code generating framework</Description>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.23111.199</AssemblyVersion>
-    <Version>1.0.23111.199</Version>
-    <FileVersion>1.0.23111.199</FileVersion>
-    <Description>small C# code generating framework</Description>
-    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageTags>C#</PackageTags>
-    <Title>Source code generators</Title>
-    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageId>iSukces.Code</PackageId>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <LangVersion>default</LangVersion>
+    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageTags>C#</PackageTags>
     <PublicSign>true</PublicSign>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <Title>Source code generators</Title>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
-    <Reference Include="System" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+    <DefineConstants>COREFX;COREFX20;NET70</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Features\AutoCode\AutoCodeGenerator.ContextWrapper.cs">
+      <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Features\AutoCode\AutoCodeGenerator.SimpleAutoCodeGeneratorContext.cs">
+      <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Features\CsClasses\CsMethod.Obsolete.cs">
+      <DependentUpon>CsMethod.cs</DependentUpon>
+    </Compile>
     <Compile Update="Features\IO\DataGrid\DataGridConfigurationProvider.GridColumn.cs">
       <DependentUpon>DataGridConfigurationProvider.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Features\_expressions\CsExpression.Binary.cs">
+      <DependentUpon>CsExpression.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Interfaces\Ammy\_fluent\AmmyBuilderExtender.DataContextBinder.cs">
+      <DependentUpon>SomeExtender.cs</DependentUpon>
     </Compile>
     <Compile Update="Interfaces\CsEnumHelper+.cs">
       <AutoGen>True</AutoGen>
@@ -53,53 +69,9 @@
     <Compile Update="Interfaces\CsEnumHelper.cs">
       <DependentUpon>CsEnumHelper+.tt</DependentUpon>
     </Compile>
-    <Compile Update="Features\_expressions\CsExpression.Binary.cs">
-      <DependentUpon>CsExpression.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Features\CsClasses\CsMethod.Obsolete.cs">
-      <DependentUpon>CsMethod.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Interfaces\Ammy\_fluent\AmmyBuilderExtender.DataContextBinder.cs">
-      <DependentUpon>SomeExtender.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Features\AutoCode\AutoCodeGenerator.ContextWrapper.cs">
-      <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Features\AutoCode\AutoCodeGenerator.SimpleAutoCodeGeneratorContext.cs">
-      <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <None Update="Interfaces\CsEnumHelper+.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>CsEnumHelper+.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-    <DefineConstants>COREFX;COREFX20;NET70</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net7.0-windows' ">
-    <DefineConstants>COREFX;COREFX20;NET70</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-    <DefineConstants>COREFX;COREFX20</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <DefineConstants>COREFX;COREFX20</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-    <DefineConstants>COREFX;COREFX20</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
-    <DefineConstants>COREFX;COREFX20</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net451' ">
-    <DefineConstants>FULLFX;NET451</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <DefineConstants>FULLFX</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup>
-    <NoWarn>1701;1702;1591</NoWarn>
-  </PropertyGroup>
 </Project>

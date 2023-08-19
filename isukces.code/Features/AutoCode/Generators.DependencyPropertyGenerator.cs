@@ -25,11 +25,14 @@ namespace iSukces.Code.AutoCode
 
                 var meta = dpmi.Resolve(attribute.Name, propertyTypeName);
                 {
-#if COREFX
                     var staticField = csClass.AddField(fn, "System.Windows.DependencyProperty");
-#else
+/*
+# if COREFX
+                    var staticField = csClass.AddField(fn, "System.Windows.DependencyProperty");
+# else
                     var staticField = csClass.AddField(fn, typeof(System.Windows.DependencyProperty));
-#endif
+# endif
+                    */
                     staticField.IsStatic = true;
                     staticField.IsReadOnly = true;
                     staticField.Visibility = Visibilities.Public;

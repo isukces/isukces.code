@@ -1,44 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2023</Copyright>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Product>iSukces.Code.Serenity</Product>
-    <PackageId>iSukces.Code.Serenity</PackageId>
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+    <AssemblyVersion>1.0.22330.81</AssemblyVersion>
+    <FileVersion>1.0.22330.81</FileVersion>
+    <Version>1.0.22330.81</Version>
+    <UseWPF>false</UseWPF>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Description>iSukces.Code.Serenity</Description>
+    <Description>Serenity extension for iSukces.Code</Description>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <AssemblyVersion>1.0.22330.81</AssemblyVersion>
-    <Version>1.0.22330.81</Version>
-    <FileVersion>1.0.22330.81</FileVersion>
-    <Description>Serenity extension for iSukces.Code</Description>
-    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageTags>C#</PackageTags>
-    <Title>Source code generators</Title>
-    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageId>iSukces.Code.Serenity</PackageId>
     <PackageLicenseUrl>https://github.com/isukces/iSukces.Code/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PackageTags>C#</PackageTags>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <TargetFrameworks>net451;netcoreapp3.1;netcoreapp2.2;net5.0;net6.0</TargetFrameworks>
+    <Title>Source code generators</Title>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.JScript" />
-    <Reference Include="System.Activities" />
-    <Reference Include="WindowsBase" Condition="'$(TargetFramework)' == 'net451'" />
   </ItemGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-    <DefineConstants>COREFX</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
-    <DefineConstants>COREFX</DefineConstants>
-  </PropertyGroup>
 </Project>
