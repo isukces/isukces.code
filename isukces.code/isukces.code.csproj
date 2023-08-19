@@ -8,7 +8,7 @@
     <AssemblyVersion>1.23.819.200</AssemblyVersion>
     <FileVersion>1.23.819.200</FileVersion>
     <Version>1.23.819.200</Version>
-    <LangVersion>default</LangVersion>
+    <LangVersion>11</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>

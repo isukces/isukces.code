@@ -10,7 +10,7 @@
     <AssemblyVersion>1.0.23082.14</AssemblyVersion>
     <FileVersion>1.0.23082.14</FileVersion>
     <Version>1.0.23082.14</Version>
-    <LangVersion>7</LangVersion>
+    <LangVersion>11</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
