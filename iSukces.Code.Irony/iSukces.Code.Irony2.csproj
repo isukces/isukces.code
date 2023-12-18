@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023</Copyright>
     <TargetFramework>net7.0</TargetFramework>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="iSukces.Code" Version="1.0.20363.167" />

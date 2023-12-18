@@ -3,6 +3,7 @@
   <PropertyGroup>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023</Copyright>
     <TargetFramework>net7.0</TargetFramework>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />

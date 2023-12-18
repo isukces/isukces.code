@@ -6,6 +6,7 @@
     <OutputType>Exe</OutputType>
     <UseWPF>false</UseWPF>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj" />

@@ -4,13 +4,14 @@
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023</Copyright>
     <TargetFramework>net7.0</TargetFramework>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />
-    <PackageReference Include="JetBrains.Annotations" Version="2023.2.0" />
+    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="_grammar\AmmyGrammarAutogeneratorInfo.AutoCode.cs">
