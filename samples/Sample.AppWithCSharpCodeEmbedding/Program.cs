@@ -12,7 +12,7 @@ namespace Sample.AppWithCSharpCodeEmbedding
 
         private static void CreateAutoCode()
         {
-            var prov2 = SlnAssemblyBaseDirectoryProvider.Make<DemoAutoCodeGenerator>("isukces.code.sln", "samples");
+            var prov2 = SlnAssemblyBaseDirectoryProvider.Make<DemoAutoCodeGenerator>("iSukces.Code.sln", "samples");
             IAssemblyFilenameProvider provider = new SimpleAssemblyFilenameProvider(prov2, "--Autocode--.cs");
             var                       gen         = new DemoAutoCodeGenerator(provider);
             gen.WithGenerator(new Generators.EqualityGenerator(new JetbrainsAttributeNullValueChecker()));

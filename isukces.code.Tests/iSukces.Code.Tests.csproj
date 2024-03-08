@@ -19,7 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\iSukces.Code.Serenity\iSukces.Code.Serenity.csproj" />
     <ProjectReference Include="..\iSukces.Code.VsSolutions\iSukces.Code.VsSolutions.csproj" />
-    <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
+    <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.1">

@@ -6,7 +6,7 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
+    <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Irony.Interpreter.NetCore" Version="1.1.11" />

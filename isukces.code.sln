@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitbrains.AmmyParser", "Bit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bitbrains.AmmyParser.Tests", "Bitbrains.AmmyParser.Tests\Bitbrains.AmmyParser.Tests.csproj", "{9B727426-9EBB-4E9F-8377-F5B473CC30F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "isukces.code", "isukces.code\isukces.code.csproj", "{80A63906-600D-410B-890D-9B03B94E944E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code", "isukces.code\iSukces.Code.csproj", "{80A63906-600D-410B-890D-9B03B94E944E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.Irony", "iSukces.Code.Irony\iSukces.Code.Irony.csproj", "{E4A95F0A-DF07-4527-B506-3FA2981FB3B4}"
 EndProject

@@ -8,7 +8,7 @@
     <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\iSukces.Code\iSukces.Code.csproj" />
+    <ProjectReference Include="..\..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />

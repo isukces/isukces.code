@@ -10,6 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj" />
-    <ProjectReference Include="..\iSukces.Code\iSukces.Code.csproj" />
+    <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
 </Project>
