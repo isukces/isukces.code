@@ -17,7 +17,7 @@ namespace iSukces.Code
         public static string CsEncode(this string x)
         {
             const string quote     = "\"";
-            const string backslash = "\\";
+            // const string backslash = "\\";
             if (x is null)
                 return "null";
             var sb = new StringBuilder();
@@ -78,7 +78,7 @@ namespace iSukces.Code
                 return "null";
 
             const string quote     = "\"";
-            const string backslash = "\\";
+            // const string backslash = "\\";
             var          sb        = new StringBuilder();
             sb.Append("@");
             sb.Append(quote);

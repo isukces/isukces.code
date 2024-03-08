@@ -57,7 +57,7 @@ public class CsEnum : ClassMemberBase
     }
 
     public IClassOwner?       Owner          { get; set; }
-    public string             Name           { get; set; }
+    public string?            Name           { get; set; }
     public IList<CsEnumItem>? Items          { get; set; }
     public string?            UnderlyingType { get; set; }
 }

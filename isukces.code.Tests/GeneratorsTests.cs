@@ -15,7 +15,7 @@ namespace iSukces.Code.Tests
             IAutoCodeGeneratorContext ctx = new TestContext();
             var                       cl  = gen.Make(typeof(GeneratorsTests), ctx);
             Assert.NotNull(cl);
-            Assert.Equal(cl.Kind, CsNamespaceMemberKind.Class);
+            Assert.Equal(CsNamespaceMemberKind.Class, cl.Kind);
             Assert.True(cl.IsPartial);
         }
 
@@ -26,7 +26,7 @@ namespace iSukces.Code.Tests
             IAutoCodeGeneratorContext ctx = new TestContext();
             var                       cl  = gen.Make(typeof(SampleInterface), ctx);
             Assert.NotNull(cl);
-            Assert.Equal(cl.Kind, CsNamespaceMemberKind.Interface);
+            Assert.Equal(CsNamespaceMemberKind.Interface, cl.Kind);
             Assert.True(cl.IsPartial);
         }
 
@@ -37,7 +37,7 @@ namespace iSukces.Code.Tests
             IAutoCodeGeneratorContext ctx = new TestContext();
             var                       cl  = gen.Make(typeof(SampleStruct), ctx);
             Assert.NotNull(cl);
-            Assert.Equal(cl.Kind, CsNamespaceMemberKind.Struct);
+            Assert.Equal(CsNamespaceMemberKind.Struct, cl.Kind);
             Assert.True(cl.IsPartial);
         }
 

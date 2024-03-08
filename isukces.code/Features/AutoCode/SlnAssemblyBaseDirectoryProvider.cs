@@ -19,6 +19,7 @@ namespace iSukces.Code.AutoCode
         ///     Found directory is taken as solution root directory
         /// </summary>
         /// <param name="slnShortFilename"></param>
+        /// <param name="optionalSubDirectory"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>

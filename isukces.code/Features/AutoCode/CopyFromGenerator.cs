@@ -1,4 +1,4 @@
-﻿#if !COREFX || NET70
+﻿#if !COREFX || NET80
 #define HAS_ICLONEABLE
 #endif
 using System;

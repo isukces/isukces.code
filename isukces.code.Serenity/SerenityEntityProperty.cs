@@ -102,7 +102,7 @@ namespace iSukces.Code.Serenity
 
 
         private readonly Dictionary<string, CsAttribute> _uniqueAttributes = new Dictionary<string, CsAttribute>();
-        private readonly CsProperty _property;
+        // private readonly CsProperty _property;
         private readonly SerenityEntityBuilder _owner;
 
         public IEnumerable<ICsAttribute> GetAllAttributes()

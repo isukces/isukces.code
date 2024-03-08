@@ -1,5 +1,6 @@
 // ReSharper disable All
 using System;
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 
 // ReSharper disable once CheckNamespace
 namespace EqualityGeneratorSample

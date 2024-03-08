@@ -42,8 +42,6 @@ namespace iSukces.Code.Irony
                     return null;
                 }
             }
-
-            return null;
         }
 
         public IronyAutocodeGeneratorModel WithDelimitedComment(string startSymbol, params string[] endSymbols)

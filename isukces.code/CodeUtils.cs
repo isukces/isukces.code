@@ -95,7 +95,6 @@ namespace iSukces.Code
             if (!(method is LambdaExpression lambda))
                 throw new ArgumentNullException(nameof(method));
 
-            MemberExpression memberExpr = null;
             switch (lambda.Body.NodeType)
             {
                 case ExpressionType.Convert:

@@ -12,7 +12,6 @@
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
-    <NoWarn>1701;1702;1591</NoWarn>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <Description>iSukces.Code</Description>
@@ -34,8 +33,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>Source code generators</Title>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-    <DefineConstants>COREFX;COREFX20;NET70</DefineConstants>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <DefineConstants>COREFX;COREFX20;NET80</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />

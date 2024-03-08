@@ -4,7 +4,23 @@ using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
-public class TypeName: object {
+public class TypeName : object
+{
+    public static TypeName FromString(string x) => new() { FullName = x };
+
+    public static TypeName FromType(Type type, Dictionary<string, string> reductor) => new() { BaseType = type, Reductor = reductor };
+
+    public static TypeName FromType(Type type) => new() { BaseType = type };
+
+    /*
+        string tn = TypeToString(type);
+        string d = tn;
+        if (d.IndexOf('<') >= 0)
+            d = d.Substring(0, d.IndexOf('<'));
+
+        d = d.Substring(0, d.LastIndexOf('.'));
+        string n = tn.Substring( d.Length+1);
+        return new TypeName() {Domain = d, Name = n}; */
     private static string TypeNameNoGeneric(Type t)
     {
         var tn = t.FullName;
@@ -13,8 +29,43 @@ public class TypeName: object {
         return tn;
     }
 
+    public static string TypeToString(Type type) => TypeToString(type, null);
+
+    public static string TypeToString(Type type, [CanBeNull] Dictionary<string, string> reductor)
+    {
+        if (!type.IsGenericType)
+        {
+            var tn1 = type.FullName;
+            if (reductor == null) return tn1;
+            var d = tn1.Substring(0, tn1.LastIndexOf('.'));
+            tn1 = tn1.Substring(tn1.LastIndexOf('.') + 1);
+            if (reductor.ContainsKey(d))
+                tn1 = reductor[d] + "." + tn1;
+            return tn1;
+        }
+
+        var gt = type.GetGenericTypeDefinition();
+        var tn = gt.FullName;
+        tn = tn.Substring(0, tn.IndexOf("`"));
+
+        var i = 0;
+        foreach (var tt in type.GetGenericArguments())
+        {
+            tn += i == 0 ? "<" : ",";
+            tn += TypeToString(tt, reductor);
+            i++;
+        }
+
+        tn += ">";
+        return tn;
+    }
+
+    public override string ToString() => FullName;
+
+    #region Properties
+
     /// <summary>
-    /// typ, dla którego jest budowana nazwa
+    ///     typ, dla którego jest budowana nazwa
     /// </summary>
     public Type BaseType { get; set; }
 
@@ -27,26 +78,27 @@ public class TypeName: object {
             var tn = TypeNameNoGeneric(BaseType);
 
             var d = tn.Substring(0, tn.LastIndexOf('.'));
-            if (Reductor == (object)null) return d;
+            if (Reductor == null) return d;
             if (Reductor.TryGetValue(d, out var domain))
                 return domain;
             return d;
         }
-        set { _domain = value; }
+        set => _domain = value;
     }
 
-    private string _domain;
-
     /// <summary>
-    /// słownik przechowujący
+    ///     słownik przechowujący
     /// </summary>
-    public string FullName {
-        get {
+    public string FullName
+    {
+        get
+        {
             var d                           = Domain;
             if (!string.IsNullOrEmpty(d)) d += ".";
             return d + Name;
         }
-        set {
+        set
+        {
             _domain = value.Substring(0, value.LastIndexOf('.'));
             _name   = value.Substring(value.LastIndexOf('.') + 1);
         }
@@ -61,105 +113,41 @@ public class TypeName: object {
             var tn = TypeNameNoGeneric(BaseType);
             var d  = tn.Substring(0, tn.LastIndexOf('.'));
             var n  = tn.Substring(tn.LastIndexOf('.') + 1);
-            if (BaseType
-#if COREFX
-                    .GetTypeInfo()
-#endif                    
-                .IsGenericType)
+            if (BaseType.IsGenericType)
             {
                 var i = 0;
-                foreach (var t in BaseType
-#if COREFX
-                        .GetTypeInfo()
-#endif                        
-                             .GetGenericArguments())
+                foreach (var t in BaseType.GetGenericArguments())
                 {
                     n += i == 0 ? "<" : GlobalSettings.CommaSeparator;
                     var tn1 = new TypeName
                     {
-                        BaseType = t, 
+                        BaseType = t,
                         Reductor = Reductor
                     };
                     n += tn1.FullName;
                     i++;
                 }
+
                 n += ">";
             }
+
             return n;
         }
-        set { _name = value; }
+        set => _name = value;
     }
 
-    private string _name;
-
     /// <summary>
-    /// typ, dla którego jest budowana nazwa
+    ///     typ, dla którego jest budowana nazwa
     /// </summary>
     public Dictionary<string, string> Reductor { get; set; }
 
-    public override string ToString() {
-        return FullName;
-    }
-        
-    public static TypeName FromString(string x) {
-        return new TypeName { FullName = x };
-    }
+    #endregion
 
-    public static TypeName FromType(Type type, Dictionary<string, string> reductor)
-    {
-        return new TypeName { BaseType = type, Reductor = reductor };
-    }
+    #region Fields
 
-    public static TypeName FromType(Type type) {
-        return new TypeName { BaseType = type };
-        /*
-        string tn = TypeToString(type);
-        string d = tn;
-        if (d.IndexOf('<') >= 0)
-            d = d.Substring(0, d.IndexOf('<'));
+    private string _domain;
 
-        d = d.Substring(0, d.LastIndexOf('.'));
-        string n = tn.Substring( d.Length+1);
-        return new TypeName() {Domain = d, Name = n}; */
-    }
+    private string _name;
 
-    public static string TypeToString(Type type) {
-        return TypeToString(type, null);
-    }
-
-    public static string TypeToString(Type type, [CanBeNull] Dictionary<string, string> reductor) {
-        if (!type
-#if COREFX
-                .GetTypeInfo()
-#endif                
-                .IsGenericType)
-        {
-            var tn1 = type.FullName;
-            if (reductor == (object)null) return tn1;
-            var d = tn1.Substring(0, tn1.LastIndexOf('.'));
-            tn1 = tn1.Substring(tn1.LastIndexOf('.') + 1);
-            if (reductor.ContainsKey(d))
-                tn1 = reductor[d] + "." + tn1;
-            return tn1;
-        }
-
-
-        var gt = type.GetGenericTypeDefinition();
-        var tn = gt.FullName;
-        tn = tn.Substring(0, tn.IndexOf("`"));
-
-        var i = 0;
-        foreach (var tt in type
-#if COREFX
-                .GetTypeInfo()
-#endif                
-                     .GetGenericArguments())
-        {
-            tn += i == 0 ? "<" : ",";
-            tn += TypeToString(tt, reductor);
-            i++;
-        }
-        tn += ">";
-        return tn;
-    }
+    #endregion
 }

@@ -166,7 +166,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
         if (ReSharperDisableAll)
             writer.WriteLine("// ReSharper disable All");
-        const string emptyNamespace = "";
         if (!string.IsNullOrEmpty(BeginContent))
             writer.WriteLine(BeginContent);
         if (!isEmbedded)

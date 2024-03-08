@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023</Copyright>
+    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023-2024</Copyright>
     <TargetFramework>net7.0</TargetFramework>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>

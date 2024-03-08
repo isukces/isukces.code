@@ -41,7 +41,7 @@ namespace iSukces.Code.VsSolutions
             }
             catch (Exception e)
             {
-                throw new ArgumentException($"'{ver}' is not valid version");
+                throw new ArgumentException($"'{ver}' is not valid version", e);
             }
         }
 

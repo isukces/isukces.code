@@ -153,7 +153,6 @@ namespace iSukces.Code
         ///     Tworzy kod
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="inInterface"></param>
         /// <param name="owner"></param>
         /// <returns></returns>
         public void MakeCode(ICsCodeWriter writer, CsClass owner)

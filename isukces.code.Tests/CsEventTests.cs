@@ -34,9 +34,6 @@ public class Demo
         }
         
         
-        /// <summary>
-        /// aaa <see cref="Sampele">Sample</see>
-        /// </summary>
         [Fact]
         public void T02_Should_Create_event_with_long_definition()
         {
