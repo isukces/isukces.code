@@ -14,20 +14,12 @@ namespace iSukces.Code.Tests
                 .Replace("_Should_create_", "_")
                 .Replace("_Should_", "_");
 
-            void Save(bool addSubfolder)
-            {
-                var dir = new FileInfo(file).Directory.FullName;
-                if (addSubfolder)
-                    dir = Path.Combine(dir, "new");
-                var fn = Path.Combine(dir, method + ext);
-                new FileInfo(fn).Directory.Create();
-                File.WriteAllText(fn, actual);
-            }
-
-            var name = resourcePrefix + method + ext;
-            var s    = typeof(EqualityGeneratorTests).Assembly.GetManifestResourceStream(name);
+            var name     = resourcePrefix + method + ext;
+            var assembly = typeof(EqualityGeneratorTests).Assembly;
+            var s        = assembly.GetManifestResourceStream(name);
             if (s is null)
             {
+                var allNames = assembly.GetManifestResourceNames();
                 Save(false);
                 throw new Exception("Resource not found, please recompile");
             }
@@ -49,6 +41,17 @@ namespace iSukces.Code.Tests
             if (expected != actual || isNullOrEmpty)
                 Save(!isNullOrEmpty);
             Assert.Equal(expected, actual);
+            return;
+
+            void Save(bool addSubfolder)
+            {
+                var dir = new FileInfo(file).Directory.FullName;
+                if (addSubfolder)
+                    dir = Path.Combine(dir, "new");
+                var fn = Path.Combine(dir, method + ext);
+                new FileInfo(fn).Directory.Create();
+                File.WriteAllText(fn, actual);
+            }
         }
     }
 }

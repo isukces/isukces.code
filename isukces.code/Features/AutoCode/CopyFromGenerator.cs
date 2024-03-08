@@ -47,7 +47,7 @@ namespace iSukces.Code.AutoCode
                         return pi.Name;
                     throw new Exception("Unable to find property related to constructor parameter " + i.Name);
                 }).ToArray();
-            var pars = string.Join(", ", l);
+            var pars = l.CommaJoin();
             return pars;
         }
 

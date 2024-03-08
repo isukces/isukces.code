@@ -14,7 +14,7 @@ namespace iSukces.Code.Interfaces
             var types = genericArguments?.Types;
             if (types == null || types.Count == 0)
                 return string.Empty;
-            return "<" + string.Join(", ", types) + ">";
+            return "<" + types.CommaJoin() + ">";
         }
 
         public static bool HasConstraints(this CsGenericArguments self)

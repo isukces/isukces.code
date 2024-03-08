@@ -13,7 +13,7 @@ public class FluentCode
 
     public FluentCode AddMethod(string methodName, params string[] args)
     {
-        var code = methodName + "(" + string.Join(", ", args) + ")";
+        var code = args.CommaJoin().Parentheses(methodName);
         _code.Add(code);
         return this;
     }

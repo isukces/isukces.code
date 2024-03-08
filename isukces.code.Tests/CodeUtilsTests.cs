@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+using iSukces.Code;
 using Xunit;
 
 namespace iSukces.Code.Tests

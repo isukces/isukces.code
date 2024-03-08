@@ -18,7 +18,7 @@ namespace iSukces.Code
             var sb = new StringBuilder();
             if (i.Attributes.Any())
             {
-                var joioned = string.Join(", ", i.Attributes);
+                var joioned = i.Attributes.CommaJoin();
                 sb.Append($"[{joioned}] ");
             }
 
@@ -72,7 +72,7 @@ namespace iSukces.Code
                 select FormatMethodParameter(i);
             var mDefinition = string.Format("{0}{2}({1})",
                 string.Join(" ", GetMethodAttributes(inInterface)),
-                string.Join(", ", query),
+                query.CommaJoin(),
                 _method.GenericArguments.GetTriangleBracketsInfo());
             return mDefinition;
         }

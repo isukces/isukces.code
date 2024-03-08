@@ -1,4 +1,5 @@
 using System;
+using iSukces.Code;
 using iSukces.Code.Interfaces;
 using iSukces.Code.Serenity;
 using Xunit;
@@ -142,7 +143,7 @@ namespace Cloud.Common
 
         [Column(""Kind16"")]
         [DisplayName(""Kind16"")]
-        [Serenity.ComponentModel.FileUploadEditor(AllowNonImage = true,OriginalNameProperty = ""Name"",CopyToHistory = true,FilenameFormat = ""Documents/~"",DisableDefaultBehavior = true)]
+        [Serenity.ComponentModel.FileUploadEditor(AllowNonImage = true, OriginalNameProperty = ""Name"", CopyToHistory = true, FilenameFormat = ""Documents/~"", DisableDefaultBehavior = true)]
         [NotNull]
         [Serenity.ComponentModel.QuickFilter]
         public SomeEnum16? Kind16

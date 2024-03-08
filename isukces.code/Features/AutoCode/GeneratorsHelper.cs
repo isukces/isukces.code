@@ -20,20 +20,33 @@ namespace iSukces.Code.AutoCode
             method.Body += "\r\n" + codeLine;
         }
 
-        public static CsExpression CallMethod(string instance, string method, params string[] arguments) =>
-            (CsExpression)string.Format("{0}.{1}({2})", instance, method, string.Join(", ", arguments));
+        public static CsExpression CallMethod(string instance, string method, params string[] arguments)
+        {
+            var prefix = $"{instance}.{method}";
+            var code   = arguments.CommaJoin().Parentheses(prefix);
+            return (CsExpression)code;
+        }
 
         public static CsExpression CallMethod(string method, params CsExpression[] arguments)
         {
-            return (CsExpression)string.Format("{0}({1})", method, string.Join(", ", arguments.Select(a => a.Code)));
+            var code = arguments.Select(a => a.Code)
+                .CommaJoin()
+                .Parentheses(method);
+            return (CsExpression)code;
         }
 
-        public static CsExpression CallMethod(string method, IArgumentsHolder holder) =>
-            (CsExpression)string.Format("{0}({1})", method, string.Join(", ", holder.GetArguments()));
+        public static CsExpression CallMethod(string method, IArgumentsHolder holder)
+        {
+            var code   = holder.GetArguments().CommaJoin().Parentheses(method);
+            return (CsExpression)code;
+        }
 
-        public static CsExpression CallMethod(string instance, string method, IArgumentsHolder holder) =>
-            (CsExpression)string.Format("{0}.{1}({2})", instance, method,
-                string.Join(", ", holder.GetArguments()));
+        public static CsExpression CallMethod(string instance, string method, IArgumentsHolder holder)
+        {
+            var prefix = instance + "." + method;
+            var code   = holder.GetArguments().CommaJoin().Parentheses(prefix);
+            return (CsExpression)code;
+        }
 
         public static MyStruct DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
         {
@@ -85,9 +98,10 @@ namespace iSukces.Code.AutoCode
                 {
                     if (w.IsGenericTypeDefinition)
                     {
-                        var args  = w.GetGenericArguments();
-                        var args2 = string.Join(",", args.Select(a => a.Name));
-                        fullName = type.FullName.Split('`')[0] + "<" + args2 + ">";
+                        var args     = w.GetGenericArguments();
+                        var args2    = args.Select(a => a.Name).CommaJoin().TriangleBrackets();
+                        var mainPart = type.FullName.Split('`')[0];
+                        fullName = mainPart + args2;
                     }
                     else
                     {
@@ -96,10 +110,14 @@ namespace iSukces.Code.AutoCode
                             if (nullable != null)
                                 return GetTypeName(container, nullable) + "?";
                         }
-                        var gt    = type.GetGenericTypeDefinition();
-                        var args  = w.GetGenericArguments();
-                        var args2 = string.Join(",", args.Select(a => GetTypeName(container, a)));
-                        fullName = gt.FullName.Split('`')[0] + "<" + args2 + ">";
+                        var gt       = type.GetGenericTypeDefinition();
+                        var mainPart = gt.FullName.Split('`')[0];
+                        var args     = w.GetGenericArguments();
+                        
+                        var args2 = args.Select(a => GetTypeName(container, a))
+                            .CommaJoin()
+                            .TriangleBrackets();
+                        fullName = mainPart + args2;
                     }
                 }
                 else

@@ -47,7 +47,8 @@ namespace iSukces.Code.AutoCode
                         var cw = new CsCodeWriter();
                         //cw.WriteLine("// ReSharper disable UseObjectOrCollectionInitializer");
                         // cw.WriteLine("// ReSharper disable MemberCanBeMadeStatic.Local");
-                        cw.WriteLine("var result = new {0}({1});", Type.Name, string.Join(", ", constructorArgs));
+                        var mm = constructorArgs.CommaJoin().New(Type.Name);
+                        cw.WriteLine($"var result = {mm};");
                         foreach (var i in properties)
                             if (!usedProperties.Contains(i.Name))
                                 cw.WriteLine("result.{0} = {0};", i.Name);

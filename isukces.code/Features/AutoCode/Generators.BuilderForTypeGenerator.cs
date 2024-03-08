@@ -93,7 +93,7 @@ namespace iSukces.Code.AutoCode
             }
 
 
-            protected void AddWithMethodUsingPropertyTypeConstructor(NameAndTypeName property, 
+            protected void AddWithMethodUsingPropertyTypeConstructor(NameAndTypeName property,
                 params NameAndType[] constructorParams)
             {
                 var m = _class.AddMethod("With" + property.PropName, _class.Name)
@@ -106,8 +106,11 @@ namespace iSukces.Code.AutoCode
                     m.AddParam(pName, _class.GetTypeName(i.Type ?? typeof(double)));
                 }
 
-                var ll = string.Join(", ", l);
-                m.Body = $"{property.PropName} = new {property.PropertyTypeName}({ll});\r\nreturn this;";
+                var constructorCall = l
+                    .CommaJoin()
+                    .New(property.PropertyTypeName);
+
+                m.Body = $"{property.PropName} = {constructorCall};\r\nreturn this;";
             }
 
             private void AddBuildMethod()
@@ -116,8 +119,10 @@ namespace iSukces.Code.AutoCode
                 var m = _class
                     .AddMethod("Build", _class.GetTypeName(Attribute.TargetType))
                     .WithAggressiveInlining(_class);
-                m.Body = string.Format("return new {0}({1});",
-                    m.ResultType, string.Join(", ", constructorParametersNames));
+                var constructorCall = constructorParametersNames
+                    .CommaJoin()
+                    .New(m.ResultType);
+                m.WithBodyAsExpression(constructorCall);
             }
 
             private void AddConstructors()

@@ -66,7 +66,7 @@ namespace iSukces.Code
             {
                 var sink = new List<string>();
                 ScanDeep(i.Key, new HashSet<string>(), sink);
-                var value     = string.Join(",", sink.Distinct());
+                var value     = sink.Distinct().CommaJoin();
                 var constName = GetConstName(i.Key);
 
                 infoByMasterPropertyName[i.Key] = new Info(constName, value);

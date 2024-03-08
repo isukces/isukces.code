@@ -48,7 +48,7 @@ namespace iSukces.Code
                         .OrderBy(a => a.Order).ThenBy(a => a.CsCode)
                         .Select(a => a.CsCode)
                         .ToArray();
-                    result.Add(string.Format("where {0}: {1}", i, string.Join(", ", items)));
+                    result.Add(string.Format("where {0}: {1}", i, items.CommaJoin()));
                 }
 
             if (addComma)

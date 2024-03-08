@@ -81,7 +81,7 @@ namespace iSukces.Code
                     name = name.Substring(0, name.Length - AttributeSuffixLength);
             if (values.Length == 0)
                 return name;
-            return string.Format("{0}({1})", name, string.Join(", ", values));
+            return values.CommaJoin().Parentheses(name);
         }
 
         public CsAttribute WithArgument(object value)
@@ -115,9 +115,10 @@ namespace iSukces.Code
             {
                 if (_list == null || _list.Count == 0)
                     return Name;
-                return string.Format("{0}({1})",
-                    Name,
-                    string.Join(",", _list.Select(KeyValuePairToString)));
+                
+                return _list.Select(KeyValuePairToString)
+                    .CommaJoin()
+                    .Parentheses(Name);
             }
         }
 

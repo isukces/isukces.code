@@ -534,7 +534,7 @@ namespace iSukces.Code
                 }
 
                 if (baseAndInterfaces.Any())
-                    def += " : " + string.Join(", ", baseAndInterfaces);
+                    def += " : " + baseAndInterfaces.CommaJoin();
             }
             writer.Open(def);
             // Constructors

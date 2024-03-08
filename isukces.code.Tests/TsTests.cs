@@ -1,4 +1,5 @@
-﻿using iSukces.Code.Interfaces;
+﻿using iSukces.Code;
+using iSukces.Code.Interfaces;
 using iSukces.Code.Typescript;
 using Xunit;
 

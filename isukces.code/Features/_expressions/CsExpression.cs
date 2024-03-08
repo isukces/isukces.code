@@ -106,7 +106,7 @@ namespace iSukces.Code.AutoCode
         public CsExpression CallMethod(string methodName, params CsExpression[] args)
         {
             var code = GetCode(CsOperatorPrecendence.Expression, ExpressionAppend.Before);
-            code += "." + methodName + "(" + string.Join(", ", args.Select(a => a.Code)) + ")";
+            code += args.Select(a => a.Code).CommaJoin().Parentheses("." + methodName);
             return new CsExpression(code);
         }
 

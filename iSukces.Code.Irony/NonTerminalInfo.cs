@@ -128,7 +128,7 @@ namespace iSukces.Code.Irony
                 }
             }
 
-            return string.Join(",", list.Distinct());
+            return string.Join(", ", list.Distinct());
         }
 
         public override string GetCode(ITypeNameResolver resolver) => Name.GetCode(resolver);
