@@ -17,6 +17,13 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         _importNamespaces.Add(ns);
     }
 
+    public string GetCode(bool isEmbedded = false)
+    {
+        var writer = new CsCodeWriter();
+        MakeCode(writer, isEmbedded);
+        return writer.Code;
+    }
+
 
     public CsClass GetOrCreateClass(string namespaceName, string className)
     {
@@ -24,13 +31,8 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         return ns.GetOrCreateClass(className);
     }
 
-    public CsClass GetOrCreateClass(TypeProvider typeP)
-    {
-        return GetOrCreateClass(typeP, out _);
-    }
+    public CsClass GetOrCreateClass(TypeProvider typeP) => GetOrCreateClass(typeP, out _);
 
-    private readonly Dictionary<TypeProvider, CsClass> _classesCache = new Dictionary<TypeProvider, CsClass>();
-        
     public CsClass GetOrCreateClass(TypeProvider typeP, out bool isCreatedNew)
     {
         if (typeP.IsEmpty)
@@ -62,7 +64,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
                         .GetGenericArguments();
                     var xn = genericArguments2.Select(a => a.Name).ToHashSet();
                     nn = nn.Where(a => !xn.Contains(a));
-
                 }
 
                 var nn1 = nn.ToArray();
@@ -145,16 +146,26 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         return result;
     }
 
-    public bool IsKnownNamespace(string namespaceName)
-    {
-        return !string.IsNullOrEmpty(namespaceName) && _importNamespaces.Contains(namespaceName);
-    }
+    public string GetTypeName(Type type) => GeneratorsHelper.GetTypeName(this, type);
 
-    public void MakeCode(ICsCodeWriter writer, bool isEmbedded=false)
+    public bool IsKnownNamespace(string namespaceName) => !string.IsNullOrEmpty(namespaceName) && _importNamespaces.Contains(namespaceName);
+
+    public void MakeCode(ICsCodeWriter writer, bool isEmbedded = false)
     {
         if (Namespaces == null || Namespaces.Count == 0)
             return;
-        writer.WriteLine("// ReSharper disable All");
+        switch (Nullable)
+        {
+            case FileNullableOption.LocalDisabled:
+                writer.WriteLine("#nullable disable");
+                break;
+            case FileNullableOption.LocalEnabled:
+                writer.WriteLine("#nullable enable");
+                break;
+        }
+
+        if (ReSharperDisableAll)
+            writer.WriteLine("// ReSharper disable All");
         const string emptyNamespace = "";
         if (!string.IsNullOrEmpty(BeginContent))
             writer.WriteLine(BeginContent);
@@ -190,7 +201,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
             {
                 if (classByNamespace.TryGetValue(ns, out var classList))
-                    foreach (var i in classList.OrderBy(a=>a.Name))
+                    foreach (var i in classList.OrderBy(a => a.Name))
                     {
                         if (addEmptyLine)
                             writer.EmptyLine();
@@ -211,31 +222,9 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
                 writer.Close();
             writer.CloseCompilerIf(compilerDirective);
         }
-            
+
         if (!string.IsNullOrEmpty(EndContent))
             writer.WriteLine(EndContent);
-    }
-
-    public bool SaveIfDifferent(string filename, bool addBom = false)
-    {
-        return CodeFileUtils.SaveIfDifferent(GetCode(false), filename, addBom);
-    }
-
-    public override string ToString()
-    {
-        return GetCode(false);
-    }
-
-    public string GetTypeName(Type type)
-    {
-        return GeneratorsHelper.GetTypeName(this, type);
-    }
-
-    public string GetCode(bool isEmbedded = false)
-    {
-        var writer = new CsCodeWriter();
-        MakeCode(writer, isEmbedded);
-        return writer.Code;
     }
 
     private void Save(string filename)
@@ -244,21 +233,25 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         if (fi.Directory == null)
             throw new NullReferenceException("fi.Directory");
         fi.Directory.Create();
-        var x = Encoding.UTF8.GetBytes(GetCode());
-        using(var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew))
-        {
-            fs.Write(x, 0, x.Length);
+        var       x  = Encoding.UTF8.GetBytes(GetCode());
+        using var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew);
+        fs.Write(x, 0, x.Length);
 #if !COREFX
-            fs.Close();
+        fs.Close();
 #endif
-        }
     }
+
+    public bool SaveIfDifferent(string filename, bool addBom = false) => CodeFileUtils.SaveIfDifferent(GetCode(), filename, addBom);
+
+    public override string ToString() => GetCode();
+
+    #region Properties
 
     /// <summary>
     ///     Przestrzenie nazw
     /// </summary>
     public IReadOnlyList<CsNamespace> Namespaces { get; } = new List<CsNamespace>();
-        
+
 
     /// <summary>
     /// </summary>
@@ -283,6 +276,17 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     /// </summary>
     public string EndContent { get; set; }
 
+
+    public FileNullableOption Nullable { get; set; }
+
+    public bool ReSharperDisableAll { get; set; } = GlobalSettings.DefaultReSharperDisableAll;
+
+    #endregion
+
+    #region Fields
+
+    private readonly Dictionary<TypeProvider, CsClass> _classesCache = new Dictionary<TypeProvider, CsClass>();
+
     /// <summary>
     ///     Przestrzenie nazw
     /// </summary>
@@ -290,4 +294,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     private List<CsEnum> _enums = new List<CsEnum>();
     private string _suggestedFileName = string.Empty;
+
+    #endregion
 }

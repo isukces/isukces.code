@@ -208,7 +208,7 @@ namespace Cloud.Common
             Assert.Equal(expected, w.Code);
         }
 
-        private static string Encode(string c)
+        public static string Encode(string c)
         {
             c = c.Replace("\"", "\"\"");
             c = "@\"" + c + "\"";
