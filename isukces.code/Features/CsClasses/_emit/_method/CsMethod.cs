@@ -84,8 +84,6 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         return this;
     }
 
-    #region Properties
-
     /// <summary>
     ///     Nazwa metody
     /// </summary>
@@ -126,7 +124,7 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     /// <summary>
     /// </summary>
     public CsType ResultType { get; set; }
-    
+
 
     /// <summary>
     /// </summary>
@@ -191,15 +189,12 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     }
 
     public bool IsAsync { get; set; }
-
-    #endregion
+    public bool IsPartial { get; set; }
 
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
     [CanBeNull]
     public CsGenericArguments GenericArguments { get; set; }
-
-    #region Fields
 
     public const string Implicit = "implicit";
     public const string Explicit = "explicit";
@@ -212,6 +207,4 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     private string _body = string.Empty;
     private string _baseConstructorCall = string.Empty;
     private MethodKind _kind;
-
-    #endregion
 }

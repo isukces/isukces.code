@@ -2,24 +2,24 @@ using System;
 using iSukces.Code;
 using Xunit;
 
-namespace iSukces.Code.Tests
-{
-    public class CsMethodTest
-    {
-        private static string TestCode(Action<CsClass> action)
-        {
-            var f  = new CsFile();
-            var ns = f.GetOrCreateNamespace("My123");
-            var cs = ns.GetOrCreateClass((CsType)"MyClass");
-            action(cs);
-            var code = f.GetCode();
-            return code;
-        }
+namespace iSukces.Code.Tests;
 
-        [Fact]
-        public void T01_Should_create_virtual_method()
-        {
-            const string exp = @"// ReSharper disable All
+public partial class CsMethodTest
+{
+    private static string TestCode(Action<CsClass> action)
+    {
+        var f  = new CsFile();
+        var ns = f.GetOrCreateNamespace("My123");
+        var cs = ns.GetOrCreateClass((CsType)"MyClass");
+        action(cs);
+        var code = f.GetCode();
+        return code;
+    }
+
+    [Fact]
+    public void T01_Should_create_virtual_method()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -31,19 +31,19 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                cs.AddMethod("Meth", CsType.Void)
-                    .WithVirtual();
-            });
-            Assert.Equal(exp, code);
-        }
-
-
-        [Fact]
-        public void T02_Should_create_abstract_method()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+            cs.AddMethod("Meth", CsType.Void)
+                .WithVirtual();
+        });
+        Assert.Equal(exp, code);
+    }
+
+
+    [Fact]
+    public void T02_Should_create_abstract_method()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public abstract class MyClass
@@ -53,19 +53,19 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                cs.AddMethod("Meth", CsType.Void)
-                    .WithAbstract();
-            });
-            Assert.Equal(exp, code);
-        }
-
-
-        [Fact]
-        public void T03_Should_create_override_method()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+            cs.AddMethod("Meth", CsType.Void)
+                .WithAbstract();
+        });
+        Assert.Equal(exp, code);
+    }
+
+
+    [Fact]
+    public void T03_Should_create_override_method()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -77,19 +77,19 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                cs.AddMethod("Meth", CsType.Void)
-                    .WithOverride();
-            });
-            Assert.Equal(exp, code);
-        }
-
-
-        [Fact]
-        public void T04_Should_create_constructor()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+            cs.AddMethod("Meth", CsType.Void)
+                .WithOverride();
+        });
+        Assert.Equal(exp, code);
+    }
+
+
+    [Fact]
+    public void T04_Should_create_constructor()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -101,33 +101,33 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs => { cs.AddConstructor(); });
-            Assert.Equal(exp, code);
-        }
+        var code = TestCode(cs => { cs.AddConstructor(); });
+        Assert.Equal(exp, code);
+    }
 
-        [Theory]
-        [InlineData(OverridingType.Abstract)]
-        [InlineData(OverridingType.Virtual)]
-        [InlineData(OverridingType.Override)]
-        public void T05_Should_not_create_constructor_with_overriding_flags(OverridingType overriding)
+    [Theory]
+    [InlineData(OverridingType.Abstract)]
+    [InlineData(OverridingType.Virtual)]
+    [InlineData(OverridingType.Override)]
+    public void T05_Should_not_create_constructor_with_overriding_flags(OverridingType overriding)
+    {
+        Assert.Throws<Exception>(() =>
         {
-            Assert.Throws<Exception>(() =>
+            TestCode(cs =>
             {
-                TestCode(cs =>
-                {
-                    var m = cs.AddConstructor();
-                    m.Overriding = overriding;
-                });
+                var m = cs.AddConstructor();
+                m.Overriding = overriding;
             });
-        }
+        });
+    }
 
 
-        [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public void T06_Should_create_finalizer(bool addExplicitNonStatic)
-        {
-            const string exp = @"// ReSharper disable All
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void T06_Should_create_finalizer(bool addExplicitNonStatic)
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -139,45 +139,45 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
+        var code = TestCode(cs =>
+        {
+            var m = cs.AddFinalizer();
+            if (addExplicitNonStatic)
+                m.IsStatic = false;
+        });
+        Assert.Equal(exp, code);
+    }
+
+    [Fact]
+    public void T07_Should_not_create_finalizer_static()
+    {
+        Assert.Throws<Exception>(() =>
+        {
+            TestCode(cs =>
             {
                 var m = cs.AddFinalizer();
-                if (addExplicitNonStatic)
-                    m.IsStatic = false;
+                m.IsStatic = true;
             });
-            Assert.Equal(exp, code);
-        }
+        });
+    }
 
-        [Fact]
-        public void T07_Should_not_create_finalizer_static()
-        {
-            Assert.Throws<Exception>(() =>
-            {
-                TestCode(cs =>
-                {
-                    var m = cs.AddFinalizer();
-                    m.IsStatic = true;
-                });
-            });
-        }
+    [Theory]
+    [InlineData(OverridingType.Abstract)]
+    [InlineData(OverridingType.Virtual)]
+    [InlineData(OverridingType.Override)]
+    public void T08_Should_not_create_finalizer_with_overriding_flags(OverridingType overriding)
+    {
+        var f  = new CsFile();
+        var ns = f.GetOrCreateNamespace("My123");
+        var cs = ns.GetOrCreateClass((CsType)"MyClass");
+        cs.AddConstructor().Overriding = overriding;
+        Assert.Throws<Exception>(() => { f.GetCode(); });
+    }
 
-        [Theory]
-        [InlineData(OverridingType.Abstract)]
-        [InlineData(OverridingType.Virtual)]
-        [InlineData(OverridingType.Override)]
-        public void T08_Should_not_create_finalizer_with_overriding_flags(OverridingType overriding)
-        {
-            var f  = new CsFile();
-            var ns = f.GetOrCreateNamespace("My123");
-            var cs = ns.GetOrCreateClass((CsType)"MyClass");
-            cs.AddConstructor().Overriding = overriding;
-            Assert.Throws<Exception>(() => { f.GetCode(); });
-        }
-
-        [Fact]
-        public void T09_Should_binary_operator()
-        {
-            const string exp = @"// ReSharper disable All
+    [Fact]
+    public void T09_Should_binary_operator()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -190,21 +190,21 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                var m = cs.AddMethod("+", (CsType)"Bla");
-                m.AddParam("left", (CsType)"Bla");
-                m.AddParam("rigth", (CsType)"Bla");
-                m.WithBody("return new Bla(left.Value + right.Value);");
-            });
-            Assert.Equal(exp, code);
-        }
-
-
-        [Fact]
-        public void T10a_Should_create_expression_body_method()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+            var m = cs.AddMethod("+", (CsType)"Bla");
+            m.AddParam("left", (CsType)"Bla");
+            m.AddParam("rigth", (CsType)"Bla");
+            m.WithBody("return new Bla(left.Value + right.Value);");
+        });
+        Assert.Equal(exp, code);
+    }
+
+
+    [Fact]
+    public void T10a_Should_create_expression_body_method()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -214,20 +214,20 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-
-                cs.Formatting = cs.Formatting.With(CodeFormattingFeatures.ExpressionBody);
-                var m = cs.AddMethod("Bla", CsType.Void)
-                    .WithBodyAsExpression("SetSomeValue()");
-            });
-            Assert.Equal(exp, code);
-        }
-
-        [Fact]
-        public void T10b_Should_create_expression_body_method()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+
+            cs.Formatting = cs.Formatting.With(CodeFormattingFeatures.ExpressionBody);
+            var m = cs.AddMethod("Bla", CsType.Void)
+                .WithBodyAsExpression("SetSomeValue()");
+        });
+        Assert.Equal(exp, code);
+    }
+
+    [Fact]
+    public void T10b_Should_create_expression_body_method()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -240,18 +240,18 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                cs.AddMethod("Bla", CsType.Void)
-                    .WithBodyAsExpression("SetSomeValue()");
-            });
-            Assert.Equal(exp, code);
-        }
-
-        [Fact]
-        public void T10c_Should_create_expression_body_method()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+            cs.AddMethod("Bla", CsType.Void)
+                .WithBodyAsExpression("SetSomeValue()");
+        });
+        Assert.Equal(exp, code);
+    }
+
+    [Fact]
+    public void T10c_Should_create_expression_body_method()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -264,18 +264,18 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                cs.AddMethod("Bla", CsType.Int32)
-                    .WithBodyAsExpression("SetSomeValue()");
-            });
-            Assert.Equal(exp, code);
-        }
-        
-        [Fact]
-        public void T11c_Should_add_two_lines_comment()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+            cs.AddMethod("Bla", CsType.Int32)
+                .WithBodyAsExpression("SetSomeValue()");
+        });
+        Assert.Equal(exp, code);
+    }
+        
+    [Fact]
+    public void T11c_Should_add_two_lines_comment()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -292,20 +292,20 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                var m = cs.AddMethod("Bla", CsType.Int32)
-                    .WithBodyAsExpression("SetSomeValue()");
-                m.AddComment("first line");
-                m.AddComment("second line");
-            });
-            Assert.Equal(exp, code);
-        }
-        
-        [Fact]
-        public void T11c_Should_add_comment()
+        var code = TestCode(cs =>
         {
-            const string exp = @"// ReSharper disable All
+            var m = cs.AddMethod("Bla", CsType.Int32)
+                .WithBodyAsExpression("SetSomeValue()");
+            m.AddComment("first line");
+            m.AddComment("second line");
+        });
+        Assert.Equal(exp, code);
+    }
+        
+    [Fact]
+    public void T11c_Should_add_comment()
+    {
+        const string exp = @"// ReSharper disable All
 namespace My123
 {
     public class MyClass
@@ -319,14 +319,39 @@ namespace My123
     }
 }
 ";
-            var code = TestCode(cs =>
-            {
-                var m = cs.AddMethod("Bla", CsType.Int32)
-                    .WithBodyAsExpression("SetSomeValue()");
-                m.AddComment("one line");
-            });
-            Assert.Equal(exp, code);
-        }
+        var code = TestCode(cs =>
+        {
+            var m = cs.AddMethod("Bla", CsType.Int32)
+                .WithBodyAsExpression("SetSomeValue()");
+            m.AddComment("one line");
+        });
+        Assert.Equal(exp, code);
     }
-    
+
+    partial void Q();
+          
+    [Fact]
+    public void T12_Should_create_partial_method()
+    {
+        Q();
+        const string exp = @"
+// ReSharper disable All
+namespace My123
+{
+    public class MyClass
+    {
+        public partial void Bla();
+
+    }
+}
+
+";
+        var code = TestCode(cs =>
+        {
+            var m = cs.AddMethod("Bla", CsType.Void)
+                .WithBodyAsExpression("SetSomeValue()");
+            m.IsPartial = true;
+        });
+        Assert.Equal(exp.Trim(), code.Trim());
+    }
 }

@@ -82,7 +82,7 @@ internal sealed class CsMethodWriter
     {
         var resultType = ResultType.AsString(_allowReferenceNullable);
         var a                   = new List<string>();
-        if (Name == CsMethod.Implicit || Name == CsMethod.Explicit)
+        if (Name is CsMethod.Implicit or CsMethod.Explicit)
         {
             //  public static implicit operator double(Force src)
             if (Visibility != Visibilities.InterfaceDefault)
@@ -105,17 +105,6 @@ internal sealed class CsMethodWriter
             a.Add("operator");
             a.Add(Name);
             return a.ToArray();
-        }
-
-        bool EmitVisibility()
-        {
-            if (Visibility == Visibilities.InterfaceDefault)
-                return false;
-            if (Kind == MethodKind.Finalizer)
-                return false;
-            if (Kind == MethodKind.Constructor)
-                return !IsStatic;
-            return !inInterface;
         }
 
         if (EmitVisibility())
@@ -142,13 +131,33 @@ internal sealed class CsMethodWriter
                         throw new ArgumentOutOfRangeException();
                 }
 
-            if (_method.IsAsync)
+            if (_method.IsPartial)
+            {
+                if (_method.IsAsync)
+                    throw new Exception("Partial method can't be async");
+                a.Add("partial");
+                if (!ResultType.IsVoid)
+                    throw new Exception("Partial method can only return void");
+            }
+            else if (_method.IsAsync)
                 a.Add("async");
+
             a.Add(resultType);
         }
 
         a.Add(Name);
         return a.ToArray();
+
+        bool EmitVisibility()
+        {
+            if (Visibility == Visibilities.InterfaceDefault)
+                return false;
+            if (Kind == MethodKind.Finalizer)
+                return false;
+            if (Kind == MethodKind.Constructor)
+                return !IsStatic;
+            return !inInterface;
+        }
     }
 
     /// <summary>
@@ -190,6 +199,12 @@ internal sealed class CsMethodWriter
             }
 
             if (Overriding == OverridingType.Abstract && Kind == MethodKind.Normal)
+            {
+                writer.WriteLine(mDefinition + ";");
+                return;
+            }
+
+            if (_method.IsPartial)
             {
                 writer.WriteLine(mDefinition + ";");
                 return;
