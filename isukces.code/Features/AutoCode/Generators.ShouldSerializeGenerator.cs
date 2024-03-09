@@ -49,7 +49,7 @@ public partial class Generators
             if (!string.IsNullOrEmpty(template))
             {
                 var typeName = Class.GetTypeName(pi.PropertyType);
-                return string.Format(template, pi.Name, typeName);
+                return string.Format(template, pi.Name, typeName.Declaration);
             }
 
             var message = $"Unable to get condition for property {pi.Name} declared in {pi.DeclaringType}, property type {pi.PropertyType} .";

@@ -190,7 +190,7 @@ public partial class Generators
             {
 
                 var ft  = typeof(Lazy<>).MakeGenericType(t);
-                var ftn = Class.GetTypeName(ft);
+                var ftn = Class.GetTypeName(ft).Declaration;
                 return new AssignStrategy
                 {
                     FieldType = ft,
@@ -207,7 +207,7 @@ public partial class Generators
                 .IsValueType)
             {
                 var ft  = typeof(Tuple<>).MakeGenericType(t);
-                var ftn = Class.GetTypeName(ft);
+                var ftn = Class.GetTypeName(ft).Declaration;
                 return new AssignStrategy
                 {
                     FieldType = ft,
@@ -255,7 +255,9 @@ public partial class Generators
             if (useSystemLazy)
             {
                 f.IsReadOnly = true;
-                var init = $"new {Class.GetTypeName(assignS.FieldType)}({mi.Name})";
+                var typeName = Class.GetTypeName(assignS.FieldType);
+                var init     = typeName.New(mi.Name);
+                //var init     = $"new {typeName.Declaration}({mi.Name})";
                 if (mi.IsMemberStatic())
                     f.ConstValue = init;
                 else
@@ -278,9 +280,9 @@ public partial class Generators
                         .WithConstValue(msg.CsEncode()).IsConst = true;
                 }
 
-                var exception = Class.GetTypeName<Exception>();
+                var exception = Class.GetTypeName<Exception>().New(ErrorMessageConstName);
                 var cw = new CsCodeWriter()
-                    .WriteLine($"if (ReferenceEquals({fieldName}, null)) throw new {exception}({ErrorMessageConstName});")
+                    .WriteLine($"if (ReferenceEquals({fieldName}, null)) throw {exception};")
                     .WriteLine($"return {fieldName}.Value;");
                 code = cw.Code;
             }

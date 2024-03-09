@@ -245,26 +245,27 @@ public partial class EqualityFeatureImplementer
 
     private void WriteEqualsWithObject()
     {
-        var gettype = $"{nameof(GetType)}()";
+        var gettype     = $"{nameof(GetType)}()";
+        var myTypeName = MyTypeName.Declaration;
         if (_type.GetTypeInfo().IsSealed)
-            gettype = string.Format("typeof({0})", MyTypeName);
+            gettype = string.Format("typeof({0})", myTypeName);
         var cw = new CsCodeWriter();
         cw.WriteLine($"if ({OtherArgName} is null) return false;");
         if (CanBeNull)
         {
             cw.WriteLine($"if (ReferenceEquals(this, {OtherArgName})) return true;");
-            cw.WriteLine($"return {OtherArgName} is {MyTypeName} {OtherArgName}Casted && Equals({OtherArgName}Casted);");
+            cw.WriteLine($"return {OtherArgName} is {myTypeName} {OtherArgName}Casted && Equals({OtherArgName}Casted);");
         }
         else
         {
             cw.WriteLine($"if ({OtherArgName}.GetType() != {gettype}) return false;");
-            cw.WriteLine($"return Equals(({MyTypeName}){OtherArgName});");
+            cw.WriteLine($"return Equals(({myTypeName}){OtherArgName});");
         }
 
         var m = _class.AddMethod("Equals", CsType.Bool)
             .WithOverride()
             .WithBody(cw);
-        m.AddParam(OtherArgName, CsType.Bool.WithReferenceNullable());
+        m.AddParam(OtherArgName, CsType.ObjectNullable);
     }
 
     private void WriteGetHashCode()

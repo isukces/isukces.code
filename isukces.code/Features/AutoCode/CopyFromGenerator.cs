@@ -82,7 +82,8 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
                 writer.DecIndent();
                 */
 
-            var arrayCopy = $"{res.GetTypeName<Array>()}.{nameof(Array.Copy)}";
+            //var arrayCopy = $"{res.GetTypeName<Array>().Declaration}.{nameof(Array.Copy)}";
+            var arrayCopy = res.GetTypeName<Array>().GetMemberCode(nameof(Array.Copy));
             writer.WriteLine($"{arrayCopy}({source}, 0, {target}, 0, {source}.Length);");
             writer.WriteLine($"{wm} = {target};");
         }
@@ -154,7 +155,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             {
                 var typename1    = resolver.GetTypeName<CopyPropertyValueArgs>();
                 var typenameDot2 = at.Type != Type ? resolver.GetTypeName(at.Type) + "." : "";
-                var arg          = $"new {typename1}(source, this, nameof({pi.Name}))";
+                var arg          = typename1.New($"source, this, nameof({pi.Name})");
                 var c            = $"{typenameDot2}{at.MethodName}({arg});";
                 writer.WriteLine(c);
                 return;
@@ -169,7 +170,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             if (!pi.CanWrite || !pi.CanRead)
                 return;
 
-            writer.WriteLine("{0} = source.{0}; // {1}", pi.Name, resolver.GetTypeName(pi.PropertyType));
+            writer.WriteLine("{0} = source.{0}; // {1}", pi.Name, resolver.GetTypeName(pi.PropertyType).Modern);
             return;
         }
 
@@ -288,9 +289,9 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             {
                 var castTypeName = resolver.GetTypeName(pi.PropertyType);
                 if (pi.PropertyType.IsExplicityImplementation<ICloneable>(nameof(ICloneable.Clone)))
-                    writer.WriteLine($"{pi.Name} = ({castTypeName})((ICloneable)source.{pi.Name})?.Clone();");
+                    writer.WriteLine($"{pi.Name} = ({castTypeName.Declaration})((ICloneable)source.{pi.Name})?.Clone();");
                 else
-                    writer.WriteLine($"{pi.Name} = ({castTypeName})source.{pi.Name}?.Clone();");
+                    writer.WriteLine($"{pi.Name} = ({castTypeName.Declaration})source.{pi.Name}?.Clone();");
 
                 return;
             }

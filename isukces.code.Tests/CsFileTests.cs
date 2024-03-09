@@ -35,6 +35,8 @@ namespace Bla
 ";
         Assert.Equal(expected.Trim(), w.Code.Trim());
     }
+    
+    
     [Fact]
     public void T02_ShouldAddNullableDisabled()
     {

@@ -79,7 +79,6 @@ namespace iSukces.Code.Interfaces
 #if AutoCloseText
             opening[src.Indent] = x;
 #endif
-            // Writeln(x + " " + LangInfo.OpenText);
             src.WriteLine(x);
             src.WriteLine(src.LangInfo.OpenText);
             src.Indent++;

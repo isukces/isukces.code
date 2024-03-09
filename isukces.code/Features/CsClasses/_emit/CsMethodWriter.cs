@@ -10,11 +10,11 @@ internal sealed class CsMethodWriter
 {
     public CsMethodWriter(CsMethod method, bool allowReferenceNullable)
     {
-        _method                      = method;
+        _method                 = method;
         _allowReferenceNullable = allowReferenceNullable;
     }
 
-    private  string FormatMethodParameter(CsMethodParameter mp)
+    private static string FormatMethodParameter(CsMethodParameter mp, bool allowReferenceNullable)
     {
         var sb = new StringBuilder();
         if (mp.Attributes.Any())
@@ -35,10 +35,18 @@ internal sealed class CsMethodWriter
                 break;
         }
 
-        sb.Append($"{mp.Type.GetTypeNameOrThrowIfVoid(_allowReferenceNullable)} {mp.Name}");
+        sb.Append($"{mp.Type.GetTypeNameOrThrowIfVoid(allowReferenceNullable)} {mp.Name}");
         if (!string.IsNullOrEmpty(mp.ConstValue))
             sb.Append(GlobalSettings.AssignEqual + mp.ConstValue);
         return sb.ToString();
+    }
+
+    public static string FormatParameters(IReadOnlyList<CsMethodParameter> primaryConstructorArguments, bool allowReferenceNullable)
+    {
+        var query = primaryConstructorArguments
+            .Select(a => FormatMethodParameter(a, allowReferenceNullable));
+        var arguments = query.CommaJoin();
+        return arguments.Parentheses();
     }
 
     private void Check()
@@ -67,21 +75,13 @@ internal sealed class CsMethodWriter
                 throw new Exception("Constructor nor finalizer can't be " + Overriding);
     }
 
-    private string GetMethodDefinition(bool inInterface)
-    {
-        var query = from i in _method.Parameters
-            select FormatMethodParameter(i);
-        var mDefinition = string.Format("{0}{2}({1})",
-            string.Join(" ", GetMethodAttributes(inInterface)),
-            query.CommaJoin(),
-            _method.GenericArguments.GetTriangleBracketsInfo());
-        return mDefinition;
-    }
+    private string FormatMethodParameter(CsMethodParameter mp) 
+        => FormatMethodParameter(mp, _allowReferenceNullable);
 
     private string[] GetMethodAttributes(bool inInterface)
     {
         var resultType = ResultType.AsString(_allowReferenceNullable);
-        var a                   = new List<string>();
+        var a          = new List<string>();
         if (Name is CsMethod.Implicit or CsMethod.Explicit)
         {
             //  public static implicit operator double(Force src)
@@ -158,6 +158,15 @@ internal sealed class CsMethodWriter
                 return !IsStatic;
             return !inInterface;
         }
+    }
+
+    private string GetMethodDefinition(bool inInterface)
+    {
+        var arguments   = FormatParameters(_method.Parameters, _allowReferenceNullable);
+        var attributes  = string.Join(" ", GetMethodAttributes(inInterface));
+        var generics    = _method.GenericArguments.GetTriangleBracketsInfo();
+        var mDefinition = $"{attributes}{generics}{arguments}";
+        return mDefinition;
     }
 
     /// <summary>
@@ -250,7 +259,6 @@ internal sealed class CsMethodWriter
                 WriteMDefinition(writer);
                 writer.WriteLine(writer.LangInfo.OpenText);
                 writer.IncIndent().WriteLines(bodyLines.Lines).Close();
-
             }
 
             void WriteMDefinition(ICsCodeWriter xWriter)
@@ -282,6 +290,8 @@ internal sealed class CsMethodWriter
                 i.Description.XmlEncode());
     }
 
+    #region Properties
+
     private bool           IsStatic   => _method.IsStatic;
     private MethodKind     Kind       => _method.Kind;
     private OverridingType Overriding => _method.Overriding;
@@ -289,6 +299,12 @@ internal sealed class CsMethodWriter
     private string         Name       => _method.Name;
     private CsType         ResultType => _method.ResultType;
 
+    #endregion
+
+    #region Fields
+
     private readonly CsMethod _method;
     private readonly bool _allowReferenceNullable;
+
+    #endregion
 }

@@ -6,7 +6,7 @@ namespace iSukces.Code.Tests;
 
 public partial class CsMethodTest
 {
-    private static string TestCode(Action<CsClass> action)
+    public static string TestCode(Action<CsClass> action)
     {
         var f  = new CsFile();
         var ns = f.GetOrCreateNamespace("My123");

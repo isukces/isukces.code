@@ -313,6 +313,21 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
                     x.Add("partial");
                 x.Add("struct");
                 break;
+            
+            case CsNamespaceMemberKind.Record:
+                if (IsPartial)
+                    x.Add("partial");
+                x.Add("record");
+                break;
+            
+            
+            case CsNamespaceMemberKind.RecordStruct:
+                if (IsPartial)
+                    x.Add("partial");
+                x.Add("record struct");
+                break;
+            
+            
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -325,10 +340,10 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     {
         var w = new CsClassWriter(this);
         var c = _methods
-            .Where(i => i.Kind == MethodKind.Constructor || i.Kind == MethodKind.Finalizer)
+            .Where(i => i.Kind is MethodKind.Constructor or MethodKind.Finalizer)
             .OrderBy(a => a.Kind != MethodKind.Constructor)
             .ToArray();
-        if (!c.Any())
+        if (c.Length == 0)
             return addEmptyLineBeforeRegion;
         var m = c.Where(i => !i.IsStatic);
         addEmptyLineBeforeRegion = w.WriteMethods(writer, addEmptyLineBeforeRegion, m, "Constructors");
@@ -531,7 +546,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         writer.WriteComment(this);
         WriteSummary(writer, Description);
         writer.WriteAttributes(Attributes);
-        var def = string.Join(" ", DefAttributes());
+        var  def        = string.Join(" ", DefAttributes());
+        bool hasBody = true;
         {
             var dupa              = new HashSet<CsType>();
             var baseAndInterfaces = new List<CsType>();
@@ -548,25 +564,51 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
                     baseAndInterfaces.Add(interfaceName);
             }
 
-            if (baseAndInterfaces.Any())
+            // public sealed class CsImplicitConstructor(IReadOnlyList<CsMethodParameter> arguments)
+            if (PrimaryConstructor is not null)
+            {
+                var allowReferenceNullable = AllowReferenceNullable();
+                def += CsMethodWriter.FormatParameters(PrimaryConstructor.Arguments, allowReferenceNullable);
+            }
+
+            if (baseAndInterfaces.Count != 0)
                 def += " : " + baseAndInterfaces
                     .Select(a => a.Declaration)
                     .CommaJoin();
+
+            if (Kind is CsNamespaceMemberKind.Record or CsNamespaceMemberKind.RecordStruct)
+            {
+                hasBody = _properties.Count != 0
+                          || _fields.Count != 0
+                          || _methods.Count != 0
+                          || _events.Count != 0
+                          || _nestedClasses.Count != 0;
+
+                if (!hasBody)
+                {
+                    def += ";";
+                    writer.WriteLine(def);
+                }
+            }
         }
-        writer.Open(def);
-        // Constructors
-        var addEmptyLineBeforeRegion = Emit_constructors(writer, false);
-        // Methods
-        addEmptyLineBeforeRegion = Emit_methods(writer, addEmptyLineBeforeRegion);
-        //Properties
-        addEmptyLineBeforeRegion = Emit_properties(writer, addEmptyLineBeforeRegion);
-        // Fields
-        addEmptyLineBeforeRegion = Emit_fields(writer, addEmptyLineBeforeRegion, config);
-        // Events
-        addEmptyLineBeforeRegion = Emit_events(writer, addEmptyLineBeforeRegion);
-        // Nested
-        Emit_nested(writer, addEmptyLineBeforeRegion, config);
-        writer.Close();
+        if (hasBody)
+        {
+            writer.Open(def);
+            // Constructors
+            var addEmptyLineBeforeRegion = Emit_constructors(writer, false);
+            // Methods
+            addEmptyLineBeforeRegion = Emit_methods(writer, addEmptyLineBeforeRegion);
+            //Properties
+            addEmptyLineBeforeRegion = Emit_properties(writer, addEmptyLineBeforeRegion);
+            // Fields
+            addEmptyLineBeforeRegion = Emit_fields(writer, addEmptyLineBeforeRegion, config);
+            // Events
+            addEmptyLineBeforeRegion = Emit_events(writer, addEmptyLineBeforeRegion);
+            // Nested
+            Emit_nested(writer, addEmptyLineBeforeRegion, config);
+            writer.Close();
+        }
+        
         writer.CloseCompilerIf(CompilerDirective);
     }
 
@@ -703,4 +745,6 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     private List<CsClassField> _fields = new();
 
     #endregion
+    
+    [CanBeNull] public CsPrimaryConstructor PrimaryConstructor { get; set; }
 }

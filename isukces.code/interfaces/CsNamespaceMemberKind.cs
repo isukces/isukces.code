@@ -1,9 +1,11 @@
-namespace iSukces.Code.Interfaces
+namespace iSukces.Code.Interfaces;
+
+public enum CsNamespaceMemberKind
 {
-    public enum CsNamespaceMemberKind
-    {
-        Class,
-        Interface,
-        Struct
-    }
+    Class,
+    Interface,
+    Struct,
+
+    Record,
+    RecordStruct,
 }

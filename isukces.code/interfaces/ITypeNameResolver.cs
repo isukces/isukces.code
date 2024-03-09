@@ -32,15 +32,15 @@ public static class TypeToNameResolverExtensions
         where T : Enum
     {
         var c      = resolver.GetTypeName<T>();
-        var value2 = c + "." + value;
+        var value2 = c.GetMemberCode(value.ToString());
         return value2;
     }
 
     public static string GetMemeberName(this ITypeNameResolver resolver, Type type, string instanceName) =>
-        resolver.GetTypeName(type) + "." + instanceName;
+        resolver.GetTypeName(type).GetMemberCode(instanceName);
 
     public static string GetMemeberName<T>(this ITypeNameResolver resolver, string instanceName) =>
-        resolver.GetTypeName<T>() + "." + instanceName;
+        resolver.GetTypeName<T>().GetMemberCode(instanceName);
 
     public static CsType GetTypeName<T>(this ITypeNameResolver resolver) => resolver.GetTypeName(typeof(T));
 
