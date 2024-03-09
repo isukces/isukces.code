@@ -19,7 +19,7 @@ public sealed class CsFileTests
         {
             Nullable = FileNullableOption.LocalEnabled
         };
-        file.GetOrCreateClass("Bla", "ClassName");
+        file.GetOrCreateClass("Bla", (CsType)"ClassName");
         ICsCodeWriter w = new CsCodeWriter();
         file.MakeCode(w);
         var newExpected = Encode(w.Code);
@@ -42,7 +42,7 @@ namespace Bla
         {
             Nullable = FileNullableOption.LocalDisabled
         };
-        file.GetOrCreateClass("Bla", "ClassName");
+        file.GetOrCreateClass("Bla", (CsType)"ClassName");
         ICsCodeWriter w = new CsCodeWriter();
         file.MakeCode(w);
         var newExpected = Encode(w.Code);

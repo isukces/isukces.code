@@ -14,7 +14,7 @@ namespace iSukces.Code.AutoCode
             var method = cl.Methods.FirstOrDefault(a => a.Name == AutoCodeInitMethodName);
 
             if (method is null)
-                method = cl.AddMethod(AutoCodeInitMethodName, "void")
+                method = cl.AddMethod(AutoCodeInitMethodName, CsType.Void)
                     .WithVisibility(Visibilities.Private);
 
             method.Body += "\r\n" + codeLine;
@@ -51,7 +51,7 @@ namespace iSukces.Code.AutoCode
         public static MyStruct DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
         {
             var comparer     = typeof(Comparer<>).MakeGenericType(type);
-            var comparerName = resolver.TypeName(comparer);
+            var comparerName = resolver.GetTypeName(comparer).Declaration;
             return new MyStruct("{0}.Compare", $"{comparerName}.Default");
         }
 
@@ -70,28 +70,27 @@ namespace iSukces.Code.AutoCode
             throw new NotSupportedException(mi.GetType().ToString());
         }
 
-        public static string GetTypeName(this INamespaceContainer container, Type type)
+        public static CsType GetTypeName(this INamespaceContainer container, Type type)
         {
             //todo: Generic types
             if (type == null)
-                return null;
+                return CsType.Void;
             if (type.IsArray)
             {
                 var arrayRank = type.GetArrayRank();
                 var st        = GetTypeName(container, type.GetElementType());
-                if (arrayRank < 2)
-                    return st + "[]";
-                return string.Format("{0}[{1}]", st, new string(',', arrayRank - 1));
+                return st.MakeArray(arrayRank);
             }
 
             var simple = type.SimpleTypeName();
             if (!string.IsNullOrEmpty(simple))
-                return simple;
+                return new CsType(simple);
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (type.DeclaringType != null)
-                return GetTypeName(container, type.DeclaringType) + "." + type.Name;
+                return GetTypeName(container, type.DeclaringType).AppendBase("." + type.Name);
 
-            string fullName;
+            var    generics = Array.Empty<CsType>();
+            string mainPart;
             {
                 var w = new ReflectionTypeWrapper(type);
                 if (w.IsGenericType)
@@ -99,37 +98,47 @@ namespace iSukces.Code.AutoCode
                     if (w.IsGenericTypeDefinition)
                     {
                         var args     = w.GetGenericArguments();
-                        var args2    = args.Select(a => a.Name).CommaJoin().TriangleBrackets();
-                        var mainPart = type.FullName.Split('`')[0];
-                        fullName = mainPart + args2;
+                        generics = args.Select(a => (CsType)a.Name).ToArray();
+                        //var args2    = args.Select(a => a.Name).CommaJoin().TriangleBrackets();
+                        mainPart = type.FullName!.Split('`')[0];
+                        // mainPart = mainPart + args2;
                     }
                     else
                     {
                         {
                             var nullable = w.UnwrapNullable(true);
                             if (nullable != null)
-                                return GetTypeName(container, nullable) + "?";
+                            {
+                                var n1 = GetTypeName(container, nullable);
+                                n1.Nullable = NullableKind.ValueNullable;
+                                return n1;
+                            }
                         }
                         var gt       = type.GetGenericTypeDefinition();
-                        var mainPart = gt.FullName.Split('`')[0];
+                        mainPart = gt.FullName!.Split('`')[0];
                         var args     = w.GetGenericArguments();
-                        
-                        var args2 = args.Select(a => GetTypeName(container, a))
-                            .CommaJoin()
-                            .TriangleBrackets();
-                        fullName = mainPart + args2;
+
+                        generics = args.Select(a => GetTypeName(container, a))
+                            .ToArray();
+                        /*
+                        .CommaJoin()
+                        .TriangleBrackets();
+                    fullName = mainPart + args2;
+                */
                     }
                 }
                 else
                 {
-                    fullName = type.FullName;
+                    mainPart = type.FullName!;
                 }
             }
-            var typeNamespace = type.Namespace;
+            var typeNamespace = type.Namespace ?? "";
             var canCut        = container?.IsKnownNamespace(typeNamespace) ?? false;
-            return canCut
-                ? fullName.Substring(typeNamespace.Length + 1)
-                : fullName;
+            var result = canCut 
+                ? new CsType(mainPart[(typeNamespace.Length + 1)..]) 
+                : new CsType(mainPart);
+            result.GenericParamaters = generics;
+            return result;
         }
 
         public static string GetWriteMemeberName(PropertyInfo pi)

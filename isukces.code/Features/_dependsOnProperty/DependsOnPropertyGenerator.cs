@@ -76,7 +76,7 @@ namespace iSukces.Code
                 {
                     if (constNamesByValue.TryGetValue(value, out var previousConstName))
                     {
-                        Class.AddConst(constName, "string", previousConstName);
+                        Class.AddConst(constName, CsType.String, previousConstName);
                     }
                     else
                     {
@@ -175,11 +175,11 @@ namespace iSukces.Code
             var at = CsAttribute.Make<MethodImplAttribute>(myClass)
                 .WithArgumentCode(myClass.GetEnumValueCode(MethodImplOptions.AggressiveInlining));
 
-            myClass.AddMethod(GetDependentPropertiesMethodName, "string")
+            myClass.AddMethod(GetDependentPropertiesMethodName, CsType.String)
                 .WithVisibility(Visibilities.Private)
                 .WithStatic()
                 .WithBody(wr)
-                .WithParameter(new CsMethodParameter("propertyName", "string"))
+                .WithParameter(new CsMethodParameter("propertyName", CsType.String))
                 .WithAttributeFromName(at);
         }
 

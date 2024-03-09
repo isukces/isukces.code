@@ -41,7 +41,7 @@ namespace iSukces.Code.Interfaces
                 src.WriteLine();
         }
 
-        [Obsolete("use just Close method")]
+        [Obsolete("use just Close method", GlobalSettings.WarnObsolete)]
         public static void CloseBrackets(this ICodeWriter src)
         {
             src.DecIndent();
@@ -113,7 +113,7 @@ namespace iSukces.Code.Interfaces
             return obj;
         }
 
-        [Obsolete]
+        [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
         public static T WithOpen<T>(this T obj, string text)
             where T : ICodeWriter
         {
@@ -164,6 +164,7 @@ namespace iSukces.Code.Interfaces
         }
 
 
+        [StringFormatMethod("format")]
         public static T WriteLine<T>(this T src, string format, params object[] args)
             where T : ICodeWriter
         {

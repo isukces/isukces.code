@@ -39,19 +39,23 @@ namespace iSukces.Code.Irony
                     throw new ArgumentException("propertyName is empty");
 
                 var w            = _cfg.GetAstTypesInfoDelegate(el)?.Invoke(_dataClass);
-                var propertyType = w?.DataType;
-                if (string.IsNullOrEmpty(propertyType))
+                var propertyType = w?.DataType ?? default;
+                if (propertyType.IsVoid)
                     throw new Exception(el + " has no data type");
+#if IGNORECSTYPE
+                throw new NotImplementedException();
+#else
                 propertyType = _dataClass.ReduceTypenameIfPossible(propertyType);
                 if (collection)
                     propertyType = MakeList(_dataClass, propertyType, typeof(IReadOnlyList<>));
 
                 ProcessProperty(_dataClass.AddProperty(propertyName, propertyType), true);
+#endif
             }
 
             private void AddToString(string expression)
             {
-                _dataClass.AddMethod("ToString", "string")
+                _dataClass.AddMethod("ToString", CsType.String)
                     .WithOverride()
                     .WithVisibility(Visibilities.Public)
                     .WithBodyAsExpression(expression);
@@ -61,8 +65,8 @@ namespace iSukces.Code.Irony
             {
                 if (!_token.DataClass.CreateAutoCode)
                     return;
-                var fullClassName = GetFileLevelTypeNameData(_token.DataClass.Provider)?.Name;
-                if (string.IsNullOrEmpty(fullClassName))
+                var fullClassName = GetFileLevelTypeNameData(_token.DataClass.Provider)?.Name ?? default;
+                if (fullClassName.IsVoid)
                     return;
                 _dataClass = _context
                     .GetOrCreateClass(fullClassName, CsNamespaceMemberKind.Class)
@@ -126,6 +130,9 @@ namespace iSukces.Code.Irony
 
             private void Process_Alternative(RuleBuilder.Alternative rule)
             {
+#if IGNORECSTYPE
+                throw new NotImplementedException();
+#else
                 var propertyName = "TmpValue";
                 var p            = ProcessProperty(_dataClass.AddProperty(propertyName, "object"), false);
                 var alts         = rule.GetAlternatives();
@@ -139,6 +146,7 @@ namespace iSukces.Code.Irony
                 }
 
                 AddToString($"{propertyName}?.ToString() ?? string.Empty");
+#endif
             }
 
             private void Process_PlusOrStar(RuleBuilder.PlusOrStar rule)

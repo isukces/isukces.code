@@ -25,7 +25,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     }
 
 
-    public CsClass GetOrCreateClass(string namespaceName, string className)
+    public CsClass GetOrCreateClass(string namespaceName, CsType className)
     {
         var ns = GetOrCreateNamespace(namespaceName);
         return ns.GetOrCreateClass(className);
@@ -48,27 +48,29 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         if (typeP.Type != null)
         {
             var type = typeP.Type;
-            var name = type.Name;
+            var name = new CsType(type.Name);
             var ti   = type.GetTypeInfo();
             if (ti.IsGenericType)
             {
                 if (!ti.IsGenericTypeDefinition)
                     throw new NotSupportedException();
-                name = name.Split('`')[0];
-                var                 genericArguments = ti.GetGenericArguments();
-                IEnumerable<string> nn               = genericArguments.Select(a => a.Name);
+                name = new CsType(type.Name.Split('`')[0]);
+                var genericArguments = ti.GetGenericArguments();
+                var nn               = genericArguments.Select(a => a.Name);
                 if (type.DeclaringType != null)
                 {
-                    var genericArguments2 = type.DeclaringType
+                    var genericArguments2 = type
+                        .DeclaringType
                         .GetTypeInfo()
                         .GetGenericArguments();
                     var xn = genericArguments2.Select(a => a.Name).ToHashSet();
                     nn = nn.Where(a => !xn.Contains(a));
                 }
 
-                var nn1 = nn.ToArray();
+                var nn1 = nn.Select(a => new CsType(a)).ToArray();
                 if (nn1.Any())
-                    name += nn1.CommaJoin().TriangleBrackets();
+                    name.GenericParamaters = nn1;
+                    //name += nn1.CommaJoin().TriangleBrackets();
             }
 
             if (type.DeclaringType == null)
@@ -108,12 +110,10 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         }
 
         {
-            var typeNameParts  = typeP.TypeName.Split('.');
-            var namespaceParts = typeNameParts.Take(typeNameParts.Length - 1).ToArray();
-            var namespaceName  = string.Join(".", namespaceParts);
-            var ns             = GetOrCreateNamespace(namespaceName);
+            var (namespaceName, shortClassName) = typeP.ExtractNamespace();
+            var ns = GetOrCreateNamespace(namespaceName);
 
-            var name   = typeNameParts.Last();
+            var name   = new CsType(shortClassName);
             var result = ns.Classes.FirstOrDefault(aa => aa.Name == name);
             if (result != null)
             {
@@ -146,7 +146,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         return result;
     }
 
-    public string GetTypeName(Type type) => GeneratorsHelper.GetTypeName(this, type);
+    public CsType GetTypeName(Type type) => GeneratorsHelper.GetTypeName(this, type);
 
     public bool IsKnownNamespace(string namespaceName) => !string.IsNullOrEmpty(namespaceName) && _importNamespaces.Contains(namespaceName);
 
@@ -180,6 +180,12 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         var fileNamespaces = classByNamespace.Keys.Union(enumByNamespace.Keys)
             .OrderBy(a => a).ToList();
 
+        var config = new CodeEmitConfig
+        {
+            AllowReferenceNullable = Nullable.IsNullableReferenceEnabled()
+        };
+
+
         foreach (var ns in fileNamespaces)
         {
             var addEmptyLine = false;
@@ -205,7 +211,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
                         if (addEmptyLine)
                             writer.EmptyLine();
                         addEmptyLine = true;
-                        writer.DoWithKeepingIndent(() => i.MakeCode(writer));
+                        writer.DoWithKeepingIndent(() => i.MakeCode(writer, config));
                     }
 
                 if (enumByNamespace.TryGetValue(ns, out var enumList))

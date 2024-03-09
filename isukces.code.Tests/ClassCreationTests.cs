@@ -3,19 +3,19 @@ using iSukces.Code;
 using iSukces.Code.AutoCode;
 using Xunit;
 
-namespace iSukces.Code.Tests
+namespace iSukces.Code.Tests;
+
+public class ClassCreationTests
 {
-    public class ClassCreationTests
+    [Fact]
+    public void T01_Should_create_class()
     {
-        [Fact]
-        public void T01_Should_create_class()
-        {
-            var c     = new CsFile();
-            var type  = TypeProvider.FromType(typeof(ParentGeneric<>.Nested));
-            var cache = new Dictionary<TypeProvider, CsClass>();
-            c.GetOrCreateClass(type);
-            var code = c.GetCode();
-            Assert.Equal(@"// ReSharper disable All
+        var c     = new CsFile();
+        var type  = TypeProvider.FromType(typeof(ParentGeneric<>.Nested));
+        var cache = new Dictionary<TypeProvider, CsClass>();
+        c.GetOrCreateClass(type);
+        var code = c.GetCode();
+        Assert.Equal(@"// ReSharper disable All
 namespace iSukces.Code.Tests
 {
     partial class ParentGeneric<T>
@@ -27,23 +27,23 @@ namespace iSukces.Code.Tests
     }
 }
 ", code, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true);
-        }
+    }
 
-        [Fact]
-        public void T02_Should_add_comment()
+    [Fact]
+    public void T02_Should_add_comment()
+    {
+        var c       = new CsFile();
+        var type    = TypeProvider.FromType(typeof(ParentGeneric<>.Nested));
+        var cache   = new Dictionary<TypeProvider, CsClass>();
+        var myClass = c.GetOrCreateClass(type);
+        myClass.AddComment("Line");
         {
-            var c     = new CsFile();
-            var type  = TypeProvider.FromType(typeof(ParentGeneric<>.Nested));
-            var cache = new Dictionary<TypeProvider, CsClass>();
-            var myClass = c.GetOrCreateClass(type);
-            myClass.AddComment("Line");
-            {
-                var p = myClass.AddProperty("Count", "int");
-                p.AddComment("line1");
-                p.AddComment("line2");
-            }
-            var code = c.GetCode();
-            Assert.Equal(@"// ReSharper disable All
+            var p = myClass.AddProperty("Count", CsType.Int32);
+            p.AddComment("line1");
+            p.AddComment("line2");
+        }
+        var code = c.GetCode();
+        Assert.Equal(@"// ReSharper disable All
 namespace iSukces.Code.Tests
 {
     partial class ParentGeneric<T>
@@ -62,13 +62,12 @@ namespace iSukces.Code.Tests
     }
 }
 ", code, ignoreLineEndingDifferences: true, ignoreWhiteSpaceDifferences: true);
-        }
     }
+}
 
-    internal class ParentGeneric<T>
+internal class ParentGeneric<T>
+{
+    public class Nested
     {
-        public class Nested
-        {
-        }
     }
 }

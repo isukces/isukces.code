@@ -4,14 +4,14 @@ namespace iSukces.Code
 {
     public struct NameAndTypeName
     {
-        public NameAndTypeName(string propName, string propertyTypeName)
+        public NameAndTypeName(string propName, CsType propertyTypeName)
         {
             PropName         = propName;
             PropertyTypeName = propertyTypeName;
         }
 
         public string PropName         { get;  } 
-        public string PropertyTypeName { get;  }
+        public CsType PropertyTypeName { get;  }
     }
     
     public struct NameAndType

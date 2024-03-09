@@ -11,7 +11,7 @@ namespace iSukces.Code.Tests.Serenity
         [Fact]
         public void T01()
         {
-            var a = new SerenityEntityBuilder("Sample", "Cloud", "Common");
+            var a = new SerenityEntityBuilder((CsType)"Sample", "Cloud", "Common");
             a.WithConnectionKey("Piotr")
                 .WithTableName("dbo.Table");
 

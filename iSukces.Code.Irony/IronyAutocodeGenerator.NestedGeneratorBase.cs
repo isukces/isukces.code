@@ -27,10 +27,14 @@ namespace iSukces.Code.Irony
                 return false;
             }
 
-            protected static string MakeList(CsClass cs, string propertyType, Type listType)
+            protected static string MakeList(CsClass cs, CsType propertyType, Type listType)
             {
+#if IGNORECSTYPE
+                throw new NotImplementedException();
+#else
                 var tmp = cs.GetTypeName(listType).Split('<')[0];
                 return $"{tmp}<{propertyType}>";
+#endif
             }
 
             protected static CsProperty ProcessProperty(CsProperty prop, bool readOnly)

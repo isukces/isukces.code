@@ -26,12 +26,12 @@ namespace iSukces.Code.Tests
         [Fact]
         public void T02_Should_Create_operator()
         {
-            var cl = new CsClass("Src1");
+            var cl = new CsClass((CsType)"Src1");
             cl.Kind = CsNamespaceMemberKind.Struct;
-            cl.AddMethod("*", "Result")
+            cl.AddMethod("*", (CsType)"Result")
                 .WithBodyAsExpression("new Result(left.Value * right.Value)")
-                .WithParameter("left", "Src1")
-                .WithParameter("right", "Src2");
+                .WithParameter("left", (CsType)"Src1")
+                .WithParameter("right", (CsType)"Src2");
             // odwrotny
 
             ICsCodeWriter w = new CsCodeWriter();
@@ -52,8 +52,8 @@ namespace iSukces.Code.Tests
         [Fact]
         public void T03_Should_Create_auto_property_with_initialisation()
         {
-            var cl = new CsClass("Src1");
-            var p  = cl.AddProperty("A", "int");
+            var cl = new CsClass((CsType)"Src1");
+            var p  = cl.AddProperty("A", CsType.Int32);
             p.MakeAutoImplementIfPossible = true;
             //p.ConstValue = "12";
             // odwrotny
@@ -83,14 +83,14 @@ namespace iSukces.Code.Tests
         [Fact]
         public void T04_Should_Create_interface()
         {
-            var cl = new CsClass("ITest")
+            var cl = new CsClass((CsType)"ITest")
             {
                 Kind = CsNamespaceMemberKind.Interface
             };
-            var m = cl.AddMethod("Count", "int")
+            var m = cl.AddMethod("Count", CsType.Int32)
                 .WithBody("return 12;");
 
-            var p = cl.AddProperty("A", "int");
+            var p = cl.AddProperty("A", CsType.Int32);
             p.MakeAutoImplementIfPossible = true;
             p.OwnGetter                   = "return 123;";
             //p.ConstValue = "12";
@@ -120,8 +120,8 @@ public interface ITest
         [Fact]
         public void T05_Should_generate_compiler_directive()
         {
-            var cl = new CsClass("Src1");
-            var p  = cl.AddProperty("A", "int");
+            var cl = new CsClass((CsType)"Src1");
+            var p  = cl.AddProperty("A", CsType.Int32);
             p.MakeAutoImplementIfPossible = true;
             cl.CompilerDirective          = "DEBUG";
 
@@ -147,7 +147,7 @@ public class Src1
             f.AddImportNamespace("System.Alpha");
             var ns = f.GetOrCreateNamespace("Custom.Beta");
             ns.AddImportNamespace("Custom.Private");
-            var c = ns.GetOrCreateClass("Gamma");
+            var c = ns.GetOrCreateClass((CsType)"Gamma");
 
             Assert.True(c.IsKnownNamespace("Custom.Beta"));
             Assert.True(c.IsKnownNamespace("System.Alpha"));

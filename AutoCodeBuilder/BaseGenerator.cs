@@ -61,7 +61,7 @@ namespace AutoCodeBuilder
                 .WithGeneratorClass(GetType());
 */
 
-            var m = cl.AddMethod(name, cl.TypeName(type))
+            var m = cl.AddMethod(name, cl.GetTypeName(type))
                 .WithBody(cf);
             /*
             if (cf is CsCodeWriter ex)

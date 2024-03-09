@@ -12,7 +12,9 @@ namespace EqualityGeneratorSample
     {
         private static CsExpression GetUniversal(IExpressionDelegateArgs input, string methodName)
         {
-            var comparerInstance = input.Resolver.GetTypeName(typeof(DateOnlyComparer));
+            var comparerInstance = input.Resolver
+                .GetTypeName(typeof(DateOnlyComparer))
+                .Declaration;
             return GeneratorsHelper.CallMethod(comparerInstance, methodName, input);
         }
 

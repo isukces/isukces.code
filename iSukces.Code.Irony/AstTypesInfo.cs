@@ -11,7 +11,7 @@ namespace iSukces.Code.Irony
         {
         }
 
-        public AstTypesInfo(string astType, string dataType, string nodeType)
+        public AstTypesInfo(CsType astType, CsType dataType, CsType nodeType)
         {
             AstType  = astType;
             DataType = dataType;
@@ -56,17 +56,17 @@ namespace iSukces.Code.Irony
         {
             return resolver =>
             {
-                string sh(FullTypeName x)
+                CsType sh(FullTypeName x)
                 {
-                    var xName = x?.Name;
-                    if (string.IsNullOrEmpty(xName))
-                        return null;
-                    var p = NamespaceAndName.Parse(xName);
+                    var xName = x?.Name ?? default;
+                    if (xName.IsVoid)
+                        return default;
+                    var p = NamespaceAndName.Parse(xName.Declaration);
                     if (string.IsNullOrEmpty(p.Namespace))
                         return xName;
                     if (resolver is INamespaceContainer c)
                         if (c.IsKnownNamespace(p.Namespace))
-                            return p.Name;
+                            return (CsType)p.Name;
 
                     return xName;
                 }
@@ -98,10 +98,10 @@ namespace iSukces.Code.Irony
             };
         }
 
-        public string AstType { get; set; }
+        public CsType AstType { get; set; }
 
-        public string DataType { get; set; }
-        public string NodeType { get; set; }
+        public CsType DataType { get; set; }
+        public CsType NodeType { get; set; }
 
         public Func<GetEvaluateExpressionInput, GetEvaluateExpressionOutput> GetEvaluateExpression { get; set; }
     }

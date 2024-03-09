@@ -10,14 +10,16 @@ namespace iSukces.Code.AutoCode
             private static void Single(CsClass csClass, Auto.ReactiveCommandAttribute attribute)
             {
                 // public ReactiveCommand<object> FullViewCommand { get; protected set; }
-                var p = csClass.AddProperty(attribute.Name + "Command",
-                    $"ReactiveCommand<{csClass.GetTypeName(attribute.ResultType)}>");
+                //var type = $"ReactiveCommand<{csClass.GetTypeName(attribute.ResultType)}>";
+                var type = new CsType("ReactiveCommand")
+                    .WithGenericParameter(csClass.GetTypeName(attribute.ResultType));
+                var p = csClass.AddProperty(attribute.Name + "Command", type);
                 p.MakeAutoImplementIfPossible = true;
                 p.Visibility                  = Visibilities.Public;
                 p.SetterVisibility            = attribute.SetterVisibility;
                 p.GetterVisibility            = attribute.GetterVisibility;
             }
-            
+
             protected override void GenerateInternal()
             {
                 var attributes = GetCustomAttributes<Auto.ReactiveCommandAttribute>(false);
@@ -27,8 +29,10 @@ namespace iSukces.Code.AutoCode
                 foreach (var attribute in attributes)
                     Single(csClass, attribute);
                 {
-                    var m = csClass.AddMethod("GetAllReactiveCommands", "IEnumerable< IReactiveCommand>", "");
-                    var c = new CsCodeWriter();
+                    var type = new CsType("IEnumerable")
+                        .WithGenericParameter((CsType)"IReactiveCommand");
+                    var m    = csClass.AddMethod("GetAllReactiveCommands", type, "");
+                    var c    = new CsCodeWriter();
                     foreach (var attribute in attributes)
                         c.WriteLine("yield return {0}Command;", attribute.Name);
                     m.Body = c.Code;

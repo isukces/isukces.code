@@ -43,6 +43,11 @@ internal static class PrvExtensions
     {
         return string.Join(GlobalSettings.CommaSeparator, args);
     }    
+    [Obsolete("Use select string", true)]
+    public static string CommaJoin(this IEnumerable<CsType> args)
+    {
+        return string.Join(GlobalSettings.CommaSeparator, args);
+    }    
     public static string CommaJoin<T>(this IEnumerable<T> strings)
     {
         return string.Join(GlobalSettings.CommaSeparator, strings);

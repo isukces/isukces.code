@@ -109,13 +109,13 @@ namespace iSukces.Code.Irony
         public string GetBaseClassAndInterfaces(IReadOnlyList<NonTerminalInfo> nonterminals,
             ITypeNameResolver resolver, string classNamespace)
         {
-            var baseClass = AstBaseClassTypeName?.GetTypeName(resolver, classNamespace)?.Name;
-            if (string.IsNullOrEmpty(baseClass))
+            var baseClass = AstBaseClassTypeName?.GetTypeName(resolver, classNamespace)?.Name ?? default;
+            if (baseClass.IsVoid)
                 throw new Exception("Empty base class");
-            var list = new List<string> {baseClass};
+            var list = new List<CsType> {baseClass};
             foreach (var i in nonterminals)
             {
-                if (!(i.Rule is RuleBuilder.ListAlternative al))
+                if (i.Rule is not RuleBuilder.ListAlternative al)
                     continue;
                 if (al.Contains(Name))
                 {

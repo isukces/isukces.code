@@ -5,7 +5,7 @@ namespace iSukces.Code
 {
     public static class IsukcesCodeReflectionExtensions
     {
-        [Obsolete("Use ReflectionTypeWrapper.UnwrapNullable(true)")]
+        [Obsolete("Use ReflectionTypeWrapper.UnwrapNullable(true)", GlobalSettings.WarnObsolete)]
         public static Type GetNullableType(this Type type)
         {
             return new ReflectionTypeWrapper(type).UnwrapNullable(true);

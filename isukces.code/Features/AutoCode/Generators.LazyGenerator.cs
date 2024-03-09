@@ -273,7 +273,7 @@ public partial class Generators
                 if (Class.Fields.All(a => a.Name != ErrorMessageConstName))
                 {
                     const string msg = $"Lazy not initialized. Call {GeneratorsHelper.AutoCodeInitMethodName} method in constructor.";
-                    Class.AddField(ErrorMessageConstName, "string")
+                    Class.AddField(ErrorMessageConstName, CsType.String)
                         .WithVisibility(Visibilities.Private)
                         .WithConstValue(msg.CsEncode()).IsConst = true;
                 }

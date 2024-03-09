@@ -10,7 +10,7 @@ namespace iSukces.Code.Tests
         {
             var f  = new CsFile();
             var ns = f.GetOrCreateNamespace("My123");
-            var cs = ns.GetOrCreateClass("MyClass");
+            var cs = ns.GetOrCreateClass((CsType)"MyClass");
             action(cs);
             var code = f.GetCode();
             return code;
@@ -33,7 +33,7 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                cs.AddMethod("Meth", (string)null)
+                cs.AddMethod("Meth", CsType.Void)
                     .WithVirtual();
             });
             Assert.Equal(exp, code);
@@ -55,7 +55,7 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                cs.AddMethod("Meth", (string)null)
+                cs.AddMethod("Meth", CsType.Void)
                     .WithAbstract();
             });
             Assert.Equal(exp, code);
@@ -79,7 +79,7 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                cs.AddMethod("Meth", (string)null)
+                cs.AddMethod("Meth", CsType.Void)
                     .WithOverride();
             });
             Assert.Equal(exp, code);
@@ -169,7 +169,7 @@ namespace My123
         {
             var f  = new CsFile();
             var ns = f.GetOrCreateNamespace("My123");
-            var cs = ns.GetOrCreateClass("MyClass");
+            var cs = ns.GetOrCreateClass((CsType)"MyClass");
             cs.AddConstructor().Overriding = overriding;
             Assert.Throws<Exception>(() => { f.GetCode(); });
         }
@@ -192,9 +192,9 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                var m = cs.AddMethod("+", "Bla");
-                m.AddParam("left", "Bla");
-                m.AddParam("rigth", "Bla");
+                var m = cs.AddMethod("+", (CsType)"Bla");
+                m.AddParam("left", (CsType)"Bla");
+                m.AddParam("rigth", (CsType)"Bla");
                 m.WithBody("return new Bla(left.Value + right.Value);");
             });
             Assert.Equal(exp, code);
@@ -218,7 +218,8 @@ namespace My123
             {
 
                 cs.Formatting = cs.Formatting.With(CodeFormattingFeatures.ExpressionBody);
-                var m                     = cs.AddMethod("Bla", "void").WithBodyAsExpression("SetSomeValue()");
+                var m = cs.AddMethod("Bla", CsType.Void)
+                    .WithBodyAsExpression("SetSomeValue()");
             });
             Assert.Equal(exp, code);
         }
@@ -241,7 +242,8 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                var m = cs.AddMethod("Bla", "void").WithBodyAsExpression("SetSomeValue()");
+                cs.AddMethod("Bla", CsType.Void)
+                    .WithBodyAsExpression("SetSomeValue()");
             });
             Assert.Equal(exp, code);
         }
@@ -264,7 +266,8 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                var m = cs.AddMethod("Bla", "int").WithBodyAsExpression("SetSomeValue()");
+                cs.AddMethod("Bla", CsType.Int32)
+                    .WithBodyAsExpression("SetSomeValue()");
             });
             Assert.Equal(exp, code);
         }
@@ -291,7 +294,8 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                var m = cs.AddMethod("Bla", "int").WithBodyAsExpression("SetSomeValue()");
+                var m = cs.AddMethod("Bla", CsType.Int32)
+                    .WithBodyAsExpression("SetSomeValue()");
                 m.AddComment("first line");
                 m.AddComment("second line");
             });
@@ -317,7 +321,8 @@ namespace My123
 ";
             var code = TestCode(cs =>
             {
-                var m = cs.AddMethod("Bla", "int").WithBodyAsExpression("SetSomeValue()");
+                var m = cs.AddMethod("Bla", CsType.Int32)
+                    .WithBodyAsExpression("SetSomeValue()");
                 m.AddComment("one line");
             });
             Assert.Equal(exp, code);

@@ -18,7 +18,7 @@ namespace Bitbrains.AmmyParser
                 .AsOptional(null, nameof(X.Number));
             yield return new AmmyGrammarAutogeneratorInfo(nameof(X.boolean))
             {
-                BaseClass = nameof(AstNode)
+                BaseClass = (CsType)nameof(AstNode)
             };
             
 
@@ -178,8 +178,8 @@ namespace Bitbrains.AmmyParser
                         var items = names.Select(a => "ToTerm(" + a.CsEncode() + ")");
                         var enums = new AmmyGrammarAutogeneratorInfo("ammy_bind_set_" + name + "_enum_values")
                         {
-                            BaseClass = nameof(EnumValueNode), 
-                            Rule = string.Join(" | ", items)
+                            BaseClass = new CsType(nameof(EnumValueNode)), 
+                            Rule      = string.Join(" | ", items)
                         };
                         yield return enums;
                         valueToken = enums.TerminalName;

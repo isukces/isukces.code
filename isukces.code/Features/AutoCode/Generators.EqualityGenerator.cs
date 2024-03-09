@@ -35,7 +35,7 @@ namespace iSukces.Code.AutoCode
                 {
                     var values = Enum.GetValues(stripped).Cast<int>().ToArray();
 
-                    var expr = CsExpression.TypeCast("int", propNameExpression);
+                    var expr = CsExpression.TypeCast(CsType.Int32, propNameExpression);
                     if (type != stripped)
                     {
                         //    expr = propNameExpression.Is("null")
@@ -43,7 +43,7 @@ namespace iSukces.Code.AutoCode
                         var c = 0;
                         if (values.Any())
                             c = values.Min();
-                        expr = CsExpression.TypeCast("int?", propNameExpression).Coalesce(c);
+                        expr = CsExpression.TypeCast(CsType.NullableInt32, propNameExpression).Coalesce(c);
                     }
 
                     // var qq = q is null ? 0 : (int)q.Value;
@@ -511,8 +511,8 @@ namespace iSukces.Code.AutoCode
             private PropertyOrFieldInfo[] _propsAll;
             private PropertyOrFieldInfo[] _propsForEqual;
             private Type _type;
-            
-            
+
+
             /// <summary>
             /// Do not check equality by properties marked with DependsOnPropertyAttribute
             /// </summary>

@@ -1,96 +1,89 @@
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
-namespace iSukces.Code.AutoCode
+namespace iSukces.Code.AutoCode;
+
+public partial class CsExpression
 {
-    public partial class CsExpression
+    public class Cast : CsExpression
     {
-        public class Cast : CsExpression
+        public Cast(CsType type, CsExpression castedExpression)
+            : base(CsOperatorPrecendence.UnaryTypecast)
         {
-            public Cast([NotNull] string type, CsExpression castedExpression)
-                : base(CsOperatorPrecendence.UnaryTypecast)
-            {
-                Type         = type;
-                CastedExpression = castedExpression;
-            }
-
-            [NotNull]
-            public string Type { get; }
-
-            public CsExpression CastedExpression { get; }
-
-            public override string Code
-            {
-                get
-                {
-                    var code = CastedExpression.GetCode(Precedence, ExpressionAppend.After);
-                    return $"({Type}){code}";
-                }
-            }
+            type.ThrowIfVoid();
+            Type             = type;
+            CastedExpression = castedExpression;
         }
 
-        public class Binary : CsExpression
+        public CsType Type { get; }
+
+        public CsExpression CastedExpression { get; }
+
+        public override string Code
         {
-            public Binary(CsExpression left, CsExpression right,
-                CsOperatorPrecendence precedence,
-                string operatorText)
-                : base(precedence)
+            get
             {
-                Left         = left;
-                Right        = right;
-                OperatorText = operatorText;
-                _reduced     = Reduce(left, right, precedence, operatorText);
+                var code = CastedExpression.GetCode(Precedence, ExpressionAppend.After);
+                return $"({Type.Declaration}){code}";
             }
+        }
+    }
 
-            private static CsExpression Reduce(CsExpression left, CsExpression right, CsOperatorPrecendence precedence,
-                string operatorText)
+    public class Binary : CsExpression
+    {
+        public Binary(CsExpression left, CsExpression right,
+            CsOperatorPrecendence precedence,
+            string operatorText)
+            : base(precedence)
+        {
+            Left         = left;
+            Right        = right;
+            OperatorText = operatorText;
+            _reduced     = Reduce(left, right, precedence, operatorText);
+        }
+
+        private static CsExpression Reduce(CsExpression left, CsExpression right, CsOperatorPrecendence precedence,
+            string operatorText)
+        {
+            var code1 = left.GetCode(precedence, ExpressionAppend.Before);
+            var code2 = right.GetCode(precedence, ExpressionAppend.After);
+            switch (operatorText)
             {
-                var code1 = left.GetCode(precedence, ExpressionAppend.Before);
-                var code2 = right.GetCode(precedence, ExpressionAppend.After);
-                switch (operatorText)
+                case "+" when left.Code == "0": return right;
+                case "+" when right.Code == "0": return left;
+                case "+":
                 {
-                    case "+" when left.Code == "0": return right;
-                    case "+" when right.Code == "0": return left;
-                    case "+":
-                    {
-                        if (right.Precedence == CsOperatorPrecendence.Additive)
-                            code2 = right.Code;
-                        break;
-                    }
-                    case "-" when right.Code == "0": return left;
+                    if (right.Precedence == CsOperatorPrecendence.Additive)
+                        code2 = right.Code;
+                    break;
+                }
+                case "-" when right.Code == "0": return left;
 
-                    case "*" when left.Code == "1": return right;
-                    case "*" when right.Code == "1": return left;
+                case "*" when left.Code == "1": return right;
+                case "*" when right.Code == "1": return left;
 
-                    case "*":
-                    {
-                        if (right.Precedence == CsOperatorPrecendence.Multiplicative)
-                            code2 = right.Code;
-                        break;
-                    }
-
-                    case "/" when right.Code == "1": return left;
+                case "*":
+                {
+                    if (right.Precedence == CsOperatorPrecendence.Multiplicative)
+                        code2 = right.Code;
+                    break;
                 }
 
-                return new CsExpression(code1 + " " + operatorText + " " + code2, precedence);
+                case "/" when right.Code == "1": return left;
             }
 
-
-            public override string Code
-            {
-                get { return _reduced.Code; }
-            }
-
-            public CsExpression Left         { get; }
-            public CsExpression Right        { get; }
-            public string       OperatorText { get; }
-
-            public override CsOperatorPrecendence Precedence
-            {
-                get { return _reduced.Precedence; }
-            }
-
-            private readonly CsExpression _reduced;
+            return new CsExpression(code1 + " " + operatorText + " " + code2, precedence);
         }
+
+
+        public override string Code => _reduced.Code;
+
+        public CsExpression Left         { get; }
+        public CsExpression Right        { get; }
+        public string       OperatorText { get; }
+
+        public override CsOperatorPrecendence Precedence => _reduced.Precedence;
+
+        private readonly CsExpression _reduced;
     }
 }

@@ -9,8 +9,8 @@ namespace iSukces.Code.Irony
         public FullTypeName GetTypeName(ITypeNameResolver resolver, string baseNamespace)
         {
             if (ClassName.StartsWith("."))
-                return new FullTypeName(baseNamespace + ClassName);
-            return new FullTypeName(ClassName);
+                return new FullTypeName((CsType)(baseNamespace + ClassName));
+            return new FullTypeName((CsType)ClassName);
         }
 
         public string ClassName { get; }

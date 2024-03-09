@@ -86,7 +86,8 @@ namespace iSukces.Code.Irony
                     i.AstBaseClassTypeName = new TypeNameProvider(Cfg.DefaultAstBaseClass);
 
             var fullClassName = Cfg.Names.GrammarType.FullName;
-            _grammarClass = context.GetOrCreateClass(fullClassName,
+            _grammarClass = context.GetOrCreateClass(
+                (CsType)fullClassName,
                 CsNamespaceMemberKind.Class);
             _grammarClass.WithBaseClass(_grammarClass.Owner.GetTypeName<InterpretedLanguageGrammar>());
             var initCode = Add_Fields()
@@ -224,7 +225,7 @@ namespace iSukces.Code.Irony
                 code.WriteLine($"NonGrammarTerminals.Add({Cfg.DelimitedComment.Name});");
 
             if (Cfg.Root != null) code.WriteLine("Root = " + Cfg.Root.Name.GetCode(_grammarClass) + ";");
-            _grammarClass.AddMethod("AutoInit", "void")
+            _grammarClass.AddMethod("AutoInit", CsType.Void)
                 .WithBody(code);
         }
 
@@ -277,7 +278,7 @@ namespace iSukces.Code.Irony
                     astClassNameSrc = i.AstClass.Provider;
                 else
                     astClassNameSrc = i.AstBaseClassTypeName;
-                var astClassName = astClassNameSrc.GetTypeName(_grammarClass, Cfg.Names.AstNamespace)?.Name;
+                var astClassName = astClassNameSrc.GetTypeName(_grammarClass, Cfg.Names.AstNamespace)?.Name ?? default;
 
                 /*
                 if (astClassName.StartsWith("."))
@@ -285,7 +286,7 @@ namespace iSukces.Code.Irony
                 */
                 var args = new CsArgumentsBuilder()
                     .AddValue(i.Name.Name);
-                var skip = string.IsNullOrEmpty(astClassName)
+                var skip = astClassName.IsVoid
                            || NestedGeneratorBase.SkipCreateClass(i);
                 if (!skip)
                     args.AddCode($"typeof({astClassName})");

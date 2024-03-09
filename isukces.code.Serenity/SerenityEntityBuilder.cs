@@ -11,7 +11,7 @@ namespace iSukces.Code.Serenity
 
     public class SerenityEntityBuilder
     {
-        public SerenityEntityBuilder(string baseName, string baseNamespace, string moduleName)
+        public SerenityEntityBuilder(CsType baseName, string baseNamespace, string moduleName)
         {
             BaseName      = baseName;
             BaseNamespace = baseNamespace;
@@ -72,10 +72,10 @@ namespace iSukces.Code.Serenity
             ns.AddImportNamespace(kns);
 
             {
-                var row = ns.GetOrCreateClass(BaseName + "Row")
-                    .WithBaseClass("Row");
-                var fields = row.GetOrCreateNested("RowFields")
-                    .WithBaseClass("RowFieldsBase");
+                var row = ns.GetOrCreateClass(BaseName.AppendBase("Row"))
+                    .WithBaseClass((CsType)"Row");
+                var fields = row.GetOrCreateNested((CsType)"RowFields")
+                    .WithBaseClass((CsType)"RowFieldsBase");
 
                 row.AddConstructor().BaseConstructorCall = "(Fields)";
                 row.AddField("Fields", fields.Name)
@@ -89,12 +89,12 @@ namespace iSukces.Code.Serenity
                 {
                     var types = SerenityTypesTriple.FromType(property.Type.Type);
                     
-                    var fieldType    = row.TypeName(types.FieldWrapped);
-                    var propertyType = row.TypeName(types.Facade);
+                    var fieldType    = row.GetTypeName(types.FieldWrapped).Declaration;
+                    var propertyType = row.GetTypeName(types.Facade);
                     var p            = row.AddProperty(property.Name, propertyType);
                     p.EmitField = false;
-                    p.WithOwnGetterAsExpression($"{Cast(fieldType, propertyType)}Fields.{property.Name}[this]");
-                    p.WithOwnSetterAsExpression($"Fields.{property.Name}[this] = {Cast(propertyType, fieldType)}value");
+                    p.WithOwnGetterAsExpression($"{Cast(fieldType, propertyType.Declaration)}Fields.{property.Name}[this]");
+                    p.WithOwnSetterAsExpression($"Fields.{property.Name}[this] = {Cast(propertyType.Declaration, fieldType)}value");
                     CopyAttributesAndReduceName(property.GetAllAttributes(), p, kns);
 
                     // var rowFieldType = property.RowFieldType;
@@ -103,8 +103,8 @@ namespace iSukces.Code.Serenity
 
                 if (IdRow != null)
                 {
-                    row.ImplementedInterfaces.Add("IIdRow");
-                    var p = row.AddProperty("IIdRow.IdField", "IIdField")
+                    row.ImplementedInterfaces.Add((CsType)"IIdRow");
+                    var p = row.AddProperty("IIdRow.IdField", (CsType)"IIdField")
                         .WithIsPropertyReadOnly()
                         .WithNoEmitField()
                         .WithOwnGetter("return Fields." + IdRow.Name);
@@ -114,8 +114,8 @@ namespace iSukces.Code.Serenity
                 {
                     if (NameRow.Type.Type != typeof(string))
                         throw new Exception("Only string column can be used as NameRow");
-                    row.ImplementedInterfaces.Add("INameRow");
-                    var p = row.AddProperty("INameRow.IdField", "StringField")
+                    row.ImplementedInterfaces.Add((CsType)"INameRow");
+                    var p = row.AddProperty("INameRow.IdField", (CsType)"StringField")
                         .WithIsPropertyReadOnly()
                         .WithNoEmitField()
                         .WithOwnGetter("return Fields." + NameRow.Name);
@@ -154,7 +154,7 @@ namespace iSukces.Code.Serenity
             return property;
         }
 
-        public string                       BaseName      { get; set; }
+        public CsType                       BaseName      { get; set; }
         public string                       BaseNamespace { get; }
         public string                       ModuleName    { get; }
         public List<SerenityEntityProperty> Properties    { get; } = new List<SerenityEntityProperty>();

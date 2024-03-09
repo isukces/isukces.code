@@ -13,7 +13,8 @@ namespace iSukces.Code.AutoCode
         {
             private static void Single(CsClass csClass, Auto.DependencyPropertyAttribute attribute)
             {
-                var propertyTypeName = csClass.GetTypeName(attribute.PropertyType);
+                var propertyTypeName = csClass.GetTypeName(attribute.PropertyType)
+                    .AsString(csClass.AllowReferenceNullable());
                 var dpmi = new DependencyPropertyMetadata
                 {
                     PropertyChanged = attribute.PropertyChanged,
@@ -25,7 +26,7 @@ namespace iSukces.Code.AutoCode
 
                 var meta = dpmi.Resolve(attribute.Name, propertyTypeName);
                 {
-                    var staticField = csClass.AddField(fn, "System.Windows.DependencyProperty");
+                    var staticField = csClass.AddField(fn, new CsType("System.Windows.DependencyProperty"));
 /*
 # if COREFX
                     var staticField = csClass.AddField(fn, "System.Windows.DependencyProperty");

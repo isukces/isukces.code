@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using iSukces.Code;
 
 namespace Bitbrains.AmmyParser
 {
@@ -13,9 +14,9 @@ namespace Bitbrains.AmmyParser
             CamelTerminalName = GetCamelName(TerminalName);
             ClassType         = "Ast" + CamelTerminalName;
 
-            BaseClass = parts.Length < 2 ? null : parts[1];
-            if (string.IsNullOrEmpty(BaseClass))
-                BaseClass = nameof(BbExpressionListNode);
+            BaseClass = parts.Length < 2 ? default : (CsType)parts[1];
+            if (BaseClass.IsVoid)
+                BaseClass = (CsType)nameof(BbExpressionListNode);
             var createClassCommand = parts[2].ToLower();
             CreateClass = createClassCommand == "" || createClassCommand == "true";
             if (parts[3].Length > 0)
@@ -69,7 +70,8 @@ namespace Bitbrains.AmmyParser
         public AmmyGrammarAutogeneratorInfo AsListOf(string listItemName)
         {
             // // "using_directives,ExpressionListNode<UsingStatement>",
-            BaseClass = "ExpressionListNode<" + listItemName + ">";
+            BaseClass = new CsType("BbExpressionListNode")
+                .WithGenericParameter((CsType)listItemName); 
             return this;
         }
 
@@ -77,8 +79,8 @@ namespace Bitbrains.AmmyParser
 
         public AmmyGrammarAutogeneratorInfo AsOptional(string baseName = null, string alternativeOf = null)
         {
-            BaseClass   = baseName ?? "AstOptNode";
-            CreateClass = BaseClass != "AstOptNode";
+            BaseClass   = (CsType)(baseName ?? "AstOptNode");
+            CreateClass = BaseClass != (CsType)"AstOptNode";
             if (!string.IsNullOrEmpty(alternativeOf))
                 Alternatives = new[] {"Empty", alternativeOf};
             return this;
@@ -136,11 +138,11 @@ namespace Bitbrains.AmmyParser
         public bool CreateClass  { get; private set; }
         public string TerminalName { get; }
         public string ClassType    { get; }
-        public string BaseClass    { get; set; }
+        public CsType BaseClass    { get; set; }
 
         public string EffectiveClassName
         {
-            get { return CreateClass ? ClassType : BaseClass; }
+            get { return CreateClass ? ClassType : BaseClass.Declaration; }
         }
 
         public string AlternativeInterfaceName

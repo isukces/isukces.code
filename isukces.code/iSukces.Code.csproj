@@ -47,9 +47,6 @@
     <Compile Update="Features\AutoCode\AutoCodeGenerator.SimpleAutoCodeGeneratorContext.cs">
       <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
     </Compile>
-    <Compile Update="Features\CsClasses\CsMethod.Obsolete.cs">
-      <DependentUpon>CsMethod.cs</DependentUpon>
-    </Compile>
     <Compile Update="Features\IO\DataGrid\DataGridConfigurationProvider.GridColumn.cs">
       <DependentUpon>DataGridConfigurationProvider.cs</DependentUpon>
     </Compile>

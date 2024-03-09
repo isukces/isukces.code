@@ -13,7 +13,7 @@ public class GetCodeFilePathGenerator : Generators.SingleClassGenerator
         var          method = Type.GetMethod(name, GeneratorsHelper.AllStatic);
         if (method is null)
             return;
-        var m = Class.AddMethod(name, "string")
+        var m = Class.AddMethod(name, CsType.String)
             .WithStatic()
             .WithBodyAsExpression("CodeFileUtils.GetCallerFilePath()");
         m.CompilerDirective = "DEBUG";

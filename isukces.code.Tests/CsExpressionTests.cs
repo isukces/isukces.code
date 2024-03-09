@@ -73,7 +73,7 @@ namespace iSukces.Code.Tests
         [InlineData("(long)x", CsOperatorPrecendence.UnaryTypecast, false)]
         public void T05_Should_create_typecast(string code, CsOperatorPrecendence codePrecedence, bool addBrackets)
         {
-            var got      = CsExpression.TypeCast("int", new CsExpression(code, codePrecedence));
+            var got      = CsExpression.TypeCast(CsType.Int32, new CsExpression(code, codePrecedence));
             var expected = addBrackets ? "(" + code + ")" : code;
             expected = "(int)" + expected;
             Assert.Equal(expected, got.Code);

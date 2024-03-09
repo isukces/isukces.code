@@ -13,7 +13,7 @@ namespace iSukces.Code.Tests
             var f = new CsFile();
             var ns = f.GetOrCreateNamespace("Tests");
 
-            var cl = new CsClass("Demo") {Kind = CsNamespaceMemberKind.Class, Owner = ns};
+            var cl = new CsClass((CsType)"Demo") {Kind = CsNamespaceMemberKind.Class, Owner = ns};
             var ev = cl.AddEvent<EventHandler<EventArgs>>("Sample", "Description");
             ev.Attributes.Add(new CsAttribute("SampleAttribute"));
             
@@ -40,7 +40,7 @@ public class Demo
             var f  = new CsFile();
             var ns = f.GetOrCreateNamespace("Tests");
 
-            var cl = new CsClass("Demo") {Kind = CsNamespaceMemberKind.Class, Owner = ns};
+            var cl = new CsClass((CsType)"Demo") {Kind = CsNamespaceMemberKind.Class, Owner = ns};
             var ev = cl.AddEvent<EventHandler<EventArgs>>("Sample", "Description");
             ev.LongDefinition = true;
             ev.Attributes.Add(new CsAttribute("SampleAttribute"));

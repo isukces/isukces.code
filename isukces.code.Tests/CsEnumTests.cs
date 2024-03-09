@@ -123,7 +123,7 @@ namespace My123
             
             enu.Items.Last().WithAttribute(CsAttribute.Make<DescriptionAttribute>(ns).WithArgument("kuku"));
             
-            var cl = ns.GetOrCreateClass("OwnerClass");
+            var cl = ns.GetOrCreateClass((CsType)"OwnerClass");
             cl.AddEnum(enu);
 
             var code = f.GetCode();

@@ -93,12 +93,12 @@ namespace iSukces.Code.AutoCode
             return new Binary(a, b, CsOperatorPrecendence.Additive, "-");
         }
 
-        public static CsExpression TypeCast(string type, CsExpression expression)
+        public static CsExpression TypeCast(CsType type, CsExpression expression)
         {
             return new Cast(type, expression);
         }
 
-        public CsExpression TypeCast(string type)
+        public CsExpression TypeCast(CsType type)
         {
             return new Cast(type, this);
         }

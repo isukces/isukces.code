@@ -38,15 +38,9 @@ public class DbGegeneratorsHelper
     {
         if (attr.GenerateInverse == InverseKind.None)
             return;
-        var isCollection = attr.GenerateInverse == InverseKind.Collection;
-        var csClassI     = context.GetOrCreateClass(attr.Type);
-
-        string GetGenericType(Type tList, Type tElement)
-        {
-            if (isCollection)
-                tElement = tList.MakeGenericType(tElement);
-            return csClassI.GetTypeName(tElement);
-        }
+        var isCollection           = attr.GenerateInverse == InverseKind.Collection;
+        var csClassI               = context.GetOrCreateClass(attr.Type);
+        var allowReferenceNullable = csClassI.AllowReferenceNullable();
 
         var propertyName = attr.Inverse;
         var codeLocation = SourceCodeLocation.Make();
@@ -67,7 +61,14 @@ public class DbGegeneratorsHelper
 
         if (!isCollection) return;
         typeName        = GetGenericType(typeof(List<>), propertyType);
-        invp.ConstValue = $"new {typeName}()";
-        
+        invp.ConstValue = $"new {typeName.Declaration}()";
+        return;
+
+        CsType GetGenericType(Type tList, Type tElement)
+        {
+            if (isCollection)
+                tElement = tList.MakeGenericType(tElement);
+            return csClassI.GetTypeName(tElement);
+        }
     }
 }

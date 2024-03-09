@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 
@@ -5,13 +6,18 @@ namespace iSukces.Code.Irony
 {
     internal class NamespacesManager
     {
+        [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
         public void Apply(string fullClassName, CsNamespace csNamespace)
+        {
+            Apply((CsType)fullClassName, csNamespace);
+        }
+        public void Apply(CsType fullClassName, CsNamespace csNamespace)
         {
             if (csNamespace is null)
                 return;
-            if (string.IsNullOrEmpty(fullClassName))
+            if (fullClassName.IsVoid)
                 return;
-            var ns = NamespaceAndName.Parse(fullClassName).Namespace;
+            var ns = NamespaceAndName.Parse(fullClassName.Declaration).Namespace;
             if (string.IsNullOrEmpty(ns))
                 return;
             if (!_dictionary.TryGetValue(ns, out var set))
@@ -24,10 +30,10 @@ namespace iSukces.Code.Irony
         {
             if (c1 is null || c2 is null)
                 return;
-            var ns2 = NamespaceAndName.Parse(c2.Name).Namespace ?? string.Empty;
+            var ns2 = NamespaceAndName.Parse(c2.Name.Declaration).Namespace ?? string.Empty;
             if (string.IsNullOrEmpty(ns2))
                 return;
-            var ns1 = NamespaceAndName.Parse(c1.Name).Namespace ?? string.Empty;
+            var ns1 = NamespaceAndName.Parse(c1.Name.Declaration).Namespace ?? string.Empty;
             if (ns1 == ns2)
                 return;
             if (!_dictionary.TryGetValue(ns1, out var set)) _dictionary[ns1] = set = new HashSet<string>();

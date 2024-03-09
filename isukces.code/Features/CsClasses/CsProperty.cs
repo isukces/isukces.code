@@ -19,7 +19,7 @@ namespace iSukces.Code
         ///     <param name="name">nazwa parametru</param>
         ///     <param name="type">typ parametru</param>
         /// </summary>
-        public CsProperty(string name, string type)
+        public CsProperty(string name, CsType type)
             : base(name, type)
         {
         }
@@ -30,7 +30,7 @@ namespace iSukces.Code
         ///     <param name="type">typ parametru</param>
         ///     <param name="description">Opis</param>
         /// </summary>
-        public CsProperty(string name, string type, string description)
+        public CsProperty(string name, CsType type, string description)
             : base(name, type, description)
         {
         }
@@ -75,7 +75,7 @@ namespace iSukces.Code
         /// <returns>Tekstowa reprezentacja obiektu</returns>
         public override string ToString()
         {
-            return string.Format("property {0} {1}", Name, Type);
+            return string.Format("property {0} {1}", Name, Type.Modern);
         }
 
         public CsProperty WithIsPropertyReadOnly(bool isPropertyReadOnly = true)

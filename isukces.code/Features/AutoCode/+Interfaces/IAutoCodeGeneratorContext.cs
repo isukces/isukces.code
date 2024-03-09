@@ -39,9 +39,15 @@ public static class AutoCodeGeneratorContextExtensions
         return self.GetOrCreateClass(TypeProvider.FromType(type));
     }
 
-    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext self, string typeName,
-        CsNamespaceMemberKind kind) =>
-        self.GetOrCreateClass(TypeProvider.FromTypeName(typeName, kind));
+    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext self, string typeName, CsNamespaceMemberKind kind)
+    {
+        return self.GetOrCreateClass(TypeProvider.FromTypeName((CsType)typeName, kind));
+    }
+    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext self, CsType typeName, CsNamespaceMemberKind kind)
+    {
+        return self.GetOrCreateClass(TypeProvider.FromTypeName(typeName, kind));
+    }
 }
     
 public static class AutoCodeGeneratorContextExt

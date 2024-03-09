@@ -1,32 +1,37 @@
 ﻿using System;
 
-namespace iSukces.Code
+namespace iSukces.Code;
+
+[Flags]
+public enum CodeFormattingFeatures
 {
-    [Flags]
-    public enum CodeFormattingFeatures
+    None = 0,
+    ExpressionBody = 1,
+    Regions = 2,
+    
+    /// <summary>
+    /// Allow 'is not null' 
+    /// </summary>
+    IsNotNull = 4,
+    MakeAutoImplementIfPossible = 8,
+    
+    NullableReferenceTypes = 16,
+}
+
+public struct CodeFormatting
+{
+    public CodeFormatting(CodeFormattingFeatures flags, int maxLineLength)
     {
-        None = 0,
-        ExpressionBody = 1,
-        Regions = 2,
-        IsNotNull = 4,
-        MakeAutoImplementIfPossible = 8
+        Flags         = flags;
+        MaxLineLength = maxLineLength;
     }
 
-    public struct CodeFormatting
+    public        CodeFormattingFeatures Flags         { get; }
+    public        int                    MaxLineLength { get; }
+    public static int                    IndentSpaces  { get; set; } = 4;
+
+    public CodeFormatting With(CodeFormattingFeatures flag)
     {
-        public CodeFormatting(CodeFormattingFeatures flags, int maxLineLength)
-        {
-            Flags         = flags;
-            MaxLineLength = maxLineLength;
-        }
-
-        public        CodeFormattingFeatures Flags         { get; }
-        public        int                    MaxLineLength { get; }
-        public static int                    IndentSpaces  { get; set; } = 4;
-
-        public CodeFormatting With(CodeFormattingFeatures flag)
-        {
-            return new CodeFormatting(Flags | flag, MaxLineLength);
-        }
+        return new CodeFormatting(Flags | flag, MaxLineLength);
     }
 }

@@ -6,10 +6,10 @@ namespace iSukces.Code.Irony
 {
     public interface IAstTypesInfo
     {
-        string AstType { get; }
+        CsType AstType { get; }
 
-        string DataType { get; }
-        string NodeType { get; }
+        CsType DataType { get; }
+        CsType NodeType { get; }
 
         Func<GetEvaluateExpressionInput, GetEvaluateExpressionOutput> GetEvaluateExpression { get; }
     }

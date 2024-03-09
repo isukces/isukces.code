@@ -35,7 +35,7 @@ namespace AutoCodeBuilder
         {
             if (map == null || map.Count == 0) return;
             var expression = "new [] { " + string.Join(", ", map) + " }";
-            grammarClass.AddMethod("GetMap", "int[]")
+            grammarClass.AddMethod("GetMap", CsType.Int32.MakeArray())
                 .WithBodyAsExpression(expression)
                 .WithOverride()
                 .WithVisibility(Visibilities.Protected);
@@ -67,26 +67,26 @@ namespace AutoCodeBuilder
             {
                 // NonTerminal <#= i.TerminalName #> = new NonTerminal("<#= i.TerminalName #>", typeof(<#= i.EffectiveClassName #>));
                 var field = grammarClass.AddField(i.TerminalName, typeof(NonTerminal));
-                field.ConstValue = $"new {field.Type}({i.TerminalName.CsEncode()}, typeof({i.EffectiveClassName}))";
+                field.ConstValue = $"new {field.Type.Declaration}({i.TerminalName.CsEncode()}, typeof({i.EffectiveClassName}))";
 
                 if (!i.CreateClass) continue;
 
-                var tp = TypeProvider.FromTypeName(_grammarType.Namespace + "." + i.EffectiveClassName,
-                    CsNamespaceMemberKind.Class);
-                var cl = context.GetOrCreateClass(tp);
+                var csType = new CsType(_grammarType.Namespace + "." + i.EffectiveClassName);
+                var tp     = TypeProvider.FromTypeName(csType, CsNamespaceMemberKind.Class);
+                var cl     = context.GetOrCreateClass(tp);
                 cl.BaseClass   = i.BaseClass;
                 cl.Description = "AST class for " + i.TerminalName + " terminal";
                 cl.Visibility = Visibilities.Public;
                 foreach (var ii in GetImplementedInterfaces(i, _items))
                 {
-                    cl.ImplementedInterfaces.Add(ii + "Provider");
+                    cl.ImplementedInterfaces.Add(new CsType(ii + "Provider"));
                     gi.Add(ii);
                 }
 
                 GenerateGetMap(i.Map, cl);
                 if (!string.IsNullOrEmpty(i.Keyword))
                 {
-                    cl.AddConst("Keyword", "string", i.Keyword.CsEncode());
+                    cl.AddConst("Keyword", CsType.String, i.Keyword.CsEncode());
                 }
             }
 
@@ -99,7 +99,7 @@ namespace AutoCodeBuilder
                         body.WriteLine($"{i.TerminalName}.Rule = {rule};");
                 }
 
-                grammarClass.AddMethod("AutoInit", "void").WithBody(body);
+                grammarClass.AddMethod("AutoInit", CsType.Void).WithBody(body);
             }
 
             {
@@ -115,20 +115,21 @@ namespace AutoCodeBuilder
                 var args = string.Join(", ", x.OrderBy(a => a).Select(a => a.CsEncode()));
                 CodeWriter body = CsCodeWriter.Create(SourceCodeLocation.Make());
                 body.WriteLine($"MarkPunctuation({args});");
-                grammarClass.AddMethod("AutoInit2", "void").WithBody(body);
+                grammarClass.AddMethod("AutoInit2", CsType.Void).WithBody(body);
             }
 
             {
                 foreach (var name in gi.Distinct().OrderBy(a => a))
                 {
-                    var tp = TypeProvider.FromTypeName(_grammarType.Namespace + "." + name,
+                    var name1 = _grammarType.Namespace + "." + name;
+                    var tp = TypeProvider.FromTypeName(new CsType(name1),
                         CsNamespaceMemberKind.Interface);
                     context.GetOrCreateClass(tp).WithVisibility(Visibilities.Public);
 
-                    tp = TypeProvider.FromTypeName(_grammarType.Namespace + "." + name + "Provider",
+                    tp = TypeProvider.FromTypeName(new CsType(name1 + "Provider"),
                         CsNamespaceMemberKind.Interface);
                     var cl = context.GetOrCreateClass(tp).WithVisibility(Visibilities.Public);
-                    var m  = cl.AddMethod("GetData", name);
+                    var m  = cl.AddMethod("GetData", (CsType)name);
                     m.AddParam<ScriptThread>("thread", cl);
                 }
             }

@@ -59,7 +59,7 @@ return r;
 }
  * 
  */
-            var m = _astClass.AddMethod("DoEvaluate", "object")
+            var m = _astClass.AddMethod("DoEvaluate", CsType.Object)
                 .WithOverride()
                 .WithVisibility(Visibilities.Protected)
                 .WithBody(body);
@@ -80,7 +80,7 @@ return r;
             argumentBuilder.Add(new CsExpression(varName));
         }
 
-        private void Finish(string className)
+        private void Finish(CsType className)
         {
             const string varName = "doEvaluateResult";
             body.WriteLine("var " + varName + " = " + argumentBuilder.CallMethod("new " + className, true));

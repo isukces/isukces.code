@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -49,7 +50,7 @@ namespace iSukces.Code.Irony
                     if (_astClass.Owner is CsNamespace ns) man.Apply(fullClassName, ns);
 
                     _astClass.BaseClass =
-                        _terminal.GetBaseClassAndInterfaces(_cfg.NonTerminals, _astClass.Owner,
+                        (CsType)_terminal.GetBaseClassAndInterfaces(_cfg.NonTerminals, _astClass.Owner,
                             _astClass.GetNamespace());
                     var debug = GetDebugFromRule(i, _astClass, _cfg);
                     _astClass.Description = debug;
@@ -91,7 +92,8 @@ namespace iSukces.Code.Irony
                 if (map == null || map.Count <= 0) return;
                 var map2 = string.Join(", ", map.Select(a => a.AstIndex));
                 var expression = $"new [] {{ {map2} }}";
-                var m = _astClass.AddMethod("GetMap", "int[]").WithVisibility(Visibilities.Protected)
+                var m = _astClass.AddMethod("GetMap", CsType.Int32.MakeArray())
+                    .WithVisibility(Visibilities.Protected)
                     .WithOverride()
                     .WithBodyAsExpression(expression);
                 m.AddCommentLocation<AstClassesGenerator>("created");
@@ -121,7 +123,8 @@ namespace iSukces.Code.Irony
                         break;
                 }
 
-                var m = _astClass.AddMethod("Init", "void").WithVisibility(Visibilities.Public)
+                var m = _astClass.AddMethod("Init", CsType.Void)
+                    .WithVisibility(Visibilities.Public)
                     .WithOverride()
                     .WithBody(initWriter);
                 m.AddParam("context", _astClass.GetTypeName<AstContext>());
@@ -145,15 +148,18 @@ namespace iSukces.Code.Irony
             private string GetNodeOrAstType(IAstTypesInfo info)
             {
                 var type = info.NodeType;
-                if (string.IsNullOrEmpty(type))
+                if (type.IsVoid)
                 {
                     type = info.AstType;
-                    if (string.IsNullOrEmpty(type))
+                    if (type.IsVoid)
                         return null;
                 }
-
+#if IGNORECSTYPE
+                throw new NotImplementedException();
+#else
                 type = _astClass.ReduceTypenameIfPossible(type);
                 return type;
+#endif
             }
 
             private void Process_Alternative(RuleBuilder.Alternative rule, CsCodeWriter initWriter)
@@ -224,8 +230,8 @@ namespace iSukces.Code.Irony
                     }
 
                     b.Close();
-                    b.WriteLine("return " + en.Name + "." + l[0].EnumName + ";");
-                    var m = _astClass.AddMethod("GetNodeKind", en.Name)
+                    b.WriteLine($"return {en.Name}.{l[0].EnumName};");
+                    var m = _astClass.AddMethod("GetNodeKind", (CsType)en.Name)
                         .WithBody(b);
                     rule.CreationInfo.Enum1               = en;
                     _astClass.UserAnnotations[Exchange.X] = new Exchange.Du(m.Name);
@@ -236,18 +242,22 @@ namespace iSukces.Code.Irony
             {
                 var alts = (NonTerminalInfo)rule.Info;
                 var pn   = GetFileLevelTypeNameAst(alts.AstClass.Provider).Name;
+#if IGNORECSTYPE
+                throw new NotImplementedException();
+#else
                 pn = _astClass.ReduceTypenameIfPossible(pn);
                 var csProp = _astClass.AddProperty("Optional", pn);
                 csProp.AddCommentLocation<AstClassesGenerator>("created");
                 ProcessProperty(csProp, false);
                 csProp.SetterVisibility = Visibilities.Private;
+#endif
             }
 
             private void Process_PlusOrStar(RuleBuilder.PlusOrStar rule)
             {
                 var el       = rule.Element;
                 var info     = _cfg.GetAstTypesInfoDelegate(el)?.Invoke(_astClass);
-                var itemType = GetNodeOrAstType(info);
+                CsType itemType = new CsType(GetNodeOrAstType(info));
 
                 {
                     var ex = new CsExpression("childNode");
@@ -257,7 +267,7 @@ namespace iSukces.Code.Irony
                         var ex1 = info.GetEvaluateExpression(cfg);
                         if (ex1.Expression != null)
                         {
-                            if (string.IsNullOrEmpty(info.DataType))
+                            if (info.DataType.IsVoid)
                             {
                                 Debug.WriteLine("No datatype " + el);
                             }
@@ -272,7 +282,7 @@ namespace iSukces.Code.Irony
                                 code.WriteLine($"result[i] = {ex1.Expression.Code};");
                                 code.Close();
                                 code.WriteLine("return result;");
-                                var m = _astClass.AddMethod("EvaluateItems", listType).WithBody(code);
+                                var m = _astClass.AddMethod("EvaluateItems", (CsType)listType).WithBody(code);
                                 if (ex1.NeedScriptThread)
                                     m.AddParam<ScriptThread>("thread", _astClass);
                                 m.UserAnnotations[Exchange.MethodForEvaluatingPropertyKey] =
@@ -293,7 +303,7 @@ namespace iSukces.Code.Irony
                     code.WriteLine("var el = ChildNodes[i];");
                     code.WriteLine($"yield return ({itemType})el;");
                     code.Close();
-                    _astClass.AddMethod("GetItems", listType).WithBody(code);
+                    _astClass.AddMethod("GetItems", (CsType)listType).WithBody(code);
                 }
                 // var items = GetItems().Select(a => a.Symbol).ToArray();
             }
@@ -312,13 +322,14 @@ namespace iSukces.Code.Irony
                     var propertyType = GetNodeOrAstType(t);
                     if (string.IsNullOrEmpty(propertyType)) continue;
 
-                    var csProp = _astClass.AddProperty(map.PropertyName, propertyType);
+                    var csProp = _astClass.AddProperty(map.PropertyName, (CsType)propertyType);
                     csProp.AddCommentLocation<AstClassesGenerator>("created");
                     ProcessProperty(csProp, false);
                     csProp.SetterVisibility = Visibilities.Private;
                     csProp.Description      = "Index = " + i.AstIndex;
+                    var propType = csProp.Type.AsString(_astClass.AllowReferenceNullable());
                     var code = string.Format("({0})ChildNodes[{1}];",
-                        csProp.Type,
+                        propType,
                         i.AstIndex.ToString(CultureInfo.InvariantCulture));
                     csProp.IsPropertyReadOnly    = true;
                     csProp.OwnGetter             = code;
@@ -333,7 +344,7 @@ namespace iSukces.Code.Irony
                     var evaluateCode = ee.Expression?.Code;
 
                     bool need;
-                    if (t.DataType == "string") Debug.WriteLine("");
+                    if (t.DataType.Declaration == "string") Debug.WriteLine("");
                     var codeWriter = CsCodeWriter.Create<AstClassesGenerator>();
                     if (string.IsNullOrEmpty(evaluateCode))
                     {
