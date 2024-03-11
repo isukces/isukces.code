@@ -59,6 +59,14 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         return parameter;
     }
 
+    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+    public CsMethodParameter AddParam(string name, string type, string description = null)
+    {
+        var parameter = new CsMethodParameter(name, (CsType)type, description);
+        _parameters.Add(parameter);
+        return parameter;
+    }
+
     public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null)
         => AddParam(name, typeof(T), owner, description);
 
@@ -83,6 +91,8 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         Body             = body;
         return this;
     }
+
+    #region Properties
 
     /// <summary>
     ///     Nazwa metody
@@ -188,13 +198,17 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         }
     }
 
-    public bool IsAsync { get; set; }
+    public bool IsAsync   { get; set; }
     public bool IsPartial { get; set; }
+
+    #endregion
 
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
     [CanBeNull]
     public CsGenericArguments GenericArguments { get; set; }
+
+    public CsClass Owner { get; init; }
 
     public const string Implicit = "implicit";
     public const string Explicit = "explicit";

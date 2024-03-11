@@ -1,72 +1,72 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
-    <Product>iSukces.Code</Product>
-    <TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
-    <AssemblyVersion>1.23.1218.202</AssemblyVersion>
-    <FileVersion>1.23.1218.202</FileVersion>
-    <Version>1.23.1218.202</Version>
-    <LangVersion>12</LangVersion>
-    <UseWPF>false</UseWPF>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    <Description>iSukces.Code</Description>
-    <Description>small C# code generating framework</Description>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <IncludeSource>false</IncludeSource>
-    <IncludeSymbols>true</IncludeSymbols>
-    <PackageId>iSukces.Code</PackageId>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
-    <PackageTags>C#</PackageTags>
-    <PublicSign>true</PublicSign>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Title>Source code generators</Title>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>COREFX;COREFX20;NET80</DefineConstants>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Features\AutoCode\AutoCodeGenerator.ContextWrapper.cs">
-      <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Features\AutoCode\AutoCodeGenerator.SimpleAutoCodeGeneratorContext.cs">
-      <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Features\IO\DataGrid\DataGridConfigurationProvider.GridColumn.cs">
-      <DependentUpon>DataGridConfigurationProvider.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Features\_expressions\CsExpression.Binary.cs">
-      <DependentUpon>CsExpression.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Interfaces\Ammy\_fluent\AmmyBuilderExtender.DataContextBinder.cs">
-      <DependentUpon>SomeExtender.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Interfaces\CsEnumHelper+.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CsEnumHelper+.tt</DependentUpon>
-    </Compile>
-    <Compile Update="Interfaces\CsEnumHelper.cs">
-      <DependentUpon>CsEnumHelper+.tt</DependentUpon>
-    </Compile>
-    <None Update="Interfaces\CsEnumHelper+.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CsEnumHelper+.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
+    <PropertyGroup>
+        <Company>Internet Sukces Piotr Stęclik</Company>
+        <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
+        <Product>iSukces.Code</Product>
+        <TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
+        <AssemblyVersion>1.23.1218.202</AssemblyVersion>
+        <FileVersion>1.23.1218.202</FileVersion>
+        <Version>1.23.1218.202</Version>
+        <LangVersion>12</LangVersion>
+        <UseWPF>false</UseWPF>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+        <Authors>Internet Sukces Piotr Stęclik</Authors>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <Description>iSukces.Code</Description>
+        <Description>small C# code generating framework</Description>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+        <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSource>false</IncludeSource>
+        <IncludeSymbols>true</IncludeSymbols>
+        <PackageId>iSukces.Code</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+        <PackageTags>C#</PackageTags>
+        <PublicSign>true</PublicSign>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <Title>Source code generators</Title>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <DefineConstants>COREFX;COREFX20;NET80</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Update="Features\AutoCode\AutoCodeGenerator.ContextWrapper.cs">
+            <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\AutoCode\AutoCodeGenerator.SimpleAutoCodeGeneratorContext.cs">
+            <DependentUpon>AutoCodeGenerator.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\IO\DataGrid\DataGridConfigurationProvider.GridColumn.cs">
+            <DependentUpon>DataGridConfigurationProvider.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Features\_expressions\CsExpression.Binary.cs">
+            <DependentUpon>CsExpression.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Interfaces\Ammy\_fluent\AmmyBuilderExtender.DataContextBinder.cs">
+            <DependentUpon>SomeExtender.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Interfaces\CsEnumHelper+.cs">
+            <AutoGen>True</AutoGen>
+            <DesignTime>True</DesignTime>
+            <DependentUpon>CsEnumHelper+.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Interfaces\CsEnumHelper.cs">
+            <DependentUpon>CsEnumHelper+.tt</DependentUpon>
+        </Compile>
+        <None Update="Interfaces\CsEnumHelper+.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>CsEnumHelper+.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
 </Project>

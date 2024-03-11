@@ -16,12 +16,6 @@ namespace iSukces.Code.FeatureImplementers
                 _resultVariableName = Find(_members);
             }
 
-            public static void Write(List<GetHashCodeExpressionDataWithMemberInfo> members, CsCodeWriter cw)
-            {
-                var instance = new GetHashCodeEmiter(members, cw);
-                instance.Emit();
-            }
-
 
             private static CsExpression AppendCode(CsExpression left, GetHashCodeExpressionData right)
             {
@@ -51,6 +45,12 @@ namespace iSukces.Code.FeatureImplementers
                 }
 
                 return c;
+            }
+
+            public static void Write(List<GetHashCodeExpressionDataWithMemberInfo> members, CsCodeWriter cw)
+            {
+                var instance = new GetHashCodeEmiter(members, cw);
+                instance.Emit();
             }
 
             private string CreateFullLine(CsExpression code) =>
@@ -132,6 +132,8 @@ namespace iSukces.Code.FeatureImplementers
                 _propertiesCountInAccumulator = 0;
             }
 
+            private const int MaxExprLength = 120;
+
             private readonly string _resultVariableName;
 
 
@@ -140,7 +142,6 @@ namespace iSukces.Code.FeatureImplementers
             private bool _variableAlreadyDeclared;
             private readonly List<GetHashCodeExpressionDataWithMemberInfo> _members;
             private readonly CsCodeWriter _cw;
-            private const int MaxExprLength = 120;
         }
     }
 }

@@ -17,7 +17,8 @@ namespace iSukces.Code.FeatureImplementers
             Instance           = instance;
         }
 
-        public string       FieldName          { get; }
+        public string FieldName { get; }
+
         public CsExpression ExpressionTemplate { get; }
         public string       Instance           { get; }
     }

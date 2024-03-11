@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace iSukces.Code;
@@ -15,6 +16,21 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         _genericParamaters = null;
         _arrayRanks        = null;
     }
+
+    public static CsType Generic(string name, CsType genericArgument) => new(name)
+    {
+        GenericParamaters = [genericArgument]
+    };
+
+    public static CsType Generic(string name, string genericArgument) => new(name)
+    {
+        GenericParamaters = [new CsType(genericArgument)]
+    };
+
+    public static CsType Generic(string name, CsType genericArgument1, CsType genericArgument2) => new(name)
+    {
+        GenericParamaters = [genericArgument1, genericArgument2]
+    };
 
     public static bool operator ==(CsType left, CsType right) => left.Equals(right);
 
@@ -124,7 +140,20 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         return clone;
     }
 
-    public string New(string args) => $"new {Declaration}({args})";
+    public string New(string? args) => $"new {Declaration}({args})";
+    public string New() => $"new {Declaration}()";
+
+    public string New(string a1, string a2)
+        => New(a1 + GlobalSettings.CommaSeparator + a2);
+
+
+    public (string namespaceName, string shortClassName) SpitNamespaceAndShortName()
+    {
+        var typeNameParts  = BaseName!.Split('.');
+        var namespaceParts = typeNameParts.Take(typeNameParts.Length - 1).ToArray();
+        var namespaceName  = string.Join(".", namespaceParts);
+        return (namespaceName, typeNameParts.Last());
+    }
 
     public CsType StripNullableValue()
     {
@@ -149,6 +178,8 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
             throw new InvalidOperationException("Void type is not allowed");
     }
 
+    public string ThrowNew(string? args) => $"throw new {Declaration}({args})";
+
     public override string ToString()
     {
         if (GlobalSettings.DoNotAllowCsTypeToString == InvalidOperationNotification.Ignore)
@@ -160,10 +191,17 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
             throw new InvalidOperationException(message);
 
         if (GlobalSettings.DoNotAllowCsTypeToString == InvalidOperationNotification.EmergencyLog)
+        {
             GlobalSettings.EmergencyLog(message);
+            return Declaration;
+        }
 
         return "(" + message + ")";
     }
+
+    [Pure]
+    [JetBrains.Annotations.Pure]
+    public string TypeOf() => $"typeof({Declaration})";
 
     public CsType WithBaseName(string baseName) => new(baseName)
     {
@@ -178,18 +216,34 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         return this;
     }
 
+    public CsType WithGenericParameters(CsType genericParameter1, CsType genericParameter2)
+    {
+        _genericParamaters = new[] { genericParameter1, genericParameter2 };
+        return this;
+    }
+
+    public CsType WithGenericParameters(string genericParameter1, string genericParameter2)
+    {
+        _genericParamaters = new[] { (CsType)genericParameter1, (CsType)genericParameter2 };
+        return this;
+    }
+
+    [Pure]
+    [JetBrains.Annotations.Pure]
     public CsType WithReferenceNullable()
     {
-        Nullable = NullableKind.ReferenceNullable;
-        return this;
+        var copy = this with
+        {
+            Nullable = NullableKind.ReferenceNullable
+        };
+        return copy;
     }
 
     #region Properties
 
-    public string Modern      => AsString(true);
-    public string Declaration => AsString(false);
-
-    public string? BaseName { get; }
+    public string  Modern      => AsString(true);
+    public string  Declaration => AsString(false);
+    public string? BaseName    { get; }
 
     public bool IsVoid => string.IsNullOrEmpty(BaseName);
 
@@ -219,6 +273,7 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
     #region Fields
 
     public static readonly CsType Int32 = new CsType("int");
+    public static readonly CsType Guid = new CsType("System.Guid");
 
     public static readonly CsType NullableInt32 = new CsType("int")
     {

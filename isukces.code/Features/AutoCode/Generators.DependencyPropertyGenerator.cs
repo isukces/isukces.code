@@ -46,10 +46,10 @@ namespace iSukces.Code.AutoCode
                         writer.WriteLine("nameof({0}),", attribute.Name);
                         writer.WriteLine("typeof({0}), ", propertyTypeName);
                         if (string.IsNullOrEmpty(meta))
-                            writer.WriteLine("typeof({0}))", csClass.Name);
+                            writer.WriteLine("{0})", csClass.Name.TypeOf());
                         else
                         {
-                            writer.WriteLine("typeof({0}),", csClass.Name);
+                            writer.WriteLine("{0},", csClass.Name.TypeOf());
                             writer.WriteLine("{0})", meta);
                         }
                         staticField.ConstValue = writer.Code;

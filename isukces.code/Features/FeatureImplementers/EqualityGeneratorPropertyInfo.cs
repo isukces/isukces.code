@@ -8,27 +8,23 @@ namespace iSukces.Code.FeatureImplementers
 {
     public interface IEqualityGeneratorPropertyInfo
     {
+        CsExpression Coalesce(CsExpression expression, ITypeNameResolver resolver);
+        EqualsExpressionData EqualsCode(CsExpression left, CsExpression right, ITypeNameResolver resolver);
+
         bool PropertyValueIsNotNull { get; }
         bool NullToEmpty            { get; }
         Type ResultType             { get; }
-        EqualsExpressionData EqualsCode(CsExpression left, CsExpression right, ITypeNameResolver resolver);
-        CsExpression Coalesce(CsExpression expression, ITypeNameResolver resolver);
     }
 
     public static class EqualityGeneratorPropertyInfoExt
     {
         public static EqualsExpressionData EqualsCode1(this IEqualityGeneratorPropertyInfo info, ITypeNameResolver resolver)
-        {
-            return info.EqualsCode((CsExpression)"{0}", (CsExpression)"{1}.{0}", resolver);
-        }
+            => info.EqualsCode((CsExpression)"{0}", (CsExpression)"{1}.{0}", resolver);
     }
 
     public class EqualityGeneratorPropertyInfo : IEqualityGeneratorPropertyInfo
     {
-        public EqualityGeneratorPropertyInfo(Type resultType)
-        {
-            ResultType = resultType;
-        }
+        public EqualityGeneratorPropertyInfo(Type resultType) => ResultType = resultType;
 
         [CanBeNull]
         public static EqualityGeneratorPropertyInfo Find(MemberInfo member,
@@ -53,20 +49,11 @@ namespace iSukces.Code.FeatureImplementers
                 return GeneratorsHelper.CallMethod(instance, name, args);
             }
 
-            CsExpression DefaultEquals(BinaryExpressionDelegateArgs input)
-            {
-                return Call(nameof(Equals), input);
-            }
+            CsExpression DefaultEquals(BinaryExpressionDelegateArgs input) => Call(nameof(Equals), input);
 
-            CsExpression DefaultGetHashCode(UnaryExpressionDelegateArgs input)
-            {
-                return Call(nameof(GetHashCode), input);
-            }
+            CsExpression DefaultGetHashCode(UnaryExpressionDelegateArgs input) => Call(nameof(GetHashCode), input);
 
-            ExpressionWithObjectInstance DefaultGetCompareTo(BinaryExpressionDelegateArgs input)
-            {
-                return new ExpressionWithObjectInstance(Call("Compare", input));
-            }
+            ExpressionWithObjectInstance DefaultGetCompareTo(BinaryExpressionDelegateArgs input) => new(Call("Compare", input));
 
             var a = new EqualityGeneratorPropertyInfo(typeof(string))
                 {
@@ -79,6 +66,8 @@ namespace iSukces.Code.FeatureImplementers
             a.PropertyValueIsNotNull = checker.ReturnValueAlwaysNotNull(member);
             return a;
         }
+
+        public static bool Is1<T>(int a, int b) => a >> b is T;
 
         public string CheckNull(string expr, bool orEmpty)
         {
@@ -106,8 +95,6 @@ namespace iSukces.Code.FeatureImplementers
             var expr = GetEqualsExpression(new BinaryExpressionDelegateArgs(left, right, resolver, ResultType));
             return new EqualsExpressionData(expr);
         }
-
-        
 
 
         public GetHashCodeExpressionData GetHash(CsExpression propertyName, ITypeNameResolver resolver)
@@ -147,10 +134,6 @@ namespace iSukces.Code.FeatureImplementers
 
             return new GetHashCodeExpressionData(result);
         }
-        public static bool Is1<T>(int a, int b)
-        {
-            return a >> b is T;
-        }
 
         public EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute sca)
         {
@@ -165,10 +148,8 @@ namespace iSukces.Code.FeatureImplementers
         }
 
         public EqualityGeneratorPropertyInfo WithMemberAttributes(MemberInfo member)
-        {
-            return With(member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>())
+            => With(member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>())
                 .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
-        }
 
 
         public EqualityGeneratorPropertyInfo WithNullToEmpty(bool nullToEmpty)
@@ -177,21 +158,17 @@ namespace iSukces.Code.FeatureImplementers
             return this;
         }
 
+        public Func<ITypeNameResolver, CsExpression>  GetCoalesceExpression { get; set; }
+        public BinaryExpressionDelegate<CsExpression> GetEqualsExpression   { get; set; }
 
-        public Func<ITypeNameResolver, CsExpression>  GetCoalesceExpression  { get; set; }
-        public bool                                   PropertyValueIsNotNull { get; set; }
-        public bool                                   NullToEmpty            { get; protected set; }
-        public BinaryExpressionDelegate<CsExpression> GetEqualsExpression    { get; set; }
-
-        public BinaryExpressionDelegate<ExpressionWithObjectInstance> GetRelationalComparerExpression
-        {
-            get;
-            protected set;
-        }
+        public BinaryExpressionDelegate<ExpressionWithObjectInstance> GetRelationalComparerExpression { get; protected set; }
 
         public UnaryExpressionDelegate GetHashCodeExpression { get; set; }
         public Auto.GetHashCodeOptions GetHashCodeOption     { get; set; }
-        public Type                    ResultType            { get; }
+
+        public bool PropertyValueIsNotNull { get; set; }
+        public bool NullToEmpty            { get; protected set; }
+        public Type ResultType             { get; }
     }
 
     public delegate T BinaryExpressionDelegate<out T>(BinaryExpressionDelegateArgs input);
@@ -210,24 +187,20 @@ namespace iSukces.Code.FeatureImplementers
 
         public string[] GetArguments()
         {
-            return new[] {Left.Code, Right.Code};
+            return new[] { Left.Code, Right.Code };
         }
 
         public BinaryExpressionDelegateArgs Transform(Func<CsExpression, CsExpression> map)
-        {
-            return new BinaryExpressionDelegateArgs(map(Left), map(Right), Resolver, DataType);
-        }
+            => new(map(Left), map(Right), Resolver, DataType);
 
         public BinaryExpressionDelegateArgs WithLeftRight(CsExpression newLeft, CsExpression newRight)
-        {
-            return new BinaryExpressionDelegateArgs(newLeft, newRight, Resolver, DataType);
-        }
+            => new(newLeft, newRight, Resolver, DataType);
 
-        public CsExpression      Left     { get; }
-        public CsExpression      Right    { get; }
+        public CsExpression Left     { get; }
+        public CsExpression Right    { get; }
+        public Type         DataType { get; }
+
         public ITypeNameResolver Resolver { get; }
-        public Type              DataType { get; }
-
     }
 
     public struct UnaryExpressionDelegateArgs : IExpressionDelegateArgs
@@ -241,11 +214,12 @@ namespace iSukces.Code.FeatureImplementers
 
         public string[] GetArguments()
         {
-            return new[] {Argument.Code};
+            return new[] { Argument.Code };
         }
 
-        public CsExpression      Argument { get; }
+        public CsExpression Argument { get; }
+        public Type         DataType { get; }
+
         public ITypeNameResolver Resolver { get; }
-        public Type              DataType { get; }
     }
 }

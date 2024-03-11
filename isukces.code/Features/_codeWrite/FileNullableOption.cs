@@ -15,7 +15,5 @@ public static class FileNullableOptionExtensions
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsNullableReferenceEnabled(this FileNullableOption option)
-    {
-        return option is FileNullableOption.GlobalEnabled or FileNullableOption.LocalEnabled;
-    }
+        => option is FileNullableOption.GlobalEnabled or FileNullableOption.LocalEnabled;
 }

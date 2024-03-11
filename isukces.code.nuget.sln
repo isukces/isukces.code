@@ -1,0 +1,24 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code", "isukces.code\iSukces.Code.csproj", "{80A63906-600D-410B-890D-9B03B94E944E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.VsSolutions", "iSukces.Code.VsSolutions\iSukces.Code.VsSolutions.csproj", "{62546D8C-C6B8-449C-99FE-1D79BA43F57A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{80A63906-600D-410B-890D-9B03B94E944E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80A63906-600D-410B-890D-9B03B94E944E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80A63906-600D-410B-890D-9B03B94E944E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80A63906-600D-410B-890D-9B03B94E944E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62546D8C-C6B8-449C-99FE-1D79BA43F57A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62546D8C-C6B8-449C-99FE-1D79BA43F57A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62546D8C-C6B8-449C-99FE-1D79BA43F57A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62546D8C-C6B8-449C-99FE-1D79BA43F57A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

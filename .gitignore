@@ -13,3 +13,4 @@ obj
 /packages/*.cache
 solution-doctor.bat
 samples/.idea/
+build-debug.bat

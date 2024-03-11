@@ -15,7 +15,12 @@ public struct TypeProvider : IEquatable<TypeProvider>
 
     public static TypeProvider FromType(Type type) => new(type, default, type.GetNamespaceMemberKind());
 
-    public static TypeProvider FromTypeName(CsType typeName, CsNamespaceMemberKind kind) => new(null, typeName, kind);
+    public static TypeProvider FromTypeName(CsType typeName, CsNamespaceMemberKind kind) 
+        => new(null, typeName, kind);
+
+    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+    public static TypeProvider FromTypeName(string typeName, CsNamespaceMemberKind kind) 
+        => new(null, (CsType)typeName, kind);
 
     public static bool operator ==(TypeProvider left, TypeProvider right) => left.Equals(right);
 
@@ -31,13 +36,6 @@ public struct TypeProvider : IEquatable<TypeProvider>
         return obj is TypeProvider other && Equals(other);
     }
 
-    public (string namespaceName, string shortClassName) ExtractNamespace()
-    {
-        var typeNameParts  = TypeName.BaseName.Split('.');
-        var namespaceParts = typeNameParts.Take(typeNameParts.Length - 1).ToArray();
-        var namespaceName  = string.Join(".", namespaceParts);
-        return (namespaceName, typeNameParts.Last());
-    }
 
     public override int GetHashCode()
     {

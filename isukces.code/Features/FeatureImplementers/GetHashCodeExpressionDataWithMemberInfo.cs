@@ -31,11 +31,11 @@ namespace iSukces.Code.FeatureImplementers
                 var type = x.GetMemberType().StripNullable();
                 if (type == typeof(bool))
                     return 3;
-                    
+
 #if COREFX
                 if (type.GetTypeInfo().IsEnum) return 2;
 #else
-                if (type.IsEnum) return 2;    
+                if (type.IsEnum) return 2;
 #endif
                 return 1;
             }
@@ -63,9 +63,9 @@ namespace iSukces.Code.FeatureImplementers
             throw new NotImplementedException();
         }
 
+        public override string ToString() => Code.ToString();
+
         public MemberInfo                Member { get; }
         public GetHashCodeExpressionData Code   { get; }
-
-        public override string ToString() => Code.ToString();
     }
 }

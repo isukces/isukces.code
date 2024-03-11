@@ -13,6 +13,18 @@ namespace iSukces.Code
             GeneratorClassName = null;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string Join(string sep, string x, string y)
+        {
+            x = x?.Trim();
+            y = y?.Trim();
+            if (string.IsNullOrEmpty(x))
+                return y;
+            if (string.IsNullOrEmpty(y))
+                return x;
+            return x + sep + y;
+        }
+
         public static SourceCodeLocation Make(
             [CallerMemberName] string memberName = null,
             [CallerFilePath] string filePath = null,
@@ -25,18 +37,6 @@ namespace iSukces.Code
             [CallerFilePath] string filePath = null,
             [CallerLineNumber] int lineNumber = 0) =>
             Make(memberName, filePath, lineNumber).WithGeneratorClass(typeof(T));
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static string Join(string sep, string x, string y)
-        {
-            x = x?.Trim();
-            y = y?.Trim();
-            if (string.IsNullOrEmpty(x))
-                return y;
-            if (string.IsNullOrEmpty(y))
-                return x;
-            return x + sep + y;
-        }
 
         public override string ToString()
         {
@@ -56,9 +56,13 @@ namespace iSukces.Code
             return this;
         }
 
+        #region Properties
+
         public string FilePath           { get; }
         public string MemberName         { get; }
         public int    LineNumber         { get; }
         public string GeneratorClassName { get; private set; }
+
+        #endregion
     }
 }

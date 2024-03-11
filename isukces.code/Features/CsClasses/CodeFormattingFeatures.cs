@@ -13,9 +13,7 @@ public enum CodeFormattingFeatures
     /// Allow 'is not null' 
     /// </summary>
     IsNotNull = 4,
-    MakeAutoImplementIfPossible = 8,
-    
-    NullableReferenceTypes = 16,
+    MakeAutoImplementIfPossible = 8
 }
 
 public struct CodeFormatting

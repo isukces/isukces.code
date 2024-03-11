@@ -19,6 +19,21 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
         Type        = type;
         Description = description;
     }
+    
+    /// <summary>
+    ///     Tworzy instancję obiektu
+    ///     <param name="name">nazwa parametru</param>
+    ///     <param name="type">typ parametru</param>
+    ///     <param name="description">Opis</param>
+    /// </summary>
+    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+    public CsMethodParameter(string name, string? type, string? description = null)
+    {
+        Name        = name;
+        Type        = new CsType(type);
+        Description = description;
+    }
+
 
     /// <summary>
     ///     Realizuje operator ==
@@ -108,10 +123,9 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
     public override string ToString()
     {
         var type       = Type.Modern;
-        var visibility = Visibility.ToString().ToLower();
-        return IsConst
-            ? $"{visibility} const {type} {Name} = {_constValue}"
-            : $"{visibility} {type} {Name}";
+        return !string.IsNullOrEmpty(_constValue)
+            ? $"{type} {Name} = {_constValue}"
+            : $"{type} {Name}";
     }
 
     #region Properties
@@ -123,8 +137,6 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
         get => _constValue;
         set => _constValue = value?.Trim();
     }
-
-    public bool IsConst { get; set; }
 
     /// <summary>
     ///     nazwa parametru; własność jest tylko do odczytu.
@@ -149,9 +161,6 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
         set => _description = value?.Trim() ?? string.Empty;
     }
 
-    /// <summary>
-    /// </summary>
-    public Visibilities Visibility { get; set; } = Visibilities.Public;
 
     /// <summary>
     /// </summary>

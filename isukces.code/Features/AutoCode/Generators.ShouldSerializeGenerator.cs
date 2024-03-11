@@ -93,7 +93,7 @@ public partial class Generators
                 else
                 {
                     var typeName = Class.GetTypeName(i.Item1.PropertyType); 
-                    condition = string.Format(condition, propertyName, typeName);
+                    condition = string.Format(condition, propertyName, typeName.Declaration);
                 }
 
                 Class.AddMethod("ShouldSerialize" + propertyName, CsType.Bool)

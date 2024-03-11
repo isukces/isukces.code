@@ -90,6 +90,12 @@ namespace iSukces.Code.Interfaces
             return src;
         }
 
+        public static T SingleLineIfThrow<T>(this T src, string condition, CsType type, string arg=null)
+            where T : ICsCodeWriter
+        {
+            var statement = type.ThrowNew(arg);
+            return src.SingleLineIf(condition, statement + ";");
+        }
         public static T SingleLineIf<T>(this T src, string condition, string statement, string elseStatement = null)
             where T : ICsCodeWriter
         {

@@ -93,4 +93,14 @@ public sealed class CsTypeTests
         Assert.Equal("string?[]", t.AsString(true));
     }
 
+
+    [Fact]
+    public void T08_Should_create_reference_nullable()
+    {
+        var a = new CsType("string");
+        var b = a.WithReferenceNullable();
+        
+        Assert.Equal("string", a.Modern);
+        Assert.Equal("string?", b.Modern);
+    }
 }

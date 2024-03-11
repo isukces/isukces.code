@@ -4,15 +4,9 @@ namespace iSukces.Code
 {
     public class CsDirectCode : IDirectCode
     {
-        public CsDirectCode(string code)
-        {
-            Code = code;
-        }
+        public CsDirectCode(string code) => Code = code;
 
-        public override string ToString()
-        {
-            return Code;
-        }
+        public override string ToString() => Code;
 
         public string Code { get; }
     }

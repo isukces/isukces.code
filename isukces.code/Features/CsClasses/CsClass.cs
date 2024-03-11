@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
-// ReSharper disable once CheckNamespace
 namespace iSukces.Code;
 
+[SuppressMessage("ReSharper", "UnusedMember.Global")]
+[SuppressMessage("ReSharper", "RedundantExtendsListEntry")]
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver,
     IAttributable, ICommentable, IAnnotableByUser, IEnumOwner
 {
-    
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsClass(string name) => Name = (CsType)name; 
+    public CsClass(string name) => Name = (CsType)name;
+
     /// <summary>
     ///     Tworzy instancję obiektu
     ///     <param name="name">Nazwa klasy</param>
@@ -87,15 +90,16 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     }
 
 
+    [Obsolete("", true)]
     public static CsAttribute MkAttribute(string attributeName) => new(attributeName);
-
 
     public static void WriteSummary(ICsCodeWriter writer, string description)
     {
         description = description?.Trim();
         if (string.IsNullOrEmpty(description)) return;
         writer.WriteLine("/// <summary>");
-        var lines = description.Split('\r', '\n').Where(q => !string.IsNullOrEmpty(q?.Trim()));
+        var lines = description.Split('\r', '\n')
+            .Where(q => !string.IsNullOrEmpty(q.Trim()));
         foreach (var line in lines)
             writer.WriteLine("/// " + line.XmlEncode());
         writer.WriteLine("/// </summary>");
@@ -120,7 +124,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         var constValue = new CsClassField(name, type)
         {
             ConstValue = encodedValue,
-            IsConst    = true
+            IsConst    = true,
+            Owner      = this
         };
         Fields.Add(constValue);
         return constValue;
@@ -132,7 +137,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     {
         var m = new CsMethod(GetConstructorName(), default)
         {
-            Description = description
+            Description = description,
+            Owner       = this
         };
         _methods.Add(m);
         m.Kind = MethodKind.Constructor;
@@ -173,7 +179,10 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsClassField AddField(string fieldName, CsType type)
     {
-        var field = new CsClassField(fieldName, type);
+        var field = new CsClassField(fieldName, type)
+        {
+            Owner = this
+        };
         Fields.Add(field);
         return field;
     }
@@ -182,18 +191,16 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     {
         var m = new CsMethod(GetFinalizerName(), default)
         {
-            Description = description
+            Description = description,
+            Owner       = this
         };
         _methods.Add(m);
         m.Kind = MethodKind.Finalizer;
         return m;
     }
-    
+
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsMethod AddMethod(string name, string type, string description = null)
-    {
-        return AddMethod(name, new CsType(type), description);
-    }
+    public CsMethod AddMethod(string name, string type, string description = null) => AddMethod(name, new CsType(type), description);
 
     public CsMethod AddMethod(string name, Type type, string description = null)
         => AddMethod(name, type == null ? default : GetTypeName(type), description);
@@ -206,7 +213,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             return AddFinalizer(description);
         var m = new CsMethod(name, type)
         {
-            Description = description
+            Description = description,
+            Owner       = this
         };
         _methods.Add(m);
         return m;
@@ -215,18 +223,18 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     public CsProperty AddProperty(string propertyName, Type type) => AddProperty(propertyName, GetTypeName(type));
 
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsProperty AddProperty(string propertyName, string type)
-    {
-        return AddProperty(propertyName, new CsType(type));
-    }
-    
-    
+    public CsProperty AddProperty(string propertyName, string type) => AddProperty(propertyName, new CsType(type));
+
+
     public CsProperty AddProperty(string propertyName, CsType type)
     {
         propertyName = propertyName?.Trim();
         if (string.IsNullOrEmpty(propertyName))
             throw new ArgumentException("propertyName is empty");
-        var property = new CsProperty(propertyName, type);
+        var property = new CsProperty(propertyName, type)
+        {
+            Owner = this
+        };
         if (propertyName.Contains('.'))
         {
             property.Visibility = Visibilities.InterfaceDefault;
@@ -246,11 +254,9 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             return cl.AllowReferenceNullable();
         var file = FindFile();
         if (file is not null)
-            file.Nullable.IsNullableReferenceEnabled();
+            return file.Nullable.IsNullableReferenceEnabled();
 
-        var allowReferenceNullable = Formatting.Flags.HasFlag(CodeFormattingFeatures.NullableReferenceTypes);
-
-        return allowReferenceNullable;
+        return false;
 
         [CanBeNull]
         CsFile FindFile()
@@ -259,8 +265,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             while (true)
                 switch (owner)
                 {
-                    case CsFile file:
-                        return file;
+                    case CsFile csFile:
+                        return csFile;
                     case CsNamespace ns:
                         owner = ns.Owner;
                         break;
@@ -313,21 +319,19 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
                     x.Add("partial");
                 x.Add("struct");
                 break;
-            
+
             case CsNamespaceMemberKind.Record:
                 if (IsPartial)
                     x.Add("partial");
                 x.Add("record");
                 break;
-            
-            
+
             case CsNamespaceMemberKind.RecordStruct:
                 if (IsPartial)
                     x.Add("partial");
                 x.Add("record struct");
                 break;
-            
-            
+
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -355,10 +359,10 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     private bool Emit_events(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
     {
-        if (!_events.Any())
+        if (_events.Count == 0)
             return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
-        CsClassWriter w = new CsClassWriter(this);
+        var w = new CsClassWriter(this);
 
         var allowReferenceNullable = AllowReferenceNullable();
 
@@ -371,8 +375,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
                     WriteSummary(writer, ev.Description);
                     writer.WriteAttributes(ev.Attributes);
                     // public event EventHandler<BeforeSaveEventArgs> BeforeSave;
-                    var    v = ev.Visibility.ToCsCode();
-                    var    code = $"{v} event {ev.Type.AsString(allowReferenceNullable)} {ev.Name};".TrimStart();
+                    var v    = ev.Visibility.ToCsCode();
+                    var code = $"{v} event {ev.Type.AsString(allowReferenceNullable)} {ev.Name};".TrimStart();
 
                     if (ev.LongDefinition)
                     {
@@ -397,15 +401,18 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     private bool Emit_fields(ICsCodeWriter writer, bool addEmptyLineBeforeRegion, CodeEmitConfig config)
     {
-        CsClassWriter w   = new CsClassWriter(this);
-        var           all = _fields.OrderBy(a => a.IsConst).ToList();
+        var w   = new CsClassWriter(this);
+        var all = _fields.OrderBy(a => a.IsConst).ToList();
         foreach (var i in _events.Where(a => a.LongDefinition))
         {
-            var eventField = new CsClassField(i.FieldName, i.Type, i.GetFieldDescription());
+            var eventField = new CsClassField(i.FieldName, i.Type, i.GetFieldDescription())
+            {
+                Owner = this
+            };
             all.Add(eventField);
         }
 
-        if (!all.Any()) return addEmptyLineBeforeRegion;
+        if (all.Count == 0) return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
 
         addEmptyLineBeforeRegion = w.WriteMethodAction(writer, all, "Fields",
@@ -416,12 +423,12 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     private bool Emit_methods(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
     {
-        CsClassWriter w = new CsClassWriter(this);
+        var w = new CsClassWriter(this);
         var c = _methods
             .Where(i => i.Kind != MethodKind.Constructor && i.Kind != MethodKind.Finalizer)
             .OrderBy(a => a.Kind)
             .ToArray();
-        if (!c.Any()) return addEmptyLineBeforeRegion;
+        if (c.Length == 0) return addEmptyLineBeforeRegion;
         var m = c.Where(i => !i.IsStatic);
         addEmptyLineBeforeRegion = w.WriteMethods(writer, addEmptyLineBeforeRegion, m, "Methods");
 
@@ -432,9 +439,9 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     private void Emit_nested(ICsCodeWriter writer, bool addEmptyLineBeforeRegion, CodeEmitConfig config)
     {
-        CsClassWriter w = new CsClassWriter(this);
+        var w = new CsClassWriter(this);
         // ReSharper disable once InvertIf
-        if (_nestedClasses.Any())
+        if (_nestedClasses.Count != 0)
         {
             writer.EmptyLine(!addEmptyLineBeforeRegion);
             w.WriteMethodAction(writer, _nestedClasses.OrderBy(a => a.Name.Declaration), "Nested classes",
@@ -461,8 +468,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     private bool Emit_properties(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
     {
-        CsClassWriter w = new CsClassWriter(this);
-        if (!_properties.Any()) return addEmptyLineBeforeRegion;
+        var w = new CsClassWriter(this);
+        if (_properties.Count == 0) return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
         addEmptyLineBeforeRegion = w.WriteMethodAction(writer, _properties, "Properties",
             i =>
@@ -503,8 +510,12 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             }
     }
 
-    public CsClass GetOrCreateNested(CsType typeName) 
+    public CsClass GetOrCreateNested(CsType typeName)
         => GetOrCreateNested(typeName, out _);
+
+    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+    public CsClass GetOrCreateNested(string typeName)
+        => GetOrCreateNested((CsType)typeName, out _);
 
     public CsClass GetOrCreateNested(CsType typeName, out bool isCreatedNew)
     {
@@ -546,8 +557,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         writer.WriteComment(this);
         WriteSummary(writer, Description);
         writer.WriteAttributes(Attributes);
-        var  def        = string.Join(" ", DefAttributes());
-        bool hasBody = true;
+        var def     = string.Join(" ", DefAttributes());
+        var hasBody = true;
         {
             var dupa              = new HashSet<CsType>();
             var baseAndInterfaces = new List<CsType>();
@@ -608,12 +619,12 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             Emit_nested(writer, addEmptyLineBeforeRegion, config);
             writer.Close();
         }
-        
+
         writer.CloseCompilerIf(CompilerDirective);
     }
 
 
-    public override string ToString() => "csClass " + Name;
+    public override string ToString() => "csClass " + Name.Declaration;
 
     public bool TrySeal(bool replaceStatic = false)
     {
@@ -631,6 +642,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return true;
     }
 
+    // public CsClass WithAttribute<TAttribute>() => this.WithAttribute(this, typeof(TAttribute));
+
     public CsClass WithBaseClass(CsType baseClass)
     {
         BaseClass = baseClass;
@@ -639,6 +652,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     #region Properties
 
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
     public static CodeFormatting DefaultCodeFormatting { get; set; } = new(CodeFormattingFeatures.MakeAutoImplementIfPossible, 100);
 
     public IClassOwner Owner { get; set; }
@@ -666,7 +680,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     public List<CsProperty> Properties
     {
         get => _properties;
-        set => _properties = value ?? new List<CsProperty>();
+        set => _properties = value ?? [];
     }
 
     /// <summary>
@@ -674,7 +688,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     public List<CsClassField> Fields
     {
         get => _fields;
-        set => _fields = value ?? new List<CsClassField>();
+        set => _fields = value ?? [];
     }
 
     /// <summary>
@@ -704,13 +718,13 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsNamespaceMemberKind Kind { get; set; }
 
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
     public CodeFormatting Formatting { get; set; } = DefaultCodeFormatting;
 
     /// <summary>
     ///     Własność jest tylko do odczytu.
     /// </summary>
-    public IList<CsType> ImplementedInterfaces { get; } = new List<CsType>();
-
+    public CsTypesCollection ImplementedInterfaces { get; } = new CsTypesCollection();
 
     /// <summary>
     ///     obiekt, na podstawie którego wygenerowano klasę, przydatne przy dalszej obróbce
@@ -720,6 +734,9 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     public IReadOnlyList<CsMethod> Methods => _methods;
 
     public IReadOnlyList<CsEvent> Events => _events;
+
+    [CanBeNull]
+    public CsPrimaryConstructor PrimaryConstructor { get; set; }
 
     #endregion
 
@@ -740,11 +757,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     private readonly List<CsMethod> _methods = new();
 
     private readonly List<CsEvent> _events = new();
-
     private List<CsProperty> _properties = new();
     private List<CsClassField> _fields = new();
 
     #endregion
-    
-    [CanBeNull] public CsPrimaryConstructor PrimaryConstructor { get; set; }
 }

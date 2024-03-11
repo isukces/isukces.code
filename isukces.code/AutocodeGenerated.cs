@@ -6,6 +6,10 @@ namespace iSukces.Code
     {
         public AutocodeGeneratedAttribute(string generatorInfo = null) => GeneratorInfo = generatorInfo;
 
+        #region Properties
+
         public string GeneratorInfo { get; }
+
+        #endregion
     }
 }

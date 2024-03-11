@@ -4,10 +4,14 @@ namespace iSukces.Code
 {
     public interface IConverterEventArgs<TSource, TResult>
     {
+        #region Properties
+
         TSource SourceValue { get; }
 
         bool    Handled { get; set; }
         TResult Result  { get; set; }
+
+        #endregion
     }
 
     public static class ConverterEventArgsExt

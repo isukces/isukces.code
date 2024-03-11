@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.Interfaces;
 
@@ -11,6 +12,16 @@ public interface ITypeNameResolver
 
 public static class TypeToNameResolverExtensions
 {
+    public static string GetTypeNameD(this ITypeNameResolver s, Type type)
+    {
+        return s.GetTypeName(type).Declaration;
+    }
+
+    public static string GetTypeNameD<T>(this ITypeNameResolver s)
+    {
+        return s.GetTypeName(typeof(T)).Declaration;
+    }
+
     public static string GetEnumFlagsValueCode<T>(this ITypeNameResolver resolver, T value,
         Func<IReadOnlyList<string>, string> joinFunc = null)
         where T : Enum
@@ -42,10 +53,14 @@ public static class TypeToNameResolverExtensions
     public static string GetMemeberName<T>(this ITypeNameResolver resolver, string instanceName) =>
         resolver.GetTypeName<T>().GetMemberCode(instanceName);
 
-    public static CsType GetTypeName<T>(this ITypeNameResolver resolver) => resolver.GetTypeName(typeof(T));
+    public static CsType GetTypeName<T>(this ITypeNameResolver resolver)
+        => resolver.GetTypeName(typeof(T));
 
-    /*
-    [Obsolete("Use GetTypeName")]
-    public static string TypeName(this ITypeNameResolver resolver, Type type) => resolver.GetTypeName(type);
-*/
+    public static CsType Reduce(this INamespaceContainer resolver, CsType type)
+    {
+        var (ns, shortTypeName) = type.SpitNamespaceAndShortName();
+        if (resolver.IsKnownNamespace(ns))
+            return type.WithBaseName(shortTypeName);
+        return type;
+    }
 }

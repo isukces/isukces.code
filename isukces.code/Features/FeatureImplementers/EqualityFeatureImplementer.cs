@@ -65,7 +65,8 @@ public partial class EqualityFeatureImplementer
 
         var m = csClass.AddMethod(nameof(IComparable<int>.CompareTo), CsType.Int32)
             .WithBody(cs);
-        m.Parameters.Add(new CsProperty("other", csClass.Name));
+        var p1 = new CsMethodParameter("other", csClass.Name);
+        m.Parameters.Add(p1);
 
         {
             cs = new CsCodeWriter()
@@ -76,7 +77,7 @@ public partial class EqualityFeatureImplementer
                 $"return obj is {typeName} other ? CompareTo(other) : throw new ArgumentException(\"Object must be of type {typeName}\");");
             m = csClass.AddMethod(m.Name, CsType.Int32)
                 .WithBody(cs);
-            m.Parameters.Add(new CsProperty("obj", CsType.Object.WithReferenceNullable()));
+            m.Parameters.Add(new CsMethodParameter("obj", CsType.ObjectNullable));
         }
         return m.Name;
     }
@@ -86,7 +87,7 @@ public partial class EqualityFeatureImplementer
         var tn1 = _class.GetTypeName(typeof(DebuggerBrowsableAttribute));
         var tn2 = _class.GetTypeName(typeof(DebuggerBrowsableState));
         var attribute = new CsAttribute(tn1)
-            .WithArgument(new CsDirectCode($"{tn2}.Never"));
+            .WithArgument(new CsDirectCode($"{tn2.Declaration}.Never"));
         field.Attributes.Add(attribute);
     }
 
@@ -245,7 +246,7 @@ public partial class EqualityFeatureImplementer
 
     private void WriteEqualsWithObject()
     {
-        var gettype     = $"{nameof(GetType)}()";
+        var gettype    = $"{nameof(GetType)}()";
         var myTypeName = MyTypeName.Declaration;
         if (_type.GetTypeInfo().IsSealed)
             gettype = string.Format("typeof({0})", myTypeName);
@@ -358,8 +359,6 @@ public partial class EqualityFeatureImplementer
         }
     }
 
-    #region Properties
-
     public List<EqualsExpressionData>    EqualityExpressions  { get; set; } = new List<EqualsExpressionData>();
     public List<CompareToExpressionData> CompareToExpressions { get; set; } = new List<CompareToExpressionData>();
 
@@ -382,10 +381,6 @@ public partial class EqualityFeatureImplementer
     public GetHashCodeImplementationKind CachedGetHashCodeImplementation { get; set; }
     public bool                          CanBeNull                       { get; set; }
 
-    #endregion
-
-    #region Fields
-
     private const string GetHashCodeFieldName = "_cachedHashCode";
 
     public static int DefaultGethashcodeMultiply = 397;
@@ -395,8 +390,6 @@ public partial class EqualityFeatureImplementer
 
     private readonly CsClass _class;
     private readonly Type _type;
-
-    #endregion
 
     [Flags]
     public enum Features

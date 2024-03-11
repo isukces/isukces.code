@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using iSukces.Code.AutoCode;
@@ -31,6 +32,17 @@ public sealed class CsArgumentsBuilder
         if (addSemicolon)
             return methodName + CodeEx + ";";
         return methodName + CodeEx;
+    }
+
+    [Obsolete("Use CallConstructor")]
+    public string CallMethodNew(CsType typeName, bool addSemicolon)
+    {
+        return CallMethod("new " + typeName.Declaration, addSemicolon);
+    }
+
+    public string CallConstructor(CsType typeName, bool addSemicolon)
+    {
+        return CallMethod("new " + typeName.Declaration, addSemicolon);
     }
 
     public override string ToString() => Code;

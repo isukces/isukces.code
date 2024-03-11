@@ -10,6 +10,33 @@ public abstract partial class Generators
 {
     public class BuilderForTypeGenerator : SingleClassGenerator<Auto.BuilderForTypeAttribute>
     {
+        private void AddBuildMethod()
+        {
+            var constructorParametersNames = _builderPropertyInfos.MapToArray(a => a.PropertyName);
+            var m = _class
+                .AddMethod("Build", _class.GetTypeName(Attribute.TargetType))
+                .WithAggressiveInlining(_class);
+            var constructorCall = constructorParametersNames
+                .CommaJoin()
+                .New(m.ResultType.GetTypeNameOrThrowIfVoid(false));
+            m.WithBodyAsExpression(constructorCall);
+        }
+
+        private void AddConstructors()
+        {
+            // pusty konstruktor
+            _class.AddConstructor();
+            // konstruktor2
+            CodeWriter c = new CsCodeWriter();
+            if (Attribute.TargetType.IsClass)
+                c.WriteLine("if (source is null) return;");
+            foreach (var i in _builderPropertyInfos)
+                c.WriteLine("{0} = source.{0};", i.PropertyName);
+            var m = _class.AddConstructor()
+                .WithBody(c);
+            m.Parameters.Add(new CsMethodParameter("source", _class.GetTypeName(Attribute.TargetType)));
+        }
+
         protected virtual void AddIBuilderAttribute()
         {
 #if SAMPLE
@@ -23,8 +50,8 @@ public abstract partial class Generators
                 following code decorates builder class with IBuilder<> implementation
                 
                 var atTargetType = Attribute.TargetType;
-                var t            = typeof(IBuilder<>).MakeGenericType(atTargetType);
-                var typeName     = _class.GetTypeName(t);
+                var t = typeof(IBuilder<>).MakeGenericType(atTargetType);
+                var typeName = _class.GetTypeName(t);
                 // if (typeName=="IBuilder<PolyLinePoint>") Developer.Nop();
                 _class.ImplementedInterfaces.Add(typeName);
 #endif
@@ -41,6 +68,66 @@ public abstract partial class Generators
 
             var property = new NameAndTypeName(propName, propertyTypeName);
             AfterAddWithMethod(propertyType, property);
+        }
+
+        private void AddWithMethodsAndProperties()
+        {
+            for (var index = 0; index < _builderPropertyInfos.Length; index++)
+            {
+                var info             = _builderPropertyInfos[index];
+                var propertyTypeName = _class.GetTypeName(info.PropertyType);
+                var prop = _class.AddProperty(info.PropertyName, propertyTypeName)
+                    .WithMakeAutoImplementIfPossible();
+
+                if (info.Create)
+                    prop.WithConstValue(propertyTypeName.New());
+
+                if (!info.SkipWithMethod)
+                    AddWithMethod(info.PropertyName, info.PropertyType);
+
+                if (!info.ExpandFlags) continue;
+                // var enumUnderlyingType = Enum.GetUnderlyingType(info.PropertyType);
+                foreach (var enumValue in Enum.GetValues(info.PropertyType))
+                {
+                    // var value1 = Convert.ChangeType(enumValue, enumUnderlyingType);
+                    var value2 = (int)Convert.ChangeType(enumValue, typeof(int));
+                    if (value2 == 0)
+                        continue;
+
+                    var enumName = Enum.GetName(info.PropertyType, enumValue);
+                    var propName = enumName.FirstUpper();
+                    var prop1 = _class.AddProperty(propName, CsType.Bool)
+                        .WithNoEmitField();
+                    var v = $"{propertyTypeName.Declaration}.{enumName}";
+                    prop1.WithOwnGetterAsExpression($"({info.PropertyName} & {v}) != 0");
+                    prop1.WithOwnSetterAsExpression(
+                        $"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};");
+                    // metoda
+                    if (!info.SkipWithMethod)
+                        AddWithMethod(propName, typeof(bool));
+                }
+            }
+        }
+
+
+        protected void AddWithMethodUsingPropertyTypeConstructor(NameAndTypeName property,
+            params NameAndType[] constructorParams)
+        {
+            var m = _class.AddMethod("With" + property.PropName, _class.Name)
+                .WithAggressiveInlining(_class);
+            var l = new List<string>();
+            foreach (var i in constructorParams)
+            {
+                var pName = $"new{i.Name}X";
+                l.Add(pName);
+                m.AddParam(pName, _class.GetTypeName(i.Type ?? typeof(double)));
+            }
+
+            var constructorCall = l
+                .CommaJoin()
+                .New(property.PropertyTypeName.Declaration);
+
+            m.Body = $"{property.PropName} = {constructorCall};\r\nreturn this;";
         }
 
         protected virtual void AfterAddWithMethod(Type propertyType, NameAndTypeName property)
@@ -92,101 +179,13 @@ public abstract partial class Generators
             }
         }
 
-
-        protected void AddWithMethodUsingPropertyTypeConstructor(NameAndTypeName property,
-            params NameAndType[] constructorParams)
-        {
-            var m = _class.AddMethod("With" + property.PropName, _class.Name)
-                .WithAggressiveInlining(_class);
-            var l = new List<string>();
-            foreach (var i in constructorParams)
-            {
-                var pName = $"new{i.Name}X";
-                l.Add(pName);
-                m.AddParam(pName, _class.GetTypeName(i.Type ?? typeof(double)));
-            }
-
-            var constructorCall = l
-                .CommaJoin()
-                .New(property.PropertyTypeName.Declaration);
-
-            m.Body = $"{property.PropName} = {constructorCall};\r\nreturn this;";
-        }
-
-        private void AddBuildMethod()
-        {
-            var constructorParametersNames = _builderPropertyInfos.MapToArray(a => a.PropertyName);
-            var m = _class
-                .AddMethod("Build", _class.GetTypeName(Attribute.TargetType))
-                .WithAggressiveInlining(_class);
-            var constructorCall = constructorParametersNames
-                .CommaJoin()
-                .New(m.ResultType.GetTypeNameOrThrowIfVoid(_allowReferenceNullable));
-            m.WithBodyAsExpression(constructorCall);
-        }
-
-        private void AddConstructors()
-        {
-            // pusty konstruktor
-            _class.AddConstructor();
-            // konstruktor2
-            CodeWriter c = new CsCodeWriter();
-            if (Attribute.TargetType.IsClass)
-                c.WriteLine("if (source is null) return;");
-            foreach (var i in _builderPropertyInfos)
-                c.WriteLine(string.Format("{0} = source.{0};", i.PropertyName));
-            var m = _class.AddConstructor()
-                .WithBody(c);
-            m.Parameters.Add(new CsMethodParameter("source", _class.GetTypeName(Attribute.TargetType)));
-        }
-
-        private void AddWithMethodsAndProperties()
-        {
-            for (var index = 0; index < _builderPropertyInfos.Length; index++)
-            {
-                var info             = _builderPropertyInfos[index];
-                var propertyTypeName = _class.GetTypeName(info.PropertyType);
-                var prop = _class.AddProperty(info.PropertyName, propertyTypeName)
-                    .WithMakeAutoImplementIfPossible();
-
-                if (info.Create)
-                    prop.WithConstValue("new " + propertyTypeName + "()");
-
-                if (!info.SkipWithMethod)
-                    AddWithMethod(info.PropertyName, info.PropertyType);
-
-                if (!info.ExpandFlags) continue;
-                // var enumUnderlyingType = Enum.GetUnderlyingType(info.PropertyType);
-                foreach (var enumValue in Enum.GetValues(info.PropertyType))
-                {
-                    // var value1 = Convert.ChangeType(enumValue, enumUnderlyingType);
-                    var value2 = (int)Convert.ChangeType(enumValue, typeof(int));
-                    if (value2 == 0)
-                        continue;
-
-                    var enumName = Enum.GetName(info.PropertyType, enumValue);
-                    var propName = enumName.FirstUpper();
-                    var prop1 = _class.AddProperty(propName, CsType.Bool)
-                        .WithNoEmitField();
-                    var v = $"{propertyTypeName}.{enumName}";
-                    prop1.WithOwnGetterAsExpression($"({info.PropertyName} & {v}) != 0");
-                    prop1.WithOwnSetterAsExpression($"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};");
-                    // metoda
-                    if (!info.SkipWithMethod)
-                        AddWithMethod(propName, typeof(bool));
-                }
-            }
-        }
+        #region Fields
 
         private BuilderPropertyInfo[] _builderPropertyInfos;
         private CsClass _class;
         private IReadOnlyDictionary<string, Auto.BuilderForTypePropertyAttribute> _attributesForProperties;
-        private readonly bool _allowReferenceNullable;
 
-        public BuilderForTypeGenerator(bool allowReferenceNullable)
-        {
-            _allowReferenceNullable = allowReferenceNullable;
-        }
+        #endregion
 
         private sealed class BuilderPropertyInfo
         {
@@ -214,11 +213,15 @@ public abstract partial class Generators
                 return a;
             }
 
+            #region Properties
+
             public string PropertyName   { get; private set; }
             public Type   PropertyType   { get; private set; }
             public bool   SkipWithMethod { get; private set; }
             public bool   Create         { get; private set; }
             public bool   ExpandFlags    { get; set; }
+
+            #endregion
         }
     }
 }

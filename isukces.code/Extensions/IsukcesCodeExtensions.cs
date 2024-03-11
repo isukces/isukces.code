@@ -51,12 +51,13 @@ public static class IsukcesCodeExtensions
 
     private static CsAttribute AggressiveInlining(ITypeNameResolver resolver)
     {
+        var arg = resolver.GetTypeName<MethodImplOptions>()
+            .GetMemberCode(nameof(MethodImplOptions.AggressiveInlining));
         var att = CsAttribute.Make<MethodImplAttribute>(resolver)
-            .WithArgumentCode(resolver.GetTypeName<MethodImplOptions>() + "." +
-                              nameof(MethodImplOptions.AggressiveInlining));
+            .WithArgumentCode(arg);
         return att;
     }
-        
+
     public static void WriteAttributes(this ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
     {
         if (attributes == null || attributes.Count == 0)

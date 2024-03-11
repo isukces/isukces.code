@@ -1,4 +1,6 @@
-﻿namespace iSukces.Code;
+﻿using System;
+
+namespace iSukces.Code;
 
 public static class CsMethodExtensions
 {
@@ -31,6 +33,14 @@ public static class CsMethodExtensions
     public static CsMethod WithParameter(this CsMethod method, string name, CsType type = default, string description = null)
     {
         var parameter = new CsMethodParameter(name, type, description);
+        method.Parameters.Add(parameter);
+        return method;
+    }
+        
+    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+    public static CsMethod WithParameter(this CsMethod method, string name, string type, string description = null)
+    {
+        var parameter = new CsMethodParameter(name, (CsType)type, description);
         method.Parameters.Add(parameter);
         return method;
     }

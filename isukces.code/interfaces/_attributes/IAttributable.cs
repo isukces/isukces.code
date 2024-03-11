@@ -31,10 +31,10 @@ public static class AttributableExt
         }
     }
 
-    public static T WithAttribute<T>(this T element, INamespaceContainer nsProvider, Type t)
+    public static T WithAttribute<T>(this T element, INamespaceContainer nsProvider, Type attributeType)
         where T : IAttributable
     {
-        var tn = nsProvider.GetTypeName(t);
+        var tn = nsProvider.GetTypeName(attributeType);
         return element.WithAttribute(new CsAttribute(tn));
     }
 
@@ -67,6 +67,13 @@ public static class AttributableExt
     }
 
     public static T WithAttributeFromName<T>(this T self, string className)
+        where T : IAttributable
+    {
+        ICsAttribute at = new CsAttribute(className);
+        return WithAttribute(self, at);
+    }
+
+    public static T WithAttributeFromName<T>(this T self, CsType className)
         where T : IAttributable
     {
         ICsAttribute at = new CsAttribute(className);

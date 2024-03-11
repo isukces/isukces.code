@@ -25,17 +25,11 @@ namespace iSukces.Code.FeatureImplementers
 
         public CsExpression Expression { get; }
 
-        public CsExpression ExpressionWithOffset
-        {
-            get { return Min is null ? Expression : Expression - Min.Value; }
-        }
+        public CsExpression ExpressionWithOffset => Min is null ? Expression : Expression - Min.Value;
 
-        public int?         Min        { get; }
-        public int?         Max        { get; }
+        public int? Min { get; }
+        public int? Max { get; }
 
-        public bool HasMinMax
-        {
-            get { return Min.HasValue && Max.HasValue; }
-        }
+        public bool HasMinMax => Min.HasValue && Max.HasValue;
     }
 }
