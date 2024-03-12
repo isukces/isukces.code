@@ -1,20 +1,21 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
 [DebuggerDisplay("CsNamespace {" + nameof(Name) + "}")]
 public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnumOwner
 {
-    public CsNamespace(INamespaceOwner owner, string name)
+    public CsNamespace(INamespaceOwner owner, string? name)
     {
-        Owner = owner;
-        Name  = name?.Trim() ?? string.Empty;
+        Owner             = owner ?? throw new ArgumentNullException(nameof(owner));
+        Name              = name?.Trim() ?? string.Empty;
+        CompilerDirective = string.Empty;
     }
 
     public CsClass AddClass(CsClass csClass)
@@ -31,16 +32,19 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
         return csEnum;
     }
 
-    public void AddImportNamespace(string ns)
+    public void AddImportNamespace(string ns) 
+        => ImportNamespaces.Add(ns);
+
+    public void AddImportNamespace<T>()
     {
-        ImportNamespaces.Add(ns);
+        var item = typeof(T).Namespace;
+        if (string.IsNullOrEmpty(item)) return;
+        ImportNamespaces.Add(item);
     }
 
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsClass GetOrCreateClass(string csClassName)
-    {
-        return GetOrCreateClass(new CsType(csClassName));
-    }
+    public CsClass GetOrCreateClass(string csClassName) => GetOrCreateClass(new CsType(csClassName));
+
     public CsClass GetOrCreateClass(CsType csClassName)
     {
         csClassName.ThrowIfArray();
@@ -50,7 +54,7 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
 
     public CsType GetTypeName(Type type) => GeneratorsHelper.GetTypeName(this, type);
 
-    public bool IsKnownNamespace(string namespaceName)
+    public bool IsKnownNamespace(string? namespaceName)
     {
         if (string.IsNullOrEmpty(namespaceName)) return false;
         if (Name == namespaceName) return true;
@@ -62,7 +66,6 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
 
     public INamespaceOwner Owner { get; }
 
-    [NotNull]
     public string Name { get; }
 
     public IReadOnlyList<CsClass> Classes { get; } = new List<CsClass>();
@@ -73,4 +76,5 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
     ///     Enums
     /// </summary>
     public IReadOnlyList<CsEnum> Enums { get; } = new List<CsEnum>();
+
 }

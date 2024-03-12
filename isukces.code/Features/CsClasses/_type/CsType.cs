@@ -121,6 +121,8 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         return AsString(allowReferenceNullable);
     }
 
+    [Pure]
+    [JetBrains.Annotations.Pure]
     public CsType MakeArray(int arrayRank = 1, bool referenceNullable = false)
     {
         var cnt    = ArrayRanks.Count;

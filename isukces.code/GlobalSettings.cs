@@ -1,4 +1,6 @@
 using System;
+using System.Reflection;
+using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
@@ -13,6 +15,7 @@ public sealed class GlobalSettings
     
     
     public static Action<string>  EmergencyLog = Console.WriteLine;
+ 
 }
 
 public enum InvalidOperationNotification

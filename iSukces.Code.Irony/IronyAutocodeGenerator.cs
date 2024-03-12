@@ -239,8 +239,10 @@ namespace iSukces.Code.Irony
                 var tn         = _grammarClass.GetTypeName<T>();
                 var factory    = _grammarClass.GetTypeName(typeof(TerminalFactory));
                 var constValue = $"{factory}.{methodName}({name.CsEncode()})";
-                var field = new CsClassField(new TokenName(name).GetCode(_grammarClass),
-                    tn); //.WithConstValue(constValue);
+                var field = new CsClassField(new TokenName(name).GetCode(_grammarClass), tn)
+                {
+                    Owner = null !
+                };
                 fields.Add(field);
                 field.UserAnnotations["o"] = 1;
                 if (key == SpecialTerminalKind.CreateCSharpNumber)
@@ -265,7 +267,10 @@ namespace iSukces.Code.Irony
             var tnKeyTerm = _grammarClass.GetTypeName<KeyTerm>();
             foreach (var i in Cfg.Terminals)
             {
-                var field = new CsClassField(i.Name.GetCode(_grammarClass), tnKeyTerm);
+                var field = new CsClassField(i.Name.GetCode(_grammarClass), tnKeyTerm)
+                {
+                    Owner = null!
+                };
                 field.UserAnnotations["o"] = 2;
                 fields.Add(field);
             }
@@ -292,8 +297,14 @@ namespace iSukces.Code.Irony
                     args.AddCode($"typeof({astClassName})");
 
                 var constValue = $"new {tnNonTerminal}{args.CodeEx}";
-                var field      = new CsClassField(i.Name.GetCode(_grammarClass), tnNonTerminal);
-                field.UserAnnotations["o"] = 3;
+                var field = new CsClassField(i.Name.GetCode(_grammarClass), tnNonTerminal)
+                {
+                    Owner           = null!,
+                    UserAnnotations =
+                    {
+                        ["o"] = 3
+                    }
+                };
                 fields.Add(field);
                 yield return new FieldCreationInfo(field.Name, constValue);
             }

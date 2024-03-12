@@ -12,9 +12,21 @@ namespace iSukces.Code;
 
 public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 {
+    public CsFile()
+    {
+        
+    }
+
     public void AddImportNamespace(string ns)
     {
         _importNamespaces.Add(ns);
+    }
+    
+    public void AddImportNamespace<T>()
+    {
+        var item = typeof(T).Namespace;
+        if (string.IsNullOrEmpty(item)) return;
+        _importNamespaces.Add(item);
     }
 
     public string GetCode(bool isEmbedded = false)
@@ -187,11 +199,17 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         var fileNamespaces = classByNamespace.Keys.Union(enumByNamespace.Keys)
             .OrderBy(a => a).ToList();
 
+
         var config = new CodeEmitConfig
         {
             AllowReferenceNullable = Nullable.IsNullableReferenceEnabled()
         };
 
+        
+        
+        var namespaceWriter = FileScopeNamespace.Check(fileNamespaces, out var comment);
+        if (!string.IsNullOrEmpty(comment))
+            writer.WriteLine("// suggestion: " + comment);
 
         foreach (var ns in fileNamespaces)
         {
@@ -201,8 +219,10 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             directiveByNamespace.TryGetValue(ns, out var compilerDirective);
             {
                 writer.OpenCompilerIf(compilerDirective);
-                writer.Open("namespace {0}", ns);
-                var ns1 = Namespaces.FirstOrDefault(a => a.Name == ns)?.ImportNamespaces;
+                namespaceWriter.OpenNamespace(ns, writer);
+                // writer.Open("namespace {0}", ns);
+                var ns1 = Namespaces.FirstOrDefault(a => a.Name == ns)?
+                    .ImportNamespaces;
                 if (ns1 != null && ns1.Any())
                 {
                     foreach (var i in ns1.OrderBy(a => a))
@@ -230,8 +250,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
                         writer.DoWithKeepingIndent(() => i.MakeCode(writer));
                     }
             }
-            if (!string.IsNullOrEmpty(ns))
-                writer.Close();
+            namespaceWriter.CloseNamespace(ns, writer);
             writer.CloseCompilerIf(compilerDirective);
         }
 
@@ -256,8 +275,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     public bool SaveIfDifferent(string filename, bool addBom = false) => CodeFileUtils.SaveIfDifferent(GetCode(), filename, addBom);
 
     public override string ToString() => GetCode();
-
-    #region Properties
 
     /// <summary>
     ///     Przestrzenie nazw
@@ -293,10 +310,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     public bool ReSharperDisableAll { get; set; } = GlobalSettings.DefaultReSharperDisableAll;
 
-    #endregion
-
-    #region Fields
-
     private readonly Dictionary<TypeProvider, CsClass> _classesCache = new Dictionary<TypeProvider, CsClass>();
 
     /// <summary>
@@ -306,6 +319,14 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     private List<CsEnum> _enums = new List<CsEnum>();
     private string _suggestedFileName = string.Empty;
+    
+    
+    
+    public FileScopeNamespaceConfiguration FileScopeNamespace
+    {
+        get => _fileScopeNamespace;
+        set => _fileScopeNamespace = value ?? throw new ArgumentNullException(nameof(value));
+    }
+    private FileScopeNamespaceConfiguration _fileScopeNamespace = FileScopeNamespaceConfiguration.BlockScoped;
 
-    #endregion
 }
