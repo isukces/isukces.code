@@ -5,10 +5,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DefineConstants>TRACE;IGNORECSTYPE</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DefineConstants>IGNORECSTYPE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
