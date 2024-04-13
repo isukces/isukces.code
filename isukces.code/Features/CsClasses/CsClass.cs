@@ -551,29 +551,41 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public bool IsKnownNamespace(string namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
 
-    public void MakeCodeForBlazor(ICsCodeWriter writer, CodeEmitConfig config)
+    public void MakeCodeForBlazor(ICsCodeWriter writer, CodeEmitConfig config, bool addWrapper)
     {
-        MakeCodeInternal(writer, config, ClassEmitStyle.Blazor);
+        MakeCodeInternal(writer, config, ClassEmitStyle.Blazor, addWrapper);
     }
 
     public void MakeCode(ICsCodeWriter writer, CodeEmitConfig config)
     {
-        MakeCodeInternal(writer, config, ClassEmitStyle.Normal);
+        MakeCodeInternal(writer, config, ClassEmitStyle.Normal, false);
     }
 
-    private void MakeCodeInternal(ICsCodeWriter writer, CodeEmitConfig config, ClassEmitStyle style)
+    private void MakeCodeInternal(ICsCodeWriter writer, CodeEmitConfig config, ClassEmitStyle style,
+        bool addBlazorWrapper)
     {
         var isN = style == ClassEmitStyle.Normal;
         var isB = style == ClassEmitStyle.Blazor;
-        
-        writer.OpenCompilerIf(CompilerDirective);
-        writer.WriteComment(this);
-        WriteSummary(writer, Description);
-        writer.WriteAttributes(Attributes);
-        var def     = string.Join(" ", DefAttributes());
+
+        if (isN)
+        {
+            writer.OpenCompilerIf(CompilerDirective);
+            writer.WriteComment(this);
+            WriteSummary(writer, Description);
+            writer.WriteAttributes(Attributes);
+        }
+
+        if (isB)
+        {
+            if (addBlazorWrapper)
+                writer.WriteLine("@code {");
+            writer.IncIndent();
+        }
+
+        var def = string.Join(" ", DefAttributes());
         var hasBody = true;
         {
-            var types              = new HashSet<CsType>();
+            var types = new HashSet<CsType>();
             var baseAndInterfaces = new List<CsType>();
             if (!BaseClass.IsVoid)
             {
@@ -608,7 +620,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
                           || _events.Count != 0
                           || _nestedClasses.Count != 0;
 
-                if (!hasBody)
+                if (!hasBody && isN)
                 {
                     def += ";";
                     writer.WriteLine(def);
@@ -617,7 +629,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         }
         if (hasBody)
         {
-            writer.Open(def);
+            if (isN)
+                writer.Open(def);
             // Constructors
             var addEmptyLineBeforeRegion = Emit_constructors(writer, false);
             // Methods
@@ -630,10 +643,19 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             addEmptyLineBeforeRegion = Emit_events(writer, addEmptyLineBeforeRegion);
             // Nested
             Emit_nested(writer, addEmptyLineBeforeRegion, config);
-            writer.Close();
+            if (isN)
+                writer.Close();
         }
 
-        writer.CloseCompilerIf(CompilerDirective);
+        if (isB)
+        {
+            writer.DecIndent();
+            if (addBlazorWrapper)
+                writer.WriteLine("}");
+        }
+
+        if (isN)
+            writer.CloseCompilerIf(CompilerDirective);
     }
 
 
