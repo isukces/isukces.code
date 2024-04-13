@@ -5,31 +5,45 @@ namespace iSukces.Code;
 
 public class FluentCode
 {
-    public FluentCode Add(string code)
+    public void AddComment(string comment)
     {
-        _code.Add(code);
+        _comments.Add(comment);
+    }
+
+    public FluentCode AddLine(string code)
+    {
+        CodeLines.Add(code);
         return this;
     }
 
     public FluentCode AddMethod(string methodName, params string[] args)
     {
         var code = args.CommaJoin().Parentheses(methodName);
-        _code.Add(code);
+        CodeLines.Add(code);
         return this;
     }
 
     public void Write(CsCodeWriter writer)
     {
-        if (_code.Count < 1)
-            return;
-        var lastIdx = _code.Count - 1;
-        for (var index = 0; index < _code.Count; index++)
+        foreach (var i in _comments)
+            writer.WriteLine($"// {i}");
+        if (CodeLines.Count < 1)
         {
-            var line = _code[index];
+            if (!string.IsNullOrEmpty(EmptyCode))
+                writer.WriteLine(EmptyCode);
+            return;
+        }
+
+        var lastIdx = CodeLines.Count - 1;
+        for (var index = 0; index < CodeLines.Count; index++)
+        {
+            var line = CodeLines[index];
             if (index > 0)
-                line = "." + line;
+                line = NextLineStart + line;
+            else
+                line = FirstLineStart + line;
             if (index == lastIdx)
-                line += ";";
+                line += Ending;
             writer.WriteLine(line);
             if (index == 0)
                 writer.IncIndent();
@@ -38,16 +52,13 @@ public class FluentCode
         writer.DecIndent();
     }
 
-    #region properties
+    public int Count => CodeLines.Count;
+    public string FirstLineStart { get; set; }
+    public string NextLineStart { get; set; } = ".";
+    public string Ending { get; set; } = ";";
+    public string EmptyCode { get; set; }
 
-    public int Count => _code.Count;
+    public List<string> CodeLines { get; } = [];
 
-    #endregion
-
-    #region Fields
-
-    private readonly List<string> _code = new();
-
-    #endregion
+    private readonly List<string> _comments = [];
 }
-
