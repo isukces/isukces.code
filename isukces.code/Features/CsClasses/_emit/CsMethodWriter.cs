@@ -131,7 +131,7 @@ internal sealed class CsMethodWriter
                         throw new ArgumentOutOfRangeException();
                 }
 
-            if (_method.IsPartial)
+            if (_method.PartialKind != PartialMethod.None)
             {
                 if (_method.IsAsync)
                     throw new Exception("Partial method can't be async");
@@ -151,6 +151,8 @@ internal sealed class CsMethodWriter
         bool EmitVisibility()
         {
             if (Visibility == Visibilities.InterfaceDefault)
+                return false;
+            if (_method.PartialKind != PartialMethod.None)
                 return false;
             if (Kind == MethodKind.Finalizer)
                 return false;
@@ -218,7 +220,7 @@ internal sealed class CsMethodWriter
                 return;
             }
 
-            if (_method.IsPartial)
+            if (_method.PartialKind == PartialMethod.Abstract)
             {
                 writer.WriteLine(mDefinition + ";");
                 return;

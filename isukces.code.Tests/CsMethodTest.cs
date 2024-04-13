@@ -1,5 +1,4 @@
 using System;
-using iSukces.Code;
 using Xunit;
 
 namespace iSukces.Code.Tests;
@@ -8,13 +7,15 @@ public partial class CsMethodTest
 {
     public static string TestCode(Action<CsClass> action)
     {
-        var f  = new CsFile();
+        var f = new CsFile();
         var ns = f.GetOrCreateNamespace("My123");
         var cs = ns.GetOrCreateClass((CsType)"MyClass");
         action(cs);
         var code = f.GetCode();
         return code;
     }
+
+    partial void Q();
 
     [Fact]
     public void T01_Should_create_virtual_method()
@@ -172,7 +173,7 @@ namespace My123
     [InlineData(OverridingType.Override)]
     public void T08_Should_not_create_finalizer_with_overriding_flags(OverridingType overriding)
     {
-        var f  = new CsFile();
+        var f = new CsFile();
         var ns = f.GetOrCreateNamespace("My123");
         var cs = ns.GetOrCreateClass((CsType)"MyClass");
         cs.AddConstructor().Overriding = overriding;
@@ -223,7 +224,6 @@ namespace My123
 ";
         var code = TestCode(cs =>
         {
-
             cs.Formatting = cs.Formatting.With(CodeFormattingFeatures.ExpressionBody);
             var m = cs.AddMethod("Bla", CsType.Void)
                 .WithBodyAsExpression("SetSomeValue()");
@@ -280,7 +280,34 @@ namespace My123
         });
         Assert.Equal(exp, code);
     }
-        
+
+    [Fact]
+    public void T11c_Should_add_comment()
+    {
+        const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
+namespace My123
+{
+    public class MyClass
+    {
+        // one line
+        public int Bla()
+        {
+            return SetSomeValue();
+        }
+
+    }
+}
+";
+        var code = TestCode(cs =>
+        {
+            var m = cs.AddMethod("Bla", CsType.Int32)
+                .WithBodyAsExpression("SetSomeValue()");
+            m.AddComment("one line");
+        });
+        Assert.Equal(exp, code);
+    }
+
     [Fact]
     public void T11c_Should_add_two_lines_comment()
     {
@@ -311,36 +338,7 @@ namespace My123
         });
         Assert.Equal(exp, code);
     }
-        
-    [Fact]
-    public void T11c_Should_add_comment()
-    {
-        const string exp = @"// ReSharper disable All
-// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
-namespace My123
-{
-    public class MyClass
-    {
-        // one line
-        public int Bla()
-        {
-            return SetSomeValue();
-        }
 
-    }
-}
-";
-        var code = TestCode(cs =>
-        {
-            var m = cs.AddMethod("Bla", CsType.Int32)
-                .WithBodyAsExpression("SetSomeValue()");
-            m.AddComment("one line");
-        });
-        Assert.Equal(exp, code);
-    }
-
-    partial void Q();
-          
     [Fact]
     public void T12_Should_create_partial_method()
     {
@@ -352,17 +350,46 @@ namespace My123
 {
     public class MyClass
     {
-        public partial void Bla();
+        partial void Bla();
 
     }
 }
+";
+        var code = TestCode(cs =>
+        {
+            var m = cs.AddMethod("Bla", CsType.Void)
+                .WithBodyAsExpression("SetSomeValue()");
+            m.PartialKind = PartialMethod.Abstract;
+        });
+        Assert.Equal(exp.Trim(), code.Trim());
+    }
+
+    [Fact]
+    public void T13_Should_create_partial_implementation_method()
+    {
+        Q();
+        const string exp = @"
+// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
+namespace My123
+{
+    public class MyClass
+    {
+        partial void Bla()
+        {
+            SetSomeValue();
+        }
+
+    }
+}
+
 
 ";
         var code = TestCode(cs =>
         {
             var m = cs.AddMethod("Bla", CsType.Void)
                 .WithBodyAsExpression("SetSomeValue()");
-            m.IsPartial = true;
+            m.PartialKind = PartialMethod.Implementation;
         });
         Assert.Equal(exp.Trim(), code.Trim());
     }

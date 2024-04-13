@@ -36,11 +36,11 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     /// </summary>
     public CsMethod(string name, CsType resultType)
     {
-        Name       = name;
+        Name = name;
         ResultType = resultType;
         if (IsOperator(name))
         {
-            Kind     = MethodKind.Operator;
+            Kind = MethodKind.Operator;
             IsStatic = true;
         }
     }
@@ -88,7 +88,7 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     public CsMethod WithBodyAsExpression(string body)
     {
         IsExpressionBody = true;
-        Body             = body;
+        Body = body;
         return this;
     }
 
@@ -109,21 +109,21 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
             switch (_name)
             {
                 case Implicit:
-                    Kind       = MethodKind.Implicit;
-                    IsStatic   = true;
+                    Kind = MethodKind.Implicit;
+                    IsStatic = true;
                     Overriding = OverridingType.None;
                     break;
                 case Explicit:
-                    Kind       = MethodKind.Explicit;
+                    Kind = MethodKind.Explicit;
                     Overriding = OverridingType.None;
-                    IsStatic   = true;
+                    IsStatic = true;
                     break;
                 default:
                     if (IsOperator(_name))
                     {
-                        Kind       = MethodKind.Operator;
+                        Kind = MethodKind.Operator;
                         Overriding = OverridingType.None;
-                        IsStatic   = true;
+                        IsStatic = true;
                     }
 
                     break;
@@ -176,11 +176,11 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
             switch (value)
             {
                 case MethodKind.Explicit:
-                    Name       = Explicit;
+                    Name = Explicit;
                     Overriding = OverridingType.None;
                     break;
                 case MethodKind.Implicit:
-                    Name       = Implicit;
+                    Name = Implicit;
                     Overriding = OverridingType.None;
                     break;
             }
@@ -198,15 +198,14 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         }
     }
 
-    public bool IsAsync   { get; set; }
-    public bool IsPartial { get; set; }
+    public bool IsAsync { get; set; }
+    public PartialMethod PartialKind { get; set; }
 
     #endregion
 
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
-    [CanBeNull]
-    public CsGenericArguments GenericArguments { get; set; }
+    [CanBeNull] public CsGenericArguments GenericArguments { get; set; }
 
     public CsClass Owner { get; init; }
 
@@ -221,4 +220,11 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     private string _body = string.Empty;
     private string _baseConstructorCall = string.Empty;
     private MethodKind _kind;
+}
+
+public enum PartialMethod
+{
+    None,
+    Abstract,
+    Implementation
 }
