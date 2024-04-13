@@ -42,8 +42,9 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
         ImportNamespaces.Add(item);
     }
 
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsClass GetOrCreateClass(string csClassName) => GetOrCreateClass(new CsType(csClassName));
+    // [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+    public CsClass GetOrCreateClass(string csClassName) 
+        => GetOrCreateClass(new CsType(csClassName));
 
     public CsClass GetOrCreateClass(CsType csClassName)
     {
