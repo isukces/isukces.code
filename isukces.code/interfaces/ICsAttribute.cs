@@ -1,12 +1,12 @@
-﻿namespace iSukces.Code.Interfaces
-{
-    public interface ICsAttribute: IDirectCode
-    {
-        string Name { get; set; }
-    }
+﻿namespace iSukces.Code.Interfaces;
 
-    public interface IDirectCode
-    {
-        string Code { get; }
-    }
+public interface ICsAttribute: IDirectCode, IConditional
+{
+    string Name { get; set; }
+        
+}
+
+public interface IDirectCode
+{
+    string Code { get; }
 }

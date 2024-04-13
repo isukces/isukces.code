@@ -76,7 +76,11 @@ public static class IsukcesCodeExtensions
         if (attributes == null || attributes.Count == 0)
             return;
         foreach (var j in attributes)
+        {
+            var close = writer.OpenCompilerIf(j);
             writer.WriteLine("[{0}]", j.Code);
+            writer.CloseCompilerIf(close);
+        }
     }
 
     public static CsType GetTypeName(this ITypeNameResolver res, NamespaceAndName typeName)

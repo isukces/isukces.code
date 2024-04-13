@@ -1,6 +1,7 @@
 // ReSharper disable All
 using System;
 
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.EqualityGenerator
 {
     partial struct TestStructWithSpecialHashCodeField : iSukces.Code.AutoCode.IAutoEquatable<TestStructWithSpecialHashCodeField>

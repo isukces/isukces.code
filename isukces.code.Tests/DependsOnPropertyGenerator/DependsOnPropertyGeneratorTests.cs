@@ -15,6 +15,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             var q = new TestContext();
             gen.Generate(typeof(Test), q);
             const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 {
     partial class DependsOnPropertyGeneratorTests
@@ -45,6 +46,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             var q = new TestContext();
             gen.Generate(typeof(Test), q);
             const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 {
     partial class DependsOnPropertyGeneratorTests
@@ -86,6 +88,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             gen.Generate(typeof(TestCascade), q);
          
           const string expected = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 {
     partial class DependsOnPropertyGeneratorTests

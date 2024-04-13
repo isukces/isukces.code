@@ -66,6 +66,7 @@ namespace iSukces.Code.Tests.Serenity
           var expected=  @"// ReSharper disable All
 using iSukces.Code.Tests.Serenity;
 
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace Cloud.Common
 {
     using Serenity.Data;

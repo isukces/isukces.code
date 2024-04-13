@@ -204,8 +204,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         {
             AllowReferenceNullable = Nullable.IsNullableReferenceEnabled()
         };
-
-        
         
         var namespaceWriter = FileScopeNamespace.Check(fileNamespaces, out var comment);
         if (!string.IsNullOrEmpty(comment))

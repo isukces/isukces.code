@@ -17,6 +17,7 @@ public class CopyFromGeneratorTests
 
 
 // ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests
 {
     partial class CopyFromGeneratorTests
@@ -70,6 +71,7 @@ namespace iSukces.Code.Tests
 
 
 // ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests
 {
     partial class CopyFromGeneratorTests
@@ -114,6 +116,7 @@ namespace iSukces.Code.Tests
         g.Generate(typeof(CopyFromConstructor), context);
         var expected = @"
 // ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests
 {
     partial class CopyFromGeneratorTests
@@ -154,6 +157,7 @@ namespace iSukces.Code.Tests
         g.Generate(typeof(UseSpecialMethod), context);
         var expected = @"
 // ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests
 {
     partial class CopyFromGeneratorTests

@@ -26,6 +26,7 @@ public sealed class CsFileTests
         var expected = @"
 #nullable enable
 // ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace Bla
 {
     public class ClassName
@@ -51,6 +52,7 @@ namespace Bla
         var expected = @"
 #nullable disable
 // ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace Bla
 {
     public class ClassName

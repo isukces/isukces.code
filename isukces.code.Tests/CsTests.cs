@@ -169,6 +169,7 @@ public class Src1
             const string expected = @"// ReSharper disable All
 using System.Alpha;
 
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace Custom.Beta
 {
     using Custom.Private;

@@ -24,6 +24,12 @@ namespace iSukces.Code.Interfaces
         }
 
 
+        public static void CloseCompilerIf(this ICsCodeWriter self, bool close)
+        {
+            if (close)
+                self.WritelineNoIndent("#endif");
+        }
+
         public static void CloseCompilerIf(this ICsCodeWriter self, string directive)
         {
             if (!string.IsNullOrEmpty(directive))
@@ -49,15 +55,16 @@ namespace iSukces.Code.Interfaces
         }
 
 
-        public static void OpenCompilerIf(this ICsCodeWriter self, string directive)
+        public static bool OpenCompilerIf(this ICsCodeWriter self, string directive)
         {
-            if (!string.IsNullOrEmpty(directive))
-                self.WritelineNoIndent("#if " + directive);
+            if (string.IsNullOrEmpty(directive)) return false;
+            self.WritelineNoIndent("#if " + directive);
+            return true;
         }
 
-        public static void OpenCompilerIf(this ICsCodeWriter self, IConditional conditional)
+        public static bool OpenCompilerIf(this ICsCodeWriter self, IConditional conditional)
         {
-            self.OpenCompilerIf(conditional?.CompilerDirective);
+            return self.OpenCompilerIf(conditional?.CompilerDirective);
         }
 
 

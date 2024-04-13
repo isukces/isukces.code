@@ -21,6 +21,7 @@ namespace iSukces.Code.Tests
 
             var code = f.GetCode();
             var exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public enum MyEnum
@@ -50,6 +51,7 @@ namespace My123
 
             var code = f.GetCode();
             var exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     [System.Flags]
@@ -84,6 +86,7 @@ namespace My123
 
             var code = f.GetCode();
             var exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     /// <summary>
@@ -128,6 +131,7 @@ namespace My123
 
             var code = f.GetCode();
             var exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class OwnerClass

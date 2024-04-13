@@ -16,6 +16,7 @@ public class ClassCreationTests
         c.GetOrCreateClass(type);
         var code = c.GetCode();
         Assert.Equal(@"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests
 {
     partial class ParentGeneric<T>
@@ -44,6 +45,7 @@ namespace iSukces.Code.Tests
         }
         var code = c.GetCode();
         Assert.Equal(@"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests
 {
     partial class ParentGeneric<T>

@@ -22,6 +22,7 @@ public sealed class CsClassTests
         
         
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass(int a)
@@ -45,6 +46,7 @@ namespace My123
         
         
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public record MyClass(int a);
@@ -67,6 +69,7 @@ namespace My123
         
         
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public record struct MyClass(int a);

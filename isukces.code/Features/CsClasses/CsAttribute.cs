@@ -73,7 +73,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
 
     private static string KeyValuePairToString(KeyValuePair<string, string> x)
     {
-        return string.IsNullOrEmpty(x.Key) ? x.Value : string.Format("{0} = {1}", x.Key, x.Value);
+        return string.IsNullOrEmpty(x.Key) ? x.Value : $"{x.Key} = {x.Value}";
     }
 
 
@@ -83,7 +83,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
         var name   = Name;
         if (name.EndsWith(AttributeSuffix, StringComparison.Ordinal))
             if (!name.Contains('.'))
-                name = name.Substring(0, name.Length - AttributeSuffixLength);
+                name = name[..^AttributeSuffixLength];
         if (values.Length == 0)
             return name;
         return values.CommaJoin().Parentheses(name);

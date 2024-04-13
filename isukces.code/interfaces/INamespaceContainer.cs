@@ -67,6 +67,7 @@ namespace iSukces.Code.Interfaces
         /// <summary>
         ///     Compiler directive required for element
         /// </summary>
+        [CanBeNull]
         string CompilerDirective { get; set; }
     }
 

@@ -20,6 +20,7 @@ public sealed class CsNamespaceTests
 using iSukces.Code;
 
 namespace iSukces.Code;
+
 using iSukces.Code.Tests;";
         Assert.Equal(expected, code);
     }

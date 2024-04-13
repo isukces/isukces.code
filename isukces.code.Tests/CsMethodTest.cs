@@ -20,6 +20,7 @@ public partial class CsMethodTest
     public void T01_Should_create_virtual_method()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -44,6 +45,7 @@ namespace My123
     public void T02_Should_create_abstract_method()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public abstract class MyClass
@@ -66,6 +68,7 @@ namespace My123
     public void T03_Should_create_override_method()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -90,6 +93,7 @@ namespace My123
     public void T04_Should_create_constructor()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -128,6 +132,7 @@ namespace My123
     public void T06_Should_create_finalizer(bool addExplicitNonStatic)
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -178,6 +183,7 @@ namespace My123
     public void T09_Should_binary_operator()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -205,6 +211,7 @@ namespace My123
     public void T10a_Should_create_expression_body_method()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -228,6 +235,7 @@ namespace My123
     public void T10b_Should_create_expression_body_method()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -252,6 +260,7 @@ namespace My123
     public void T10c_Should_create_expression_body_method()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -276,6 +285,7 @@ namespace My123
     public void T11c_Should_add_two_lines_comment()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -306,6 +316,7 @@ namespace My123
     public void T11c_Should_add_comment()
     {
         const string exp = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass
@@ -336,6 +347,7 @@ namespace My123
         Q();
         const string exp = @"
 // ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
     public class MyClass

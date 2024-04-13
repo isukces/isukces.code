@@ -48,12 +48,7 @@ public class FluentAttributesBuilder<T>
         return this;
     }
 
-    #region Fields
-
     private readonly T _element;
     private readonly INamespaceContainer _nsContainer;
-
     private CsAttribute _attribute;
-
-    #endregion
 }

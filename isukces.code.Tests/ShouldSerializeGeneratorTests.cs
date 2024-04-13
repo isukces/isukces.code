@@ -14,6 +14,7 @@ namespace iSukces.Code.Tests
             var ctx = new TestContext();
             q.Generate(typeof(T1), ctx);
             var expected = @"// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests
 {
     partial class ShouldSerializeGeneratorTests
