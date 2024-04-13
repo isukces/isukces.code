@@ -162,9 +162,9 @@ internal sealed class CsMethodWriter
 
     private string GetMethodDefinition(bool inInterface)
     {
-        var arguments   = FormatParameters(_method.Parameters, _allowReferenceNullable);
-        var attributes  = string.Join(" ", GetMethodAttributes(inInterface));
-        var generics    = _method.GenericArguments.GetTriangleBracketsInfo();
+        var arguments = FormatParameters(_method.Parameters, _allowReferenceNullable);
+        var attributes = string.Join(" ", GetMethodAttributes(inInterface));
+        var generics = _method.GenericArguments.GetTriangleBracketsInfo();
         var mDefinition = $"{attributes}{generics}{arguments}";
         return mDefinition;
     }
@@ -183,7 +183,12 @@ internal sealed class CsMethodWriter
         Check();
         WriteMethodDescription(writer);
         foreach (var i in _method.Attributes)
+        {
+            writer.OpenCompilerIf(i);
             writer.WriteLine("[{0}]", i);
+            writer.CloseCompilerIf(i);
+        }
+
         // ================
         writer.WriteComment(_method);
         // writer.SplitWriteLine(_method.GetComments());
