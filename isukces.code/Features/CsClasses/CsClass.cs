@@ -551,8 +551,21 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public bool IsKnownNamespace(string namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
 
+    public void MakeCodeForBlazor(ICsCodeWriter writer, CodeEmitConfig config)
+    {
+        MakeCodeInternal(writer, config, ClassEmitStyle.Blazor);
+    }
+
     public void MakeCode(ICsCodeWriter writer, CodeEmitConfig config)
     {
+        MakeCodeInternal(writer, config, ClassEmitStyle.Normal);
+    }
+
+    private void MakeCodeInternal(ICsCodeWriter writer, CodeEmitConfig config, ClassEmitStyle style)
+    {
+        var isN = style == ClassEmitStyle.Normal;
+        var isB = style == ClassEmitStyle.Blazor;
+        
         writer.OpenCompilerIf(CompilerDirective);
         writer.WriteComment(this);
         WriteSummary(writer, Description);
@@ -560,18 +573,18 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         var def     = string.Join(" ", DefAttributes());
         var hasBody = true;
         {
-            var dupa              = new HashSet<CsType>();
+            var types              = new HashSet<CsType>();
             var baseAndInterfaces = new List<CsType>();
             if (!BaseClass.IsVoid)
             {
                 baseAndInterfaces.Add(BaseClass);
-                dupa.Add(BaseClass);
+                types.Add(BaseClass);
             }
 
             for (var index = 0; index < ImplementedInterfaces.Count; index++)
             {
                 var interfaceName = ImplementedInterfaces[index];
-                if (dupa.Add(interfaceName))
+                if (types.Add(interfaceName))
                     baseAndInterfaces.Add(interfaceName);
             }
 
@@ -761,4 +774,10 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     private List<CsClassField> _fields = new();
 
     #endregion
+}
+
+public enum ClassEmitStyle
+{
+    Normal,
+    Blazor
 }

@@ -4,24 +4,38 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using iSukces.Code.Interfaces;
+using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
 public static class IsukcesCodeExtensions
 {
-    public static DirectoryInfo FindFileHereOrInParentDirectories(this DirectoryInfo di, string fileName)
+    public static DirectoryInfo ScanDirectoryUp([CanBeNull] DirectoryInfo dir, Predicate<DirectoryInfo> accept)
     {
-        while (di != null)
+        while (dir != null)
         {
-            if (!di.Exists)
-                return null;
-            var fi = Path.Combine(di.FullName, fileName);
-            if (File.Exists(fi))
-                return di;
-            di = di.Parent;
+            if (accept(dir))
+                return dir;
+            dir = dir.Parent;
         }
 
         return null;
+    }
+
+    [CanBeNull]
+    public static DirectoryInfo FindProjectRootPath([CanBeNull] DirectoryInfo dir)
+    {
+        return ScanDirectoryUp(dir, a => a.GetFiles("*.csproj").Length != 0);
+    }
+
+    [CanBeNull]
+    public static DirectoryInfo FindFileHereOrInParentDirectories(this DirectoryInfo di, string fileName)
+    {
+        return ScanDirectoryUp(di, x =>
+        {
+            var fi = Path.Combine(x.FullName, fileName);
+            return File.Exists(fi);
+        });
     }
 
     public static DirectoryInfo FindFileHereOrInParentDirectories(this Type type, string fileName)
@@ -48,7 +62,6 @@ public static class IsukcesCodeExtensions
         return method.WithAttribute(att);
     }
 
-
     private static CsAttribute AggressiveInlining(ITypeNameResolver resolver)
     {
         var arg = resolver.GetTypeName<MethodImplOptions>()
@@ -65,7 +78,7 @@ public static class IsukcesCodeExtensions
         foreach (var j in attributes)
             writer.WriteLine("[{0}]", j.Code);
     }
-        
+
     public static CsType GetTypeName(this ITypeNameResolver res, NamespaceAndName typeName)
     {
         if (res is INamespaceContainer container)
@@ -73,19 +86,4 @@ public static class IsukcesCodeExtensions
                 return (CsType)typeName.Name;
         return (CsType)typeName.FullName;
     }
-
-    /*[Obsolete("use "+nameof(IsukcesCodeExtensions)+"."+nameof(GetTypeName))]
-    public static CsType ReduceTypenameIfPossible(this CsClass csClass, CsType typeName)
-    {
-        if (typeName is null || csClass is null)
-            return typeName;
-
-        var referenceNamespace = csClass.GetNamespace();
-        if (string.IsNullOrEmpty(referenceNamespace))
-            return typeName;
-        var ns2 = NamespaceAndName.Parse(typeName);
-        if (referenceNamespace == ns2.Namespace)
-            return ns2.Name;
-        return typeName;
-    }*/
 }
