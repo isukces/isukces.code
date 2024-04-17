@@ -2,6 +2,7 @@
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace Bitbrains.AmmyParser
 {
     partial class AmmyGrammar
@@ -18,8 +19,6 @@ namespace Bitbrains.AmmyParser
             ammy_bind_source_opt.Rule = Empty | ammy_bind_source;
             ammy_bind_source_source.Rule = ammy_bind_source_ancestor | ammy_bind_source_element_name | ammy_bind_source_this;
             ammy_bind_set_opt.Rule = Empty | ammy_bind_set;
-            ammy_bind_set_Mode_enum_values.Rule = ToTerm("TwoWay") | ToTerm("OneWay") | ToTerm("OneTime") | ToTerm("OneWayToSource") | ToTerm("Default");
-            ammy_bind_set_Mode.Rule = ToTerm("Mode") + ":" + ammy_bind_set_Mode_enum_values + comma_opt;
             ammy_bind_set_NotifyOnSourceUpdated.Rule = ToTerm("NotifyOnSourceUpdated") + ":" + boolean + comma_opt;
             ammy_bind_set_NotifyOnTargetUpdated.Rule = ToTerm("NotifyOnTargetUpdated") + ":" + boolean + comma_opt;
             ammy_bind_set_NotifyOnValidationError.Rule = ToTerm("NotifyOnValidationError") + ":" + boolean + comma_opt;
@@ -30,7 +29,7 @@ namespace Bitbrains.AmmyParser
             ammy_bind_set_BindingGroupName.Rule = ToTerm("BindingGroupName") + ":" + TheStringLiteral + comma_opt;
             ammy_bind_set_FallbackValue.Rule = ToTerm("FallbackValue") + ":" + Number + comma_opt;
             ammy_bind_set_IsAsync.Rule = ToTerm("IsAsync") + ":" + boolean + comma_opt;
-            ammy_bind_set_item.Rule = ammy_bind_set_Mode | ammy_bind_set_NotifyOnSourceUpdated | ammy_bind_set_NotifyOnTargetUpdated | ammy_bind_set_NotifyOnValidationError | ammy_bind_set_ValidatesOnExceptions | ammy_bind_set_ValidatesOnDataErrors | ammy_bind_set_ValidatesOnNotifyDataErrors | ammy_bind_set_StringFormat | ammy_bind_set_BindingGroupName | ammy_bind_set_FallbackValue | ammy_bind_set_IsAsync;
+            ammy_bind_set_item.Rule = ammy_bind_set_NotifyOnSourceUpdated | ammy_bind_set_NotifyOnTargetUpdated | ammy_bind_set_NotifyOnValidationError | ammy_bind_set_ValidatesOnExceptions | ammy_bind_set_ValidatesOnDataErrors | ammy_bind_set_ValidatesOnNotifyDataErrors | ammy_bind_set_StringFormat | ammy_bind_set_BindingGroupName | ammy_bind_set_FallbackValue | ammy_bind_set_IsAsync;
             ammy_bind_set_items.Rule = MakePlusRule(ammy_bind_set_items, null, ammy_bind_set_item);
             ammy_bind_set_items_opt.Rule = Empty | ammy_bind_set_items;
             ammy_property_name.Rule = identifier;
@@ -47,7 +46,7 @@ namespace Bitbrains.AmmyParser
         public void AutoInit2()
         {
             // generator : AssemblyStart:116
-            MarkPunctuation(":", "BindingGroupName", "FallbackValue", "IsAsync", "Mode", "NotifyOnSourceUpdated", "NotifyOnTargetUpdated", "NotifyOnValidationError", "StringFormat", "ValidatesOnDataErrors", "ValidatesOnExceptions", "ValidatesOnNotifyDataErrors");
+            MarkPunctuation(":", "BindingGroupName", "FallbackValue", "IsAsync", "NotifyOnSourceUpdated", "NotifyOnTargetUpdated", "NotifyOnValidationError", "StringFormat", "ValidatesOnDataErrors", "ValidatesOnExceptions", "ValidatesOnNotifyDataErrors");
         }
 
         public NonTerminal comma_opt = new NonTerminal("comma_opt", typeof(AstOptNode));
@@ -99,10 +98,6 @@ namespace Bitbrains.AmmyParser
         public NonTerminal ammy_bind_set = new NonTerminal("ammy_bind_set", typeof(AstAmmyBindSet));
 
         public NonTerminal ammy_bind_set_opt = new NonTerminal("ammy_bind_set_opt", typeof(AstOptNode));
-
-        public NonTerminal ammy_bind_set_Mode_enum_values = new NonTerminal("ammy_bind_set_Mode_enum_values", typeof(AstAmmyBindSetModeEnumValues));
-
-        public NonTerminal ammy_bind_set_Mode = new NonTerminal("ammy_bind_set_Mode", typeof(AstAmmyBindSetMode));
 
         public NonTerminal ammy_bind_set_NotifyOnSourceUpdated = new NonTerminal("ammy_bind_set_NotifyOnSourceUpdated", typeof(AstAmmyBindSetNotifyOnSourceUpdated));
 
@@ -233,28 +228,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for ammy_bind_set_items terminal
     /// </summary>
-    public partial class AstAmmyBindSetItems : ExpressionListNode<IAstAmmyBindSetItem>
-    {
-    }
-
-    /// <summary>
-    /// AST class for ammy_bind_set_Mode terminal
-    /// </summary>
-    public partial class AstAmmyBindSetMode : BbExpressionListNode, IAstAmmyBindSetItemProvider
-    {
-        protected override int[] GetMap()
-        {
-            return new [] { 0 };
-        }
-
-        public const string Keyword = "Mode";
-
-    }
-
-    /// <summary>
-    /// AST class for ammy_bind_set_Mode_enum_values terminal
-    /// </summary>
-    public partial class AstAmmyBindSetModeEnumValues : EnumValueNode
+    public partial class AstAmmyBindSetItems : BbExpressionListNode<IAstAmmyBindSetItem>
     {
     }
 
@@ -409,7 +383,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for ammyCode terminal
     /// </summary>
-    public partial class AstAmmyCode : ExpressionListNode<System.Object>
+    public partial class AstAmmyCode : BbExpressionListNode<System.Object>
     {
     }
 
@@ -497,7 +471,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for mixin_or_alias_arguments terminal
     /// </summary>
-    public partial class AstMixinOrAliasArguments : ExpressionListNode<System.Object>
+    public partial class AstMixinOrAliasArguments : BbExpressionListNode<System.Object>
     {
     }
 
@@ -542,7 +516,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for object_settings terminal
     /// </summary>
-    public partial class AstObjectSettings : ExpressionListNode<IAstObjectSetting>
+    public partial class AstObjectSettings : BbExpressionListNode<IAstObjectSetting>
     {
     }
 
@@ -594,7 +568,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for statements terminal
     /// </summary>
-    public partial class AstStatements : ExpressionListNode<IAstStatement>
+    public partial class AstStatements : BbExpressionListNode<IAstStatement>
     {
     }
 
@@ -613,7 +587,7 @@ namespace Bitbrains.AmmyParser
     /// <summary>
     /// AST class for using_directives terminal
     /// </summary>
-    public partial class AstUsingDirectives : ExpressionListNode<IAstUsingDirective>
+    public partial class AstUsingDirectives : BbExpressionListNode<IAstUsingDirective>
     {
     }
 

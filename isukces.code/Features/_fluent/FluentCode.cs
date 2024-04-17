@@ -34,22 +34,56 @@ public class FluentCode
             return;
         }
 
+        var flag = EndingStyle == FluentCodeEndingStyle.EndingAfterDecIndent;
         var lastIdx = CodeLines.Count - 1;
+        var isIndent = false;
         for (var index = 0; index < CodeLines.Count; index++)
         {
             var line = CodeLines[index];
-            if (index > 0)
-                line = NextLineStart + line;
+            if (index == 0)
+            {
+                if (flag)
+                {
+                    writer.WriteLine(FirstLineStart);
+                    X();
+                }
+                else
+                {
+                    line = FirstLineStart + line;
+                }
+            }
             else
-                line = FirstLineStart + line;
+                line = NextLineStart + line;
+
             if (index == lastIdx)
-                line += Ending;
+            {
+                if (!flag)
+                    line += Ending;
+            }
+            else
+            {
+                line += Separator;
+            }
+
             writer.WriteLine(line);
             if (index == 0)
-                writer.IncIndent();
+                X();
         }
 
-        writer.DecIndent();
+        if (isIndent)
+            writer.DecIndent();
+        if (flag)
+            writer.WriteLine(Ending);
+        return;
+
+        void X()
+        {
+            if (!isIndent)
+            {
+                isIndent = true;
+                writer.IncIndent();
+            }
+        }
     }
 
     public int Count => CodeLines.Count;
@@ -57,8 +91,35 @@ public class FluentCode
     public string NextLineStart { get; set; } = ".";
     public string Ending { get; set; } = ";";
     public string EmptyCode { get; set; }
-
+    public string Separator { get; set; }
     public List<string> CodeLines { get; } = [];
+    public FluentCodeEndingStyle EndingStyle { get; set; }
 
     private readonly List<string> _comments = [];
+
+    public FluentCode SetCreateObject(string variable, string constructor, bool addSemicolon, bool x)
+    {
+        FirstLineStart = $"{variable} = {constructor} {{";
+        Ending = "}";
+        EmptyCode = $"{variable} = {constructor}";
+        NextLineStart = "";
+        Separator = ",";
+        EndingStyle = FluentCodeEndingStyle.EndingAfterDecIndent;
+        if (x)
+            EmptyCode += "()";
+        if (addSemicolon)
+        {
+            Ending += ";";
+            EmptyCode += ";";
+        }
+
+        return this;
+
+    }
+}
+
+public enum FluentCodeEndingStyle
+{
+    Default,
+    EndingAfterDecIndent
 }
