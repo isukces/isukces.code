@@ -283,6 +283,11 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
     };
 
     public static readonly CsType String = new CsType("string");
+
+    public static readonly CsType StringNullable = new CsType("string")
+    {
+        Nullable = NullableKind.ReferenceNullable
+    };
     public static readonly CsType Object = new CsType("object");
 
     public static readonly CsType ObjectNullable = new CsType("object")

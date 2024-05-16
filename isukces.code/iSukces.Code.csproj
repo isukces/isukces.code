@@ -5,9 +5,9 @@
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
     <TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
-    <AssemblyVersion>1.24.413.204</AssemblyVersion>
-    <FileVersion>1.24.413.204</FileVersion>
-    <Version>1.24.413.204</Version>
+    <AssemblyVersion>1.24.516.205</AssemblyVersion>
+    <FileVersion>1.24.516.205</FileVersion>
+    <Version>1.24.516.205</Version>
     <LangVersion>12</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
