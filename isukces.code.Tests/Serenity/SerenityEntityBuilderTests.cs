@@ -1,3 +1,4 @@
+#if OBSOLETE
 using System;
 using iSukces.Code;
 using iSukces.Code.Interfaces;
@@ -219,3 +220,4 @@ namespace Cloud.Common
     public enum SomeEnum32:int {One, Two, Three}
     public enum SomeEnum16:short {One, Two, Three}
 }
+#endif

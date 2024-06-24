@@ -9,7 +9,6 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bitbrains.AmmyParser\Bitbrains.AmmyParser.csproj" />
     <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
 </Project>

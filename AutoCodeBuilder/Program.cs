@@ -1,5 +1,4 @@
-﻿using Bitbrains.AmmyParser;
-using iSukces.Code;
+﻿using iSukces.Code;
 using iSukces.Code.AutoCode;
 
 namespace AutoCodeBuilder

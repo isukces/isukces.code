@@ -1,3 +1,4 @@
+#if OBSOLETE
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -139,3 +140,4 @@ namespace AutoCodeBuilder
         private readonly Type _grammarType;
     }
 }
+#endif
