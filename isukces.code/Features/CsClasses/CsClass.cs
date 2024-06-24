@@ -545,7 +545,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         var cutBegin = cl.Name.Declaration + ".";
         var justType = result.BaseName ?? string.Empty;
         if (justType.StartsWith(cutBegin, StringComparison.Ordinal))
-            result = result.WithBaseName(justType[cutBegin.Length..]);
+            result = result.WithBaseName(justType.Substring(cutBegin.Length));
         return result;
     }
 

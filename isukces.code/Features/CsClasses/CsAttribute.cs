@@ -83,7 +83,14 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
         var name   = Name;
         if (name.EndsWith(AttributeSuffix, StringComparison.Ordinal))
             if (!name.Contains('.'))
+            {
+#if NET48
+                name = name.Substring(name.Length - AttributeSuffixLength);
+#else
                 name = name[..^AttributeSuffixLength];
+#endif
+            }
+
         if (values.Length == 0)
             return name;
         return values.CommaJoin().Parentheses(name);

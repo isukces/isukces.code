@@ -4,7 +4,7 @@
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
-    <TargetFrameworks>netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net4.8;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
     <AssemblyVersion>1.24.516.205</AssemblyVersion>
     <FileVersion>1.24.516.205</FileVersion>
     <Version>1.24.516.205</Version>
@@ -33,8 +33,11 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>Source code generators</Title>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net4.8'">
+    <DefineConstants>$(DefineConstants);NET48</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>COREFX;COREFX20;NET80</DefineConstants>
+    <DefineConstants>$(DefineConstants);COREFX;COREFX20;NET80</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />

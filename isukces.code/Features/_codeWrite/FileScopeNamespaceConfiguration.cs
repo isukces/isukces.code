@@ -63,7 +63,14 @@ public sealed class FileScopeNamespaceConfiguration : IEquatable<FileScopeNamesp
         => ReferenceEquals(this, obj)
            || obj is FileScopeNamespaceConfiguration other && Equals(other);
 
-    public override int GetHashCode() => HashCode.Combine(Number, FileScopeNamespace);
+    public override int GetHashCode()
+    {
+#if NET48
+        return Number * 397 ^ (FileScopeNamespace != null ? FileScopeNamespace.GetHashCode() : 0);
+#else
+        return HashCode.Combine(Number, FileScopeNamespace);
+#endif
+    }
 
     public override string ToString()
     {

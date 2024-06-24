@@ -37,7 +37,10 @@ public sealed class CsOutputFileInfo : IEquatable<CsOutputFileInfo>
 #if NET8_0_OR_GREATER
         return HashCode.Combine(FileName, IsEmbedded, EmbeddedFileDelimiter);
 #else
-        return HashCode.Combine(FileName, IsEmbedded);
+        var a = FileName?.GetHashCode() ?? 0;
+        var b = IsEmbedded.GetHashCode();
+        return a * 397 ^ b;
+        // return HashCode.Combine(FileName, IsEmbedded);
 #endif
     }
 

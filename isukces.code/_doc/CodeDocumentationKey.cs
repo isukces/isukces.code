@@ -51,10 +51,11 @@ public sealed class CodeDocumentationKey : IEquatable<CodeDocumentationKey>
 
     public static CodeDocumentationKey? FromString(string? keyAsString)
     {
-        if (string.IsNullOrEmpty(keyAsString) || keyAsString.Length < 3)
+        keyAsString??=string.Empty;
+        if (keyAsString.Length < 3)
             return null;
-        var type = keyAsString[..2];
-        var shortName = keyAsString[2..];
+        var type      = keyAsString.Substring(0, 2);
+        var shortName = keyAsString.Substring(2);
         var kind = type switch
         {
             "M:" => CodeDocumentationKind.Method,

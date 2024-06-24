@@ -4,7 +4,7 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code;
 
-public sealed class IfCollector
+public sealed class IfCollector(ConditionsPair condition)
 {
     public IfCollector(string condition, string inversed = null)
         : this(new ConditionsPair(condition, inversed))
@@ -12,20 +12,11 @@ public sealed class IfCollector
 
     }
 
-    public IfCollector(ConditionsPair condition)
-    {
-        Condition = condition;
-    }
+    private static string CloseCurly(bool required) 
+        => required ? "} " : "";
 
-    private static string CloseCurly(bool required)
-    {
-        return required ? "} " : "";
-    }
-
-    private static string OpenCurly(bool required)
-    {
-        return required ? " {" : "";
-    }
+    private static string OpenCurly(bool required) 
+        => required ? " {" : "";
 
     private static void WriteLines(CsCodeWriter writer, string[] statementLines, bool intended = false)
     {
@@ -97,13 +88,13 @@ public sealed class IfCollector
     public static string[] SplitCode(string code)
     {
         if (string.IsNullOrWhiteSpace(code))
-            return Array.Empty<string>();
+            return [];
         var statementLines = code.Split('\r', '\n')
             .Where(a => !string.IsNullOrWhiteSpace(a)).ToArray();
         return statementLines;
     }
 
-    public ConditionsPair Condition { get; }
+    public ConditionsPair Condition { get; } = condition;
     public CsCodeWriter   Statement { get; } = new CsCodeWriter();
     public CsCodeWriter   Else      { get; } = new CsCodeWriter();
 }

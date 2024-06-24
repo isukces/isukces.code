@@ -32,7 +32,11 @@ public class CodeDocumentation
         var name = m.ToString() ?? "";
         var name2 = m.Name + "(";
         var idx = name.IndexOf(name2, StringComparison.Ordinal);
+#if NET48
+        name = name.Substring(idx);
+#else
         name = name[idx..];
+#endif
         name = name.Replace(", ", ",");
         if (name.EndsWith("()"))
             name = name.Substring(0, name.Length - 2);
@@ -94,7 +98,12 @@ public class CodeDocumentation
         {
             if (key is null)
                 return null;
+#if NET48
+            Elements.TryGetValue(key, out var value);
+            return value;
+#else
             return Elements.GetValueOrDefault(key);
+#endif
         }
     }
 
