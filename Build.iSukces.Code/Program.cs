@@ -11,7 +11,7 @@ internal class Program
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         var cfg = new Script();
         
-        cfg.UpdateVersion();
-        // cfg.Run();
+        //cfg.UpdateVersion();
+        cfg.Run();
     }
 }
