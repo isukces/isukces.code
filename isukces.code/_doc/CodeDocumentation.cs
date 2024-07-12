@@ -1,5 +1,4 @@
 #nullable enable
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -24,41 +23,21 @@ public class CodeDocumentation
             Elements[key] = new CodeDocumentationElement(i);
         }
     }
+#if X
 
-    public static CodeDocumentationKey? GetKey(MethodInfo? m)
+    public static string FixType(string type)
     {
-        if (m is null)
-            return null;
-        var name = m.ToString() ?? "";
-        var name2 = m.Name + "(";
-        var idx = name.IndexOf(name2, StringComparison.Ordinal);
-#if NET48
-        name = name.Substring(idx);
-#else
-        name = name[idx..];
-#endif
-        name = name.Replace(", ", ",");
-        if (name.EndsWith("()"))
-            name = name.Substring(0, name.Length - 2);
-        {
-            var match = MethodNameRegex.Match(name);
-            if (match.Success)
-            {
-                var q = match.Groups[2].Value.Split(',');
-                for (var index = 0; index < q.Length; index++)
-                    if (q[index] == "Boolean")
-                        q[index] = "System.Boolean";
+        var add = type is "Boolean"
+            or "Byte" or "SByte"
+            or "Int16" or "Int32" or "Int64"
+            or "UInt16" or "UInt32" or "UInt64"
+            or "Single" or "Double";
+        if (add)
+            return $"System.{type}";
 
-                name = match.Groups[1].Value + string.Join(",", q) + ")";
-            }
-        }
-        // M:PdServer.Web.Api.CompanyApiController.FindCompany(System.String)
-        // Pd.Cloud.Client.CloudCompanySearchResult FindCompany(System.String)
-        // PdServer.Web.Api.CompanyApiController.FindCompany(System.String)
-        name = m.DeclaringType!.FullName + "." + name.Replace(", ", ",");
-        var key = new CodeDocumentationKey(CodeDocumentationKind.Method, name);
-        return key;
+        return type;
     }
+#endif
 
     public static CodeDocumentation Parse(string? fileName)
     {
@@ -69,28 +48,22 @@ public class CodeDocumentation
 
     public static CodeDocumentation Parse(Assembly assembly)
     {
-        var loc = new FileInfo(assembly.Location);
-        var locFullName = loc.FullName;
-        var doc = locFullName.Substring(0, locFullName.Length - loc.Extension.Length) + ".xml";
-        var fi = new FileInfo(doc);
-        if (!fi.Exists)
-        {
-            doc = Path.Combine(fi.Directory.Parent.FullName, fi.Name);
-        }
+        var loc             = new FileInfo(assembly.Location);
+        var locFullName     = loc.FullName;
+        var doc             = locFullName.Substring(0, locFullName.Length - loc.Extension.Length) + ".xml";
+        var fi              = new FileInfo(doc);
+        if (!fi.Exists) doc = Path.Combine(fi.Directory.Parent.FullName, fi.Name);
 
         return Parse(doc);
     }
 
     public CodeDocumentationElement? Get(MethodInfo m)
     {
-        var key = GetKey(m);
+        var key = MethodInfoConverter.GetKey(m);
         return this[key];
     }
 
     public Dictionary<CodeDocumentationKey, CodeDocumentationElement> Elements { get; }
-
-    private static readonly Regex MethodNameRegex =
-        new Regex(MethodNameFilter, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
     public CodeDocumentationElement? this[CodeDocumentationKey? key]
     {
@@ -107,5 +80,12 @@ public class CodeDocumentation
         }
     }
 
+    #region Fields
+
     private const string MethodNameFilter = @"^([^(]+\()([^)]+)\)";
+
+    private static readonly Regex MethodNameRegex =
+        new(MethodNameFilter, RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+    #endregion
 }
