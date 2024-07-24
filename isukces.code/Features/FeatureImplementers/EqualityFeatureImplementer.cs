@@ -241,7 +241,10 @@ public partial class EqualityFeatureImplementer
 
         var m = _class.AddMethod("Equals", CsType.Bool)
             .WithBody(cw);
-        m.AddParam(OtherArgName, MyTypeName);
+        var pt = MyTypeName;
+        if (_type.IsClass || _type.IsInterface)
+            pt.Nullable = NullableKind.ReferenceNullable;
+        m.AddParam(OtherArgName, pt);
     }
 
     private void WriteEqualsWithObject()
@@ -249,7 +252,7 @@ public partial class EqualityFeatureImplementer
         var gettype    = $"{nameof(GetType)}()";
         var myTypeName = MyTypeName.Declaration;
         if (_type.GetTypeInfo().IsSealed)
-            gettype = string.Format("typeof({0})", myTypeName);
+            gettype = $"typeof({myTypeName})";
         var cw = new CsCodeWriter();
         cw.WriteLine($"if ({OtherArgName} is null) return false;");
         if (CanBeNull)
@@ -378,8 +381,8 @@ public partial class EqualityFeatureImplementer
 
     public bool UseGetHashCodeInEqualityChecking { get; set; }
 
-    public GetHashCodeImplementationKind CachedGetHashCodeImplementation { get; set; }
-    public bool                          CanBeNull                       { get; set; }
+    public GetHashCodeImplementationKind CachedGetHashCodeImplementation { get; init; }
+    public bool                          CanBeNull                       { get; init; }
 
     private const string GetHashCodeFieldName = "_cachedHashCode";
 
