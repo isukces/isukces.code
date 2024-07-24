@@ -169,7 +169,8 @@ public class KeyImplementer
         const string expre = "Value.CompareTo(other.Value)";
         var m = _cl.AddMethod("CompareTo", CsType.Int32)
             .WithBodyAsExpression(expre);
-        m.AddParam("other", _cl.Name);
+        var pt = _cl.Name.ToReferenceNullableIfPossible(_cl.Kind);
+        m.AddParam("other", pt);
         return m;
     }
 
@@ -390,7 +391,7 @@ public class KeyImplementer
         if (string.IsNullOrEmpty(toStringPrefix))
             expression = Special == SpecialType.String ? "Value" : "Value.ToString()";
         else
-            expression = $"{(toStringPrefix.Trim() + " ").CsEncode()} + Value";
+            expression = $"{(toStringPrefix?.Trim() + " ").CsEncode()} + Value";
         m.WithBodyAsExpression(expression);
         return m;
     }

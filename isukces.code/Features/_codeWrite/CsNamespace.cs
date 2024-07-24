@@ -58,8 +58,9 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
     public bool IsKnownNamespace(string? namespaceName)
     {
         if (string.IsNullOrEmpty(namespaceName)) return false;
-        if (Name == namespaceName) return true;
-        if (ImportNamespaces.Contains(namespaceName)) return true;
+        if (Name == namespaceName) 
+            return true;
+        if (ImportNamespaces.Contains(namespaceName!)) return true;
         return Owner?.IsKnownNamespace(namespaceName) ?? false;
     }
 
@@ -71,7 +72,7 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
 
     public IReadOnlyList<CsClass> Classes { get; } = new List<CsClass>();
 
-    public string CompilerDirective { get; set; }
+    public string? CompilerDirective { get; set; } 
 
     /// <summary>
     ///     Enums

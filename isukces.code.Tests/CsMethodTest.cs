@@ -393,4 +393,37 @@ namespace My123
         });
         Assert.Equal(exp.Trim(), code.Trim());
     }
+    [Fact]
+    public void T14_Should_create_pragmas()
+    {
+        Q();
+        const string exp = @"
+
+// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
+namespace My123
+{
+    public class MyClass
+    {
+#pragma warning disable CS8618
+#pragma warning enable CS8617
+        public void Bla()
+        {
+            SetSomeValue();
+        }
+#pragma warning restore CS8617, CS8618
+
+    }
+}
+
+";
+        var code = TestCode(cs =>
+        {
+            var m = cs.AddMethod("Bla", CsType.Void)
+                .WithBodyAsExpression("SetSomeValue()");
+            m.PragmasWarnings.Add(CsPragmaWarning.Disable("CS8618"));
+            m.PragmasWarnings.Add(CsPragmaWarning.Enable("CS8617"));
+        });
+        Assert.Equal(exp.Trim(), code.Trim());
+    }
 }

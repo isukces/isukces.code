@@ -182,6 +182,7 @@ internal sealed class CsMethodWriter
         var inInterface = owner.IsInterface;
         var features    = owner.Formatting;
         writer.OpenCompilerIf(_method.CompilerDirective);
+        writer.OpenPragmaWarnings(_method.PragmasWarnings);
         Check();
         WriteMethodDescription(writer);
         foreach (var i in _method.Attributes)
@@ -196,7 +197,9 @@ internal sealed class CsMethodWriter
         // writer.SplitWriteLine(_method.GetComments());
         var mDefinition = GetMethodDefinition(inInterface);
         WriteBody();
+        writer.ClosePragmaWarnings(_method.PragmasWarnings);
         writer.CloseCompilerIf(_method.CompilerDirective);
+        return;
 
         void WriteBody()
         {

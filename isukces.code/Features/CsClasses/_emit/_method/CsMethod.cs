@@ -10,7 +10,7 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
 {
     static CsMethod()
     {
-        Operators = new HashSet<string>();
+        Operators = [];
         const string tmp = "+, -, !, ~, ++, --, +, -, *, /, %, &, |, ^, <<, >>,==, !=, <, >, <=, >=,&&, ||";
         foreach (var i in tmp.Split(','))
             Operators.Add(i.Trim());
@@ -27,7 +27,10 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     ///     Tworzy instancję obiektu
     ///     <param name="name">Nazwa metody</param>
     /// </summary>
-    public CsMethod(string name) => Name = name;
+    public CsMethod(string name)
+    {
+        Name = name;
+    }
 
     /// <summary>
     ///     Tworzy instancję obiektu
@@ -36,16 +39,19 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     /// </summary>
     public CsMethod(string name, CsType resultType)
     {
-        Name = name;
+        Name       = name;
         ResultType = resultType;
         if (IsOperator(name))
         {
-            Kind = MethodKind.Operator;
+            Kind     = MethodKind.Operator;
             IsStatic = true;
         }
     }
 
-    public static bool IsOperator(string name) => Operators.Contains(name);
+    public static bool IsOperator(string name)
+    {
+        return Operators.Contains(name);
+    }
 
     public void AddComment(string x)
     {
@@ -68,7 +74,9 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     }
 
     public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null)
-        => AddParam(name, typeof(T), owner, description);
+    {
+        return AddParam(name, typeof(T), owner, description);
+    }
 
     public CsMethodParameter AddParam(string name, Type type, ITypeNameResolver resolver, string description = null)
     {
@@ -77,7 +85,10 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         return parameter;
     }
 
-    public string GetComments() => _extraComment.ToString();
+    public string GetComments()
+    {
+        return _extraComment.ToString();
+    }
 
     public CsMethod WithAsync(bool isAsync = true)
     {
@@ -88,11 +99,9 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     public CsMethod WithBodyAsExpression(string body)
     {
         IsExpressionBody = true;
-        Body = body;
+        Body             = body;
         return this;
     }
-
-    #region Properties
 
     /// <summary>
     ///     Nazwa metody
@@ -109,21 +118,21 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
             switch (_name)
             {
                 case Implicit:
-                    Kind = MethodKind.Implicit;
-                    IsStatic = true;
+                    Kind       = MethodKind.Implicit;
+                    IsStatic   = true;
                     Overriding = OverridingType.None;
                     break;
                 case Explicit:
-                    Kind = MethodKind.Explicit;
+                    Kind       = MethodKind.Explicit;
                     Overriding = OverridingType.None;
-                    IsStatic = true;
+                    IsStatic   = true;
                     break;
                 default:
                     if (IsOperator(_name))
                     {
-                        Kind = MethodKind.Operator;
+                        Kind       = MethodKind.Operator;
                         Overriding = OverridingType.None;
-                        IsStatic = true;
+                        IsStatic   = true;
                     }
 
                     break;
@@ -176,11 +185,11 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
             switch (value)
             {
                 case MethodKind.Explicit:
-                    Name = Explicit;
+                    Name       = Explicit;
                     Overriding = OverridingType.None;
                     break;
                 case MethodKind.Implicit:
-                    Name = Implicit;
+                    Name       = Implicit;
                     Overriding = OverridingType.None;
                     break;
             }
@@ -198,28 +207,28 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         }
     }
 
-    public bool IsAsync { get; set; }
+    public bool          IsAsync     { get; set; }
     public PartialMethod PartialKind { get; set; }
 
-    #endregion
+    public CsClass                Owner           { get; init; }
+    public IList<CsPragmaWarning> PragmasWarnings { get; } = new List<CsPragmaWarning>();
 
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
-    [CanBeNull] public CsGenericArguments GenericArguments { get; set; }
-
-    public CsClass Owner { get; init; }
+    [CanBeNull]
+    public CsGenericArguments GenericArguments { get; set; }
 
     public const string Implicit = "implicit";
     public const string Explicit = "explicit";
 
     private static readonly HashSet<string> Operators;
-    private readonly StringBuilder _extraComment = new StringBuilder();
+    private                 string          _baseConstructorCall = string.Empty;
+    private                 string          _body                = string.Empty;
+    private readonly        StringBuilder   _extraComment        = new();
+    private                 MethodKind      _kind;
 
-    private string _name = string.Empty;
-    private List<CsMethodParameter> _parameters = new List<CsMethodParameter>();
-    private string _body = string.Empty;
-    private string _baseConstructorCall = string.Empty;
-    private MethodKind _kind;
+    private string                  _name       = string.Empty;
+    private List<CsMethodParameter> _parameters = new();
 }
 
 public enum PartialMethod

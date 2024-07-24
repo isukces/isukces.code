@@ -52,7 +52,8 @@ public class CodeDocumentation
         var locFullName     = loc.FullName;
         var doc             = locFullName.Substring(0, locFullName.Length - loc.Extension.Length) + ".xml";
         var fi              = new FileInfo(doc);
-        if (!fi.Exists) doc = Path.Combine(fi.Directory.Parent.FullName, fi.Name);
+        if (!fi.Exists)
+            doc = Path.Combine(fi.Directory?.Parent?.FullName ?? "", fi.Name);
 
         return Parse(doc);
     }

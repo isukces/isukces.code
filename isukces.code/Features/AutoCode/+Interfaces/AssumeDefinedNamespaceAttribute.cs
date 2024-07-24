@@ -9,9 +9,10 @@ public sealed class AssumeDefinedNamespaceAttribute : Attribute
 {
     public static FileScopeNamespaceConfiguration? Get(Type type)
     {
-        var att = type.GetCustomAttribute<AssumeDefinedNamespaceAttribute>(false);
-        if (att is not null)
-            return FileScopeNamespaceConfiguration.AssumeDefined(type.Namespace);
-        return null;
+        var att                = type.GetCustomAttribute<AssumeDefinedNamespaceAttribute>(false);
+        var typeNamespace = type.Namespace;
+        return att is null || string.IsNullOrEmpty(typeNamespace)
+            ? null
+            : FileScopeNamespaceConfiguration.AssumeDefined(typeNamespace);
     }
 }

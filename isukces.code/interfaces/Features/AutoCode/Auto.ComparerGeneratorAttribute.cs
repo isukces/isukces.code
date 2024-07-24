@@ -5,13 +5,8 @@ namespace iSukces.Code.Interfaces;
 public partial class Auto
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class ComparerGeneratorAttribute : Attribute
+    public class ComparerGeneratorAttribute(params string[] fields) : Attribute
     {
-        public ComparerGeneratorAttribute(params string[] fields)
-        {
-            Fields = fields;
-        }
-
-        public string[] Fields { get; }
+        public string[] Fields { get; } = fields;
     }
 }
