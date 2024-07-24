@@ -3,10 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using iSukces.Code.Interfaces;
 
 namespace iSukces.Code;
 
-public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
+public struct CsType
+// public class CsType
+    : IEquatable<CsType>, IComparable<CsType>, IComparable
 {
     public CsType(string? type)
     {
@@ -17,39 +20,74 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         _arrayRanks        = null;
     }
 
-    public static CsType Generic(string name, CsType genericArgument) => new(name)
+    public static CsType Generic(string name, CsType genericArgument)
     {
-        GenericParamaters = [genericArgument]
-    };
+        return new CsType(name)
+        {
+            GenericParamaters = [genericArgument]
+        };
+    }
 
-    public static CsType Generic(string name, string genericArgument) => new(name)
+    public static CsType Generic(string name, string genericArgument)
     {
-        GenericParamaters = [new CsType(genericArgument)]
-    };
+        return new CsType(name)
+        {
+            GenericParamaters = [new CsType(genericArgument)]
+        };
+    }
 
-    public static CsType Generic(string name, CsType genericArgument1, CsType genericArgument2) => new(name)
+    public static CsType Generic(string name, CsType genericArgument1, CsType genericArgument2)
     {
-        GenericParamaters = [genericArgument1, genericArgument2]
-    };
+        return new CsType(name)
+        {
+            GenericParamaters = [genericArgument1, genericArgument2]
+        };
+    }
 
-    public static bool operator ==(CsType left, CsType right) => left.Equals(right);
+    public static bool operator ==(CsType left, CsType right)
+    {
+        return left.Equals(right);
+    }
 
-    public static explicit operator CsType(string type) => new CsType(type);
+    public static explicit operator CsType(string type)
+    {
+        return new CsType(type);
+    }
 
-    public static bool operator >(CsType left, CsType right) => left.CompareTo(right) > 0;
+    public static bool operator >(CsType left, CsType right)
+    {
+        return left.CompareTo(right) > 0;
+    }
 
-    public static bool operator >=(CsType left, CsType right) => left.CompareTo(right) >= 0;
+    public static bool operator >=(CsType left, CsType right)
+    {
+        return left.CompareTo(right) >= 0;
+    }
 
-    public static bool operator !=(CsType left, CsType right) => !left.Equals(right);
+    public static bool operator !=(CsType left, CsType right)
+    {
+        return !left.Equals(right);
+    }
 
-    public static bool operator <(CsType left, CsType right) => left.CompareTo(right) < 0;
+    public static bool operator <(CsType left, CsType right)
+    {
+        return left.CompareTo(right) < 0;
+    }
 
-    public static bool operator <=(CsType left, CsType right) => left.CompareTo(right) <= 0;
+    public static bool operator <=(CsType left, CsType right)
+    {
+        return left.CompareTo(right) <= 0;
+    }
 
-    public CsType AppendBase(string append) => WithBaseName(BaseName + append);
+    public CsType AppendBase(string append)
+    {
+        return WithBaseName(BaseName + append);
+    }
 
     public string AsString(bool allowReferenceNullable)
-        => IsVoid ? "void" : GetNotEmpty(allowReferenceNullable, false);
+    {
+        return IsVoid ? "void" : GetNotEmpty(allowReferenceNullable, false);
+    }
 
     public int CompareTo(CsType other)
     {
@@ -63,7 +101,9 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
     public int CompareTo(object? obj)
     {
         if (ReferenceEquals(null, obj)) return 1;
-        return obj is CsType other ? CompareTo(other) : throw new ArgumentException($"Object must be of type {nameof(CsType)}");
+        return obj is CsType other
+            ? CompareTo(other)
+            : throw new ArgumentException($"Object must be of type {nameof(CsType)}");
     }
 
     public bool Equals(CsType other)
@@ -73,20 +113,31 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         return Modern == other.Modern;
     }
 
-    public override bool Equals(object? obj) => obj is CsType other && Equals(other);
+    public override bool Equals(object? obj)
+    {
+        return obj is CsType other && Equals(other);
+    }
 
     private string GetAsGenericParameter(bool allowReferenceNullable)
-        => IsVoid ? "" : GetNotEmpty(allowReferenceNullable, false);
+    {
+        return IsVoid ? "" : GetNotEmpty(allowReferenceNullable, false);
+    }
 
-    public override int GetHashCode() => (BaseName != null ? BaseName.GetHashCode() : 0) * 397 + GenericParamaters.Count;
+    public override int GetHashCode()
+    {
+        return (BaseName != null ? BaseName.GetHashCode() : 0) * 397 + GenericParamaters.Count;
+    }
 
-    public string GetMemberCode(string member) => $"{Declaration}.{member}";
+    public string GetMemberCode(string member)
+    {
+        return $"{Declaration}.{member}";
+    }
 
 
     private string GetNotEmpty(bool allowReferenceNullable, bool ignoreGenerics)
     {
         var addQuestionMark =
-            allowReferenceNullable && Nullable == NullableKind.ReferenceNullable
+            (allowReferenceNullable && Nullable == NullableKind.ReferenceNullable)
             ||
             Nullable == NullableKind.ValueNullable;
 
@@ -142,12 +193,20 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         return clone;
     }
 
-    public string New(string? args) => $"new {Declaration}({args})";
-    public string New() => $"new {Declaration}()";
+    public string New(string? args)
+    {
+        return $"new {Declaration}({args})";
+    }
+
+    public string New()
+    {
+        return $"new {Declaration}()";
+    }
 
     public string New(string a1, string a2)
-        => New(a1 + GlobalSettings.CommaSeparator + a2);
-
+    {
+        return New(a1 + GlobalSettings.CommaSeparator + a2);
+    }
 
     public (string namespaceName, string shortClassName) SpitNamespaceAndShortName()
     {
@@ -180,7 +239,27 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
             throw new InvalidOperationException("Void type is not allowed");
     }
 
-    public string ThrowNew(string? args) => $"throw new {Declaration}({args})";
+    public string ThrowNew(string? args)
+    {
+        return $"throw new {Declaration}({args})";
+    }
+
+    public CsType ToReferenceNullableIfPossible(Type type)
+    {
+        if (!type.IsClass && !type.IsInterface) return this;
+        var pt = this;
+        pt.Nullable = NullableKind.ReferenceNullable;
+        return pt;
+    }
+
+    public CsType ToReferenceNullableIfPossible(CsNamespaceMemberKind kind)
+    {
+        if (kind is not (CsNamespaceMemberKind.Class or CsNamespaceMemberKind.Interface
+            or CsNamespaceMemberKind.Record)) return this;
+        var pt = this;
+        pt.Nullable = NullableKind.ReferenceNullable;
+        return pt;
+    }
 
     public override string ToString()
     {
@@ -189,28 +268,34 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
 
         const string message = "Converting CsType to string is not allowed. Use AsString method instead.";
 
-        if (GlobalSettings.DoNotAllowCsTypeToString == InvalidOperationNotification.ThrowException)
-            throw new InvalidOperationException(message);
-
-        if (GlobalSettings.DoNotAllowCsTypeToString == InvalidOperationNotification.EmergencyLog)
+        switch (GlobalSettings.DoNotAllowCsTypeToString)
         {
-            GlobalSettings.EmergencyLog(message);
-            return Declaration;
+            case InvalidOperationNotification.ThrowException:
+                throw new InvalidOperationException(message);
+            case InvalidOperationNotification.EmergencyLog:
+                GlobalSettings.EmergencyLog(message);
+                return Declaration;
+            default:
+                return $"({message})";
         }
-
-        return "(" + message + ")";
     }
 
     [Pure]
     [JetBrains.Annotations.Pure]
-    public string TypeOf() => $"typeof({Declaration})";
-
-    public CsType WithBaseName(string baseName) => new(baseName)
+    public string TypeOf()
     {
-        Nullable          = Nullable,
-        GenericParamaters = GenericParamaters,
-        ArrayRanks        = ArrayRanks
-    };
+        return $"typeof({Declaration})";
+    }
+
+    public CsType WithBaseName(string baseName)
+    {
+        return new CsType(baseName)
+        {
+            Nullable          = Nullable,
+            GenericParamaters = GenericParamaters,
+            ArrayRanks        = ArrayRanks
+        };
+    }
 
     public CsType WithGenericParameter(CsType genericParameter)
     {
@@ -241,15 +326,13 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
         return copy;
     }
 
-    #region Properties
-
     public string  Modern      => AsString(true);
     public string  Declaration => AsString(false);
     public string? BaseName    { get; }
 
     public bool IsVoid => string.IsNullOrEmpty(BaseName);
 
-    public static CsType Void => new CsType(string.Empty);
+    public static CsType Void => new(string.Empty);
 
     public IReadOnlyList<CsType> GenericParamaters
     {
@@ -270,35 +353,34 @@ public struct CsType : IEquatable<CsType>, IComparable<CsType>, IComparable
             ? throw new InvalidOperationException("Void type has no constructor")
             : GetNotEmpty(false, true);
 
-    #endregion
-
     #region Fields
 
-    public static readonly CsType Int32 = new CsType("int");
-    public static readonly CsType Guid = new CsType("System.Guid");
+    public static readonly CsType Int32 = new("int");
+    public static readonly CsType Guid  = new("System.Guid");
 
-    public static readonly CsType NullableInt32 = new CsType("int")
+    public static readonly CsType NullableInt32 = new("int")
     {
         Nullable = NullableKind.ValueNullable
     };
 
-    public static readonly CsType String = new CsType("string");
+    public static readonly CsType String = new("string");
 
-    public static readonly CsType StringNullable = new CsType("string")
-    {
-        Nullable = NullableKind.ReferenceNullable
-    };
-    public static readonly CsType Object = new CsType("object");
-
-    public static readonly CsType ObjectNullable = new CsType("object")
+    public static readonly CsType StringNullable = new("string")
     {
         Nullable = NullableKind.ReferenceNullable
     };
 
-    public static readonly CsType Bool = new CsType("bool");
+    public static readonly CsType Object = new("object");
+
+    public static readonly CsType ObjectNullable = new("object")
+    {
+        Nullable = NullableKind.ReferenceNullable
+    };
+
+    public static readonly CsType               Bool = new("bool");
+    private                IReadOnlyList<Rank>? _arrayRanks;
 
     private IReadOnlyList<CsType>? _genericParamaters;
-    private IReadOnlyList<Rank>? _arrayRanks;
 
     #endregion
 }

@@ -65,7 +65,8 @@ public partial class EqualityFeatureImplementer
 
         var m = csClass.AddMethod(nameof(IComparable<int>.CompareTo), CsType.Int32)
             .WithBody(cs);
-        var p1 = new CsMethodParameter("other", csClass.Name);
+        var ptType = csClass.Name.ToReferenceNullableIfPossible(csClass.Kind);
+        var p1     = new CsMethodParameter("other", ptType);
         m.Parameters.Add(p1);
 
         {
@@ -241,9 +242,7 @@ public partial class EqualityFeatureImplementer
 
         var m = _class.AddMethod("Equals", CsType.Bool)
             .WithBody(cw);
-        var pt = MyTypeName;
-        if (_type.IsClass || _type.IsInterface)
-            pt.Nullable = NullableKind.ReferenceNullable;
+        var pt = MyTypeName.ToReferenceNullableIfPossible(_type);
         m.AddParam(OtherArgName, pt);
     }
 
