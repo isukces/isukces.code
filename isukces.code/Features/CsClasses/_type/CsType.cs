@@ -353,15 +353,37 @@ public struct CsType
             ? throw new InvalidOperationException("Void type has no constructor")
             : GetNotEmpty(false, true);
 
-    #region Fields
-
     public static readonly CsType Int32 = new("int");
-    public static readonly CsType Guid  = new("System.Guid");
 
-    public static readonly CsType NullableInt32 = new("int")
+    public static readonly CsType Int32Nullable = new("int")
     {
         Nullable = NullableKind.ValueNullable
     };
+
+    public static readonly CsType Decimal = new("decimal");
+
+    public static readonly CsType DecimalNullable = new("decimal")
+    {
+        Nullable = NullableKind.ValueNullable
+    };
+
+    public static readonly CsType Double = new("double");
+
+    public static readonly CsType DoubleNullable = new("double")
+    {
+        Nullable = NullableKind.ValueNullable
+    };
+
+    public static readonly CsType Int64 = new("long");
+
+    public static readonly CsType Int64Nullable = new("long")
+    {
+        Nullable = NullableKind.ValueNullable
+    };
+
+
+    public static readonly CsType Guid = new("System.Guid");
+
 
     public static readonly CsType String = new("string");
 
@@ -381,8 +403,6 @@ public struct CsType
     private                IReadOnlyList<Rank>? _arrayRanks;
 
     private IReadOnlyList<CsType>? _genericParamaters;
-
-    #endregion
 }
 
 public enum NullableKind

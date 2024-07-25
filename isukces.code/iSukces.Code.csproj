@@ -5,10 +5,10 @@
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
     <TargetFrameworks>net4.8;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
-    <AssemblyVersion>1.24.712.208</AssemblyVersion>
-    <FileVersion>1.24.712.208</FileVersion>
-    <Version>1.24.712.208</Version>
-    <AssemblyFileVersion>1.24.712.208</AssemblyFileVersion>
+    <AssemblyVersion>1.24.725.209</AssemblyVersion>
+    <FileVersion>1.24.725.209</FileVersion>
+    <Version>1.24.725.209</Version>
+    <AssemblyFileVersion>1.24.725.209</AssemblyFileVersion>
     <LangVersion>12</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
@@ -33,6 +33,7 @@
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Title>Source code generators</Title>
+    <WarningsAsErrors>0169,0659,0661,0693,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,414,628,649,693,8321,8632</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net4.8'">
     <DefineConstants>$(DefineConstants);NET48</DefineConstants>

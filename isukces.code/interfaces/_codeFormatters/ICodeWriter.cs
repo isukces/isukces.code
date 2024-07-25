@@ -112,7 +112,7 @@ namespace iSukces.Code.Interfaces
             return obj;
         }
 
-        [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
+        // [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
         public static T WithOpen<T>(this T obj, string text)
             where T : ICodeWriter
         {

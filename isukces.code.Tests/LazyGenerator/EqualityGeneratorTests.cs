@@ -9,13 +9,13 @@ namespace iSukces.Code.Tests.LazyGenerator
     public partial class LazyGeneratorTests
     {
         private static void CompareCode(string code,
-            [CallerMemberName] string method = null, [CallerFilePath] string file = null)
+            [CallerMemberName] string? method = null, [CallerFilePath] string? file = null)
         {
             TestUtils.CompareWithResource(code, "iSukces.Code.Tests.LazyGenerator.", method, file, "_res.cs");
         }
 
         private static void DoTest<T>(
-            [CallerMemberName] string method = null, [CallerFilePath] string file = null)
+            [CallerMemberName] string? method = null, [CallerFilePath] string? file = null)
         {
             IMemberNullValueChecker c   = new MyValueChecker();
             var                     q   = new Generators.LazyGenerator();

@@ -25,7 +25,9 @@ public abstract partial class Generators
         private void AddConstructors()
         {
             // pusty konstruktor
-            _class.AddConstructor();
+            var c1 = _class.AddConstructor();
+            if (AddCs8618WarningDisable)
+                c1.PragmasWarnings.Add(CsPragmaWarning.Disable("CS8618"));
             // konstruktor2
             CodeWriter c = new CsCodeWriter();
             if (Attribute.TargetType.IsClass)
@@ -35,6 +37,8 @@ public abstract partial class Generators
             var m = _class.AddConstructor()
                 .WithBody(c);
             m.Parameters.Add(new CsMethodParameter("source", _class.GetTypeName(Attribute.TargetType)));
+            if (AddCs8618WarningDisable)
+                m.PragmasWarnings.Add(CsPragmaWarning.Disable("CS8618"));
         }
 
         protected virtual void AddIBuilderAttribute()
@@ -61,9 +65,9 @@ public abstract partial class Generators
         {
             var pName            = "new" + propName;
             var propertyTypeName = _class.GetTypeName(propertyType);
-            var m = _class.AddMethod("With" + propName, _class.Name)
+            var m = _class.AddMethod($"With{propName}", _class.Name)
                 .WithAggressiveInlining(_class)
-                .WithBody(string.Format("{0} = {1};\r\nreturn this;", propName, pName));
+                .WithBody($"{propName} = {pName};\r\nreturn this;");
             m.AddParam(pName, propertyTypeName);
 
             var property = new NameAndTypeName(propName, propertyTypeName);
@@ -179,11 +183,14 @@ public abstract partial class Generators
             }
         }
 
+        public bool AddCs8618WarningDisable { get; set; } = true;
+
         #region Fields
 
-        private BuilderPropertyInfo[] _builderPropertyInfos;
-        private CsClass _class;
         private IReadOnlyDictionary<string, Auto.BuilderForTypePropertyAttribute> _attributesForProperties;
+
+        private BuilderPropertyInfo[] _builderPropertyInfos;
+        private CsClass               _class;
 
         #endregion
 
@@ -213,15 +220,11 @@ public abstract partial class Generators
                 return a;
             }
 
-            #region Properties
-
             public string PropertyName   { get; private set; }
             public Type   PropertyType   { get; private set; }
             public bool   SkipWithMethod { get; private set; }
             public bool   Create         { get; private set; }
             public bool   ExpandFlags    { get; set; }
-
-            #endregion
         }
     }
 }

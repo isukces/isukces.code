@@ -7,6 +7,7 @@
     <UseWPF>false</UseWPF>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <WarningsAsErrors>0169,0659,0661,0693,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,414,628,649,693,8321,8632</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />

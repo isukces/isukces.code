@@ -1,10 +1,10 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
@@ -93,19 +93,18 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     [Obsolete("", true)]
     public static CsAttribute MkAttribute(string attributeName) => new(attributeName);
 
-    public static void WriteSummary(ICsCodeWriter writer, string description)
+    public static void WriteSummary(ICsCodeWriter writer, string? description)
     {
         description = description?.Trim();
         if (string.IsNullOrEmpty(description)) return;
         writer.WriteLine("/// <summary>");
-        var lines = description.Split('\r', '\n')
+        var lines = description!.Split('\r', '\n')
             .Where(q => !string.IsNullOrEmpty(q.Trim()));
         foreach (var line in lines)
             writer.WriteLine("/// " + line.XmlEncode());
         writer.WriteLine("/// </summary>");
     }
-
-
+    
     public CsMethod AddBinaryOperator(string operatorName, CsType returnType)
     {
         var m = AddMethod(operatorName, returnType)
@@ -115,7 +114,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return m;
     }
 
-    public void AddComment(string x) => _extraComment.AppendLine(x);
+    public void AddComment(string? x) => _extraComment.AppendLine(x);
 
     // Public Methods 
 
@@ -133,7 +132,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsClassField AddConstInt(string name, int encodedValue) => AddConst(name, CsType.Int32, encodedValue.ToCsString());
 
-    public CsMethod AddConstructor(string description = null)
+    public CsMethod AddConstructor(string? description = null)
     {
         var m = new CsMethod(GetConstructorName(), default)
         {
@@ -145,7 +144,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return m;
     }
 
-    public CsClassField AddConstString(string name, string plainValue)
+    public CsClassField AddConstString(string name, string? plainValue)
     {
         var encodedValue = plainValue == null ? "null" : plainValue.CsEncode();
         return AddConst(name, CsType.String, encodedValue);
@@ -158,7 +157,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return csEnum;
     }
 
-    public CsEvent AddEvent(string name, CsType type, string description = null)
+    public CsEvent AddEvent(string name, CsType type, string? description = null)
     {
         // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         var ev = new CsEvent(name, type, description);
@@ -166,10 +165,11 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return ev;
     }
 
-    public CsEvent AddEvent<T>(string name, string description = null)
+    public CsEvent AddEvent<T>(string name, string? description = null)
     {
         // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         var type = this.GetTypeName<T>();
+        type = type.ToReferenceNullableIfPossible(typeof(T));
         var ev   = new CsEvent(name, type, description);
         _events.Add(ev);
         return ev;
@@ -187,7 +187,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return field;
     }
 
-    public CsMethod AddFinalizer(string description = null)
+    public CsMethod AddFinalizer(string? description = null)
     {
         var m = new CsMethod(GetFinalizerName(), default)
         {
@@ -200,12 +200,12 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     }
 
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsMethod AddMethod(string name, string type, string description = null) => AddMethod(name, new CsType(type), description);
+    public CsMethod AddMethod(string name, string type, string? description = null) => AddMethod(name, new CsType(type), description);
 
-    public CsMethod AddMethod(string name, Type type, string description = null)
+    public CsMethod AddMethod(string name, Type? type, string? description = null)
         => AddMethod(name, type == null ? default : GetTypeName(type), description);
 
-    public CsMethod AddMethod(string name, CsType type, string description = null)
+    public CsMethod AddMethod(string? name, CsType type, string? description = null)
     {
         if (string.IsNullOrEmpty(name) || name == GetConstructorName())
             return AddConstructor(description);
@@ -228,7 +228,9 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsProperty AddProperty(string propertyName, CsType type)
     {
-        propertyName = propertyName?.Trim();
+        if (propertyName is null)
+            throw new ArgumentNullException(nameof(propertyName));
+        propertyName = propertyName.Trim();
         if (string.IsNullOrEmpty(propertyName))
             throw new ArgumentException("propertyName is empty");
         var property = new CsProperty(propertyName, type)
@@ -258,10 +260,9 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
         return false;
 
-        [CanBeNull]
-        CsFile FindFile()
+        CsFile? FindFile()
         {
-            object owner = Owner;
+            object? owner = Owner;
             while (true)
                 switch (owner)
                 {
@@ -440,7 +441,6 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     private void Emit_nested(ICsCodeWriter writer, bool addEmptyLineBeforeRegion, CodeEmitConfig config)
     {
         var w = new CsClassWriter(this);
-        // ReSharper disable once InvertIf
         if (_nestedClasses.Count != 0)
         {
             writer.EmptyLine(!addEmptyLineBeforeRegion);
@@ -453,7 +453,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             );
         }
 
-        if (Enums.Any())
+        if (!Enums.Any()) return;
         {
             writer.EmptyLine(!addEmptyLineBeforeRegion);
             w.WriteMethodAction(writer, Enums.OrderBy(a => a.Name), "Nested enums",
@@ -549,7 +549,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return result;
     }
 
-    public bool IsKnownNamespace(string namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
+    public bool IsKnownNamespace(string? namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
 
     public void MakeCodeForBlazor(ICsCodeWriter writer, CodeEmitConfig config, bool addWrapper)
     {
@@ -690,7 +690,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
     public static CodeFormatting DefaultCodeFormatting { get; set; } = new(CodeFormattingFeatures.MakeAutoImplementIfPossible, 100);
 
-    public IClassOwner Owner { get; set; }
+    public IClassOwner? Owner { get; set; }
 
     /// <summary>
     ///     Nazwa klasy
@@ -705,7 +705,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     /// <summary>
     ///     Optional, real type related to code class
     /// </summary>
-    public Type DotNetType { get; set; }
+    public Type? DotNetType { get; set; }
 
     /// <summary>
     ///     atrybuty
@@ -764,14 +764,13 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     /// <summary>
     ///     obiekt, na podstawie którego wygenerowano klasę, przydatne przy dalszej obróbce
     /// </summary>
-    public object GeneratorSource { get; set; }
+    public object? GeneratorSource { get; set; }
 
     public IReadOnlyList<CsMethod> Methods => _methods;
 
     public IReadOnlyList<CsEvent> Events => _events;
 
-    [CanBeNull]
-    public CsPrimaryConstructor PrimaryConstructor { get; set; }
+    public CsPrimaryConstructor? PrimaryConstructor { get; set; }
 
     #endregion
 

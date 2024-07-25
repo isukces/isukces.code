@@ -9,13 +9,13 @@ namespace iSukces.Code.Tests.EqualityGenerator
     public partial class EqualityGeneratorTests
     {
         private static void CompareCode(string code,
-            [CallerMemberName] string method = null, [CallerFilePath] string file = null)
+            [CallerMemberName] string? method = null, [CallerFilePath] string? file = null)
         {
             TestUtils.CompareWithResource(code, "iSukces.Code.Tests.EqualityGenerator.", method, file, "_res.cs");
         }
 
         private static void DoTest<T>(
-            [CallerMemberName] string method = null, [CallerFilePath] string file = null)
+            [CallerMemberName] string? method = null, [CallerFilePath] string? file = null)
         {
             IMemberNullValueChecker c   = new MyValueChecker();
             var                     q   = new Generators.EqualityGenerator(c);

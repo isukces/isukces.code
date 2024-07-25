@@ -43,7 +43,7 @@ namespace iSukces.Code.AutoCode
                         var c = 0;
                         if (values.Any())
                             c = values.Min();
-                        expr = CsExpression.TypeCast(CsType.NullableInt32, propNameExpression).Coalesce(c);
+                        expr = CsExpression.TypeCast(CsType.Int32Nullable, propNameExpression).Coalesce(c);
                     }
 
                     // var qq = q is null ? 0 : (int)q.Value;

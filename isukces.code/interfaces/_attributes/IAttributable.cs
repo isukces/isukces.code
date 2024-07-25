@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using iSukces.Code.AutoCode;
@@ -111,9 +112,9 @@ public static class AttributableExt
 
     public static T WithAutocodeGeneratedAttributeAuto<T>(this T attributable,
         ITypeNameResolver resolver,
-        [CallerMemberName] string callerMemberName = null,
+        [CallerMemberName] string? callerMemberName = null,
         [CallerLineNumber] int callerLineNumber = 0,
-        [CallerFilePath] string path = null)
+        [CallerFilePath] string? path = null)
         where T : IAttributable
     {
         var gen = new SourceCodeLocation(callerLineNumber, callerMemberName, path);

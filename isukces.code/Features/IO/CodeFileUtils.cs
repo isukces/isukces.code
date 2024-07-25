@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -7,7 +8,7 @@ namespace iSukces.Code.IO
 {
     public static class CodeFileUtils
     {
-        public static bool AreEqual(byte[] a, byte[] b)
+        public static bool AreEqual(byte[]? a, byte[] b)
         {
             a ??= XArray.Empty<byte>();
             b ??= XArray.Empty<byte>();
@@ -24,7 +25,7 @@ namespace iSukces.Code.IO
             return true;
         }
 
-        public static string GetCallerFilePath([CallerFilePath] string file = null)
+        public static string GetCallerFilePath([CallerFilePath] string? file = null)
         {
             return file;
         }
@@ -42,7 +43,7 @@ namespace iSukces.Code.IO
 
         public static bool SaveIfDifferent(string content, string filename, bool addBom)
         {
-            byte[] existing = null;
+            byte[]? existing = null;
             if (File.Exists(filename))
                 existing = File.ReadAllBytes(filename);
             var newCodeBytes = Encode(content, addBom);
