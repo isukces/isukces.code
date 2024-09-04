@@ -21,6 +21,8 @@ public sealed class FullNameTypeNameResolver : ITypeNameResolver, INamespaceCont
         return new UsingInfo(false);
     }
 
+    public string? TryGetTypeAlias(TypeProvider type) => null;
+
     public static FullNameTypeNameResolver Instance => InstanceHolder.SingleInstance;
 
     private sealed class InstanceHolder

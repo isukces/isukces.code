@@ -13,10 +13,7 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
 {
     public CsNamespace(INamespaceOwner owner, string? name)
     {
-        Usings            = new NamespacesHolder(ns =>
-        {
-            return new UsingInfo(Name == ns);
-        });
+        Usings            = new NamespacesHolder(ns => { return new UsingInfo(Name == ns); });
         Owner             = owner ?? throw new ArgumentNullException(nameof(owner));
         Name              = name?.Trim() ?? string.Empty;
         CompilerDirective = string.Empty;
@@ -41,6 +38,18 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
         Usings.Add(ns, alias);
     }
 
+    public UsingInfo GetNamespaceInfo(string? namespaceName)
+    {
+        if (string.IsNullOrEmpty(namespaceName))
+            return new UsingInfo(true);
+        if (Name == namespaceName)
+            return new UsingInfo(true);
+        var tmp = Usings.GetNamespaceInfo(namespaceName);
+        if (tmp.IsKnown)
+            return tmp;
+        return Owner?.GetNamespaceInfo(namespaceName) ?? default;
+    }
+
 
     // [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
     public CsClass GetOrCreateClass(string csClassName)
@@ -60,16 +69,12 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
         return GeneratorsHelper.GetTypeName(this, type);
     }
 
-    public UsingInfo GetNamespaceInfo(string? namespaceName)
+    public string? TryGetTypeAlias(TypeProvider type)
     {
-        if (string.IsNullOrEmpty(namespaceName))
-            return new UsingInfo(true);
-        if (Name == namespaceName)
-            return new UsingInfo(true);
-        var tmp= Usings.GetNamespaceInfo(namespaceName);
-        if (tmp.IsKnown)
-            return tmp;
-        return Owner?.GetNamespaceInfo(namespaceName) ?? default;
+        var alias = Usings.TryGetTypeAlias(type);
+        if (!string.IsNullOrEmpty(alias))
+            return alias;
+        return Owner?.TryGetTypeAlias(type);
     }
 
     public NamespacesHolder Usings { get; }

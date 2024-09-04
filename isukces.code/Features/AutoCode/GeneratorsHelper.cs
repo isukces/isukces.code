@@ -88,7 +88,11 @@ namespace iSukces.Code.AutoCode
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (type.DeclaringType != null)
                 return GetTypeName(container, type.DeclaringType).AppendBase("." + type.Name);
-
+            {
+                var alias = container.TryGetTypeAlias(TypeProvider.FromType(type));
+                if (!string.IsNullOrEmpty(alias))
+                    return new CsType(alias);
+            }
             var    generics = Array.Empty<CsType>();
             string mainPart;
             {

@@ -5,7 +5,7 @@ namespace iSukces.Code.Interfaces;
 
 public interface IDescriptable
 {
-    string Description { get; set; }
+    string? Description { get; set; }
 }
 
 public interface ICommentable

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
+using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code;
@@ -557,6 +558,11 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
         return Owner?.GetNamespaceInfo(namespaceName) ?? new UsingInfo(false, null);
+    }
+
+    public string? TryGetTypeAlias(TypeProvider type)
+    {
+        return Owner?.TryGetTypeAlias(type);
     }
 
     public void MakeCodeForBlazor(ICsCodeWriter writer, CodeEmitConfig config, bool addWrapper)

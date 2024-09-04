@@ -33,6 +33,7 @@ using iSukces.Code.Tests;";
         var ns   = file.GetOrCreateNamespace("iSukces.Code");
         ns.AddImportNamespace<CsNamespaceTests>("tests");
         ns.AddImportNamespace<System.Globalization.Calendar>();
+        ns.Usings.AddTypeAlias("TStringList", typeof(List<string>));
 
         file.AddImportNamespace<CsClass>();
         file.AddImportNamespace<List<int>>("gene");
@@ -43,6 +44,7 @@ using iSukces.Code.Tests;";
             cl.AddProperty<CsClass>("B");
             cl.AddProperty<List<int>>("C");
             cl.AddProperty<System.Globalization.Calendar>("D");
+            cl.AddProperty<List<string>>("Sl");
         }
 
         var code = file.GetCode().Trim();
@@ -55,6 +57,7 @@ namespace iSukces.Code;
 
 using System.Globalization;
 using tests = iSukces.Code.Tests;
+using TStringList = System.Collections.Generic.List<string>;
 
 public class SomeClass
 {
@@ -65,6 +68,8 @@ public class SomeClass
     public gene.List<int> C { get; set; }
 
     public Calendar D { get; set; }
+
+    public TStringList Sl { get; set; }
 
 }
 ";

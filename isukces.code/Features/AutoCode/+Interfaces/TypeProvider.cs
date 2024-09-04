@@ -5,9 +5,9 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.AutoCode;
 
-public struct TypeProvider : IEquatable<TypeProvider>
+public readonly struct TypeProvider : IEquatable<TypeProvider>
 {
-    public TypeProvider(Type type, CsType typeName, CsNamespaceMemberKind kind)
+    public TypeProvider(Type? type, CsType typeName, CsNamespaceMemberKind kind)
     {
         Type     = type;
         Kind     = kind;
@@ -16,11 +16,11 @@ public struct TypeProvider : IEquatable<TypeProvider>
 
     public static TypeProvider FromType(Type type) => new(type, default, type.GetNamespaceMemberKind());
 
-    public static TypeProvider FromTypeName(CsType typeName, CsNamespaceMemberKind kind) 
+    public static TypeProvider FromTypeName(CsType typeName, CsNamespaceMemberKind kind)
         => new(null, typeName, kind);
 
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public static TypeProvider FromTypeName(string typeName, CsNamespaceMemberKind kind) 
+    public static TypeProvider FromTypeName(string typeName, CsNamespaceMemberKind kind)
         => new(null, (CsType)typeName, kind);
 
     public static bool operator ==(TypeProvider left, TypeProvider right) => left.Equals(right);
@@ -48,8 +48,8 @@ public struct TypeProvider : IEquatable<TypeProvider>
         }
     }
 
-    public bool IsEmpty => Type == null && TypeName.IsVoid;
-    public Type                  Type     { get; }
+    public bool                  IsEmpty  => Type is null && TypeName.IsVoid;
+    public Type?                 Type     { get; }
     public CsType                TypeName { get; }
     public CsNamespaceMemberKind Kind     { get; }
 }

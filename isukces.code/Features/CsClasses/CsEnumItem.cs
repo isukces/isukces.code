@@ -30,7 +30,7 @@ public class CsEnumItem : IDescriptable, IAttributable
         if (EnumName != SerializeAs && !string.IsNullOrEmpty(SerializeAs))
             commentLines.Add("serialized as " + SerializeAs);
         writer.WriteMultiLineSummary(commentLines, true);
-        writer.WriteAttributes( Attributes);
+        writer.WriteAttributes(Attributes);
 
         var code = EnumName;
         if (!string.IsNullOrEmpty(EncodedValue))
@@ -46,6 +46,6 @@ public class CsEnumItem : IDescriptable, IAttributable
     public string Label       { get; set; }
     public string SerializeAs { get; set; }
 
-    public string              Description { get; set; }
+    public string?             Description { get; set; }
     public IList<ICsAttribute> Attributes  { get; } = new List<ICsAttribute>();
 }

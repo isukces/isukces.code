@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code;
@@ -22,12 +23,12 @@ public class NamespacesHolder : INamespaceContainer
 
     public void Add(string? ns, string? alias = null)
     {
-        if (string.IsNullOrEmpty(ns)) 
+        if (string.IsNullOrEmpty(ns))
             return;
         if (string.IsNullOrEmpty(alias))
-            _namespaces.Add(ns!);
+            _namespaces.Add(ns);
         else
-            _aliases[ns!] = alias!;
+            _aliases[ns] = alias;
     }
 
     public bool Emit(ICsCodeWriter writer, INamespaceContainer? except)
@@ -73,11 +74,30 @@ public class NamespacesHolder : INamespaceContainer
             }
         }
 
+        if (_typeAliases.Count != 0)
+        {
+            var pairs = _typeAliases
+                .OrderBy(a => a.Key);
+            foreach (var pair in pairs)
+            {
+                yield return $"{pair.Value} = {pair.Key}";
+            }
+        }
         if (_static.Count != 0)
             foreach (var ns in _static.OrderBy(a => a))
                 yield return $"static {ns}";
     }
 
+    public void AddTypeAlias(string alias, string typeName)
+    {
+        _typeAliases[typeName] = alias;
+    }
+    public void AddTypeAlias(string alias, Type type)
+    {
+        var typeName = GeneratorsHelper.GetTypeName(FullNameTypeNameResolver.Instance, type);
+        _typeAliases[typeName.Declaration] = alias;
+    }
+    
     public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
         if (string.IsNullOrEmpty(namespaceName))
@@ -94,12 +114,28 @@ public class NamespacesHolder : INamespaceContainer
         return new UsingInfo(false);
     }
 
-    #region Fields
+    public string? TryGetTypeAlias(TypeProvider type)
+    {
+        if (type.Type is not null)
+        {
+            var typeName = GeneratorsHelper.GetTypeName(FullNameTypeNameResolver.Instance, type.Type);
+#if NETSTANDARD2_0            
+            return _typeAliases.GetValueOrDefault(typeName.Declaration);
+#else
+            return _typeAliases.TryGetValue(typeName.Declaration, out var alias) 
+                ? alias 
+                : null;
+#endif
+            
+        }
 
-    private readonly Dictionary<string, string> _aliases    = new();
-    private readonly HashSet<string>            _namespaces = [];
+        // todo: handle other cases
+        return null;
+    }
+
+    private readonly Dictionary<string, string> _aliases     = new();
+    private readonly Dictionary<string, string> _typeAliases = new();
+    private readonly HashSet<string>            _namespaces  = [];
     private readonly Func<string?, UsingInfo>   _ownerCheckFirst;
     private readonly HashSet<string>            _static = [];
-
-    #endregion
 }

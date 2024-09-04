@@ -1,12 +1,15 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.Interfaces;
 
 public interface INamespaceContainer
 {
     UsingInfo GetNamespaceInfo(string? namespaceName);
+
+    string? TryGetTypeAlias(TypeProvider type);
 }
 
 public readonly record struct UsingInfo(bool IsKnown, string? Alias = null)

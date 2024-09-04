@@ -268,6 +268,11 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         return new UsingInfo(false);
     }
 
+    public string? TryGetTypeAlias(TypeProvider type)
+    {
+        return Usings.TryGetTypeAlias(type);
+    }
+
     private void Save(string filename)
     {
         var fi = new FileInfo(filename);
