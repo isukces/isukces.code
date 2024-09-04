@@ -1,17 +1,18 @@
+#nullable enable
 using System;
 
 namespace iSukces.Code.Db
 {
     public class AutoNavigationAttribute : Attribute
     {
-        public AutoNavigationAttribute(string name, Type type, string inverse = null)
+        public AutoNavigationAttribute(string name, Type type, string? inverse = null)
         {
             Name    = name;
             Type    = type;
             Inverse = inverse;
         }
 
-        public AutoNavigationAttribute(Type type, string inverse = null)
+        public AutoNavigationAttribute(Type type, string? inverse = null)
         {
             Type    = type;
             Inverse = inverse;

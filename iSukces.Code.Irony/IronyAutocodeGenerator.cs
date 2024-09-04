@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace iSukces.Code.Irony
         private static string GetDebugFromRule(NonTerminalInfo i, ITypeNameResolver res,
             IronyAutocodeGeneratorModel cfg)
         {
-            string ff(ICsExpression src, string begin = null, string end = null)
+            string? ff(ICsExpression src, string? begin = null, string? end = null)
             {
                 if (!(src is ITokenNameSource tns)) return null;
                 var w = cfg.GetAstTypesInfoDelegate(tns)?.Invoke(res);
@@ -60,7 +61,7 @@ namespace iSukces.Code.Irony
                 case RuleBuilder.SequenceRule sequenceRule:
                     debug = "";
                     if ((sequenceRule.Map?.Count ?? 0) > 0)
-                        foreach (var ii in sequenceRule.Map)
+                        foreach (var ii in sequenceRule.Map!)
                         {
                             var q = sequenceRule.Expressions[ii.RuleItemIndex];
                             if (debug.Length > 0)
@@ -89,11 +90,12 @@ namespace iSukces.Code.Irony
             _grammarClass = context.GetOrCreateClass(
                 (CsType)fullClassName,
                 CsNamespaceMemberKind.Class);
-            _grammarClass.WithBaseClass(_grammarClass.Owner.GetTypeName<InterpretedLanguageGrammar>());
+            if (_grammarClass.Owner is not null)
+                _grammarClass.WithBaseClass(_grammarClass.Owner.GetTypeName<InterpretedLanguageGrammar>());
             var initCode = Add_Fields()
                 .Where(a => a != null)
                 .ToArray();
-            Add_AutoInit(initCode);
+            Add_AutoInit(initCode!);
             var astClassesGenerator = new AstClassesGenerator(context, Cfg);
             astClassesGenerator.Add_AstClasses();
             Add_AstInterfaces(context);
@@ -110,13 +112,13 @@ namespace iSukces.Code.Irony
                 GetTokenInfoByName = Cfg.GetTokenInfoByName
             };
 
-        public IronyAutocodeGenerator With(string terminalName, Action<NonTerminalInfo> process = null)
+        public IronyAutocodeGenerator With(string terminalName, Action<NonTerminalInfo>? process = null)
         {
             var info = NonTerminalInfo.Parse(terminalName);
             return With(info, process);
         }
 
-        public IronyAutocodeGenerator With(NonTerminalInfo info, Action<NonTerminalInfo> process = null)
+        public IronyAutocodeGenerator With(NonTerminalInfo info, Action<NonTerminalInfo>? process = null)
         {
             if (process != null)
                 process(info);
@@ -229,32 +231,9 @@ namespace iSukces.Code.Irony
                 .WithBody(code);
         }
 
-        private IEnumerable<FieldCreationInfo> Add_Fields()
+        private IEnumerable<FieldCreationInfo?> Add_Fields()
         {
             var fields = new List<CsClassField>();
-
-            FieldCreationInfo MakeFromFactory<T>(SpecialTerminalKind key, string methodName)
-            {
-                if (!Cfg.SpecialTerminals.TryGetValue(key, out var name)) return null;
-                var tn         = _grammarClass.GetTypeName<T>();
-                var factory    = _grammarClass.GetTypeName(typeof(TerminalFactory));
-                var constValue = $"{factory}.{methodName}({name.CsEncode()})";
-                var field = new CsClassField(new TokenName(name).GetCode(_grammarClass), tn)
-                {
-                    Owner = null !
-                };
-                fields.Add(field);
-                field.UserAnnotations["o"] = 1;
-                if (key == SpecialTerminalKind.CreateCSharpNumber)
-                    if (Cfg.CSharpNumberLiteralOptions != NumberOptions.None)
-                    {
-                        var code = _grammarClass.GetEnumFlagsValueCode(Cfg.CSharpNumberLiteralOptions, OptimalJoin);
-                        code = field.Name + ".Options = " + code + ";";
-                        return new FieldCreationInfo(field.Name, constValue, code);
-                    }
-
-                return new FieldCreationInfo(field.Name, constValue);
-            }
 
             yield return MakeFromFactory<IdentifierTerminal>(SpecialTerminalKind.CreateCSharpIdentifier,
                 "CreateCSharpIdentifier");
@@ -320,11 +299,36 @@ namespace iSukces.Code.Irony
                 field.Visibility = Visibilities.Private;
                 _grammarClass.Fields.Add(field);
             }
+
+            yield break;
+
+            FieldCreationInfo? MakeFromFactory<T>(SpecialTerminalKind key, string methodName)
+            {
+                if (!Cfg.SpecialTerminals.TryGetValue(key, out var name)) return null;
+                var tn         = _grammarClass.GetTypeName<T>();
+                var factory    = _grammarClass.GetTypeName(typeof(TerminalFactory));
+                var constValue = $"{factory}.{methodName}({name.CsEncode()})";
+                var field = new CsClassField(new TokenName(name).GetCode(_grammarClass), tn)
+                {
+                    Owner = null !
+                };
+                fields.Add(field);
+                field.UserAnnotations["o"] = 1;
+                if (key == SpecialTerminalKind.CreateCSharpNumber)
+                    if (Cfg.CSharpNumberLiteralOptions != NumberOptions.None)
+                    {
+                        var code = _grammarClass.GetEnumFlagsValueCode(Cfg.CSharpNumberLiteralOptions, OptimalJoin);
+                        code = field.Name + ".Options = " + code + ";";
+                        return new FieldCreationInfo(field.Name, constValue, code);
+                    }
+
+                return new FieldCreationInfo(field.Name, constValue);
+            }
         }
 
         public IronyAutocodeGeneratorModel Cfg { get; } = new IronyAutocodeGeneratorModel();
 
-        private CsClass _grammarClass;
+        private CsClass _grammarClass = null!;
 
         private class FieldCreationInfo
         {

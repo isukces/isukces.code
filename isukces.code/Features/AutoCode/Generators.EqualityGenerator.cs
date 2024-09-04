@@ -1,10 +1,10 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using iSukces.Code.FeatureImplementers;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.AutoCode
 {
@@ -15,7 +15,7 @@ namespace iSukces.Code.AutoCode
         /// </summary>
         public class EqualityGenerator : IAutoCodeGenerator
         {
-            public EqualityGenerator([NotNull] IMemberNullValueChecker nullChecker) =>
+            public EqualityGenerator(IMemberNullValueChecker nullChecker) =>
                 NullChecker = nullChecker ?? throw new ArgumentNullException(nameof(nullChecker));
 
             private static CsExpression GetCoalesceExpressionForType(Type type)
@@ -440,7 +440,7 @@ namespace iSukces.Code.AutoCode
             }
 
             private PropertyOrFieldInfo[] FilterProperties(PropertyOrFieldInfo[] props,
-                [CanBeNull] Auto.EqualityGeneratorAttribute att)
+                Auto.EqualityGeneratorAttribute? att)
             {
                 if (att is null)
                     return XArray.Empty<PropertyOrFieldInfo>();
@@ -497,14 +497,14 @@ namespace iSukces.Code.AutoCode
 
             protected IMemberNullValueChecker NullChecker { get; }
 
-            private string IsEmptyObjectPropertyName
+            private string? IsEmptyObjectPropertyName
             {
                 get { return _attEq?.IsEmptyProperty; }
             }
 
-            [CanBeNull] private Auto.ComparerGeneratorAttribute _attComp;
+            private Auto.ComparerGeneratorAttribute? _attComp;
 
-            [CanBeNull] private Auto.EqualityGeneratorAttribute _attEq;
+            private Auto.EqualityGeneratorAttribute? _attEq;
 
             private bool _canBeNull;
             private CsClass _class;

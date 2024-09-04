@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,7 +35,7 @@ public class DbGegeneratorsHelper
         IAutoCodeGeneratorContext context, 
         Type propertyType,
         AutoNavigationAttribute attr,
-        Action<CsClass, CsProperty> addOptionalAttributes = null)
+        Action<CsClass, CsProperty>? addOptionalAttributes = null)
     {
         if (attr.GenerateInverse == InverseKind.None)
             return;

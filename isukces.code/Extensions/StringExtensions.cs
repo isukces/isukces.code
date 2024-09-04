@@ -1,7 +1,7 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Globalization;
 using System.Text;
-using JetBrains.Annotations;
 
 namespace iSukces.Code
 {
@@ -14,7 +14,7 @@ namespace iSukces.Code
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static string CsEncode(this string x)
+        public static string CsEncode(this string? x)
         {
             const string quote     = "\"";
             // const string backslash = "\\";
@@ -72,7 +72,7 @@ namespace iSukces.Code
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static string CsVerbatimEncode(this string x)
+        public static string CsVerbatimEncode(this string? x)
         {
             if (x is null)
                 return "null";
@@ -92,7 +92,7 @@ namespace iSukces.Code
             return sb.ToString();
         }
 
-        public static string Decamelize(this string name)
+        public static string? Decamelize(this string? name)
         {
             if (name is null)
                 return null;
@@ -115,7 +115,7 @@ namespace iSukces.Code
             return s.ToString();
         }
 
-        public static string FirstLower([NotNull] this string name) // !!!!!!
+        public static string FirstLower(this string name) // !!!!!!
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             return name.Substring(0, 1).ToLower() + name.Substring(1);

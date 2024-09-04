@@ -1,13 +1,13 @@
+#nullable enable
 using System;
 using System.Linq;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.AutoCode
 {
     public partial class CsExpression
     {
-        public CsExpression([NotNull] string code, CsOperatorPrecendence precedence = CsOperatorPrecendence.Expression)
+        public CsExpression(string code, CsOperatorPrecendence precedence = CsOperatorPrecendence.Expression)
         {
             if (string.IsNullOrEmpty(code))
                 throw new ArgumentException(nameof(code));
@@ -116,7 +116,7 @@ namespace iSukces.Code.AutoCode
             return new CsExpression(code + "." + propertyName);
         }
 
-        public CsExpression Coalesce([NotNull] CsExpression expr)
+        public CsExpression Coalesce(CsExpression expr)
         {
             if (expr == null) throw new ArgumentNullException(nameof(expr));
             const CsOperatorPrecendence op    = CsOperatorPrecendenceUtils.DoubleQuestion;

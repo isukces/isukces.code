@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,7 +12,7 @@ public partial class Generators
 {
     public class BuilderGenerator : SingleClassGenerator<Auto.BuilderAttribute>, IAutoCodeGenerator
     {
-        private static List<string> GetConstructorArgs(ConstructorInfo constructor,
+        private static List<string>? GetConstructorArgs(ConstructorInfo constructor,
             IReadOnlyList<PropertyInfo> properties)
         {
             var args                  = new List<string>();

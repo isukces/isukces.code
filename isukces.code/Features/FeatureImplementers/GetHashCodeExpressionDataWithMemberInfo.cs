@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Reflection;
 
@@ -45,7 +46,7 @@ namespace iSukces.Code.FeatureImplementers
             return g1.CompareTo(g2);
         }
 
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (ReferenceEquals(null, obj)) return 1;
             return obj is GetHashCodeExpressionDataWithMemberInfo other

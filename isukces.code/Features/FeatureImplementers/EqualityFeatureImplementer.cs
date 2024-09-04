@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +22,7 @@ public partial class EqualityFeatureImplementer
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static string GetSuffix(int cnt) => cnt == 0 ? "" : (cnt + 1).ToCsString();
 
-    public static string WriteCompareTo(CsClass csClass, IReadOnlyList<CompareToExpressionData> compareToExpressions,
+    public static string? WriteCompareTo(CsClass csClass, IReadOnlyList<CompareToExpressionData>? compareToExpressions,
         bool canBeNull)
     {
         if (compareToExpressions is null || compareToExpressions.Count == 0) return null;
@@ -195,7 +196,7 @@ public partial class EqualityFeatureImplementer
         }
     }
 
-    private string WriteCompareTo() => WriteCompareTo(_class, CompareToExpressions, CanBeNull);
+    private string? WriteCompareTo() => WriteCompareTo(_class, CompareToExpressions, CanBeNull);
 
     private void WriteEqualityOperators()
     {

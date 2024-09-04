@@ -1,10 +1,11 @@
+#nullable enable
 using System;
 
 namespace iSukces.Code.Interfaces
 {
     public struct NamespaceAndName : IEquatable<NamespaceAndName>
     {
-        public NamespaceAndName(string ns, string name)
+        public NamespaceAndName(string? ns, string? name)
         {
             Namespace = ns?.Trim();
             Name      = name?.Trim();
@@ -47,7 +48,7 @@ namespace iSukces.Code.Interfaces
             return Namespace == other.Namespace && Name == other.Name;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is NamespaceAndName other && Equals(other);
         }

@@ -57,7 +57,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
             private static string TestGetDependentProperties(string propertyName)
             {
-                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:121
+                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:122
                 switch (propertyName)
                 {
                     case nameof(Master): return MasterDependent; // Slave
@@ -71,6 +71,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 
     }
 }
+
 ";
             Assert.Equal(exp.Trim(), q.Code.Trim());
         }
@@ -101,7 +102,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
             private static string TestGetDependentProperties(string propertyName)
             {
-                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:121
+                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:122
                 switch (propertyName)
                 {
                     case nameof(Master): return MasterDependent; // Slave,DeepSlave,EvenDeeperSlave

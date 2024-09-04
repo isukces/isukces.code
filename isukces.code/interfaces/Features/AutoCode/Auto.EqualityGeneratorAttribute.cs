@@ -1,5 +1,5 @@
+#nullable enable
 using System;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.Interfaces
 {
@@ -8,7 +8,7 @@ namespace iSukces.Code.Interfaces
         [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
         public class EqualityGeneratorAttribute : Attribute
         {
-            public EqualityGeneratorAttribute(string isEmptyProperty=null)
+            public EqualityGeneratorAttribute(string? isEmptyProperty=null)
             {
                 IsEmptyProperty = isEmptyProperty;
             }
@@ -19,7 +19,6 @@ namespace iSukces.Code.Interfaces
             /// </summary>
             public string IsEmptyProperty { get; set; }
 
-            [NotNull]
             public string[] GetHashCodeProperties { get; set; }
 
             /// <summary>

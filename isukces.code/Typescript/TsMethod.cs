@@ -1,19 +1,19 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.Typescript
 {
     public class TsMethod : ITsClassMember
     {
-        public TsMethod(string name = null)
+        public TsMethod(string? name = null)
         {
             Name = name;
         }
 
-        public TsMethod WithArgument([NotNull] string name, string type = null)
+        public TsMethod WithArgument(string name, string? type = null)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
             var isOptional = name.EndsWith("?", StringComparison.Ordinal);

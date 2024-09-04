@@ -1,4 +1,8 @@
-﻿namespace iSukces.Code.Interfaces;
+﻿#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
+namespace iSukces.Code.Interfaces;
 
 public interface ICsClassMember : IDescriptable, IConditional, IAttributable
 {

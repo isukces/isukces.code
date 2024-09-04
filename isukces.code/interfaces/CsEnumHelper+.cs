@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace iSukces.Code.Interfaces
     partial class CsEnumHelper {
 
         // ================================
-        public static object GetZeroValue(IEnumerable<object> values, Type ut) {
+        public static object? GetZeroValue(IEnumerable<object> values, Type ut) {
             if (ut == typeof(int))
                 return values.FirstOrDefault(a => (int)a == 0);            
             if (ut == typeof(uint))

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ public static class TypeToNameResolverExtensions
     }
 
     public static string GetEnumFlagsValueCode<T>(this ITypeNameResolver resolver, T value,
-        Func<IReadOnlyList<string>, string> joinFunc = null)
+        Func<IReadOnlyList<string>, string>? joinFunc = null)
         where T : Enum
     {
         var c = resolver.GetTypeName<T>().Declaration;

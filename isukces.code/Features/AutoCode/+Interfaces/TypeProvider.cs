@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Linq;
 using iSukces.Code.Interfaces;
@@ -30,7 +31,7 @@ public struct TypeProvider : IEquatable<TypeProvider>
                                               && TypeName.Equals(other.TypeName)
                                               && Kind == other.Kind;
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (ReferenceEquals(null, obj)) return false;
         return obj is TypeProvider other && Equals(other);

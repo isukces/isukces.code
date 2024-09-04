@@ -1,4 +1,6 @@
-﻿#region using
+﻿#nullable enable
+
+#region using
 
 using System;
 
@@ -15,7 +17,7 @@ namespace iSukces.Code.Interfaces
         {
             #region Constructors
 
-            public ReactivePropertyAttribute(string name, Type propertyType, string description = null)
+            public ReactivePropertyAttribute(string name, Type propertyType, string? description = null)
             {
                 Name = name;
                 PropertyType = propertyType;

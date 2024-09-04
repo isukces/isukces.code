@@ -1,12 +1,12 @@
+#nullable enable
 using System;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code
 {
     public class MethodTypeNameResolver : ITypeNameResolver
     {
-        public MethodTypeNameResolver([NotNull] Func<Type, CsType> method)
+        public MethodTypeNameResolver(Func<Type, CsType> method)
         {
             _method = method ?? throw new ArgumentNullException(nameof(method));
         }

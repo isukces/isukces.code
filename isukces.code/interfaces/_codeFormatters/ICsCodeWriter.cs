@@ -1,9 +1,9 @@
+#nullable enable
 // ReSharper disable MemberCanBePrivate.Global
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.Interfaces;
 
@@ -31,14 +31,14 @@ public static class CsCodeWriterExtensions
             self.WritelineNoIndent("#endif");
     }
 
-    public static void CloseCompilerIf(this ICsCodeWriter self, string directive)
+    public static void CloseCompilerIf(this ICsCodeWriter self, string? directive)
     {
         if (!string.IsNullOrEmpty(directive))
             self.WritelineNoIndent("#endif");
     }
 
 
-    public static void CloseCompilerIf(this ICsCodeWriter self, IConditional conditional)
+    public static void CloseCompilerIf(this ICsCodeWriter self, IConditional? conditional)
     {
         self.CloseCompilerIf(conditional?.CompilerDirective);
     }
@@ -62,20 +62,20 @@ public static class CsCodeWriterExtensions
     }
 
 
-    public static bool OpenCompilerIf(this ICsCodeWriter self, string directive)
+    public static bool OpenCompilerIf(this ICsCodeWriter self, string? directive)
     {
         if (string.IsNullOrEmpty(directive)) return false;
         self.WritelineNoIndent("#if " + directive);
         return true;
     }
 
-    public static bool OpenCompilerIf(this ICsCodeWriter self, IConditional conditional)
+    public static bool OpenCompilerIf(this ICsCodeWriter self, IConditional? conditional)
     {
         return self.OpenCompilerIf(conditional?.CompilerDirective);
     }
 
 
-    public static ICodeWriter OpenConstructor(this ICodeWriter self, string x, string baseOrThis = null)
+    public static ICodeWriter OpenConstructor(this ICodeWriter self, string x, string? baseOrThis = null)
     {
         self.WriteLine(x);
         if (!string.IsNullOrEmpty(baseOrThis))
@@ -109,7 +109,7 @@ public static class CsCodeWriterExtensions
         return src;
     }
 
-    private static void PragmaWarnings(ICsCodeWriter self, [CanBeNull] IList<CsPragmaWarning> list, bool start)
+    private static void PragmaWarnings(ICsCodeWriter self, IList<CsPragmaWarning>? list, bool start)
     {
         if (list == null || list.Count == 0)
             return;
@@ -143,7 +143,7 @@ public static class CsCodeWriterExtensions
         }
     }
 
-    public static T SingleLineIf<T>(this T src, string condition, string statement, string elseStatement = null)
+    public static T SingleLineIf<T>(this T src, string condition, string statement, string? elseStatement = null)
         where T : ICsCodeWriter
     {
         src.WriteLine("if (" + condition + ")");
@@ -159,14 +159,14 @@ public static class CsCodeWriterExtensions
         return src;
     }
 
-    public static T SingleLineIfThrow<T>(this T src, string condition, CsType type, string arg = null)
+    public static T SingleLineIfThrow<T>(this T src, string condition, CsType type, string? arg = null)
         where T : ICsCodeWriter
     {
         var statement = type.ThrowNew(arg);
         return src.SingleLineIf(condition, statement + ";");
     }
 
-    public static void WriteComment(this ICsCodeWriter writer, ICommentable c)
+    public static void WriteComment(this ICsCodeWriter writer, ICommentable? c)
     {
         var comment = c?.GetComments()?.Trim();
         if (string.IsNullOrEmpty(comment))
@@ -264,7 +264,7 @@ public static class CsCodeWriterExtensions
         return self;
     }
 
-    public static T WriteSingleLineSummary<T>(this T src, string x, bool skipIfEmpty = false)
+    public static T WriteSingleLineSummary<T>(this T src, string? x, bool skipIfEmpty = false)
         where T : ICsCodeWriter
 
     {

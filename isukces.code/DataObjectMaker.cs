@@ -1,4 +1,8 @@
-﻿namespace iSukces.Code
+﻿#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
+namespace iSukces.Code
 {
     /*
      public class DataObjectMaker: System.Object {

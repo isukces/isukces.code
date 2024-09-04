@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿#nullable enable
+using System.IO;
 using System.Linq;
 using System.Text;
 using iSukces.Code.Interfaces;

@@ -1,3 +1,4 @@
+#nullable enable
 using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.FeatureImplementers
@@ -10,7 +11,7 @@ namespace iSukces.Code.FeatureImplementers
 
     public struct CompareToExpressionData : IExpressionWithObjectInstance
     {
-        public CompareToExpressionData(string fieldName, CsExpression expressionTemplate, string instance = null)
+        public CompareToExpressionData(string fieldName, CsExpression expressionTemplate, string? instance = null)
         {
             FieldName          = fieldName;
             ExpressionTemplate = expressionTemplate;
@@ -25,7 +26,7 @@ namespace iSukces.Code.FeatureImplementers
 
     public struct ExpressionWithObjectInstance : IExpressionWithObjectInstance
     {
-        public ExpressionWithObjectInstance(CsExpression expressionTemplate, string instance = null)
+        public ExpressionWithObjectInstance(CsExpression expressionTemplate, string? instance = null)
         {
             ExpressionTemplate = expressionTemplate;
             Instance           = instance;

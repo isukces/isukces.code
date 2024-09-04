@@ -1,9 +1,9 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.AutoCode;
 
@@ -57,8 +57,7 @@ public partial class Generators
 
         }
 
-        [CanBeNull]
-        protected virtual string GetTypeTemplate(Type type)
+        protected virtual string? GetTypeTemplate(Type type)
         {
             if (Templates.TryGetValue(type, out var template))
                 return template;

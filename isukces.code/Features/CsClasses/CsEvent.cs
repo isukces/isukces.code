@@ -1,8 +1,12 @@
+#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
 namespace iSukces.Code;
 
 public class CsEvent : ClassMemberBase
 {
-    public CsEvent(string name, CsType type, string description = null)
+    public CsEvent(string name, CsType type, string? description = null)
     {
         Name        = name;
         Type        = type;

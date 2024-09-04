@@ -1,9 +1,13 @@
+#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
 #if OBSOLETE
 namespace iSukces.Code;
 
 public sealed class CsConditionsPair
 {
-    public CsConditionsPair(string condition, string inversed = null)
+    public CsConditionsPair(string condition, string? inversed = null)
     {
         Condition = condition;
         if (inversed is null)

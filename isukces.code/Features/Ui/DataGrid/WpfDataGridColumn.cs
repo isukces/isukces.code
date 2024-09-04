@@ -1,3 +1,7 @@
+#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
 namespace iSukces.Code.Ui.DataGrid
 {
     public class WpfDataGridColumn:BasicDataGridColumn
@@ -23,8 +27,8 @@ namespace iSukces.Code.Ui.DataGrid
             return this;
         }
 
-        public WpfDataGridColumn WithLookup(object source, string selectedValuePath = null,
-            string displayMemberPath = null)
+        public WpfDataGridColumn WithLookup(object source, string? selectedValuePath = null,
+            string? displayMemberPath = null)
         {
             Lookup = new LookupInfo
             {

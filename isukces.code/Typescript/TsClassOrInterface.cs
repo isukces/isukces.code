@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Typescript
@@ -11,7 +12,7 @@ namespace iSukces.Code.Typescript
             Name        = name;
         }
 
-        public TsField AddField(string name, string type = null)
+        public TsField AddField(string name, string? type = null)
         {
             var f = new TsField(name) {Type = type};
             Members.Add(f);

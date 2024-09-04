@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ public sealed class CsGenericArguments
 {
     public CsGenericArguments(params string[] types) => Types = types.Distinct().ToArray();
 
-    public static CsGenericArguments operator +(CsGenericArguments arguments, string typeName)
+    public static CsGenericArguments operator +(CsGenericArguments? arguments, string typeName)
     {
         if (arguments is null)
             return new CsGenericArguments(typeName);
@@ -19,7 +20,7 @@ public sealed class CsGenericArguments
         return sum;
     }
 
-    public static CsGenericArguments operator +(string typeName, CsGenericArguments arguments)
+    public static CsGenericArguments operator +(string typeName, CsGenericArguments? arguments)
     {
         if (arguments is null)
             return new CsGenericArguments(typeName);

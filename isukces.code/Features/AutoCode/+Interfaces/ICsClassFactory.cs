@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using System.Reflection;
 
@@ -37,7 +38,7 @@ namespace iSukces.Code.AutoCode
 
         public static string GetFileName(this IAssemblyBaseDirectoryProvider directoryProvider,
             Assembly assembly,
-            params string[] items)
+            params string[]? items)
         {
             var dir = directoryProvider.GetBaseDirectory(assembly);
             if (items is null || items.Length == 0)

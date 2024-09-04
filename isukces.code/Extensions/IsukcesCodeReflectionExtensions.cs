@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Reflection;
 
@@ -47,7 +48,7 @@ namespace iSukces.Code
             throw new NotSupportedException();
         }
 
-        public static string SimpleTypeName(this Type t)
+        public static string? SimpleTypeName(this Type t)
         {
             if (t == typeof(string)) return "string";
             if (t == typeof(int)) return "int";

@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Typescript
 {
     public class TsEnum : TsNamespaceMember
     {
-        public TsEnum(string name = null)
+        public TsEnum(string? name = null)
         {
             Name = name;
         }

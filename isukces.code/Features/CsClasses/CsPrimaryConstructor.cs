@@ -1,16 +1,17 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 
 namespace iSukces.Code;
 
 public sealed class CsPrimaryConstructor
 {
-    public CsPrimaryConstructor(IReadOnlyList<CsMethodParameter> arguments)
+    public CsPrimaryConstructor(IReadOnlyList<CsMethodParameter>? arguments)
     {
         Arguments = arguments ?? Array.Empty<CsMethodParameter>();
     }
 
-    public CsPrimaryConstructor(params CsMethodParameter[] arguments)
+    public CsPrimaryConstructor(params CsMethodParameter[]? arguments)
     {
         Arguments = arguments ?? Array.Empty<CsMethodParameter>();
     }

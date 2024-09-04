@@ -1,6 +1,6 @@
+#nullable enable
 using System.Collections.Generic;
 using System.Reflection;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.Ui.DataGrid
 {
@@ -27,7 +27,6 @@ namespace iSukces.Code.Ui.DataGrid
         /// </summary>
         public PropertyInfo Member { get; set; }
 
-        [NotNull]
         public Dictionary<string, object> CustomValues { get; } = new Dictionary<string, object>();
     }
 }

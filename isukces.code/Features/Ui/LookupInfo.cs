@@ -1,3 +1,7 @@
+#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
 namespace iSukces.Code.Ui.DataGrid
 {
     public class LookupInfo

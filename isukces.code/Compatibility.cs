@@ -1,4 +1,8 @@
-﻿#if NET6_0_OR_GREATER
+﻿#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
+#if NET6_0_OR_GREATER
 
 #if false
      sealed class Fejk

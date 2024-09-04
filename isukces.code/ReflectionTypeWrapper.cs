@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 
 namespace iSukces.Code;
@@ -21,7 +22,7 @@ public struct ReflectionTypeWrapper
         return Type;
     }
 
-    public Type UnwrapNullable(bool nullIfNotNullable = false)
+    public Type? UnwrapNullable(bool nullIfNotNullable = false)
     {
         if (Type == null) return null;
         if (!_typeInfo.IsGenericType) return nullIfNotNullable ? null : Type;

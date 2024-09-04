@@ -1,6 +1,6 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
@@ -29,9 +29,9 @@ public class TypeName : object
         return tn;
     }
 
-    public static string TypeToString(Type type) => TypeToString(type, null);
+    public static string? TypeToString(Type type) => TypeToString(type, null);
 
-    public static string TypeToString(Type type, [CanBeNull] Dictionary<string, string> reductor)
+    public static string? TypeToString(Type type, Dictionary<string, string>? reductor)
     {
         if (!type.IsGenericType)
         {
@@ -73,7 +73,7 @@ public class TypeName : object
     {
         get
         {
-            if (BaseType == (object)null)
+            if (BaseType == (object?)null)
                 return _domain;
             var tn = TypeNameNoGeneric(BaseType);
 
@@ -108,7 +108,7 @@ public class TypeName : object
     {
         get
         {
-            if (BaseType == (object)null)
+            if (BaseType == (object?)null)
                 return _name;
             var tn = TypeNameNoGeneric(BaseType);
             var d  = tn.Substring(0, tn.LastIndexOf('.'));

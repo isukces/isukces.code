@@ -1,8 +1,8 @@
+#nullable enable
 using System;
 using System.Reflection;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.FeatureImplementers
 {
@@ -26,8 +26,7 @@ namespace iSukces.Code.FeatureImplementers
     {
         public EqualityGeneratorPropertyInfo(Type resultType) => ResultType = resultType;
 
-        [CanBeNull]
-        public static EqualityGeneratorPropertyInfo Find(MemberInfo member,
+        public static EqualityGeneratorPropertyInfo? Find(MemberInfo member,
             IMemberNullValueChecker checker)
         {
             var sca = member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>();
@@ -39,7 +38,6 @@ namespace iSukces.Code.FeatureImplementers
             return info;
         }
 
-        [NotNull]
         public static EqualityGeneratorPropertyInfo FindForString(MemberInfo member,
             IMemberNullValueChecker checker)
         {
@@ -135,7 +133,7 @@ namespace iSukces.Code.FeatureImplementers
             return new GetHashCodeExpressionData(result);
         }
 
-        public EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute sca)
+        public EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute? sca)
         {
             if (sca == null)
                 return this;

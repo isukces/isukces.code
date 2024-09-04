@@ -1,4 +1,8 @@
-﻿namespace iSukces.Code.Typescript
+﻿#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
+namespace iSukces.Code.Typescript
 {
     public interface ITsExportable
     {

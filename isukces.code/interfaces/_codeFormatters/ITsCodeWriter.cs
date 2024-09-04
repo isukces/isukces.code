@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 
 namespace iSukces.Code.Interfaces
@@ -9,7 +10,7 @@ namespace iSukces.Code.Interfaces
 
     public static class TsCodeWritterExt
     {
-        public static void DoWithHeadersOnly(this ITsCodeWriter src, bool temporaryHeadersOnly, Action a)
+        public static void DoWithHeadersOnly(this ITsCodeWriter src, bool temporaryHeadersOnly, Action? a)
         {
             var back = src.HeadersOnly;
             src.HeadersOnly = temporaryHeadersOnly;

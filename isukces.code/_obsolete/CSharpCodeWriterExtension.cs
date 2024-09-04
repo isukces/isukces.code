@@ -1,4 +1,8 @@
-﻿#if OBSOLETE
+﻿#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
+#if OBSOLETE
 using System;
 using iSukces.Code.Interfaces;
 

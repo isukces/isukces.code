@@ -1,9 +1,9 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.Ui.DataGrid
 {
@@ -26,7 +26,7 @@ namespace iSukces.Code.Ui.DataGrid
     public abstract class DataGridConfigurationProvider<TRow, TColumn> : BasicDataGridConfigurationProvider<TColumn>
         where TColumn : BasicDataGridColumn, new()
     {
-        protected static PropertyInfo GetPropertyInfo<TValue>(Expression<Func<TRow, TValue>> func, string bindingPath)
+        protected static PropertyInfo? GetPropertyInfo<TValue>(Expression<Func<TRow, TValue>> func, string bindingPath)
         {
             var expression = CodeUtils.StripExpression(func);
             if (expression is null)
@@ -75,8 +75,8 @@ namespace iSukces.Code.Ui.DataGrid
             return col;
         }
 
-        protected virtual object GetColumnHeaderSource([CanBeNull] string propertyName, [CanBeNull] object suggestedHeader,
-            [CanBeNull] PropertyInfo property)
+        protected virtual object GetColumnHeaderSource(string? propertyName, object? suggestedHeader,
+            PropertyInfo? property)
         {
             if (suggestedHeader is not null)
                 switch (suggestedHeader)

@@ -1,8 +1,8 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Text;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
@@ -56,12 +56,12 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
         return Operators.Contains(name);
     }
 
-    public void AddComment(string x)
+    public void AddComment(string? x)
     {
         _extraComment.AppendLine(x);
     }
 
-    public CsMethodParameter AddParam(string name, CsType type, string description = null)
+    public CsMethodParameter AddParam(string name, CsType type, string? description = null)
     {
         var parameter = new CsMethodParameter(name, type, description);
         _parameters.Add(parameter);
@@ -69,19 +69,19 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     }
 
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsMethodParameter AddParam(string name, string type, string description = null)
+    public CsMethodParameter AddParam(string name, string type, string? description = null)
     {
         var parameter = new CsMethodParameter(name, (CsType)type, description);
         _parameters.Add(parameter);
         return parameter;
     }
 
-    public CsMethodParameter AddParam<T>(string name, CsClass owner, string description = null)
+    public CsMethodParameter AddParam<T>(string name, CsClass owner, string? description = null)
     {
         return AddParam(name, typeof(T), owner, description);
     }
 
-    public CsMethodParameter AddParam(string name, Type type, ITypeNameResolver resolver, string description = null)
+    public CsMethodParameter AddParam(string name, Type type, ITypeNameResolver resolver, string? description = null)
     {
         var parameter = new CsMethodParameter(name, resolver.GetTypeName(type), description);
         _parameters.Add(parameter);
@@ -218,8 +218,7 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
 
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
-    [CanBeNull]
-    public CsGenericArguments GenericArguments { get; set; }
+    public CsGenericArguments? GenericArguments { get; set; }
 
     public const string Implicit = "implicit";
     public const string Explicit = "explicit";

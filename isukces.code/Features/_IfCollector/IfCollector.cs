@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Linq;
 using iSukces.Code.Interfaces;
 
@@ -6,7 +7,7 @@ namespace iSukces.Code;
 
 public sealed class IfCollector(ConditionsPair condition)
 {
-    public IfCollector(string condition, string inversed = null)
+    public IfCollector(string condition, string? inversed = null)
         : this(new ConditionsPair(condition, inversed))
     {
 
@@ -85,7 +86,7 @@ public sealed class IfCollector(ConditionsPair condition)
         }
     }
 
-    public static string[] SplitCode(string code)
+    public static string[] SplitCode(string? code)
     {
         if (string.IsNullOrWhiteSpace(code))
             return [];

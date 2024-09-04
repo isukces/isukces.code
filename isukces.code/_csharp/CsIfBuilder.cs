@@ -1,3 +1,7 @@
+#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
 #if OBSOLETE
 using System.Linq;
 using iSukces.Code.Interfaces;

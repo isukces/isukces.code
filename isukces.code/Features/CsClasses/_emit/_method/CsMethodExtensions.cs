@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace iSukces.Code;
 
@@ -16,7 +17,7 @@ public static class CsMethodExtensions
         return method;
     }
 
-    public static CsMethod WithBody(this CsMethod method, CodeWriter code) => WithBody(method, code?.Code);
+    public static CsMethod WithBody(this CsMethod method, CodeWriter? code) => WithBody(method, code?.Code);
 
     public static CsMethod WithOverride(this CsMethod method, bool isOverride = true)
     {
@@ -30,7 +31,7 @@ public static class CsMethodExtensions
         return method;
     }
         
-    public static CsMethod WithParameter(this CsMethod method, string name, CsType type = default, string description = null)
+    public static CsMethod WithParameter(this CsMethod method, string name, CsType type = default, string? description = null)
     {
         var parameter = new CsMethodParameter(name, type, description);
         method.Parameters.Add(parameter);
@@ -38,7 +39,7 @@ public static class CsMethodExtensions
     }
         
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public static CsMethod WithParameter(this CsMethod method, string name, string type, string description = null)
+    public static CsMethod WithParameter(this CsMethod method, string name, string type, string? description = null)
     {
         var parameter = new CsMethodParameter(name, (CsType)type, description);
         method.Parameters.Add(parameter);

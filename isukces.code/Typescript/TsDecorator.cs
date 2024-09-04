@@ -1,4 +1,5 @@
-﻿using iSukces.Code.Interfaces;
+﻿#nullable enable
+using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Typescript
 {

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,8 @@ public class DependsOnPropertyGenerator : Generators.SingleClassGenerator
 
     protected override void GenerateInternal()
     {
-        Dictionary<string, HashSet<string>>        slavesForMaster = null;
-        Dictionary<string, DependsOnPropertyFlags> flags           = null;
+        Dictionary<string, HashSet<string>>?        slavesForMaster = null;
+        Dictionary<string, DependsOnPropertyFlags>? flags           = null;
         var props = Type
 #if COREFX
                 .GetTypeInfo()

@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using iSukces.Code.Interfaces;
 

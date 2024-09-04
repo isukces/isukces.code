@@ -1,10 +1,11 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace iSukces.Code;
 
 public sealed class ConditionsPair
 {
-    public ConditionsPair(string condition, string inversed = null)
+    public ConditionsPair(string condition, string? inversed = null)
     {
         Condition = condition;
         if (inversed is null)
@@ -22,7 +23,7 @@ public sealed class ConditionsPair
     public bool IsAlwaysFalse => Condition == "false";
     
 
-    public static ConditionsPair FromIs(string variable, string type, string variableName = null)
+    public static ConditionsPair FromIs(string variable, string type, string? variableName = null)
     {
         if (!string.IsNullOrEmpty(variableName))
             variableName = " " + variableName;

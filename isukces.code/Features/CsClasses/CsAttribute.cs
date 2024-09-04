@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Interfaces;
@@ -32,7 +33,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
         return new CsAttribute(name);
     }
 
-    private static string Encode(object value)
+    private static string Encode(object? value)
     {
         switch (value)
         {

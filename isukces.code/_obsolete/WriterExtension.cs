@@ -1,4 +1,8 @@
-﻿#if OBSOLETE
+﻿#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
+#if OBSOLETE
 namespace iSukces.Code.AutoCode
 {
     public static class WriterExtension

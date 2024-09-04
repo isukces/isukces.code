@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.IO;
 using System.Linq;
@@ -7,7 +8,7 @@ namespace iSukces.Code.AutoCode
 {
     public class SlnAssemblyBaseDirectoryProvider : IAssemblyBaseDirectoryProvider
     {
-        public SlnAssemblyBaseDirectoryProvider(DirectoryInfo solutionDir, string optionalSubDirectory = null)
+        public SlnAssemblyBaseDirectoryProvider(DirectoryInfo solutionDir, string? optionalSubDirectory = null)
         {
             SolutionDir          = solutionDir;
             OptionalSubDirectory = optionalSubDirectory;
@@ -24,7 +25,7 @@ namespace iSukces.Code.AutoCode
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
         public static SlnAssemblyBaseDirectoryProvider Make<T>(string slnShortFilename,
-            string optionalSubDirectory = null)
+            string? optionalSubDirectory = null)
         {
             var myAssembly = typeof(T)
 #if COREFX

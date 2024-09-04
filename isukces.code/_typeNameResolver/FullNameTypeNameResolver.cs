@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
@@ -15,7 +16,7 @@ public sealed class FullNameTypeNameResolver : ITypeNameResolver, INamespaceCont
         return GeneratorsHelper.GetTypeName(this, type);
     }
 
-    public UsingInfo GetNamespaceInfo(string namespaceName)
+    public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
         return new UsingInfo(false);
     }

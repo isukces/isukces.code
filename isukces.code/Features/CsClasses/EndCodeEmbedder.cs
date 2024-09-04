@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -6,7 +7,7 @@ namespace iSukces.Code
 {
     public class EndCodeEmbedder
     {
-        public static string Append(string target, string codeToAppend, string end)
+        public static string Append(string? target, string codeToAppend, string end)
         {
             codeToAppend = codeToAppend?.Trim();
             end = end.Trim();

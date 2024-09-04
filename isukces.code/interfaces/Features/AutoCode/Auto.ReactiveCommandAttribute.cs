@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace iSukces.Code.Interfaces
 {
@@ -9,7 +10,7 @@ namespace iSukces.Code.Interfaces
         {
             #region Constructors
 
-            public ReactiveCommandAttribute(string name, Type resultType, string description = null)
+            public ReactiveCommandAttribute(string name, Type resultType, string? description = null)
             {
                 Name = name;
                 ResultType = resultType;

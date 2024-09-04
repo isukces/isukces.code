@@ -1,3 +1,4 @@
+#nullable enable
 using System.Text;
 using iSukces.Code.Interfaces;
 
@@ -39,11 +40,11 @@ public class CsClassField : CsMethodParameter, ICsClassMember, ICommentable, ICl
     /// </summary>
     public Visibilities Visibility { get; set; } = Visibilities.Public;
 
-    public void AddComment(string x) => _extraComment.AppendLine(x);
+    public void AddComment(string? x) => _extraComment.AppendLine(x);
 
     public string GetComments() => _extraComment.ToString();
 
-    public string CompilerDirective { get; set; }
+    public string? CompilerDirective { get; set; }
 
     private readonly StringBuilder _extraComment = new StringBuilder();
 

@@ -1,3 +1,4 @@
+#nullable enable
 #define _AutoCloseText
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,8 @@ namespace iSukces.Code.Interfaces
     {
         void Append(string text);
 
-        [NotNull]
         string Code { get; }
 
-        [NotNull]
         ILangInfo LangInfo { get; }
 
         int Indent { get; set; }
@@ -66,8 +65,7 @@ namespace iSukces.Code.Interfaces
             obj.Indent = indentBefore;
         }
 
-        [NotNull]
-        public static string GetCodeTrim([NotNull] this ICodeWriter writer)
+        public static string GetCodeTrim(this ICodeWriter writer)
         {
             if (writer == null) throw new ArgumentNullException(nameof(writer));
             return writer.Code.Trim();
@@ -149,7 +147,7 @@ namespace iSukces.Code.Interfaces
             return obj;
         }
 
-        public static T SplitWriteLine<T>(this T x, string text)
+        public static T SplitWriteLine<T>(this T x, string? text)
             where T : ICodeWriter
         {
             if (string.IsNullOrEmpty(text))

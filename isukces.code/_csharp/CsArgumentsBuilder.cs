@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -7,7 +8,7 @@ namespace iSukces.Code;
 
 public sealed class CsArgumentsBuilder
 {
-    public void Add(CsExpression expression)
+    public void Add(CsExpression? expression)
     {
         if (expression is null)
             AddCode("null");

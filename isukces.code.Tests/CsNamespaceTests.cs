@@ -68,6 +68,6 @@ public class SomeClass
 
 }
 ";
-        Assert.Equal(expected, code);
+        Assert.Equal(expected.Trim(), code);
     }
 }

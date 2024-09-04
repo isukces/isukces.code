@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿#nullable enable
+using System.Text;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code;
@@ -35,7 +36,7 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     {
     }
 
-    public void AddComment(string x)
+    public void AddComment(string? x)
     {
         _extraComment.AppendLine(x);
     }
@@ -163,7 +164,7 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     public CsClass Owner { get; init; }
 #endif
 
-    public string CompilerDirective { get; set; }
+    public string? CompilerDirective { get; set; }
 
     private readonly StringBuilder _extraComment = new StringBuilder();
     private string _ownGetter = string.Empty;

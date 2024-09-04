@@ -1,3 +1,7 @@
+#nullable enable
+#nullable enable
+#nullable enable
+#nullable enable
 namespace iSukces.Code.Ui.DataGrid
 {
     public static class AbstractDataGridColumnExtensions
@@ -31,7 +35,7 @@ namespace iSukces.Code.Ui.DataGrid
         }
         
         
-        public static T WithCategory<T>(this T src, string categoryName, object categoryHeaderSource = null)
+        public static T WithCategory<T>(this T src, string categoryName, object? categoryHeaderSource = null)
             where T:BasicDataGridColumn
         {
             src.CategoryName         = categoryName;

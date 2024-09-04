@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Linq;
 using System.Reflection;
@@ -70,7 +71,7 @@ namespace iSukces.Code.AutoCode
             protected Type                      Type    { get; private set; }
             protected IAutoCodeGeneratorContext Context { get; private set; }
 
-            protected T GetCustomAttribute<T>(bool inherit= true)
+            protected T? GetCustomAttribute<T>(bool inherit= true)
                 where T : Attribute
             {
                 return Type

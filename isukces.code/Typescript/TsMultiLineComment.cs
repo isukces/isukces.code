@@ -1,10 +1,11 @@
+#nullable enable
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Typescript
 {
     public class TsMultiLineComment : ITsCodeProvider
     {
-        public TsMultiLineComment(string text = null, bool compactRender = true)
+        public TsMultiLineComment(string? text = null, bool compactRender = true)
         {
             CompactRender = compactRender;
             Text = text;

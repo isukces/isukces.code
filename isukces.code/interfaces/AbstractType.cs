@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 
 namespace iSukces.Code.Interfaces
@@ -12,7 +13,7 @@ namespace iSukces.Code.Interfaces
         {
         }
 
-        public AbstractType(string ns, string name)
+        public AbstractType(string? ns, string name)
         {
             Namespace = ns?.Trim() ?? string.Empty;
             Name      = name?.Trim() ?? string.Empty;
@@ -38,7 +39,7 @@ namespace iSukces.Code.Interfaces
             return FullName;
         }
 
-        public AbstractType WithNameOverride(string newName)
+        public AbstractType WithNameOverride(string? newName)
         {
             if (string.IsNullOrEmpty(newName))
                 return this;

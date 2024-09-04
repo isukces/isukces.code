@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -68,14 +69,14 @@ namespace iSukces.Code
             return sb.ToString();
         }
 
-        public static DirectoryInfo SearchFoldersUntilFileExists(Assembly a, string fileName)
+        public static DirectoryInfo? SearchFoldersUntilFileExists(Assembly a, string fileName)
         {
             var di = new FileInfo(a.Location).Directory;
             di = SearchFoldersUntilFileExists(di, fileName);
             return di;
         }
 
-        public static DirectoryInfo SearchFoldersUntilFileExists(DirectoryInfo di, string fileName)
+        public static DirectoryInfo? SearchFoldersUntilFileExists(DirectoryInfo di, string fileName)
         {
             while (di != null)
             {
@@ -90,7 +91,7 @@ namespace iSukces.Code
             return null;
         }
 
-        public static Expression StripExpression(Expression method)
+        public static Expression? StripExpression(Expression method)
         {
             if (!(method is LambdaExpression lambda))
                 throw new ArgumentNullException(nameof(method));

@@ -1,16 +1,16 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
 public static class IsukcesCodeExtensions
 {
-    public static DirectoryInfo ScanDirectoryUp([CanBeNull] DirectoryInfo dir, Predicate<DirectoryInfo> accept)
+    public static DirectoryInfo? ScanDirectoryUp(DirectoryInfo? dir, Predicate<DirectoryInfo> accept)
     {
         while (dir != null)
         {
@@ -22,14 +22,12 @@ public static class IsukcesCodeExtensions
         return null;
     }
 
-    [CanBeNull]
-    public static DirectoryInfo FindProjectRootPath([CanBeNull] DirectoryInfo dir)
+    public static DirectoryInfo? FindProjectRootPath(DirectoryInfo? dir)
     {
         return ScanDirectoryUp(dir, a => a.GetFiles("*.csproj").Length != 0);
     }
 
-    [CanBeNull]
-    public static DirectoryInfo FindFileHereOrInParentDirectories(this DirectoryInfo di, string fileName)
+    public static DirectoryInfo? FindFileHereOrInParentDirectories(this DirectoryInfo di, string fileName)
     {
         return ScanDirectoryUp(di, x =>
         {
@@ -38,7 +36,7 @@ public static class IsukcesCodeExtensions
         });
     }
 
-    public static DirectoryInfo FindFileHereOrInParentDirectories(this Type type, string fileName)
+    public static DirectoryInfo? FindFileHereOrInParentDirectories(this Type type, string fileName)
     {
         return type
 #if COREFX
@@ -47,7 +45,7 @@ public static class IsukcesCodeExtensions
             .Assembly.FindFileHereOrInParentDirectories(fileName);
     }
 
-    public static DirectoryInfo FindFileHereOrInParentDirectories(this Assembly a, string fileName)
+    public static DirectoryInfo? FindFileHereOrInParentDirectories(this Assembly a, string fileName)
     {
         var di = new FileInfo(a.Location).Directory;
         di = di.FindFileHereOrInParentDirectories(fileName);
@@ -71,7 +69,7 @@ public static class IsukcesCodeExtensions
         return att;
     }
 
-    public static void WriteAttributes(this ICsCodeWriter writer, ICollection<ICsAttribute> attributes)
+    public static void WriteAttributes(this ICsCodeWriter writer, ICollection<ICsAttribute>? attributes)
     {
         if (attributes == null || attributes.Count == 0)
             return;

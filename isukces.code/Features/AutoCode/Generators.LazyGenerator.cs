@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +13,7 @@ public partial class Generators
     {
         // private CsMethod _initLazyMethod;
 
-        private static string CoalesceNotEmpty(ISet<string> accept, params string[] items)
+        private static string? CoalesceNotEmpty(ISet<string> accept, params string[]? items)
         {
             if (items == null || items.Length == 0) return null;
             for (var index = 0; index < items.Length; index++)

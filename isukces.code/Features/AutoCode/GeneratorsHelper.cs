@@ -1,9 +1,9 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.AutoCode
 {
@@ -58,7 +58,7 @@ namespace iSukces.Code.AutoCode
         public static string FieldName(string x) => "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
 
 
-        public static Type GetMemberResultType([NotNull] MemberInfo mi)
+        public static Type GetMemberResultType(MemberInfo mi)
         {
             if (mi == null) throw new ArgumentNullException(nameof(mi));
             if (mi is PropertyInfo pi)
@@ -70,7 +70,7 @@ namespace iSukces.Code.AutoCode
             throw new NotSupportedException(mi.GetType().ToString());
         }
 
-        public static CsType GetTypeName(this INamespaceContainer container, Type type)
+        public static CsType GetTypeName(this INamespaceContainer container, Type? type)
         {
             //todo: Generic types
             if (type == null)
@@ -149,8 +149,8 @@ namespace iSukces.Code.AutoCode
             return !string.IsNullOrEmpty(props?.Name) ? props.Name : pi.Name;
         }
 
-        public static HashSet<T> MakeCopy<T>(IEnumerable<T> source, IEnumerable<T> append = null,
-            IEnumerable<T> remove = null)
+        public static HashSet<T> MakeCopy<T>(IEnumerable<T>? source, IEnumerable<T>? append = null,
+            IEnumerable<T>? remove = null)
         {
             var s = new HashSet<T>();
             if (source != null)
@@ -167,7 +167,7 @@ namespace iSukces.Code.AutoCode
 
         public struct MyStruct
         {
-            public MyStruct(string expressionTemplate, string instance = null)
+            public MyStruct(string expressionTemplate, string? instance = null)
             {
                 Instance           = instance;
                 ExpressionTemplate = expressionTemplate;

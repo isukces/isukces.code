@@ -1,3 +1,4 @@
+#nullable enable
 using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.FeatureImplementers

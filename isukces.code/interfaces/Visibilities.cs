@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace iSukces.Code.Interfaces
 {
@@ -13,7 +14,7 @@ namespace iSukces.Code.Interfaces
 
     public static class VisibilitiesExtensions
     {
-        public static string ToCsCode(this Visibilities visibility)
+        public static string? ToCsCode(this Visibilities visibility)
         {
             switch (visibility)
             {

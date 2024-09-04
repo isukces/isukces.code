@@ -1,20 +1,20 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
 public class CodeLines
 {
-    public CodeLines([CanBeNull] IReadOnlyList<string> lines, bool isExpressionBody = false)
+    public CodeLines(IReadOnlyList<string>? lines, bool isExpressionBody = false)
         : this(lines, isExpressionBody, true)
     {
     }
 
 
-    private CodeLines(IReadOnlyList<string> lines, bool isExpressionBody, bool filter)
+    private CodeLines(IReadOnlyList<string>? lines, bool isExpressionBody, bool filter)
     {
         if (filter)
         {
@@ -28,8 +28,7 @@ public class CodeLines
         IsExpressionBody = isExpressionBody;
     }
 
-    [NotNull]
-    private static string[] FilterEmpty(IReadOnlyList<string> lines)
+    private static string[] FilterEmpty(IReadOnlyList<string>? lines)
     {
         if (lines is null || lines.Count == 0)
             return XArray.Empty<string>();
@@ -43,7 +42,7 @@ public class CodeLines
         return new CodeLines(new[] { expression }, true, false);
     }
 
-    public static CodeLines Parse(string body, bool methodIsExpressionBody)
+    public static CodeLines Parse(string? body, bool methodIsExpressionBody)
     {
         if (string.IsNullOrWhiteSpace(body))
             return new CodeLines(XArray.Empty<string>(), methodIsExpressionBody, false);
@@ -68,7 +67,7 @@ public class CodeLines
         return a;
     }
 
-    public IReadOnlyList<string> GetExpressionLines(string firstLinePrefix, bool addSemiColon)
+    public IReadOnlyList<string> GetExpressionLines(string? firstLinePrefix, bool addSemiColon)
     {
         var e = GetExpression().Split('\n');
         if (!string.IsNullOrEmpty(firstLinePrefix))
@@ -128,7 +127,6 @@ public class CodeLines
 
     public bool IsEmpty => Lines.Count == 0;
 
-    [NotNull]
     public IReadOnlyList<string> Lines { get; }
 
     public bool IsExpressionBody { get; set; }

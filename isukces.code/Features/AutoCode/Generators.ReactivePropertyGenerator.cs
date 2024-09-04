@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.AutoCode
@@ -32,7 +33,7 @@ namespace iSukces.Code.AutoCode
 
             private class DependencyPropertyMetadata
             {
-                public string Resolve(string propertyName, string propertyTypeName)
+                public string? Resolve(string propertyName, string propertyTypeName)
                 {
                     /*
                         new FrameworkPropertyMetadata(
@@ -72,7 +73,7 @@ namespace iSukces.Code.AutoCode
                         : $"new System.Windows.PropertyMetadata({initStr}, {propertyChangedStr})";
                 }
 
-                private string GetCoerceStr(string propertyName)
+                private string? GetCoerceStr(string propertyName)
                 {
                     var coerceStr = Coerce?.Trim();
                     if (string.IsNullOrEmpty(coerceStr))
@@ -82,7 +83,7 @@ namespace iSukces.Code.AutoCode
                         : coerceStr;
                 }
 
-                private string GetDefaultValueAsString(string propertyTypeName)
+                private string? GetDefaultValueAsString(string propertyTypeName)
                 {
                     if (DefaultValue == null) return null;
                     if (DefaultValue is bool && PropetyType == typeof(bool))
@@ -94,7 +95,7 @@ namespace iSukces.Code.AutoCode
                     return initStr;
                 }
 
-                private string GetPropertyChangedStr(string propertyName)
+                private string? GetPropertyChangedStr(string propertyName)
                 {
                     var propertyChangedStr = PropertyChanged?.Trim();
                     if (string.IsNullOrEmpty(propertyChangedStr))

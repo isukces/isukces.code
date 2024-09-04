@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using iSukces.Code.AutoCode;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.Interfaces;
 
@@ -90,7 +89,7 @@ public static class AttributableExt
     }
 
     public static T WithAutocodeGeneratedAttribute<T>(this T attributable,
-        [NotNull] ITypeNameResolver resolver,
+        ITypeNameResolver resolver,
         SourceCodeLocation location)
         where T : IAttributable
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 
 namespace iSukces.Code.Interfaces
 {
@@ -28,7 +29,7 @@ namespace iSukces.Code.Interfaces
         public string Description
         {
             get { return description; }
-            set { if (value == (object)null) value = string.Empty; description = value; }
+            set { if (value == (object?)null) value = string.Empty; description = value; }
         }
 
         /// <summary>

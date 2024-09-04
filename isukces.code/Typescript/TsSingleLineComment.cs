@@ -1,10 +1,11 @@
+#nullable enable
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Typescript
 {
     public class TsSingleLineComment : ITsCodeProvider
     {
-        public TsSingleLineComment(string text = null)
+        public TsSingleLineComment(string? text = null)
         {
             Text = text;
         }

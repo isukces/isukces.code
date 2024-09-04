@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <NoWarn>1701;1702;1591;CS0618_9999</NoWarn>
-        <WarningsAsErrors>1574;xUnit2000;NU5125;CS0162;CS0169;CS1572;CS8618;CS0219;CS0168</WarningsAsErrors>
+        <WarningsAsErrors>1574;xUnit2000;NU5125;CS0162;CS0169;CS1572;CS8618;CS0219;CS0168;CS8632</WarningsAsErrors>
     </PropertyGroup>
     <!--
     CS0618 OBSOLETE

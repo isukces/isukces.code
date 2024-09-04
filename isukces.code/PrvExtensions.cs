@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 
@@ -5,7 +6,7 @@ namespace iSukces.Code;
 
 internal static class PrvExtensions
 {
-    public static TOut[] MapToArray<TIn, TOut>(this IReadOnlyList<TIn> src, Func<TIn, TOut> map)
+    public static TOut[] MapToArray<TIn, TOut>(this IReadOnlyList<TIn>? src, Func<TIn, TOut> map)
     {
         if (src is null || src.Count == 0) return XArray.Empty<TOut>();
         var result = new TOut[src.Count];
@@ -20,7 +21,7 @@ internal static class PrvExtensions
         return result;
     }
 
-    public static IReadOnlyList<T> CreateNewWithFirstElement<T>(this IReadOnlyList<T> els, T el)
+    public static IReadOnlyList<T> CreateNewWithFirstElement<T>(this IReadOnlyList<T>? els, T el)
     {
         if (els is null || els.Count == 0)
             return new[] {el};
@@ -28,7 +29,7 @@ internal static class PrvExtensions
         r.AddRange(els);
         return r;
     }
-    public static IReadOnlyList<T> CreateNewWithLastElement<T>(this IReadOnlyList<T> els, T el)
+    public static IReadOnlyList<T> CreateNewWithLastElement<T>(this IReadOnlyList<T>? els, T el)
     {
         if (els is null || els.Count == 0)
             return new[] {el};

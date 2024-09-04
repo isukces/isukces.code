@@ -1,3 +1,4 @@
+#nullable enable
 using System.Linq;
 
 namespace iSukces.Code.Interfaces
@@ -9,7 +10,7 @@ namespace iSukces.Code.Interfaces
 
     public static class GenericDefinitionExtensions
     {
-        public static string GetTriangleBracketsInfo(this CsGenericArguments genericArguments)
+        public static string GetTriangleBracketsInfo(this CsGenericArguments? genericArguments)
         {
             var types = genericArguments?.Types;
             if (types == null || types.Count == 0)
@@ -17,7 +18,7 @@ namespace iSukces.Code.Interfaces
             return "<" + types.CommaJoin() + ">";
         }
 
-        public static bool HasConstraints(this CsGenericArguments self)
+        public static bool HasConstraints(this CsGenericArguments? self)
         {
             if (self is null || self.Constraints.Count == 0)
                 return false;
