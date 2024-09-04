@@ -23,6 +23,7 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     {
     }
 
+    /*
     /// <summary>
     ///     Tworzy instancję obiektu
     ///     <param name="name">Nazwa metody</param>
@@ -31,6 +32,7 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     {
         Name = name;
     }
+    */
 
     /// <summary>
     ///     Tworzy instancję obiektu
@@ -38,6 +40,7 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     ///     <param name="resultType"></param>
     /// </summary>
     public CsMethod(string name, CsType resultType)
+        : this()
     {
         Name       = name;
         ResultType = resultType;

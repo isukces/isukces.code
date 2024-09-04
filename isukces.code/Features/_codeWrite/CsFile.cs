@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,22 +8,19 @@ using System.Text;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 using iSukces.Code.IO;
-using JetBrains.Annotations;
 
 namespace iSukces.Code;
 
 public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 {
-    public void AddImportNamespace(string ns)
+    public CsFile()
     {
-        _importNamespaces.Add(ns);
+        Usings = new(null);
     }
 
-    public void AddImportNamespace<T>()
+    public void AddImportNamespace(string? ns, string? alias = null)
     {
-        var item = typeof(T).Namespace;
-        if (string.IsNullOrEmpty(item)) return;
-        _importNamespaces.Add(item);
+        Usings.Add(ns, alias);
     }
 
     public string GetCode(bool isEmbedded = false)
@@ -66,14 +64,14 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         {
             var type = typeP.Type;
             var name = new CsType(type.Name);
-            var ti = type.GetTypeInfo();
+            var ti   = type.GetTypeInfo();
             if (ti.IsGenericType)
             {
                 if (!ti.IsGenericTypeDefinition)
                     throw new NotSupportedException();
                 name = new CsType(type.Name.Split('`')[0]);
                 var genericArguments = ti.GetGenericArguments();
-                var nn = genericArguments.Select(a => a.Name);
+                var nn               = genericArguments.Select(a => a.Name);
                 if (type.DeclaringType != null)
                 {
                     var genericArguments2 = type
@@ -92,16 +90,16 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
             if (type.DeclaringType == null)
             {
-                var ns = GetOrCreateNamespace(type.Namespace);
+                var ns       = GetOrCreateNamespace(type.Namespace);
                 var existing = ns.Classes.FirstOrDefault(a => a.Name == name);
                 if (existing == null)
                 {
                     existing = new CsClass(name)
                     {
-                        IsPartial = true,
-                        Owner = this,
+                        IsPartial  = true,
+                        Owner      = this,
                         Visibility = Visibilities.InterfaceDefault,
-                        Kind = type.GetNamespaceMemberKind()
+                        Kind       = type.GetNamespaceMemberKind()
                     };
                     ns.AddClass(existing);
                     isCreatedNew = true;
@@ -111,17 +109,17 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
                     isCreatedNew = false;
                 }
 
-                existing.DotNetType = type;
+                existing.DotNetType  = type;
                 _classesCache[typeP] = existing;
                 return existing;
             }
 
             {
-                var parent = GetOrCreateClass(TypeProvider.FromType(type.DeclaringType));
+                var parent   = GetOrCreateClass(TypeProvider.FromType(type.DeclaringType));
                 var existing = parent.GetOrCreateNested(name, out isCreatedNew);
-                existing.IsPartial = true;
+                existing.IsPartial  = true;
                 existing.DotNetType = type;
-                existing.Kind = type.GetNamespaceMemberKind();
+                existing.Kind       = type.GetNamespaceMemberKind();
                 if (isCreatedNew)
                     existing.Visibility = Visibilities.InterfaceDefault;
                 return existing;
@@ -132,7 +130,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             var (namespaceName, shortClassName) = typeP.TypeName.SpitNamespaceAndShortName();
             var ns = GetOrCreateNamespace(namespaceName);
 
-            var name = new CsType(shortClassName);
+            var name   = new CsType(shortClassName);
             var result = ns.Classes.FirstOrDefault(aa => aa.Name == name);
             if (result != null)
             {
@@ -144,9 +142,9 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             {
                 IsPartial = true,
                 // DotNetType = type, // UNKNOWN
-                Owner = this,
+                Owner      = this,
                 Visibility = Visibilities.InterfaceDefault,
-                Kind = typeP.Kind
+                Kind       = typeP.Kind
             };
 
             ns.AddClass(result);
@@ -170,13 +168,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         return GeneratorsHelper.GetTypeName(this, type);
     }
 
-    public bool IsKnownNamespace(string namespaceName)
-    {
-        if (_importNamespaces.IsKnownNamespace(namespaceName))
-            return true;
-        return GlobalUsings?.IsKnownNamespace(namespaceName) ?? false;
-    }
-
     public void MakeCode(ICsCodeWriter writer, bool isEmbedded = false)
     {
         if (Namespaces == null || Namespaces.Count == 0)
@@ -196,19 +187,15 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         if (!string.IsNullOrEmpty(BeginContent))
             writer.WriteLine(BeginContent);
         if (!isEmbedded)
-        {
-            var nsList = _importNamespaces.GetNamespaces(GlobalUsings);
-            foreach (var i in nsList)
-                writer.WriteLine("using {0};", i);
-            if (nsList.Count > 0)
+            if (Usings.Emit(writer, GlobalUsings))
                 writer.EmptyLine();
-        }
 
-        var classByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
-        var enumByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.Enums);
+        var classByNamespace     = Namespaces.ToDictionary(a => a.Name, a => a.Classes);
+        var enumByNamespace      = Namespaces.ToDictionary(a => a.Name, a => a.Enums);
         var directiveByNamespace = Namespaces.ToDictionary(a => a.Name, a => a.CompilerDirective);
 
-        var fileNamespaces = classByNamespace.Keys.Union(enumByNamespace.Keys)
+        var fileNamespaces = classByNamespace.Keys
+            .Union(enumByNamespace.Keys)
             .OrderBy(a => a).ToList();
 
 
@@ -230,15 +217,13 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             {
                 writer.OpenCompilerIf(compilerDirective);
                 namespaceWriter.OpenNamespace(ns, writer);
-                // writer.Open("namespace {0}", ns);
-                var ns1 = Namespaces.FirstOrDefault(a => a.Name == ns)?
-                    .ImportNamespaces;
-                if (ns1 != null && ns1.Any())
-                {
-                    foreach (var i in ns1.OrderBy(a => a))
-                        writer.WriteLine($"using {i};");
-                    addEmptyLine = true;
-                }
+                var ns1 = Namespaces
+                    .FirstOrDefault(a => a.Name == ns)?
+                    .Usings;
+                if (ns1 is not null)
+                    if (ns1.Emit(writer, GlobalUsings))
+                        addEmptyLine = true;
+
             }
 
             {
@@ -268,13 +253,28 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             writer.WriteLine(EndContent);
     }
 
+    public UsingInfo GetNamespaceInfo(string? namespaceName)
+    {
+        var a = Usings.GetNamespaceInfo(namespaceName);
+        if (a.IsKnown)
+            return a;
+        if (GlobalUsings is not null)
+        {
+            var info = GlobalUsings.GetNamespaceInfo(namespaceName);
+            if (info.IsKnown)
+                return info;
+        }
+
+        return new UsingInfo(false);
+    }
+
     private void Save(string filename)
     {
         var fi = new FileInfo(filename);
         if (fi.Directory == null)
             throw new NullReferenceException("fi.Directory");
         fi.Directory.Create();
-        var x = Encoding.UTF8.GetBytes(GetCode());
+        var       x  = Encoding.UTF8.GetBytes(GetCode());
         using var fs = new FileStream(filename, File.Exists(filename) ? FileMode.Create : FileMode.CreateNew);
         fs.Write(x, 0, x.Length);
 #if !COREFX
@@ -305,7 +305,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         get => _suggestedFileName;
         set
         {
-            value = value?.Trim() ?? string.Empty;
+            value              = value?.Trim() ?? string.Empty;
             _suggestedFileName = value;
         }
     }
@@ -333,18 +333,15 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         set => _fileScopeNamespace = value ?? throw new ArgumentNullException(nameof(value));
     }
 
-    [CanBeNull] public GlobalUsingsConfiguration GlobalUsings { get; set; }
+    public GlobalUsingsConfiguration? GlobalUsings { get; set; }
+
+    public NamespacesHolder Usings { get; }
 
     private readonly Dictionary<TypeProvider, CsClass> _classesCache = new();
 
     private List<CsEnum> _enums = new();
 
     private FileScopeNamespaceConfiguration _fileScopeNamespace = FileScopeNamespaceConfiguration.BlockScoped;
-
-    /// <summary>
-    ///     Przestrzenie nazw
-    /// </summary>
-    private readonly NamespacesHolder _importNamespaces = new();
 
     private string _suggestedFileName = string.Empty;
 }

@@ -21,7 +21,7 @@ public partial class AutoCodeGenerator
         public SimpleAutoCodeGeneratorContext(CsFile file, Func<TypeProvider, CsClass> getOrCreateClassFunc)
         {
             GetOrCreateClassFunc     = getOrCreateClassFunc;
-            AddNamespaceAction       = file.AddImportNamespace;
+            AddNamespaceAction       = ns => file.AddImportNamespace(ns);
             GetOrCreateNamespaceFunc = file.GetOrCreateNamespace;
             FileLevelResolver        = file;
         }

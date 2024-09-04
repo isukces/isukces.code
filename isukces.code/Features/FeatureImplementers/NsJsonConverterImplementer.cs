@@ -20,9 +20,10 @@ public class NsJsonConverterImplementer
 
     private CsType GetTypeName(string namespaceName, string shortName)
     {
-        if (!_jsonConverterClass.IsKnownNamespace(namespaceName))
-            shortName = $"{namespaceName}.{shortName}";
-        return new CsType(shortName);
+        var info = _jsonConverterClass.GetNamespaceInfo(namespaceName);
+        return info.IsKnown 
+            ? info.AddAlias(shortName) 
+            : new CsType($"{namespaceName}.{shortName}");
     }
 
     public void Make()

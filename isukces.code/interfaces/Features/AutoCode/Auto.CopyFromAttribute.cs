@@ -2,51 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace iSukces.Code.Interfaces
+namespace iSukces.Code.Interfaces;
+
+public partial class Auto
 {
-    public partial class Auto
+    [AttributeUsage(AttributeTargets.Class)]
+    public class CopyFromAttribute : Attribute
     {
-        [AttributeUsage(AttributeTargets.Class)]
-        public class CopyFromAttribute : Attribute
+
+        public bool HasCopyByReference(string name) =>
+            _copyByReferenceHash != null && _copyByReferenceHash.Contains(name);
+
+
+        public bool HasSkip(string name) => _skipHash != null && _skipHash.Contains(name);
+
+        public string CopyByReference
         {
-
-            public bool HasCopyByReference(string name) =>
-                _copyByReferenceHash != null && _copyByReferenceHash.Contains(name);
-
-
-            public bool HasSkip(string name) => _skipHash != null && _skipHash.Contains(name);
-
-            public string CopyByReference
+            get => _copyByReference;
+            set
             {
-                get { return _copyByReference; }
-                set
-                {
-                    _copyByReference     = value;
-                    _copyByReferenceHash = new HashSet<string>();
-                    var items = (value ?? "").Split(',').Select(a => a.Trim()).Where(i => !string.IsNullOrEmpty(i));
-                    foreach (var i in items)
-                        _copyByReferenceHash.Add(i);
-                }
+                _copyByReference     = value;
+                _copyByReferenceHash = new HashSet<string>();
+                var items = (value ?? "").Split(',').Select(a => a.Trim()).Where(i => !string.IsNullOrEmpty(i));
+                foreach (var i in items)
+                    _copyByReferenceHash.Add(i);
             }
-
-
-            public string Skip
-            {
-                get { return _skip; }
-                set
-                {
-                    _skip     = value;
-                    _skipHash = new HashSet<string>();
-                    var items = (value ?? "").Split(',').Select(a => a.Trim()).Where(i => !string.IsNullOrEmpty(i));
-                    foreach (var i in items)
-                        _skipHash.Add(i);
-                }
-            }
-
-            private string _copyByReference;
-            private HashSet<string> _copyByReferenceHash;
-            private string _skip;
-            private HashSet<string> _skipHash;
         }
+
+
+        public string Skip
+        {
+            get => _skip;
+            set
+            {
+                _skip     = value;
+                _skipHash = new HashSet<string>();
+                var items = (value ?? "").Split(',').Select(a => a.Trim()).Where(i => !string.IsNullOrEmpty(i));
+                foreach (var i in items)
+                    _skipHash.Add(i);
+            }
+        }
+
+        private string          _copyByReference;
+        private HashSet<string> _copyByReferenceHash;
+        private string          _skip;
+        private HashSet<string> _skipHash;
     }
 }

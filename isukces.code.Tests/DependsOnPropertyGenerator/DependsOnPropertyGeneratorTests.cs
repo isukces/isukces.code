@@ -45,7 +45,8 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 
             var q = new TestContext();
             gen.Generate(typeof(Test), q);
-            const string exp = @"// ReSharper disable All
+            const string exp = @"
+// ReSharper disable All
 // suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 {
@@ -56,6 +57,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
             private static string TestGetDependentProperties(string propertyName)
             {
+                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:121
                 switch (propertyName)
                 {
                     case nameof(Master): return MasterDependent; // Slave
@@ -70,7 +72,7 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
     }
 }
 ";
-            Assert.Equal(exp, q.Code);
+            Assert.Equal(exp.Trim(), q.Code.Trim());
         }
         
         
@@ -87,7 +89,8 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             var q = new TestContext();
             gen.Generate(typeof(TestCascade), q);
          
-          const string expected = @"// ReSharper disable All
+          const string expected = @"
+// ReSharper disable All
 // suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.DependsOnPropertyGenerator
 {
@@ -98,23 +101,24 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
             private static string TestGetDependentProperties(string propertyName)
             {
+                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:121
                 switch (propertyName)
                 {
-                    case nameof(Master): return MasterDependent; // Slave, DeepSlave, EvenDeeperSlave
-                    case nameof(Slave): return ""DeepSlave, EvenDeeperSlave"";
+                    case nameof(Master): return MasterDependent; // Slave,DeepSlave,EvenDeeperSlave
+                    case nameof(Slave): return ""DeepSlave,EvenDeeperSlave"";
                     case nameof(DeepSlave): return DeepSlaveDependent; // EvenDeeperSlave
                     case nameof(FirstName):
-                    case nameof(LastName): return LastNameDependent; // FullNameA, FullNameB, FullNameA1, FullNameB1
+                    case nameof(LastName): return LastNameDependent; // FullNameA,FullNameB,FullNameA1,FullNameB1
                     case nameof(FullNameA): return ""FullNameA1"";
                 }
                 return null;
             }
 
-            public const string MasterDependent = ""Slave, DeepSlave, EvenDeeperSlave"";
+            public const string MasterDependent = ""Slave,DeepSlave,EvenDeeperSlave"";
 
             public const string DeepSlaveDependent = ""EvenDeeperSlave"";
 
-            public const string FirstNameDependent = ""FullNameA, FullNameB, FullNameA1, FullNameB1"";
+            public const string FirstNameDependent = ""FullNameA,FullNameB,FullNameA1,FullNameB1"";
 
             public const string LastNameDependent = FirstNameDependent;
 
@@ -123,8 +127,8 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
     }
 }
 ";
-          var code = q.Code;
-          Assert.Equal(expected, code);
+          var code = q.Code.Trim();
+          Assert.Equal(expected.Trim(), code);
         }
         
         

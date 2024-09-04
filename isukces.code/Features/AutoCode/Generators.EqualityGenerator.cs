@@ -199,7 +199,7 @@ namespace iSukces.Code.AutoCode
                         return p[0];
 
                     var pi = _type.GetTypeInfo().GetProperty(fieldOrPropertyName, GeneratorsHelper.AllInstance);
-                    if (!(pi is null))
+                    if (pi is not null)
                         return PropertyOrFieldInfo.FromProperty(pi);
                     var fi = _type.GetTypeInfo().GetField(fieldOrPropertyName, GeneratorsHelper.AllInstance);
                     if (fi is null)

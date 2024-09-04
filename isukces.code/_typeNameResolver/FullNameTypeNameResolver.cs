@@ -10,14 +10,20 @@ public sealed class FullNameTypeNameResolver : ITypeNameResolver, INamespaceCont
     {
     }
 
-    public CsType GetTypeName(Type type) => GeneratorsHelper.GetTypeName(this, type);
+    public CsType GetTypeName(Type type)
+    {
+        return GeneratorsHelper.GetTypeName(this, type);
+    }
 
-    public bool IsKnownNamespace(string namespaceName) => false;
+    public UsingInfo GetNamespaceInfo(string namespaceName)
+    {
+        return new UsingInfo(false);
+    }
 
     public static FullNameTypeNameResolver Instance => InstanceHolder.SingleInstance;
 
     private sealed class InstanceHolder
     {
-        public static readonly FullNameTypeNameResolver SingleInstance = new FullNameTypeNameResolver();
+        public static readonly FullNameTypeNameResolver SingleInstance = new();
     }
 }

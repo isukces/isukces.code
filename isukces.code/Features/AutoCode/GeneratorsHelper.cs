@@ -133,10 +133,12 @@ namespace iSukces.Code.AutoCode
                 }
             }
             var typeNamespace = type.Namespace ?? "";
-            var canCut        = container?.IsKnownNamespace(typeNamespace) ?? false;
-            var result = canCut 
-                ? new CsType(mainPart.Substring(typeNamespace.Length + 1)) 
+            
+            var    nsInfo = container?.GetNamespaceInfo(typeNamespace) ?? default;
+            var result = nsInfo.IsKnown 
+                ? nsInfo.AddAlias(mainPart.Substring(typeNamespace.Length + 1)) 
                 : new CsType(mainPart);
+
             result.GenericParamaters = generics;
             return result;
         }

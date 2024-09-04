@@ -4,6 +4,11 @@ namespace iSukces.Code;
 
 public class GlobalUsingsConfiguration : NamespacesHolder
 {
+    public GlobalUsingsConfiguration()
+        : base(null)
+    {
+    }
+
     public GlobalUsingsConfiguration WithAsp()
     {
         Add(Asp);
@@ -15,6 +20,8 @@ public class GlobalUsingsConfiguration : NamespacesHolder
         Add(Standard);
         return this;
     }
+
+    #region Fields
 
     /// <summary>
     ///     https://endjin.com/blog/2021/09/dotnet-csharp-10-implicit-global-using-directives
@@ -52,4 +59,6 @@ public class GlobalUsingsConfiguration : NamespacesHolder
     };
 
     private readonly HashSet<string> _namespaces = [];
+
+    #endregion
 }

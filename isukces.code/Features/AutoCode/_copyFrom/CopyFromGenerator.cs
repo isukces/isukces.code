@@ -1,4 +1,5 @@
-﻿#if !COREFX || NET80
+﻿#nullable enable
+#if !COREFX || NET80
 #define HAS_ICLONEABLE
 #endif
 using System;
@@ -8,7 +9,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using iSukces.Code.Interfaces;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.AutoCode;
 
@@ -75,14 +75,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             {
                 writer.WriteLine($"var {target} = new {type}[{source}.Length];");
             }
-/*
-                writer.WriteLine($"for (var index = {source}.Length - 1; index >= 0; index--)");
-                writer.IncIndent();
-                writer.WriteLine($"{target}[index] = {source}[index];");
-                writer.DecIndent();
-                */
 
-            //var arrayCopy = $"{res.GetTypeName<Array>().Declaration}.{nameof(Array.Copy)}";
             var arrayCopy = res.GetTypeName<Array>().GetMemberCode(nameof(Array.Copy));
             writer.WriteLine($"{arrayCopy}({source}, 0, {target}, 0, {source}.Length);");
             writer.WriteLine($"{wm} = {target};");
@@ -106,8 +99,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
         cm.Body = writer.Code;
     }
         
-    [CanBeNull]
-    protected internal static Type TryGetRankOneArrayElement(Type type)
+    protected internal static Type? TryGetRankOneArrayElement(Type type)
     {
         if (!type.IsArray) return null;
         var rank = type.GetArrayRank();
@@ -145,7 +137,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
     }
         
         
-    protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute attr, ICsCodeWriter writer)
+    protected virtual void ProcessProperty(PropertyInfo pi, Auto.CopyFromAttribute? attr, ICsCodeWriter writer)
     {
         ITypeNameResolver resolver               = Class;
         var               allowReferenceNullable = Class.AllowReferenceNullable();
@@ -160,6 +152,11 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
                 writer.WriteLine(c);
                 return;
             }
+        }
+        if (pi.GetCustomAttribute<CopyByReferenceAttribute>() is not null)
+        {
+            writer.WriteLine($"{pi.Name} = source.{pi.Name}; // by reference");
+            return;
         }
         if (pi.PropertyType
 #if COREFX
@@ -349,7 +346,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             {
                 while (t.DeclaringType != null)
                     t = t.DeclaringType;
-                object owner = Class.Owner;
+                object? owner = Class.Owner;
                 var nsCollection = owner as
                     INamespaceCollection;
                 while (nsCollection == null && owner != null)
@@ -406,24 +403,10 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             pi.PropertyType);
     }
 
-    [CanBeNull]
-    public CopyFromGeneratorConfiguration Configuration { get; set; }
+    public CopyFromGeneratorConfiguration? Configuration { get; set; }
 
     private Auto.CopyFromAttribute _copyFromAttribute;
     private bool _doCloneable;
 }
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public sealed class CopyPropertyValueArgs
-{
-    public CopyPropertyValueArgs(object source, object target, string propertyName)
-    {
-        Source       = source;
-        Target       = target;
-        PropertyName = propertyName;
-    }
-
-    public object Source       { get; }
-    public object Target       { get; }
-    public string PropertyName { get; }
-}

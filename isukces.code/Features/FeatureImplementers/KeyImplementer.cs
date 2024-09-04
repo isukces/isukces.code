@@ -21,13 +21,15 @@ public class KeyImplementer
         _primitiveDeclaration = primitive.Declaration;
         Special = _primitiveDeclaration switch
         {
-            "string" => SpecialType.String,
-            "int" => SpecialType.Int,
-            "Guid" when cl.IsKnownNamespace("System") => SpecialType.Guid,
-            "System.Guid" => SpecialType.Guid,
-            "long" => SpecialType.Long,
-            _ => SpecialType.Other
+            "string"                                                        => SpecialType.String,
+            "int"                                                           => SpecialType.Int,
+            "Guid" when cl.GetNamespaceInfo("System").IsKnownWithoutAlias() => SpecialType.Guid,
+            "System.Guid"                                                   => SpecialType.Guid,
+            "long"                                                          => SpecialType.Long,
+            _                                                               => SpecialType.Other
         };
+        
+        
 
         const string valueGethashcode = "Value.GetHashCode()";
         switch (Special)
@@ -79,8 +81,8 @@ public class KeyImplementer
 
     private void AddGenericInterface(CsType? genericArgument, string ns, string interfaceType)
     {
-        var typeName = _cl.IsKnownNamespace(ns) ? interfaceType : $"{ns}.{interfaceType}"; //
-        var tt       = CsType.Generic(typeName, genericArgument ?? _cl.Name);
+        var tt = _cl.GetTypeName(ns, interfaceType);
+        tt.GenericParamaters = new[] {genericArgument ?? _cl.Name};
         _cl.ImplementedInterfaces.Add(tt);
     }
 
@@ -361,12 +363,6 @@ public class KeyImplementer
             expr = ValueEqualsExpression("other");
 
         return m.WithBodyAsExpression(expr);
-        
-        
-        /*
-        var m = _cl.AddMethod("Equals", CsType.Bool)
-            .WithBodyAsExpression($"{PropertyName}.Equals(other)");
-        m.AddParam("other", primitive);*/
     }
 
     public CsMethod EqualsOverideObject() => Equality.EqualsOverideObject()

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System.Collections.Generic;
+using iSukces.Code.Interfaces;
 using Xunit;
 
 namespace iSukces.Code.Tests;
@@ -22,6 +23,51 @@ using iSukces.Code;
 namespace iSukces.Code;
 
 using iSukces.Code.Tests;";
+        Assert.Equal(expected, code);
+    }
+    
+    [Fact]
+    public void T02_Should_convert_with_alias()
+    {
+        var file = new CsFile();
+        var ns   = file.GetOrCreateNamespace("iSukces.Code");
+        ns.AddImportNamespace<CsNamespaceTests>("tests");
+        ns.AddImportNamespace<System.Globalization.Calendar>();
+
+        file.AddImportNamespace<CsClass>();
+        file.AddImportNamespace<List<int>>("gene");
+        file.FileScopeNamespace = FileScopeNamespaceConfiguration.AllowIfPossible;
+        {
+            var cl =ns.GetOrCreateClass("SomeClass");
+            cl.AddProperty<int>("A");
+            cl.AddProperty<CsClass>("B");
+            cl.AddProperty<List<int>>("C");
+            cl.AddProperty<System.Globalization.Calendar>("D");
+        }
+
+        var code = file.GetCode().Trim();
+        const string expected = @"
+// ReSharper disable All
+using iSukces.Code;
+using gene = System.Collections.Generic;
+
+namespace iSukces.Code;
+
+using System.Globalization;
+using tests = iSukces.Code.Tests;
+
+public class SomeClass
+{
+    public int A { get; set; }
+
+    public CsClass B { get; set; }
+
+    public gene.List<int> C { get; set; }
+
+    public Calendar D { get; set; }
+
+}
+";
         Assert.Equal(expected, code);
     }
 }

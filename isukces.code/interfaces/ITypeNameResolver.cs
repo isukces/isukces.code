@@ -59,8 +59,12 @@ public static class TypeToNameResolverExtensions
     public static CsType Reduce(this INamespaceContainer resolver, CsType type)
     {
         var (ns, shortTypeName) = type.SpitNamespaceAndShortName();
+
+        return resolver.GetTypeName(ns, shortTypeName);
+        
+        /*
         if (resolver.IsKnownNamespace(ns))
             return type.WithBaseName(shortTypeName);
-        return type;
+        return type;*/
     }
 }

@@ -85,9 +85,12 @@ public static class IsukcesCodeExtensions
 
     public static CsType GetTypeName(this ITypeNameResolver res, NamespaceAndName typeName)
     {
-        if (res is INamespaceContainer container)
-            if (container.IsKnownNamespace(typeName.Namespace))
-                return (CsType)typeName.Name;
+        if (res is not INamespaceContainer container)
+            return (CsType)typeName.FullName;
+        var info = container.GetNamespaceInfo(typeName.Namespace);
+        
+        if (info.TryGetTypeName(typeName.Name, out var type))
+            return type;
         return (CsType)typeName.FullName;
     }
 }

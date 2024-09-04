@@ -220,6 +220,11 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return m;
     }
 
+    public CsProperty AddProperty<T>(string propertyName)
+    {
+        return AddProperty(propertyName, GetTypeName(typeof(T)));
+    }
+
     public CsProperty AddProperty(string propertyName, Type type) => AddProperty(propertyName, GetTypeName(type));
 
     [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
@@ -549,7 +554,10 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return result;
     }
 
-    public bool IsKnownNamespace(string? namespaceName) => Owner?.IsKnownNamespace(namespaceName) ?? false;
+    public UsingInfo GetNamespaceInfo(string? namespaceName)
+    {
+        return Owner?.GetNamespaceInfo(namespaceName) ?? new UsingInfo(false, null);
+    }
 
     public void MakeCodeForBlazor(ICsCodeWriter writer, CodeEmitConfig config, bool addWrapper)
     {
