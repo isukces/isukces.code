@@ -23,17 +23,6 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     {
     }
 
-    /*
-    /// <summary>
-    ///     Tworzy instancję obiektu
-    ///     <param name="name">Nazwa metody</param>
-    /// </summary>
-    public CsMethod(string name)
-    {
-        Name = name;
-    }
-    */
-
     /// <summary>
     ///     Tworzy instancję obiektu
     ///     <param name="name">Nazwa metody</param>
@@ -64,14 +53,6 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     public CsMethodParameter AddParam(string name, CsType type, string? description = null)
     {
         var parameter = new CsMethodParameter(name, type, description);
-        _parameters.Add(parameter);
-        return parameter;
-    }
-
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsMethodParameter AddParam(string name, string type, string? description = null)
-    {
-        var parameter = new CsMethodParameter(name, (CsType)type, description);
         _parameters.Add(parameter);
         return parameter;
     }

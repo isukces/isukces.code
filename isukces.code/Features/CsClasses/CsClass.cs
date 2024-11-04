@@ -15,9 +15,6 @@ namespace iSukces.Code;
 public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameResolver,
     IAttributable, ICommentable, IAnnotableByUser, IEnumOwner
 {
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsClass(string name) => Name = (CsType)name;
-
     /// <summary>
     ///     Tworzy instancję obiektu
     ///     <param name="name">Nazwa klasy</param>
@@ -199,10 +196,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         m.Kind = MethodKind.Finalizer;
         return m;
     }
-
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsMethod AddMethod(string name, string type, string? description = null) => AddMethod(name, new CsType(type), description);
-
+    
     public CsMethod AddMethod(string name, Type? type, string? description = null)
         => AddMethod(name, type == null ? default : GetTypeName(type), description);
 
@@ -227,10 +221,6 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     }
 
     public CsProperty AddProperty(string propertyName, Type type) => AddProperty(propertyName, GetTypeName(type));
-
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsProperty AddProperty(string propertyName, string type) => AddProperty(propertyName, new CsType(type));
-
 
     public CsProperty AddProperty(string propertyName, CsType type)
     {
@@ -518,11 +508,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsClass GetOrCreateNested(CsType typeName)
         => GetOrCreateNested(typeName, out _);
-
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsClass GetOrCreateNested(string typeName)
-        => GetOrCreateNested((CsType)typeName, out _);
-
+    
     public CsClass GetOrCreateNested(CsType typeName, out bool isCreatedNew)
     {
         var existing = _nestedClasses

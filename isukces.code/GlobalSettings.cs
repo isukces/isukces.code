@@ -5,7 +5,7 @@ namespace iSukces.Code;
 
 public sealed class GlobalSettings
 {
-    public const bool WarnObsolete = true;
+    // public const bool WarnObsolete = true;
     // ReSharper disable ConvertToConstant.Global
     public static string                       CommaSeparator             = ", ";
     public static string                       AssignEqual                = " = ";

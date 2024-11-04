@@ -40,21 +40,12 @@ namespace iSukces.Code.Interfaces
                 src.WriteLine();
         }
 
-        [Obsolete("use just Close method", GlobalSettings.WarnObsolete)]
-        public static void CloseBrackets(this ICodeWriter src)
-        {
-            src.DecIndent();
-            src.WriteLine(src.LangInfo.CloseText);
-        }
-
-        public static void CloseNl(this ICodeWriter src)
+        public static ICodeWriter CloseNl(this ICodeWriter src)
         {
             src.Close(false);
             src.WriteLine(string.Empty);
+            return src;
         }
-
-
-
 
         public static void DoWithKeepingIndent(this ICodeWriter obj, Action action)
         {

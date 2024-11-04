@@ -19,22 +19,7 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
         Type        = type;
         Description = description;
     }
-    
-    /// <summary>
-    ///     Tworzy instancję obiektu
-    ///     <param name="name">nazwa parametru</param>
-    ///     <param name="type">typ parametru</param>
-    ///     <param name="description">Opis</param>
-    /// </summary>
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsMethodParameter(string name, string? type, string? description = null)
-    {
-        Name        = name;
-        Type        = new CsType(type);
-        Description = description;
-    }
-
-
+     
     /// <summary>
     ///     Realizuje operator ==
     /// </summary>
@@ -139,14 +124,14 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
     }
 
     /// <summary>
-    ///     nazwa parametru; własność jest tylko do odczytu.
+    ///     nazwa parametru
     /// </summary>
     public string Name { get; }
 
     /// <summary>
-    ///     typ parametru; własność jest tylko do odczytu.
+    ///     typ parametru
     /// </summary>
-    public CsType Type { get; }
+    public CsType Type { get; set; }
 
     /// <summary>
     /// </summary>

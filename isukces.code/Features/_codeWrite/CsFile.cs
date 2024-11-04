@@ -36,13 +36,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         return ns.GetOrCreateClass(className);
     }
 
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public CsClass GetOrCreateClass(string namespaceName, string className)
-    {
-        var ns = GetOrCreateNamespace(namespaceName);
-        return ns.GetOrCreateClass((CsType)className);
-    }
-
     public CsClass GetOrCreateClass(TypeProvider typeP)
     {
         return GetOrCreateClass(typeP, out _);

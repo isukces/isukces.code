@@ -38,14 +38,6 @@ public static class CsMethodExtensions
         return method;
     }
         
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public static CsMethod WithParameter(this CsMethod method, string name, string type, string? description = null)
-    {
-        var parameter = new CsMethodParameter(name, (CsType)type, description);
-        method.Parameters.Add(parameter);
-        return method;
-    }
-
     public static CsMethod WithVirtual(this CsMethod method, bool isVirtual = true)
     {
         method.Overriding = isVirtual ? OverridingType.Virtual : OverridingType.None;

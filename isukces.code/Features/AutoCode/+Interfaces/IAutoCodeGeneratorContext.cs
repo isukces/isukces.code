@@ -37,12 +37,7 @@ public static class AutoCodeGeneratorContextExtensions
             throw new NullReferenceException(nameof(type));
         return self.GetOrCreateClass(TypeProvider.FromType(type));
     }
-
-    [Obsolete("Use CsType instead of string", GlobalSettings.WarnObsolete)]
-    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext self, string typeName, CsNamespaceMemberKind kind)
-    {
-        return self.GetOrCreateClass(TypeProvider.FromTypeName((CsType)typeName, kind));
-    }
+    
     public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext self, CsType typeName, CsNamespaceMemberKind kind)
     {
         return self.GetOrCreateClass(TypeProvider.FromTypeName(typeName, kind));
