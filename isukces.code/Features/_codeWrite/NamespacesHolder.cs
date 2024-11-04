@@ -48,7 +48,7 @@ public class NamespacesHolder : INamespaceContainer
         return _namespaces.OrderBy(a => a).ToArray();
     }
 
-    private IEnumerable<string> GetNamespacesForEmit(INamespaceContainer? except)
+    public IEnumerable<string> GetNamespacesForEmit(INamespaceContainer? except)
     {
         foreach (var ns in _namespaces.OrderBy(a => a))
         {
