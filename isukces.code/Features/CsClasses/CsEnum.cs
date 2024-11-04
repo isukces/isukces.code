@@ -6,7 +6,7 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code;
 
-public class CsEnum : ClassMemberBase
+public class CsEnum : ClassMemberBase, IAnnotableByUser
 {
     public CsEnum(string name, params CsEnumItem[] items)
     {
@@ -56,8 +56,9 @@ public class CsEnum : ClassMemberBase
         writer.Close();
     }
 
-    public IClassOwner?       Owner          { get; set; }
-    public string?            Name           { get; set; }
-    public IList<CsEnumItem>? Items          { get; set; }
-    public string?            UnderlyingType { get; set; }
+    public IClassOwner?                Owner           { get; set; }
+    public string?                     Name            { get; set; }
+    public IList<CsEnumItem>?          Items           { get; set; }
+    public string?                     UnderlyingType  { get; set; }
+    public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 }
