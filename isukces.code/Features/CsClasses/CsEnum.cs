@@ -42,9 +42,9 @@ public class CsEnum : ClassMemberBase, IAnnotableByUser
         writer.WriteSingleLineSummary(Description, true);
         writer.WriteAttributes(Attributes);
         var def = $"{Visibility.ToCsCode()} enum {Name}";
-        var ut  = UnderlyingType?.Trim();
-        if (!string.IsNullOrEmpty(ut))
-            def += ": " + ut;
+        //var ut  = UnderlyingType.Declaration;
+        if (!UnderlyingType.IsVoid)
+            def += ": " + UnderlyingType.Declaration;
         writer.Open(def);
         if (Items != null)
         {
@@ -59,6 +59,6 @@ public class CsEnum : ClassMemberBase, IAnnotableByUser
     public IClassOwner?                Owner           { get; set; }
     public string?                     Name            { get; set; }
     public IList<CsEnumItem>?          Items           { get; set; }
-    public string?                     UnderlyingType  { get; set; }
+    public CsType                      UnderlyingType { get; set; }
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 }
