@@ -14,7 +14,9 @@ public enum CodeFormattingFeatures
     /// Allow 'is not null' 
     /// </summary>
     IsNotNull = 4,
-    MakeAutoImplementIfPossible = 8
+    MakeAutoImplementIfPossible = 8,
+    
+    Cs12 = ExpressionBody |  IsNotNull | MakeAutoImplementIfPossible
 }
 
 public struct CodeFormatting

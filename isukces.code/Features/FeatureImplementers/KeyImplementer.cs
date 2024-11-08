@@ -11,7 +11,9 @@ public class KeyImplementer
     private const string HasValue = "_hasValue";
 
     public override string ToString()
-        => $"Maker {_cl.Name.Declaration} {_primitiveDeclaration}";
+    {
+        return $"Maker {_cl.Name.Declaration} {_primitiveDeclaration}";
+    }
 
     public KeyImplementer(CsClass cl, CsType primitive)
     {
@@ -28,46 +30,92 @@ public class KeyImplementer
             "long"                                                          => SpecialType.Long,
             _                                                               => SpecialType.Other
         };
-        
-        
 
-        const string valueGethashcode = "Value.GetHashCode()";
+       
         switch (Special)
         {
             case SpecialType.String:
                 var stringComparer = _cl.GetTypeNameD<StringComparer>();
-                ValueEqualsExpression = StringEqualsExpression;
-                GetHasCodeExpression  = $"{stringComparer}.Ordinal.GetHashCode(Value ?? string.Empty)";
+                EqualsExpressionFactory = EqualMethods.StringOrdinal;
+                GetHashCodeExpressionFactory  = HashMethods.StringOrdinal;
                 EmptyExpression       = "string.Empty";
                 break;
             case SpecialType.Int:
-                ValueEqualsExpression = SimpleEqualsExpression;
-                GetHasCodeExpression  = "Value";
+                EqualsExpressionFactory = EqualMethods.EqualitySign;
+                GetHashCodeExpressionFactory  = a => a;
                 EmptyExpression       = "int.MinValue";
                 break;
             case SpecialType.Long:
-                ValueEqualsExpression = SimpleEqualsExpression;
-                GetHasCodeExpression  = valueGethashcode;
+                EqualsExpressionFactory = EqualMethods.EqualitySign;
+                GetHashCodeExpressionFactory  = HashMethods.Simple;
                 EmptyExpression       = "long.MinValue";
                 break;
             case SpecialType.Guid:
                 var guid = cl.GetTypeName<Guid>();
                 EmptyExpression       = guid.GetMemberCode(nameof(Guid.Empty));
-                ValueEqualsExpression = x => $"{x}.Equals(Value)";
-                GetHasCodeExpression  = valueGethashcode;
+                EqualsExpressionFactory = EqualMethods.Equals;
+                GetHashCodeExpressionFactory  = HashMethods.Simple;
                 break;
             case SpecialType.Other:
             default:
-                ValueEqualsExpression = x => $"Value.Equals({x})";
-                GetHasCodeExpression  = valueGethashcode;
+                EqualsExpressionFactory = EqualMethods.Equals;
+                GetHashCodeExpressionFactory  = HashMethods.Simple;
                 break;
         }
     }
 
-    private static string SimpleEqualsExpression(string x) => $"Value == {x}";
+    public static class CompareMethods
+    {
+        public static string StringOrdinalIgnoreCase(string left, string right) =>
+            $"StringComparer.OrdinalIgnoreCase.Compare({left}, {right})";
 
-    public static string StringEqualsExpression(string otherValue)
-        => $"StringComparer.Ordinal.Equals(Value, {otherValue})";
+        public static string Comparable(string left, string right) =>
+            $"{left}.CompareTo({right})";
+    }
+    
+    public static class HashMethods
+    {
+        public static string StringOrdinalIgnoreCase(string value)
+        {
+            return $"StringComparer.OrdinalIgnoreCase.GetHashCode({value})";
+        }
+        public static string StringOrdinal(string value)
+        {
+            return $"StringComparer.Ordinal.GetHashCode({value})";
+        }
+        public static string Simple(string value)
+        {
+            return $"{value}.GetHashCode()";
+        }
+    }
+    
+    public static class EqualMethods
+    {
+        private static string AddNegate(string expression, bool isNegate)
+        {
+            return isNegate ? $"!{expression}" : expression;
+        }
+
+        public static string EqualitySign(string myValue, string otherValue, bool isNegate)
+        {
+            return isNegate ? $"{myValue} != {otherValue}" : $"{myValue} == {otherValue}";
+        }
+
+        public static string Equals(string myValue, string otherValue, bool isNegate)
+        {
+            return AddNegate($"{myValue}.Equals({otherValue})", isNegate);
+        }
+
+        public static string StringOrdinal(string myValue, string otherValue, bool isNegate)
+        {
+            return AddNegate($"StringComparer.Ordinal.Equals({myValue}, {otherValue})", isNegate);
+        }
+        
+        public static string StringOrdinalIgnoreCase(string myValue, string otherValue, bool isNegate)
+        {
+            return AddNegate($"StringComparer.OrdinalIgnoreCase.Equals({myValue}, {otherValue})", isNegate);
+        }
+    }
 
     public void AddIEquatable(CsType? genericArgument = null)
     {
@@ -82,13 +130,16 @@ public class KeyImplementer
     private void AddGenericInterface(CsType? genericArgument, string ns, string interfaceType)
     {
         var tt = _cl.GetTypeName(ns, interfaceType);
-        tt.GenericParamaters = new[] {genericArgument ?? _cl.Name};
+        tt.GenericParamaters = new[] { genericArgument ?? _cl.Name };
         _cl.ImplementedInterfaces.Add(tt);
     }
 
-    public CsMethod GuidNew(string name = "NewId") => _cl.AddMethod(name, _cl.Name)
-        .WithStatic()
-        .WithBodyAsExpression(_cl.Name.New("Guid.NewGuid()"));
+    public CsMethod GuidNew(string name = "NewId")
+    {
+        return _cl.AddMethod(name, _cl.Name)
+            .WithStatic()
+            .WithBodyAsExpression(_cl.Name.New("Guid.NewGuid()"));
+    }
 
     public CsMethod GuidParse(string name = "Parse")
     {
@@ -99,7 +150,10 @@ public class KeyImplementer
         return m;
     }
 
-    public CsMethod OperatorBool(CsType left, CsType right, string op) => Operator(left, right, CsType.Bool, op);
+    public CsMethod OperatorBool(CsType left, CsType right, string op)
+    {
+        return Operator(left, right, CsType.Bool, op);
+    }
 
     public CsMethod Operator(CsType left, CsType right, CsType result, string op)
     {
@@ -121,7 +175,9 @@ public class KeyImplementer
         if (string.IsNullOrEmpty(expression))
         {
             if (Special == SpecialType.String)
+            {
                 expression = "string.IsNullOrEmpty(Value)";
+            }
             else
             {
                 if (string.IsNullOrWhiteSpace(EmptyExpression))
@@ -154,21 +210,28 @@ public class KeyImplementer
     {
         var skipEquals = Special is SpecialType.Int or SpecialType.Guid;
 
-        const string l1 = "if (Equals(left, right)) return false;";
+        const string eq      = "left.Equals(right)";
+    
         foreach (var op in ">,<,>=,<=".Split(','))
         {
-            var l2 = $"left.CompareTo(right) {op} 0";
-            var m  = Operator(_cl.Name, _cl.Name, CsType.Bool, op);
-            if (skipEquals)
-                m.WithBodyAsExpression(l2);
-            else
-                m.Body = $"{l1}\r\nreturn {l2};";
+            var expr = $"left.CompareTo(right) {op} 0";
+            //var expr = $"{compare} {op} 0";
+            var m    = Operator(_cl.Name, _cl.Name, CsType.Bool, op);
+            if (!skipEquals)
+            {
+                expr = op is "<" or ">" 
+                    ? $"!{eq} && {expr}"
+                    : $"{eq} || {expr}";
+            }
+
+            m.WithBodyAsExpression(expr);
         }
     }
 
     public CsMethod CompareTo()
     {
-        const string expre = "Value.CompareTo(other.Value)";
+        var comparer = CompareExpressionFactory ?? CompareMethods.Comparable;
+        var expre    = comparer("Value", "other.Value");
         var m = _cl.AddMethod("CompareTo", CsType.Int32)
             .WithBodyAsExpression(expre);
         var pt = _cl.Name.ToReferenceNullableIfPossible(_cl.Kind);
@@ -187,7 +250,8 @@ public class KeyImplementer
             if (string.IsNullOrEmpty(EmptyExpression))
                 throw new Exception("EmptyExpression is empty");
             if (Special == SpecialType.String)
-                p.WithOwnGetterAsExpression($"{HasValue} ? ({ValuePropertyField} ?? {EmptyExpression}) : {EmptyExpression}");
+                p.WithOwnGetterAsExpression(
+                    $"{HasValue} ? ({ValuePropertyField} ?? {EmptyExpression}) : {EmptyExpression}");
             else
                 p.WithOwnGetterAsExpression($"{HasValue} ? {ValuePropertyField} : {EmptyExpression}");
             p.IsReadOnly = true;
@@ -201,13 +265,24 @@ public class KeyImplementer
                 p.WithMakeAutoImplementIfPossible();
         }
 
-        p.EmitField = HasValuePropertyField;
+        if (Special == SpecialType.String)
+        {
+            p.EmitField = false;
+            _cl.AddField(p.PropertyFieldName, CsType.StringNullable).WithIsReadOnly();
+        }
+        else
+        {
+            p.EmitField = HasValuePropertyField;    
+        }
         return p;
     }
 
     private bool HasValuePropertyField => SupportsSetValue || Special == SpecialType.String;
 
-    public CsMethod IsZero() => _cl.AddMethod("IsZero", CsType.Bool).WithBodyAsExpression("Value == 0");
+    public CsMethod IsZero()
+    {
+        return _cl.AddMethod("IsZero", CsType.Bool).WithBodyAsExpression("Value == 0");
+    }
 
     public CsProperty ZeroProperty()
     {
@@ -329,13 +404,18 @@ public class KeyImplementer
             w.WriteLine($"{target} = string.IsNullOrEmpty(value) ? null : value;");
         }
         else
+        {
             w.WriteLine($"{target} = value;");
+        }
 
         if (SupportsSetValue)
             w.WriteLine($"{HasValue} = true;");
 
         var m = _cl.AddConstructor().WithBody(w);
-        m.AddParam("value", _primitive);
+        if (Special == SpecialType.String)
+            m.AddParam("value", CsType.StringNullable);
+        else
+            m.AddParam("value", _primitive);
         return m;
     }
 
@@ -343,33 +423,39 @@ public class KeyImplementer
     {
         string expr;
         if (nullableValue)
-            expr = $"{IsNotNull("other")} && {ValueEqualsExpression("other.Value.Value")}";
+            expr = $"{IsNotNull("other")} && {EqualsExpressionFactory("Value", "other.Value.Value", false)}";
         else
-            expr = ValueEqualsExpression("other.Value");
+            expr = EqualsExpressionFactory("Value", "other.Value", false);
 
         return Equality.EqualsMyType(nullableValue).WithBodyAsExpression(expr);
     }
-    
+
     public CsMethod EqualsPrimitive(bool nullableValue)
     {
-        var    type = _primitive;
+        var type = _primitive;
         if (nullableValue)
             type = type with { Nullable = NullableKind.ValueNullable };
         var    m = Equality.EqualsAny("other", type);
         string expr;
         if (nullableValue)
-            expr = $"{IsNotNull("other")} && {ValueEqualsExpression("other.Value")}";
+            expr = $"{IsNotNull("other")} && {EqualsExpressionFactory("Value", "other.Value", false)}";
         else
-            expr = ValueEqualsExpression("other");
+            expr = EqualsExpressionFactory("Value", "other", false);
 
         return m.WithBodyAsExpression(expr);
     }
 
-    public CsMethod EqualsOverideObject() => Equality.EqualsOverideObject()
-        .WithBodyAsExpression($"obj is {Equality.TypeName} s && Value.Equals(s.Value)");
+    public CsMethod EqualsOverideObject()
+    {
+        return Equality.EqualsOverideObject()
+            .WithBodyAsExpression($"obj is {Equality.TypeName} s && Value.Equals(s.Value)");
+    }
 
-    public CsMethod HashCode() => Equality.HashCode()
-        .WithBodyAsExpression(GetHasCodeExpression);
+    public CsMethod HashCode()
+    {
+        return Equality.HashCode()
+            .WithBodyAsExpression(GetHashCodeExpressionFactory("Value"));
+    }
 
     public string IsNotNull(string x)
     {
@@ -402,32 +488,61 @@ public class KeyImplementer
 
     public CsMethod EqualityOperator(bool equal)
     {
-        string expression;
-        if (Special == SpecialType.String)
-        {
-            var a = "left.Value.Equals(right.Value)";
-            if (equal)
-                expression = a;
-            else
-                expression = $"!{a}";
-        }
-        else
-
-            expression = equal ? "left.Value == right.Value" : "left.Value != right.Value";
-
+        string expression =GetExpression();
         var m = Equality.EqualityOperator(equal, expression);
         return m;
+
+        string GetExpression()
+        {
+            ValueEqualsExpressionDelegate? factory = EqualsExpressionFactory;
+            if (factory is null)
+            {
+                factory = Special switch
+                {
+                    SpecialType.String => EqualMethods.StringOrdinal,
+                    SpecialType.Int => EqualMethods.EqualitySign,
+                    _                  => EqualMethods.Equals
+                };
+            }
+            return factory("left.Value", "right.Value", equal);
+
+            /*
+            if (this.EqualsExpressionFactory is not null)
+                return this.EqualsExpressionFactory("left.Value", "right.Value", equal);
+            string expression;
+            if (Special == SpecialType.String)
+            {
+               EqualMethods.StringOrdinal()
+                    var a = "left.Value.Equals(right.Value)";
+                if (equal)
+                    expression = a;
+                else
+                    expression = $"!{a}";
+            }
+            else
+            {
+                expression = equal ? "left.Value == right.Value" : "left.Value != right.Value";
+            }
+            */
+
+            // return expression;
+        }
     }
 
-    public Func<string, string> ValueEqualsExpression { get; init; }
-    public string               GetHasCodeExpression  { get; init; }
+    public delegate string CompareExpressionDelegate(string myValue, string otherValue);
+    public delegate string ValueEqualsExpressionDelegate(string myValue, string otherValue, bool isNegate);
+    public delegate string GetHashCodeExpressionDelegate(string value);
+
+    public ValueEqualsExpressionDelegate? EqualsExpressionFactory      { get; set; }
+    public GetHashCodeExpressionDelegate? GetHashCodeExpressionFactory { get; set; }
+    public CompareExpressionDelegate?     CompareExpressionFactory     { get; set; }
 
     public BaseEqualityFeatureImplementer Equality { get; }
 
-    private readonly CsType _primitive;
-    private readonly CsClass _cl;
-    private readonly string _primitiveDeclaration;
-    public SpecialType Special { get; }
+    private readonly CsType      _primitive;
+    private readonly CsClass     _cl;
+    private readonly string      _primitiveDeclaration;
+    public           SpecialType Special { get; }
 
     public enum SpecialType
     {
@@ -459,7 +574,7 @@ public class KeyImplementer
         public static void Emit(CsClass cl, IEnumerable<AsMethodCreationInfo> _allClasses,
             Func<string, string> mapName)
         {
-            cl.IsStatic  = true;
+            cl.IsStatic = true;
             var list = _allClasses.ToList();
             list.Sort();
             foreach (var i in list)
@@ -475,7 +590,10 @@ public class KeyImplementer
             }
         }
 
-        public int CompareTo(AsMethodCreationInfo other) => string.Compare(StructType, other.StructType, StringComparison.Ordinal);
+        public int CompareTo(AsMethodCreationInfo other)
+        {
+            return string.Compare(StructType, other.StructType, StringComparison.Ordinal);
+        }
 
         public int CompareTo(object? obj)
         {
@@ -491,5 +609,13 @@ public class KeyImplementer
         public CsType WrappedType { get; }
 
         #endregion
+    }
+
+    public KeyImplementer WithStringOrdinalIgnoreCase()
+    {
+        EqualsExpressionFactory      = EqualMethods.StringOrdinalIgnoreCase;
+        GetHashCodeExpressionFactory = HashMethods.StringOrdinalIgnoreCase;
+        CompareExpressionFactory     = CompareMethods.StringOrdinalIgnoreCase;
+        return this;
     }
 }
