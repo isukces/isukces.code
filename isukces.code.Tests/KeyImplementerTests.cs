@@ -11,6 +11,7 @@ public class KeyImplementerTests
         var file = new CsFile
         {
             FileScopeNamespace = FileScopeNamespaceConfiguration.AllowIfPossible,
+            Nullable = FileNullableOption.GlobalEnabled
         };
         var cl = file.GetOrCreateClass("MyTest", (CsType)"SomeKey");
         cl.Formatting = new CodeFormatting(CodeFormattingFeatures.Cs12, 120);
@@ -36,13 +37,13 @@ namespace MyTest;
 
 public class SomeKey : System.IEquatable<SomeKey>
 {
-    public SomeKey(string value)
+    public SomeKey(string? value)
     {
         value = value?.Trim();
         _value = string.IsNullOrEmpty(value) ? null : value;
     }
 
-    public override bool Equals(object obj) => obj is SomeKey s && Value.Equals(s.Value);
+    public override bool Equals(object? obj) => obj is SomeKey s && Value.Equals(s.Value);
 
     public bool Equals(SomeKey? other) => 
         other is not null && StringComparer.OrdinalIgnoreCase.Equals(Value, other.Value.Value);
@@ -59,7 +60,7 @@ public class SomeKey : System.IEquatable<SomeKey>
 
     public string Value => _value ?? string.Empty;
 
-    public readonly string _value;
+    private string? _value;
 
 }
 ";

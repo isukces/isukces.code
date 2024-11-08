@@ -35,7 +35,6 @@ public class KeyImplementer
         switch (Special)
         {
             case SpecialType.String:
-                var stringComparer = _cl.GetTypeNameD<StringComparer>();
                 EqualsExpressionFactory = EqualMethods.StringOrdinal;
                 GetHashCodeExpressionFactory  = HashMethods.StringOrdinal;
                 EmptyExpression       = "string.Empty";
@@ -265,15 +264,9 @@ public class KeyImplementer
                 p.WithMakeAutoImplementIfPossible();
         }
 
+        p.EmitField = HasValuePropertyField;    
         if (Special == SpecialType.String)
-        {
-            p.EmitField = false;
-            _cl.AddField(p.PropertyFieldName, CsType.StringNullable).WithIsReadOnly();
-        }
-        else
-        {
-            p.EmitField = HasValuePropertyField;    
-        }
+            p.FieldTypeOverride = CsType.StringNullable;
         return p;
     }
 

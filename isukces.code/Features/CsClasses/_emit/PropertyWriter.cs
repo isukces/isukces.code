@@ -35,12 +35,15 @@ internal class PropertyWriter
 
             if (emitField && !IsInterface)
             {
+                var fieldType = _property.FieldTypeOverride;
+                if (fieldType.IsVoid)
+                    fieldType = _property.Type;
                 var f = new[]
                 {
                     _property.FieldVisibility.ToString().ToLower(),
                     _property.IsStatic ? "static" : null,
                     _property.IsReadOnly ? "readonly" : null,
-                    _property.Type.AsString(_allowReferenceNullable),
+                    fieldType.AsString(_allowReferenceNullable),
                     _property.PropertyFieldName,
                     string.IsNullOrWhiteSpace(_property.ConstValue) ? null : $"= {_property.ConstValue}"
                 };

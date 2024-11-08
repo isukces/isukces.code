@@ -145,6 +145,8 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     /// <summary>
     /// </summary>
     public bool EmitField { get; set; } = true;
+    
+    public CsType FieldTypeOverride { get; set; }
 
     public bool IsVirtual { get; set; }
 
