@@ -25,14 +25,14 @@ namespace iSukces.Code.Tests.EqualityGenerator
             return IsEmpty ? 0 : HashCode;
         }
 
-        public static bool operator !=(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)
-        {
-            return !Equals(left, right);
-        }
-
         public static bool operator ==(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)
         {
             return Equals(left, right);
+        }
+
+        public static bool operator !=(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)
+        {
+            return !Equals(left, right);
         }
 
     }

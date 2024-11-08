@@ -27,14 +27,14 @@ namespace iSukces.Code.Tests.EqualityGenerator
                 return IntValue;
             }
 
-            public static bool operator !=(OnePropertyClass left, OnePropertyClass right)
-            {
-                return !Equals(left, right);
-            }
-
             public static bool operator ==(OnePropertyClass left, OnePropertyClass right)
             {
                 return Equals(left, right);
+            }
+
+            public static bool operator !=(OnePropertyClass left, OnePropertyClass right)
+            {
+                return !Equals(left, right);
             }
 
         }

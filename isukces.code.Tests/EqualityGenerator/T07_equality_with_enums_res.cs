@@ -42,14 +42,14 @@ namespace iSukces.Code.Tests.EqualityGenerator
                 }
             }
 
-            public static bool operator !=(ClassWithManyProperties left, ClassWithManyProperties right)
-            {
-                return !Equals(left, right);
-            }
-
             public static bool operator ==(ClassWithManyProperties left, ClassWithManyProperties right)
             {
                 return Equals(left, right);
+            }
+
+            public static bool operator !=(ClassWithManyProperties left, ClassWithManyProperties right)
+            {
+                return !Equals(left, right);
             }
 
         }
