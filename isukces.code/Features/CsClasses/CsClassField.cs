@@ -26,6 +26,12 @@ public class CsClassField : CsMethodParameter, ICsClassMember, ICommentable, ICl
         IsConst = isConst;
         return this;
     }
+    public CsClassField WithIsConst(string value)
+    {
+        IsConst = true;
+        ConstValue = value;
+        return this;
+    }
 
     public override string ToString()
     {

@@ -146,13 +146,19 @@ internal class PropertyWriter
             }
         }
 
-        writer.Open(header);
         {
-            WriteGetterOrSetter(writer, GsKind.Getter);
-            if (!_property.IsPropertyReadOnly)
-                WriteGetterOrSetter(writer, GsKind.Setter);
+            writer.Open(header);
+            {
+                WriteGetterOrSetter(writer, GsKind.Getter);
+                if (!_property.IsPropertyReadOnly)
+                    WriteGetterOrSetter(writer, GsKind.Setter);
+            }
+
+            var append = "";
+            if (!IsInterface && !string.IsNullOrEmpty(_property.ConstValue) && !_property.EmitField)
+                append = "= " + _property.ConstValue + ";";
+            writer.Close(appendText: append);
         }
-        writer.Close();
 
         return _property.EmitField;
     }

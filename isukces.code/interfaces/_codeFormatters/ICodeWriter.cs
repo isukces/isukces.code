@@ -28,7 +28,7 @@ public static class CodeFormatterExt
         return writer;
     }
 
-    public static T Close<T>(this T writer, bool addEmptyLine = false)
+    public static T Close<T>(this T writer, bool addEmptyLine = false, string? appendText= null)
         where T : ICodeWriter
     {
         var langInfo = writer.LangInfo;
@@ -38,7 +38,10 @@ public static class CodeFormatterExt
                 src.WriteLine(langInfo.CloseText + " " + langInfo.OneLineComment + " " + opening[Indent]);
             else
 #endif
-        writer.WriteLine(langInfo.CloseText);
+        if (!string.IsNullOrEmpty(appendText))
+            writer.WriteLine(langInfo.CloseText + " " + appendText.Trim());
+        else
+            writer.WriteLine(langInfo.CloseText);
         if (addEmptyLine)
             writer.WriteLine();
         return writer;
