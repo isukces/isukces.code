@@ -5,10 +5,10 @@
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
     <TargetFrameworks>net4.8;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
-    <AssemblyVersion>1.24.1104.211</AssemblyVersion>
-    <FileVersion>1.24.1104.211</FileVersion>
-    <Version>1.24.1104.211</Version>
-    <AssemblyFileVersion>1.24.1104.211</AssemblyFileVersion>
+    <AssemblyVersion>1.24.1108.212</AssemblyVersion>
+    <FileVersion>1.24.1108.212</FileVersion>
+    <Version>1.24.1108.212</Version>
+    <AssemblyFileVersion>1.24.1108.212</AssemblyFileVersion>
     <LangVersion>12</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
