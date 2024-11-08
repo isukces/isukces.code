@@ -6,7 +6,7 @@ namespace iSukces.Code.Tests;
 public class KeyImplementerTests
 {
     [Fact]
-    public void T01_S()
+    public void T01_Should_create()
     {
         var file = new CsFile
         {
@@ -52,11 +52,11 @@ public class SomeKey : System.IEquatable<SomeKey>
 
     public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
 
-    public static bool operator !=(SomeKey left, SomeKey right) => 
-        StringComparer.OrdinalIgnoreCase.Equals(left.Value, right.Value);
-
     public static bool operator ==(SomeKey left, SomeKey right) => 
         !StringComparer.OrdinalIgnoreCase.Equals(left.Value, right.Value);
+
+    public static bool operator !=(SomeKey left, SomeKey right) => 
+        StringComparer.OrdinalIgnoreCase.Equals(left.Value, right.Value);
 
     public string Value => _value ?? string.Empty;
 

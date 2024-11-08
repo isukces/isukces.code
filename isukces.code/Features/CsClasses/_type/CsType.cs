@@ -20,6 +20,16 @@ public struct CsType
         _arrayRanks        = null;
     }
 
+    public CsType(string? type, NullableKind nullable)
+    {
+        BaseName = type?.Trim();
+        if (BaseName == "void")
+            BaseName = null;
+        _genericParamaters = null;
+        _arrayRanks        = null;
+        Nullable           = nullable;
+    }
+
     public static CsType Generic(string name, CsType genericArgument)
     {
         return new CsType(name)
@@ -225,8 +235,7 @@ public struct CsType
             clone.Nullable = NullableKind.NotNull;
         return clone;
     }
-
-
+    
     public void ThrowIfArray()
     {
         if (ArrayRanks.Count > 0)
@@ -355,52 +364,35 @@ public struct CsType
 
     public static readonly CsType Int32 = new("int");
 
-    public static readonly CsType Int32Nullable = new("int")
-    {
-        Nullable = NullableKind.ValueNullable
-    };
+    public static readonly CsType Int32Nullable = new("int", NullableKind.ValueNullable);
 
     public static readonly CsType Decimal = new("decimal");
 
-    public static readonly CsType DecimalNullable = new("decimal")
-    {
-        Nullable = NullableKind.ValueNullable
-    };
+    public static readonly CsType DecimalNullable = new("decimal", NullableKind.ValueNullable);
 
     public static readonly CsType Double = new("double");
 
-    public static readonly CsType DoubleNullable = new("double")
-    {
-        Nullable = NullableKind.ValueNullable
-    };
+    public static readonly CsType DoubleNullable = new("double", NullableKind.ValueNullable);
 
     public static readonly CsType Int64 = new("long");
 
-    public static readonly CsType Int64Nullable = new("long")
-    {
-        Nullable = NullableKind.ValueNullable
-    };
-
+    public static readonly CsType Int64Nullable = new("long", NullableKind.ValueNullable);
 
     public static readonly CsType Guid = new("System.Guid");
 
-
     public static readonly CsType String = new("string");
 
-    public static readonly CsType StringNullable = new("string")
-    {
-        Nullable = NullableKind.ReferenceNullable
-    };
+    public static readonly CsType StringNullable = new("string", NullableKind.ReferenceNullable);
 
     public static readonly CsType Object = new("object");
 
-    public static readonly CsType ObjectNullable = new("object")
-    {
-        Nullable = NullableKind.ReferenceNullable
-    };
+    public static readonly CsType ObjectNullable = new("object", NullableKind.ReferenceNullable);
 
-    public static readonly CsType               Bool = new("bool");
-    private                IReadOnlyList<Rank>? _arrayRanks;
+    public static readonly CsType Bool = new("bool");
+
+    public static readonly CsType BoolNullable = new("bool", NullableKind.ValueNullable);
+
+    private IReadOnlyList<Rank>? _arrayRanks;
 
     private IReadOnlyList<CsType>? _genericParamaters;
 }

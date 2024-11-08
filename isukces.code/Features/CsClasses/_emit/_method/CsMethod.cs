@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using iSukces.Code.Interfaces;
 
@@ -11,9 +12,21 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     static CsMethod()
     {
         Operators = [];
-        const string tmp = "+, -, !, ~, ++, --, +, -, *, /, %, &, |, ^, <<, >>,==, !=, <, >, <=, >=,&&, ||";
-        foreach (var i in tmp.Split(','))
-            Operators.Add(i.Trim());
+        // +, -, !, ~, ++, --, +, -, *, /, %, &, |, ^, <<, >>,==, !=, <, >, <=, >=,&&, ||";
+        const string tmp = "+ ++ - -- * / ! ~ %  ^ & && | || << >> == !=  < <= > >=";
+        var operators = tmp.Split(' ').Select(a => a.Trim())
+            .Where(a => a.Length > 0)
+            .Distinct()
+            .ToArray();
+        foreach (var op in operators)
+            Operators.Add(op);
+
+        MethodSorting       = new Dictionary<string, int>();
+        for (var index = 0; index < operators.Length; index++)
+        {
+            var op = operators[index];
+            MethodSorting.Add(op, index + 100);
+        }
     }
 
     /// <summary>
@@ -205,10 +218,11 @@ public class CsMethod : ClassMemberBase, ICommentable, IAnnotableByUser, IGeneri
     public const string Explicit = "explicit";
 
     private static readonly HashSet<string> Operators;
-    private                 string          _baseConstructorCall = string.Empty;
-    private                 string          _body                = string.Empty;
-    private readonly        StringBuilder   _extraComment        = new();
-    private                 MethodKind      _kind;
+    public static           Dictionary<string, int> MethodSorting { get; } = new();
+    private                 string        _baseConstructorCall = string.Empty;
+    private                 string        _body                = string.Empty;
+    private readonly        StringBuilder _extraComment        = new();
+    private                 MethodKind    _kind;
 
     private string                  _name       = string.Empty;
     private List<CsMethodParameter> _parameters = new();

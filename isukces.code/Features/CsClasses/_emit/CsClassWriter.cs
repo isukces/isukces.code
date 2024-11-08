@@ -40,8 +40,21 @@ internal sealed class CsClassWriter
         var csMethods = m as CsMethod[] ?? m.ToArray();
         if (!csMethods.Any()) return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
-        
-        addEmptyLineBeforeRegion = WriteMethodAction(writer, csMethods.OrderBy(a => a.Visibility).ThenBy(a => a.Name), region,
+
+        var methods = csMethods
+            .OrderBy(a => a.Visibility)
+            .ThenBy(m=>
+            {
+#if NET48
+                if ( CsMethod.MethodSorting.TryGetValue(m.Name, out var x))
+                    return x;
+                return 0;
+#else
+                return CsMethod.MethodSorting.GetValueOrDefault(m.Name, 0);
+#endif
+            })
+            .ThenBy(a => a.Name);
+        addEmptyLineBeforeRegion = WriteMethodAction(writer, methods, region,
             i =>
             {
                 var maker = new CsMethodWriter(i, _allowReferenceNullable);
