@@ -9,7 +9,7 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="iSukces.Build" Version="1.24.324.5" />
+    <PackageReference Include="iSukces.Build" Version="1.24.924.6" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
   </ItemGroup>
 </Project>
