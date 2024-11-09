@@ -65,11 +65,11 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             if (type == "System.Windows.Point")
             {
                 var len = $"[{source}.Length]";
-                writer.WritelineNoIndent("#if COREFX");
+                writer.WritelineNoIndent(CompilerDirectives.If + " COREFX");
                 writer.WriteLine($"var {target} = new Compat.{type}{len};");
-                writer.WritelineNoIndent("#else");
+                writer.WritelineNoIndent(CompilerDirectives.Else);
                 writer.WriteLine($"var {target} = new {type}{len};");
-                writer.WritelineNoIndent("#endif");
+                writer.WritelineNoIndent(CompilerDirectives.EndIf);
             }
             else
             {

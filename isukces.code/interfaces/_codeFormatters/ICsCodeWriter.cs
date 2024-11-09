@@ -65,7 +65,7 @@ public static class CsCodeWriterExtensions
     public static bool OpenCompilerIf(this ICsCodeWriter self, string? directive)
     {
         if (string.IsNullOrEmpty(directive)) return false;
-        self.WritelineNoIndent("#if " + directive);
+        self.WritelineNoIndent(CompilerDirectives.If + " " + directive);
         return true;
     }
 
