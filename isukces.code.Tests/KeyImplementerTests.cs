@@ -28,8 +28,8 @@ public class KeyImplementerTests
         main.EqualsMyType(false);
         main.AddIEquatable(cl.Name);
         main.HashCode();
-        main.EqualityOperator(true);
-        main.EqualityOperator(false);
+        main.EqualityOperator(EqualityOperators.Equal);
+        main.EqualityOperator(EqualityOperators.NotEqual);
         var          code     = file.GetCode();
         const string expected = @"
 // ReSharper disable All
@@ -53,10 +53,10 @@ public class SomeKey : System.IEquatable<SomeKey>
     public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(Value);
 
     public static bool operator ==(SomeKey left, SomeKey right) => 
-        !StringComparer.OrdinalIgnoreCase.Equals(left.Value, right.Value);
+        StringComparer.OrdinalIgnoreCase.Equals(left.Value, right.Value);
 
     public static bool operator !=(SomeKey left, SomeKey right) => 
-        StringComparer.OrdinalIgnoreCase.Equals(left.Value, right.Value);
+        !StringComparer.OrdinalIgnoreCase.Equals(left.Value, right.Value);
 
     public string Value => _value ?? string.Empty;
 

@@ -44,6 +44,8 @@ internal class Script
             Process.Start("explorer.exe", BinDir);
             return;
         }
+        // E:\!system\LocalNuget\NUGET_ORG
+        localNuget = Path.Combine(localNuget, "NUGET_ORG");
 
         foreach (var ext in new[] { "nupkg", "snupkg" })
         {

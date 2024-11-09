@@ -12,12 +12,12 @@ public class BaseEqualityFeatureImplementer
         TypeName = cl.Name.Declaration;
     }
 
-    public CsMethod EqualityOperator(bool equal) 
-        => cl.AddBinaryOperator(equal ? "==" : "!=", CsType.Bool);
+    public CsMethod EqualityOperator(EqualityOperators oper)
+        => cl.AddBinaryOperator(oper == EqualityOperators.Equal ? "==" : "!=", CsType.Bool);
 
 
-    public CsMethod EqualityOperator(bool equal, string expression) 
-        => EqualityOperator(equal).WithBodyAsExpression(expression);
+    public CsMethod EqualityOperator(EqualityOperators oper, string expression) 
+        => EqualityOperator(oper).WithBodyAsExpression(expression);
 
     public CsMethod EqualsMyType(bool nullableValue)
     {

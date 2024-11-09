@@ -6,6 +6,12 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.FeatureImplementers;
 
+public enum EqualityOperators
+{
+    Equal,
+    NotEqual
+}
+
 public class KeyImplementer
 {
     private const string HasValue = "_hasValue";
@@ -95,23 +101,27 @@ public class KeyImplementer
             return isNegate ? $"!{expression}" : expression;
         }
 
-        public static string EqualitySign(string myValue, string otherValue, bool isNegate)
+        public static string EqualitySign(string myValue, string otherValue, EqualityOperators oper)
         {
+            var isNegate = oper == EqualityOperators.NotEqual;
             return isNegate ? $"{myValue} != {otherValue}" : $"{myValue} == {otherValue}";
         }
 
-        public static string Equals(string myValue, string otherValue, bool isNegate)
+        public static string Equals(string myValue, string otherValue, EqualityOperators oper)
         {
+            var isNegate = oper == EqualityOperators.NotEqual;
             return AddNegate($"{myValue}.Equals({otherValue})", isNegate);
         }
 
-        public static string StringOrdinal(string myValue, string otherValue, bool isNegate)
+        public static string StringOrdinal(string myValue, string otherValue, EqualityOperators oper)
         {
+            var isNegate = oper == EqualityOperators.NotEqual;
             return AddNegate($"StringComparer.Ordinal.Equals({myValue}, {otherValue})", isNegate);
         }
         
-        public static string StringOrdinalIgnoreCase(string myValue, string otherValue, bool isNegate)
+        public static string StringOrdinalIgnoreCase(string myValue, string otherValue, EqualityOperators oper)
         {
+            var isNegate = oper == EqualityOperators.NotEqual;
             return AddNegate($"StringComparer.OrdinalIgnoreCase.Equals({myValue}, {otherValue})", isNegate);
         }
     }
@@ -416,9 +426,9 @@ public class KeyImplementer
     {
         string expr;
         if (nullableValue)
-            expr = $"{IsNotNull("other")} && {EqualsExpressionFactory("Value", "other.Value.Value", false)}";
+            expr = $"{IsNotNull("other")} && {EqualsExpressionFactory("Value", "other.Value.Value", EqualityOperators.Equal)}";
         else
-            expr = EqualsExpressionFactory("Value", "other.Value", false);
+            expr = EqualsExpressionFactory("Value", "other.Value", EqualityOperators.Equal);
 
         return Equality.EqualsMyType(nullableValue).WithBodyAsExpression(expr);
     }
@@ -431,9 +441,9 @@ public class KeyImplementer
         var    m = Equality.EqualsAny("other", type);
         string expr;
         if (nullableValue)
-            expr = $"{IsNotNull("other")} && {EqualsExpressionFactory("Value", "other.Value", false)}";
+            expr = $"{IsNotNull("other")} && {EqualsExpressionFactory("Value", "other.Value", EqualityOperators.Equal)}";
         else
-            expr = EqualsExpressionFactory("Value", "other", false);
+            expr = EqualsExpressionFactory("Value", "other", EqualityOperators.Equal);
 
         return m.WithBodyAsExpression(expr);
     }
@@ -479,10 +489,10 @@ public class KeyImplementer
         return m;
     }
 
-    public CsMethod EqualityOperator(bool equal)
+    public CsMethod EqualityOperator(EqualityOperators oper)
     {
         string expression =GetExpression();
-        var m = Equality.EqualityOperator(equal, expression);
+        var m = Equality.EqualityOperator(oper, expression);
         return m;
 
         string GetExpression()
@@ -497,7 +507,7 @@ public class KeyImplementer
                     _                  => EqualMethods.Equals
                 };
             }
-            return factory("left.Value", "right.Value", equal);
+            return factory("left.Value", "right.Value", oper);
 
             /*
             if (this.EqualsExpressionFactory is not null)
@@ -523,7 +533,7 @@ public class KeyImplementer
     }
 
     public delegate string CompareExpressionDelegate(string myValue, string otherValue);
-    public delegate string ValueEqualsExpressionDelegate(string myValue, string otherValue, bool isNegate);
+    public delegate string ValueEqualsExpressionDelegate(string myValue, string otherValue, EqualityOperators oper);
     public delegate string GetHashCodeExpressionDelegate(string value);
 
     public ValueEqualsExpressionDelegate? EqualsExpressionFactory      { get; set; }
