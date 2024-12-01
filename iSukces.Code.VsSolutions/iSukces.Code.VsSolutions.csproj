@@ -5,12 +5,13 @@
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
-    <TargetFrameworks>net48;net6.0;net8.0</TargetFrameworks>
+    <ProjectGuid>{5E891D4F-3E95-487F-8AC5-3EFEC19BE6A0}</ProjectGuid>
+    <TargetFrameworks>net48;net6.0;net8.0;net9.0</TargetFrameworks>
     <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
-    <AssemblyVersion>1.23.819.15</AssemblyVersion>
-    <FileVersion>1.23.819.15</FileVersion>
-    <Version>1.23.819.15</Version>
-    <LangVersion>12</LangVersion>
+    <AssemblyVersion>1.24.1201.16</AssemblyVersion>
+    <FileVersion>1.24.1201.16</FileVersion>
+    <Version>1.24.1201.16</Version>
+    <LangVersion>13</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
@@ -18,16 +19,19 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <PackageId>iSukces.Code.VsSolutions</PackageId>
+    <PackageTags>C#</PackageTags>
+    <Title>Microsoft Visual Studio solution related structures</Title>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <IncludeSource>false</IncludeSource>
     <IncludeSymbols>true</IncludeSymbols>
-    <PackageId>iSukces.Code.VsSolutions</PackageId>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
-    <PackageTags>C#</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <Title>Microsoft Visual Studio solution related structures</Title>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />

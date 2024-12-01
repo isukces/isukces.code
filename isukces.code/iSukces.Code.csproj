@@ -4,36 +4,37 @@
     <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
-    <TargetFrameworks>net4.8;netcoreapp3.1;net6.0;net8.0</TargetFrameworks>
-    <AssemblyVersion>1.24.1109.213</AssemblyVersion>
-    <FileVersion>1.24.1109.213</FileVersion>
-    <Version>1.24.1109.213</Version>
-    <AssemblyFileVersion>1.24.1109.213</AssemblyFileVersion>
-    <LangVersion>12</LangVersion>
+    <ProjectGuid>{6C33E666-9D42-4CEB-8FB1-5D547A19676D}</ProjectGuid>
+    <TargetFrameworks>net4.8;net6.0;net8.0;net9.0;netcoreapp3.1</TargetFrameworks>
+    <AssemblyVersion>1.24.1201.214</AssemblyVersion>
+    <FileVersion>1.24.1201.214</FileVersion>
+    <Version>1.24.1201.214</Version>
+    <AssemblyFileVersion>1.24.1201.214</AssemblyFileVersion>
+    <LangVersion>13</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <WarningsAsErrors>0169,0659,0661,0693,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,414,628,649,693,8321,8632</WarningsAsErrors>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <Description>iSukces.Code</Description>
     <Description>small C# code generating framework</Description>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <IncludeSource>false</IncludeSource>
-    <IncludeSymbols>true</IncludeSymbols>
     <PackageId>iSukces.Code</PackageId>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
     <PackageTags>C#</PackageTags>
     <PublicSign>true</PublicSign>
+    <Title>Source code generators</Title>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSource>false</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <Title>Source code generators</Title>
-    <WarningsAsErrors>0169,0659,0661,0693,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,414,628,649,693,8321,8632</WarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(TargetFramework)' == 'net4.8'">
     <DefineConstants>$(DefineConstants);NET48</DefineConstants>

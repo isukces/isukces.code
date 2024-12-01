@@ -23,10 +23,10 @@ public class CsEnumItem : IDescriptable, IAttributable
     {
         var commentLines = new List<string>();
         if (!string.IsNullOrEmpty(Description))
-            commentLines.Add(Description);
+            commentLines.Add(Description!);
 
         if (!string.IsNullOrEmpty(Label))
-            commentLines.Add(Label);
+            commentLines.Add(Label!);
         if (EnumName != SerializeAs && !string.IsNullOrEmpty(SerializeAs))
             commentLines.Add("serialized as " + SerializeAs);
         writer.WriteMultiLineSummary(commentLines, true);
@@ -40,11 +40,11 @@ public class CsEnumItem : IDescriptable, IAttributable
         writer.WriteLine(code);
     }
 
-    public string EncodedValue { get; set; }
+    public string? EncodedValue { get; set; }
 
-    public string EnumName    { get; set; }
-    public string Label       { get; set; }
-    public string SerializeAs { get; set; }
+    public string  EnumName    { get; set; }
+    public string? Label       { get; set; }
+    public string? SerializeAs { get; set; }
 
     public string?             Description { get; set; }
     public IList<ICsAttribute> Attributes  { get; } = new List<ICsAttribute>();

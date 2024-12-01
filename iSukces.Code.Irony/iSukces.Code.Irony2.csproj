@@ -2,11 +2,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023-2024</Copyright>
-    <TargetFramework>net7.0</TargetFramework>
+    <ProjectGuid>{D2F0C8C6-AA88-4E1D-902D-32727335AAF3}</ProjectGuid>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <LangVersion>13</LangVersion>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="iSukces.Code" Version="1.0.20363.167" />
+    <PackageReference Include="iSukces.Code" Version="1.24.1109.213" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="IronyAutocodeGenerator.AstClassesGenerator.cs">

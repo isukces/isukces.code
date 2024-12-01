@@ -2,7 +2,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2024</Copyright>
-    <TargetFramework>net8.0</TargetFramework>
+    <ProjectGuid>{346A5BE2-0F34-49FB-89A9-22040C4CB073}</ProjectGuid>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <LangVersion>13</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
@@ -10,6 +12,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="iSukces.Build" Version="1.24.924.6" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.0" />
   </ItemGroup>
 </Project>
