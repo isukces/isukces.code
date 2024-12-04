@@ -14,9 +14,15 @@ public class CsEnum : ClassMemberBase, IAnnotableByUser
         Items = items.ToList();
     }
 
-    public CsEnum() => Items = new List<CsEnumItem>();
+    public CsEnum()
+    {
+        Items = new List<CsEnumItem>();
+    }
 
-    public NamespaceAndName GetFullName() => new NamespaceAndName(GetNamespace(), Name);
+    public NamespaceAndName GetFullName()
+    {
+        return new NamespaceAndName(GetNamespace(), Name);
+    }
 
     public string GetNamespace()
     {
@@ -46,7 +52,7 @@ public class CsEnum : ClassMemberBase, IAnnotableByUser
         if (!UnderlyingType.IsVoid)
             def += ": " + UnderlyingType.Declaration;
         writer.Open(def);
-        if (Items != null)
+        //if (Items != null)
         {
             var cnt = Items.Count;
             foreach (var i in Items)
@@ -56,9 +62,10 @@ public class CsEnum : ClassMemberBase, IAnnotableByUser
         writer.Close();
     }
 
-    public IClassOwner?                Owner           { get; set; }
-    public string?                     Name            { get; set; }
-    public IList<CsEnumItem>?          Items           { get; set; }
-    public CsType                      UnderlyingType { get; set; }
+    public IClassOwner?      Owner          { get; set; }
+    public string?           Name           { get; set; }
+    public IList<CsEnumItem> Items          { get; }
+    public CsType            UnderlyingType { get; set; }
+
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 }
