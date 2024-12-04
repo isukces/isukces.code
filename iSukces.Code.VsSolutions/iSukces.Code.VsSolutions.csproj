@@ -6,14 +6,14 @@
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
     <ProjectGuid>{5E891D4F-3E95-487F-8AC5-3EFEC19BE6A0}</ProjectGuid>
-    <TargetFrameworks>net48;net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
     <AssemblyVersion>1.24.1201.16</AssemblyVersion>
     <FileVersion>1.24.1201.16</FileVersion>
     <Version>1.24.1201.16</Version>
     <LangVersion>13</LangVersion>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Description>small C# code generating framework</Description>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

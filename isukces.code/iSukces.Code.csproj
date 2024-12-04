@@ -5,7 +5,7 @@
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2024</Copyright>
     <Product>iSukces.Code</Product>
     <ProjectGuid>{6C33E666-9D42-4CEB-8FB1-5D547A19676D}</ProjectGuid>
-    <TargetFrameworks>net4.8;net6.0;net8.0;net9.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <AssemblyVersion>1.24.1201.214</AssemblyVersion>
     <FileVersion>1.24.1201.214</FileVersion>
     <Version>1.24.1201.214</Version>
@@ -13,7 +13,7 @@
     <LangVersion>13</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
     <WarningsAsErrors>0169,0659,0661,0693,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,414,628,649,693,8321,8632</WarningsAsErrors>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Description>iSukces.Code</Description>
@@ -35,12 +35,6 @@
     <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net4.8'">
-    <DefineConstants>$(DefineConstants);NET48</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
-    <DefineConstants>$(DefineConstants);COREFX;COREFX20;NET80</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
