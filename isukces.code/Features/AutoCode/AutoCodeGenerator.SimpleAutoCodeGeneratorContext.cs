@@ -32,10 +32,10 @@ public partial class AutoCodeGenerator
             AddNamespaceAction(namepace);
         }
 
-        public void FileSaved(FileInfo fileInfo)
+        /*public void FileSaved(FileInfo fileInfo)
         {
             SavedFiles.Add(fileInfo);
-        }
+        }*/
 
         public virtual void FinalizeContext(Assembly assembly)
         {
@@ -53,7 +53,7 @@ public partial class AutoCodeGenerator
 
         #region Properties
 
-        public List<FileInfo>              SavedFiles               { get; } = new();
+        //public List<FileInfo>              SavedFiles               { get; } = new();
         public Func<string, CsNamespace>   GetOrCreateNamespaceFunc { get; }
         public Func<TypeProvider, CsClass> GetOrCreateClassFunc     { get; }
         public Action<string>              AddNamespaceAction       { get; }
@@ -61,8 +61,16 @@ public partial class AutoCodeGenerator
         #endregion
 
         public IList<object> Tags         { get; } = new List<object>();
-        public bool          AnyFileSaved => SavedFiles.Count > 0;
+        public bool          AnyFileSaved { get; private set; }
+        //public bool          AnyFileSaved => SavedFiles.Count > 0;
 
         public ITypeNameResolver FileLevelResolver { get; set; }
+        public void FileSaved(object generator, string fileName)
+        {
+            OnFileSaved?.Invoke(this, new FileSavedEventArgs(generator, fileName));
+            AnyFileSaved = true;
+        }
+
+        public event EventHandler<FileSavedEventArgs>? OnFileSaved;
     }
 }

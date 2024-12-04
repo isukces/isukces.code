@@ -5,11 +5,29 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using iSukces.Code.IO;
+
 // ReSharper disable UnusedMember.Global
 
 namespace iSukces.Code.AutoCode;
 
-public partial class AutoCodeGenerator
+public class FileSavedNotifierBase : IFileSavedNotifier
+{
+    public void FileSaved(object generator, string fileName)
+    {
+        OnFileSaved?.Invoke(this, new FileSavedEventArgs(generator, fileName));
+        AnyFileSaved = true;
+    }
+
+    #region Properties
+
+    public bool AnyFileSaved { get; private set; }
+
+    #endregion
+
+    public event EventHandler<FileSavedEventArgs>? OnFileSaved;
+}
+
+public partial class AutoCodeGenerator : FileSavedNotifierBase
 {
     public AutoCodeGenerator(IAssemblyFilenameProvider filenameProvider)
     {
@@ -43,6 +61,17 @@ public partial class AutoCodeGenerator
         yield return new Generators.ReactiveCommandGenerator();
     }
 
+    protected virtual void AfterCreateFile(CsFile file)
+    {
+    }
+
+    protected virtual IFinalizableAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file,
+        Assembly assembly)
+    {
+        var context = new SimpleAutoCodeGeneratorContext(file, file.GetOrCreateClass);
+        return context;
+    }
+
     public void Make<T>()
     {
         var assembly = typeof(T)
@@ -51,11 +80,6 @@ public partial class AutoCodeGenerator
 #endif
             .Assembly;
         Make(assembly);
-    }
-
-    protected virtual void AfterCreateFile(CsFile file)
-    {
-
     }
 
     public void Make(Assembly assembly)
@@ -75,22 +99,21 @@ public partial class AutoCodeGenerator
             var csFileInfo     = TypeBasedOutputProvider?.GetOutputFileInfo(type);
             var contextWrapper = GetContextWrapper(csFileInfo);
             var context        = contextWrapper.Context;
+            context.OnFileSaved += HandleNestedSave;
             foreach (var i in CodeGenerators.OfType<IAutoCodeGenerator>())
             {
                 i.Generate(type, context);
             }
-
-            if (context.AnyFileSaved)
-                AnyFileSaved = true;
+            context.OnFileSaved -= HandleNestedSave;
         }
 
         foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
         {
             var contextWrapper = GetContextWrapper(null);
             var context        = contextWrapper.Context;
+            context.OnFileSaved += HandleNestedSave;
             i.AssemblyEnd(assembly, context);
-            if (context.AnyFileSaved)
-                AnyFileSaved = true;
+            context.OnFileSaved -= HandleNestedSave;
         }
 
         var fileNameAssembly = _filenameProvider.GetFilename(assembly).FullName;
@@ -122,21 +145,26 @@ public partial class AutoCodeGenerator
                     : "";
                 var allContent = EndCodeEmbedder.Append(c, csFile.GetCode(true),
                     info.EmbeddedFileDelimiter);
-                var saved = CodeFileUtils.SaveIfDifferent(allContent, sourceInfoFileName, false);
+                var saved = CodeFileUtils.SaveIfDifferent(allContent, sourceInfoFileName);
                 if (saved)
-                    AnyFileSaved = true;
+                    FileSaved(GetType(), sourceInfoFileName);
             }
             else
             {
                 if (csFile.SaveIfDifferent(fileName))
-                    AnyFileSaved = true;
+                    FileSaved(GetType(), fileName);
             }
 
-            var context = wrapper.Context;
-            if (context is IFinalizableAutoCodeGeneratorContext fin)
-                fin.FinalizeContext(assembly);
-            if (context.AnyFileSaved)
-                AnyFileSaved = true;
+            {
+                var context = wrapper.Context;
+                context.OnFileSaved += HandleNestedSave;
+                if (context is IFinalizableAutoCodeGeneratorContext fin)
+                    fin.FinalizeContext(assembly);
+
+                context.OnFileSaved -= HandleNestedSave;
+
+              
+            }
         }
 
         _outputs.Clear();
@@ -166,10 +194,19 @@ public partial class AutoCodeGenerator
         }
     }
 
-    protected virtual IFinalizableAutoCodeGeneratorContext CreateAutoCodeGeneratorContext(CsFile file, Assembly assembly)
+    private object ResolveConfigInternal(Type type)
     {
-        var context = new SimpleAutoCodeGeneratorContext(file, file.GetOrCreateClass);
-        return context;
+        if (_configs.TryGetValue(type, out var value))
+            return value;
+        value          = Activator.CreateInstance(type);
+        _configs[type] = value ?? throw new Exception("Cannot create instance of " + type);
+        return value;
+    }
+    
+    
+    void HandleNestedSave(object? sender, FileSavedEventArgs e)
+    {
+        FileSaved(e.Generator, e.FileName);
     }
 
     public AutoCodeGenerator WithGenerator(IAutoCodeGeneratorBase generator)
@@ -186,39 +223,38 @@ public partial class AutoCodeGenerator
         return WithGenerator(generator);
     }
 
-    private object ResolveConfigInternal(Type type)
-    {
-        if (_configs.TryGetValue(type, out var value))
-            return value;
-        value          = Activator.CreateInstance(type);
-        _configs[type] = value ?? throw new Exception("Cannot create instance of " + type);
-        return value;
-    }
+    #region Properties
 
-    public bool AnyFileSaved { get; set; }
-
-    public List<IAutoCodeGeneratorBase> CodeGenerators { get; } = new List<IAutoCodeGeneratorBase>();
+    public List<IAutoCodeGeneratorBase> CodeGenerators { get; } = new();
 
     public ISet<string> FileNamespaces { get; } = new HashSet<string>();
-    private readonly IAssemblyFilenameProvider _filenameProvider;
-
-    private readonly Dictionary<Type, object> _configs = new Dictionary<Type, object>();
 
     /// <summary>
-    /// Allows to specify separate output cs file for some types
+    ///     Allows to specify separate output cs file for some types
     /// </summary>
     public ICsOutputProvider? TypeBasedOutputProvider { get; set; }
 
-    private readonly Dictionary<string, ContextWrapper> _outputs = new Dictionary<string, ContextWrapper>(StringComparer.OrdinalIgnoreCase);
+    #endregion
 
     public event EventHandler<BeforeSaveEventArgs>? BeforeSave;
+
+    #region Fields
+
+    private readonly IAssemblyFilenameProvider _filenameProvider;
+
+    private readonly Dictionary<Type, object> _configs = new();
+
+    private readonly Dictionary<string, ContextWrapper> _outputs = new(StringComparer.OrdinalIgnoreCase);
+
+    #endregion
+
 
     public class BeforeSaveEventArgs : EventArgs
     {
 #if NET8_0_OR_GREATER
         public required CsFile File       { get; init; }
         public required string FileName   { get; set; }
-        public required bool IsEmbedded { get; init; }
+        public required bool   IsEmbedded { get; init; }
 #else
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public CsFile File       { get; init; }

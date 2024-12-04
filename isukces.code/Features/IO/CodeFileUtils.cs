@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.IO;
 
@@ -39,6 +40,14 @@ public static class CodeFileUtils
         stream.Write(Bom, 0, Bom.Length);
         stream.Write(bytes, 0, bytes.Length);
         return stream.ToArray();
+    }
+
+    public static bool SaveIfDifferent(string content, string filename, object generator, FileSavedDelegate fileSaved)
+    {
+        var result = SaveIfDifferent(content, filename);
+        if (result)
+            fileSaved?.Invoke(generator, filename);
+        return result;
     }
 
     public static bool SaveIfDifferent(string content, string filename, bool addBom = false)

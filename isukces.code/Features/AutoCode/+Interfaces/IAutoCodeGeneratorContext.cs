@@ -7,11 +7,10 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.AutoCode;
 
-public interface IAutoCodeGeneratorContext
+public interface IAutoCodeGeneratorContext:IFileSavedNotifier
 {
     void AddNamespace(string namepace);
 
-    void FileSaved(FileInfo fileInfo);
     CsClass GetOrCreateClass(TypeProvider type);
 
     CsNamespace GetOrCreateNamespace(string namespaceName);
