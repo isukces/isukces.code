@@ -30,6 +30,21 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
         return writer.Code;
     }
 
+    public UsingInfo GetNamespaceInfo(string? namespaceName)
+    {
+        var a = Usings.GetNamespaceInfo(namespaceName);
+        if (a.IsKnown)
+            return a;
+        if (GlobalUsings is not null)
+        {
+            var info = GlobalUsings.GetNamespaceInfo(namespaceName);
+            if (info.IsKnown)
+                return info;
+        }
+
+        return new UsingInfo(false);
+    }
+
     public CsClass GetOrCreateClass(string namespaceName, CsType className)
     {
         var ns = GetOrCreateNamespace(namespaceName);
@@ -191,7 +206,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             .Union(enumByNamespace.Keys)
             .OrderBy(a => a).ToList();
 
-
         var config = new CodeEmitConfig
         {
             AllowReferenceNullable = Nullable.IsNullableReferenceEnabled()
@@ -210,60 +224,52 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             {
                 writer.OpenCompilerIf(compilerDirective);
                 namespaceWriter.OpenNamespace(ns, writer);
-                var ns1 = Namespaces
-                    .FirstOrDefault(a => a.Name == ns)?
-                    .Usings;
-                if (ns1 is not null)
-                    if (ns1.Emit(writer, GlobalUsings))
-                        addEmptyLine = true;
-
+                if (!isEmbedded)
+                    EmitUsings(ns, ref addEmptyLine);
             }
 
-            {
-                if (classByNamespace.TryGetValue(ns, out var classList))
-                    foreach (var i in classList.OrderBy(a => a.Name))
-                    {
-                        if (addEmptyLine)
-                            writer.EmptyLine();
-                        addEmptyLine = true;
-                        writer.DoWithKeepingIndent(() => i.MakeCode(writer, config));
-                    }
+            if (classByNamespace.TryGetValue(ns, out var classList))
+                EmitClasses(classList, ref addEmptyLine);
 
-                if (enumByNamespace.TryGetValue(ns, out var enumList))
-                    foreach (var i in enumList)
-                    {
-                        if (addEmptyLine)
-                            writer.EmptyLine();
-                        addEmptyLine = true;
-                        writer.DoWithKeepingIndent(() => i.MakeCode(writer));
-                    }
-            }
+            if (enumByNamespace.TryGetValue(ns, out var enumList))
+                EmitEnums(enumList, ref addEmptyLine);
             namespaceWriter.CloseNamespace(ns, writer);
             writer.CloseCompilerIf(compilerDirective);
         }
 
         if (!string.IsNullOrEmpty(EndContent))
             writer.WriteLine(EndContent);
-    }
+        return;
 
-    public UsingInfo GetNamespaceInfo(string? namespaceName)
-    {
-        var a = Usings.GetNamespaceInfo(namespaceName);
-        if (a.IsKnown)
-            return a;
-        if (GlobalUsings is not null)
+        void EmitClasses(IReadOnlyList<CsClass> classes, ref bool addEmptyLine)
         {
-            var info = GlobalUsings.GetNamespaceInfo(namespaceName);
-            if (info.IsKnown)
-                return info;
+            foreach (var c in classes.OrderBy(a => a.Name))
+            {
+                if (addEmptyLine)
+                    writer.EmptyLine();
+                addEmptyLine = true;
+                writer.DoWithKeepingIndent(() => c.MakeCode(writer, config));
+            }
         }
 
-        return new UsingInfo(false);
-    }
+        void EmitEnums(IReadOnlyList<CsEnum> enums, ref bool addEmptyLine)
+        {
+            foreach (var e in enums)
+            {
+                if (addEmptyLine)
+                    writer.EmptyLine();
+                addEmptyLine = true;
+                writer.DoWithKeepingIndent(() => e.MakeCode(writer));
+            }
+        }
 
-    public string? TryGetTypeAlias(TypeProvider type)
-    {
-        return Usings.TryGetTypeAlias(type);
+        void EmitUsings(string ns, ref bool addEmptyLine)
+        {
+            var ns1 = Namespaces.FirstOrDefault(a => a.Name == ns)?.Usings;
+            if (ns1 is not null)
+                if (ns1.Emit(writer, GlobalUsings))
+                    addEmptyLine = true;
+        }
     }
 
     private void Save(string filename)
@@ -289,6 +295,13 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     {
         return GetCode();
     }
+
+    public string? TryGetTypeAlias(TypeProvider type)
+    {
+        return Usings.TryGetTypeAlias(type);
+    }
+
+    #region Properties
 
     /// <summary>
     ///     Przestrzenie nazw
@@ -335,6 +348,10 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     public NamespacesHolder Usings { get; }
 
+    #endregion
+
+    #region Fields
+
     private readonly Dictionary<TypeProvider, CsClass> _classesCache = new();
 
     private List<CsEnum> _enums = new();
@@ -342,4 +359,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     private FileScopeNamespaceConfiguration _fileScopeNamespace = FileScopeNamespaceConfiguration.BlockScoped;
 
     private string _suggestedFileName = string.Empty;
+
+    #endregion
 }
