@@ -9,7 +9,7 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="iSukces.Code" Version="1.24.1204.215" />
+    <PackageReference Include="iSukces.Code" Version="1.24.1217.216" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="IronyAutocodeGenerator.AstClassesGenerator.cs">
