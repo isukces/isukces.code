@@ -18,7 +18,7 @@ public class NamespacesHolder : INamespaceContainer
     {
         foreach (var ns in namespaces)
             if (!string.IsNullOrEmpty(ns))
-                _namespaces.Add(ns!);
+                _namespaces.Add(ns);
     }
 
     public void Add(string? ns, string? alias = null)
@@ -107,9 +107,9 @@ public class NamespacesHolder : INamespaceContainer
         if (q.IsKnown)
             return q;
 
-        if (_aliases.TryGetValue(namespaceName!, out var alias))
+        if (_aliases.TryGetValue(namespaceName, out var alias))
             return new UsingInfo(true, alias);
-        if (_namespaces.Contains(namespaceName!))
+        if (_namespaces.Contains(namespaceName))
             return new UsingInfo(true);
         return new UsingInfo(false);
     }

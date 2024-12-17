@@ -286,29 +286,28 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 #endif
     }
 
-    public bool SaveIfDifferent(string filename, bool addBom = false)
+    public bool SaveIfDifferent(string filename
+#if BOM
+        , bool addBom = false
+#endif
+        )
     {
+#if BOM
         return CodeFileUtils.SaveIfDifferent(GetCode(), filename, addBom);
+#else
+        return CodeFileUtils.SaveIfDifferent(GetCode(), filename);
+#endif
     }
 
-    public override string ToString()
-    {
-        return GetCode();
-    }
+    public override string ToString() => GetCode();
 
-    public string? TryGetTypeAlias(TypeProvider type)
-    {
-        return Usings.TryGetTypeAlias(type);
-    }
-
-    #region Properties
+    public string? TryGetTypeAlias(TypeProvider type) => Usings.TryGetTypeAlias(type);
 
     /// <summary>
     ///     Przestrzenie nazw
     /// </summary>
     public IReadOnlyList<CsNamespace> Namespaces { get; } = new List<CsNamespace>();
-
-
+    
     /// <summary>
     /// </summary>
     public string SuggestedFileName
@@ -348,10 +347,6 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     public NamespacesHolder Usings { get; }
 
-    #endregion
-
-    #region Fields
-
     private readonly Dictionary<TypeProvider, CsClass> _classesCache = new();
 
     private List<CsEnum> _enums = new();
@@ -359,6 +354,4 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     private FileScopeNamespaceConfiguration _fileScopeNamespace = FileScopeNamespaceConfiguration.BlockScoped;
 
     private string _suggestedFileName = string.Empty;
-
-    #endregion
 }

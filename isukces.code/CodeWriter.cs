@@ -49,8 +49,10 @@ public abstract class CodeWriter : ICodeWriter
 
     private void SaveToStream(Stream stream)
     {
+#if BOM
         if (LangInfo.AddBOM)
             stream.Write(new byte[] {0xEF, 0xBB, 0xBF}, 0, 3);
+#endif
         var x = Encoding.UTF8.GetBytes(GetCodeForSave());
         stream.Write(x, 0, x.Length);
     }

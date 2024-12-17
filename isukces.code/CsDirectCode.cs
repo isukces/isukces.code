@@ -1,14 +1,13 @@
 #nullable enable
 using iSukces.Code.Interfaces;
 
-namespace iSukces.Code
+namespace iSukces.Code;
+
+public class CsDirectCode : IDirectCode
 {
-    public class CsDirectCode : IDirectCode
-    {
-        public CsDirectCode(string code) => Code = code;
+    public CsDirectCode(string code) => Code = code;
 
-        public override string ToString() => Code;
+    public override string ToString() => Code;
 
-        public string Code { get; }
-    }
+    public string Code { get; }
 }

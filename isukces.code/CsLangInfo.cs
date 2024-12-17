@@ -1,39 +1,40 @@
 ﻿#nullable enable
 using iSukces.Code.Interfaces;
 
-namespace iSukces.Code
+namespace iSukces.Code;
+
+public class CsLangInfo : ILangInfo
 {
-    public class CsLangInfo : ILangInfo
+    private CsLangInfo()
     {
-        private CsLangInfo()
-        {
-        }
+    }
 
-        public static ILangInfo Instance => InstanceHolder.SingleInstance;
+    public static ILangInfo Instance => InstanceHolder.SingleInstance;
 
-        /// <summary>
-        ///     Dodaj BOM dla UTF-8
-        /// </summary>
-        public bool AddBOM => true;
+#if BOM
+    /// <summary>
+    ///     Dodaj BOM dla UTF-8
+    /// </summary>
+    public bool AddBOM => true;
+#endif
 
-        /// <summary>
-        ///     tekst zamykający
-        /// </summary>
-        public string CloseText => "}";
+    /// <summary>
+    ///     tekst zamykający
+    /// </summary>
+    public string CloseText => "}";
 
-        /// <summary>
-        ///     Komentarz jednolinijkowy
-        /// </summary>
-        public string OneLineComment => "//";
+    /// <summary>
+    ///     Komentarz jednolinijkowy
+    /// </summary>
+    public string OneLineComment => "//";
 
-        /// <summary>
-        ///     tekst otwierający
-        /// </summary>
-        public string OpenText => "{";
+    /// <summary>
+    ///     tekst otwierający
+    /// </summary>
+    public string OpenText => "{";
 
-        private static class InstanceHolder
-        {
-            public static readonly CsLangInfo SingleInstance = new CsLangInfo();
-        }
+    private static class InstanceHolder
+    {
+        public static readonly CsLangInfo SingleInstance = new CsLangInfo();
     }
 }

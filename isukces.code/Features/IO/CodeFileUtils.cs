@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -31,15 +30,24 @@ public static class CodeFileUtils
         return file;
     }
         
-    public static byte[] Encode(string txt, bool addBom)
+    public static byte[] Encode(string txt
+#if BOM
+        , bool addBom
+#endif
+        )
     {
         var bytes = Encoding.UTF8.GetBytes(txt);
+#if BOM
         if (!addBom)
             return bytes;
         using var stream = new MemoryStream();
         stream.Write(Bom, 0, Bom.Length);
         stream.Write(bytes, 0, bytes.Length);
         return stream.ToArray();
+#else
+        return bytes;
+
+#endif
     }
 
     public static bool SaveIfDifferent(string content, string filename, object generator, FileSavedDelegate fileSaved)
@@ -50,12 +58,20 @@ public static class CodeFileUtils
         return result;
     }
 
-    public static bool SaveIfDifferent(string content, string filename, bool addBom = false)
+    public static bool SaveIfDifferent(string content, string filename
+#if BOM
+        , bool addBom = false
+#endif
+        )
     {
         byte[]? existing = null;
         if (File.Exists(filename))
             existing = File.ReadAllBytes(filename);
+#if BOM
         var newCodeBytes = Encode(content, addBom);
+#else
+        var newCodeBytes = Encode(content);
+#endif
         if (AreEqual(existing, newCodeBytes))
             return false;
         new FileInfo(filename).Directory?.Create();
@@ -63,5 +79,7 @@ public static class CodeFileUtils
         return true;
     }
 
+#if BOM
     private static readonly byte[] Bom = { 0xEF, 0xBB, 0xBF };
+#endif
 }
