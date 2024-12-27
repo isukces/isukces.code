@@ -543,7 +543,9 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
-        return Owner?.GetNamespaceInfo(namespaceName) ?? new UsingInfo(false, null);
+        if (string.IsNullOrEmpty(namespaceName))
+            return new UsingInfo(NamespaceSearchResult.Empty);
+        return Owner?.GetNamespaceInfo(namespaceName) ?? new UsingInfo(NamespaceSearchResult.NotFound);
     }
 
     public string? TryGetTypeAlias(TypeProvider type)

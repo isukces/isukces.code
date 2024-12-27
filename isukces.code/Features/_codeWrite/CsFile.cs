@@ -32,17 +32,19 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
+        if (string.IsNullOrEmpty(namespaceName))
+            return new(NamespaceSearchResult.Empty);
         var a = Usings.GetNamespaceInfo(namespaceName);
-        if (a.IsKnown)
+        if (a.SearchResult != NamespaceSearchResult.NotFound)
             return a;
         if (GlobalUsings is not null)
         {
             var info = GlobalUsings.GetNamespaceInfo(namespaceName);
-            if (info.IsKnown)
+            if (info.SearchResult != NamespaceSearchResult.NotFound)
                 return info;
         }
 
-        return new UsingInfo(false);
+        return new UsingInfo(NamespaceSearchResult.NotFound);
     }
 
     public CsClass GetOrCreateClass(string namespaceName, CsType className)

@@ -41,7 +41,7 @@ public class NamespacesHolder : INamespaceContainer
         return true;
     }
 
-    private UsingInfo Empty(string? ns) => new();
+    private UsingInfo Empty(string? ns) => new(string.IsNullOrEmpty(ns) ? NamespaceSearchResult.Empty : NamespaceSearchResult.NotFound);
 
     public IReadOnlyList<string> GetNamespaces()
     {
@@ -101,17 +101,17 @@ public class NamespacesHolder : INamespaceContainer
     public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
         if (string.IsNullOrEmpty(namespaceName))
-            return new UsingInfo(true);
+            return new UsingInfo(NamespaceSearchResult.Empty);
 
         var q = _ownerCheckFirst(namespaceName);
-        if (q.IsKnown)
+        if (q.SearchResult != NamespaceSearchResult.NotFound)
             return q;
 
         if (_aliases.TryGetValue(namespaceName, out var alias))
-            return new UsingInfo(true, alias);
+            return new UsingInfo(NamespaceSearchResult.Found, alias);
         if (_namespaces.Contains(namespaceName))
-            return new UsingInfo(true);
-        return new UsingInfo(false);
+            return new UsingInfo(NamespaceSearchResult.Found);
+        return new UsingInfo(NamespaceSearchResult.NotFound);
     }
 
     public string? TryGetTypeAlias(TypeProvider type)

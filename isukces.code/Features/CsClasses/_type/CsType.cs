@@ -11,6 +11,13 @@ public struct CsType
 // public class CsType
     : IEquatable<CsType>, IComparable<CsType>, IComparable
 {
+    public CsType(string? namespaceOrAlias, string? type)
+        :this(type)
+    {
+        if (BaseName == "void" || string.IsNullOrEmpty(namespaceOrAlias))
+            return;
+        BaseName = $"{namespaceOrAlias}.{BaseName}";
+    }
     public CsType(string? type)
     {
         BaseName = type?.Trim();
@@ -30,6 +37,11 @@ public struct CsType
         Nullable           = nullable;
     }
 
+    public static UsingInfo MakeDefault(string typeNamespace)
+    {
+        return string.IsNullOrEmpty(typeNamespace) ? new(NamespaceSearchResult.Empty) : new(NamespaceSearchResult.NotFound);
+    }
+    
     public static CsType Generic(string name, CsType genericArgument)
     {
         return new CsType(name)
@@ -395,6 +407,7 @@ public struct CsType
     private IReadOnlyList<Rank>? _arrayRanks;
 
     private IReadOnlyList<CsType>? _genericParamaters;
+
 }
 
 public enum NullableKind

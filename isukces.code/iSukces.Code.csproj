@@ -6,16 +6,17 @@
     <Product>iSukces.Code</Product>
     <ProjectGuid>{6C33E666-9D42-4CEB-8FB1-5D547A19676D}</ProjectGuid>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <AssemblyVersion>1.24.1217.216</AssemblyVersion>
-    <FileVersion>1.24.1217.216</FileVersion>
-    <Version>1.24.1217.216</Version>
-    <AssemblyFileVersion>1.24.1217.216</AssemblyFileVersion>
+    <AssemblyVersion>1.24.1227.217</AssemblyVersion>
+    <FileVersion>1.24.1227.217</FileVersion>
+    <Version>1.24.1227.217</Version>
+    <AssemblyFileVersion>1.24.1227.217</AssemblyFileVersion>
     <LangVersion>13</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
     <WarningsAsErrors>0169,0659,0661,0693,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,414,628,649,693,8321,8632</WarningsAsErrors>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <DefineConstants>$(DefineConstants);_BOM</DefineConstants>
     <Description>iSukces.Code</Description>
     <Description>small C# code generating framework</Description>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
@@ -35,9 +36,6 @@
     <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
-  </PropertyGroup>
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);_BOM</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />

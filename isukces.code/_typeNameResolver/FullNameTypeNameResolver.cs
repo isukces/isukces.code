@@ -18,7 +18,10 @@ public sealed class FullNameTypeNameResolver : ITypeNameResolver, INamespaceCont
 
     public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
-        return new UsingInfo(false);
+        var isKnown = string.IsNullOrEmpty(namespaceName)
+            ? NamespaceSearchResult.Empty
+            : NamespaceSearchResult.NotFound;
+        return new UsingInfo(isKnown);
     }
 
     public string? TryGetTypeAlias(TypeProvider type) => null;

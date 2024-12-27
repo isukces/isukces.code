@@ -12,27 +12,50 @@ public interface INamespaceContainer
     string? TryGetTypeAlias(TypeProvider type);
 }
 
-public readonly record struct UsingInfo(bool IsKnown, string? Alias = null)
+public enum NamespaceSearchResult
+{
+    /// <summary>
+    /// Namespace is not empty and was found in usings
+    /// </summary>
+    Found,
+    
+    /// <summary>
+    /// Namespace is not empty and was not found in usings
+    /// </summary>
+    NotFound,
+    
+    /// <summary>
+    /// Namespace is empty
+    /// </summary>
+    Empty
+}
+
+public readonly record struct UsingInfo(NamespaceSearchResult SearchResult, string? Alias = null)
 {
     public bool IsKnownWithoutAlias()
     {
-        return IsKnown && string.IsNullOrEmpty(Alias);
+        if (SearchResult == NamespaceSearchResult.Empty)
+            return true;
+        return SearchResult == NamespaceSearchResult.Found && string.IsNullOrEmpty(Alias);
     }
 
     public bool TryGetTypeName(string shortTypeName, out CsType type)
     {
-        type = IsKnown
+        if (SearchResult == NamespaceSearchResult.Empty)
+        {
+            type = new CsType(shortTypeName);
+            return true;
+        }
+        var addAlias = SearchResult==NamespaceSearchResult.Found;
+        type = addAlias
             ? AddAlias(shortTypeName)
             : default;
-        return IsKnown;
+        return addAlias;
     }
 
     public CsType AddAlias(string shortTypeName)
-    {
-        var n = string.IsNullOrEmpty(Alias)
-            ? shortTypeName
-            : $"{Alias}.{shortTypeName}";
-        return new CsType(n);
+    { 
+        return new CsType(Alias, shortTypeName);
     }
 }
 
@@ -89,7 +112,7 @@ public static class NamespaceCollectionExt
     public static CsType GetTypeName(this INamespaceContainer self, string namespaceName, string shortName)
     {
         var info = self.GetNamespaceInfo(namespaceName);
-        return info.IsKnown
+        return info.SearchResult != NamespaceSearchResult.NotFound
             ? info.AddAlias(shortName)
             : new CsType($"{namespaceName}.{shortName}");
     }

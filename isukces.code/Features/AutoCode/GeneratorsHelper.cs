@@ -70,7 +70,7 @@ namespace iSukces.Code.AutoCode
             throw new NotSupportedException(mi.GetType().ToString());
         }
 
-        public static CsType GetTypeName(this INamespaceContainer container, Type? type)
+        public static CsType GetTypeName(this INamespaceContainer? container, Type? type)
         {
             //todo: Generic types
             if (type == null)
@@ -89,7 +89,7 @@ namespace iSukces.Code.AutoCode
             if (type.DeclaringType != null)
                 return GetTypeName(container, type.DeclaringType).AppendBase("." + type.Name);
             {
-                var alias = container.TryGetTypeAlias(TypeProvider.FromType(type));
+                var alias = container?.TryGetTypeAlias(TypeProvider.FromType(type));
                 if (!string.IsNullOrEmpty(alias))
                     return new CsType(alias);
             }
@@ -101,11 +101,9 @@ namespace iSukces.Code.AutoCode
                 {
                     if (w.IsGenericTypeDefinition)
                     {
-                        var args     = w.GetGenericArguments();
+                        var args = w.GetGenericArguments();
                         generics = args.Select(a => (CsType)a.Name).ToArray();
-                        //var args2    = args.Select(a => a.Name).CommaJoin().TriangleBrackets();
                         mainPart = type.FullName!.Split('`')[0];
-                        // mainPart = mainPart + args2;
                     }
                     else
                     {
@@ -118,30 +116,28 @@ namespace iSukces.Code.AutoCode
                                 return n1;
                             }
                         }
-                        var gt       = type.GetGenericTypeDefinition();
+                        var gt = type.GetGenericTypeDefinition();
                         mainPart = gt.FullName!.Split('`')[0];
-                        var args     = w.GetGenericArguments();
+                        var args = w.GetGenericArguments();
 
                         generics = args.Select(a => GetTypeName(container, a))
                             .ToArray();
-                        /*
-                        .CommaJoin()
-                        .TriangleBrackets();
-                    fullName = mainPart + args2;
-                */
                     }
                 }
                 else
-                {
                     mainPart = type.FullName!;
-                }
             }
             var typeNamespace = type.Namespace ?? "";
-            
-            var    nsInfo = container?.GetNamespaceInfo(typeNamespace) ?? default;
-            var result = nsInfo.IsKnown 
-                ? nsInfo.AddAlias(mainPart.Substring(typeNamespace.Length + 1)) 
-                : new CsType(mainPart);
+
+            var    nsInfo = container?.GetNamespaceInfo(typeNamespace) ?? CsType.MakeDefault(typeNamespace);
+            CsType result;
+            switch (nsInfo.SearchResult)
+            {
+                case NamespaceSearchResult.Empty: result  = new CsType(mainPart); break;
+                case NamespaceSearchResult.Found: result  = nsInfo.AddAlias(mainPart.Substring(typeNamespace.Length + 1)); break;
+                case NamespaceSearchResult.NotFound: result = new CsType(mainPart); break;
+                default: throw new ArgumentOutOfRangeException();
+            }
 
             result.GenericParamaters = generics;
             return result;

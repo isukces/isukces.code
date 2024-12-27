@@ -13,7 +13,12 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
 {
     public CsNamespace(INamespaceOwner owner, string? name)
     {
-        Usings            = new NamespacesHolder(ns => { return new UsingInfo(Name == ns); });
+        Usings            = new NamespacesHolder(ns =>
+        {
+            if (string.IsNullOrEmpty(ns))
+                return new UsingInfo(NamespaceSearchResult.Empty);
+            return new UsingInfo(Name == ns ? NamespaceSearchResult.Found : NamespaceSearchResult.NotFound);
+        });
         Owner             = owner ?? throw new ArgumentNullException(nameof(owner));
         Name              = name?.Trim() ?? string.Empty;
         CompilerDirective = string.Empty;
@@ -41,11 +46,11 @@ public class CsNamespace : IClassOwner, INamespaceCollection, IConditional, IEnu
     public UsingInfo GetNamespaceInfo(string? namespaceName)
     {
         if (string.IsNullOrEmpty(namespaceName))
-            return new UsingInfo(true);
+            return new UsingInfo(NamespaceSearchResult.Empty);
         if (Name == namespaceName)
-            return new UsingInfo(true);
+            return new UsingInfo(NamespaceSearchResult.Found);
         var tmp = Usings.GetNamespaceInfo(namespaceName);
-        if (tmp.IsKnown)
+        if (tmp.SearchResult != NamespaceSearchResult.NotFound)
             return tmp;
         return Owner?.GetNamespaceInfo(namespaceName) ?? default;
     }
