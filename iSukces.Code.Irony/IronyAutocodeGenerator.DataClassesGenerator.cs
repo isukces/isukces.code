@@ -45,7 +45,7 @@ namespace iSukces.Code.Irony
 #if IGNORECSTYPE
                 throw new NotImplementedException();
 #else
-                propertyType = _dataClass.ReduceTypenameIfPossible(propertyType);
+                // propertyType = _dataClass.ReduceTypenameIfPossible(propertyType);
                 if (collection)
                     propertyType = MakeList(_dataClass, propertyType, typeof(IReadOnlyList<>));
 

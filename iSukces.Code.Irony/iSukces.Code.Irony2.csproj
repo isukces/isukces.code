@@ -9,9 +9,6 @@
     <Authors>Internet Sukces Piotr Stęclik</Authors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="iSukces.Code" Version="1.24.1217.216" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="IronyAutocodeGenerator.AstClassesGenerator.cs">
       <DependentUpon>IronyAutocodeGenerator.cs</DependentUpon>
     </Compile>
@@ -23,5 +20,8 @@
     </Compile>
     <None Remove="iSukces.Code.Irony.csproj.DotSettings" />
     <None Remove="iSukces.Code.Irony2.csproj.DotSettings" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
 </Project>

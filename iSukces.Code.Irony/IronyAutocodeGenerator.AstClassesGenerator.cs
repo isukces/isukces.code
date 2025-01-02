@@ -245,7 +245,7 @@ namespace iSukces.Code.Irony
 #if IGNORECSTYPE
                 throw new NotImplementedException();
 #else
-                pn = _astClass.ReduceTypenameIfPossible(pn);
+                // pn = _astClass.ReduceTypenameIfPossible(pn);
                 var csProp = _astClass.AddProperty("Optional", pn);
                 csProp.AddCommentLocation<AstClassesGenerator>("created");
                 ProcessProperty(csProp, false);

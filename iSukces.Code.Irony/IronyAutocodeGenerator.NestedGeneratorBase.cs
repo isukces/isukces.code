@@ -32,7 +32,7 @@ namespace iSukces.Code.Irony
 #if IGNORECSTYPE
                 throw new NotImplementedException();
 #else
-                var tmp = cs.GetTypeName(listType).Split('<')[0];
+                var tmp = cs.GetTypeName(listType).BaseName.Split('<')[0];
                 return $"{tmp}<{propertyType}>";
 #endif
             }
