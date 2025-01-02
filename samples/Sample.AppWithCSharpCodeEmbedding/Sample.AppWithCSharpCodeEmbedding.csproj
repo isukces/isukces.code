@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023-2024</Copyright>
+    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2023-2025</Copyright>
     <ProjectGuid>{C992A140-5B90-4C1E-B913-3B105CB100C0}</ProjectGuid>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
