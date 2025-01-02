@@ -50,23 +50,26 @@ public static class CodeFileUtils
 #endif
     }
 
-    public static bool SaveIfDifferent(string content, string filename, object generator, FileSavedDelegate fileSaved)
+    public static bool SaveIfDifferent(string content, string fileName, object generator, FileSavedDelegate fileSaved)
     {
-        var result = SaveIfDifferent(content, filename);
+        var result = SaveIfDifferent(content, fileName);
         if (result)
-            fileSaved?.Invoke(generator, filename);
+            fileSaved?.Invoke(generator, fileName);
         return result;
     }
 
-    public static bool SaveIfDifferent(string content, string filename
+    public static bool SaveIfDifferent(string content, string fileName
 #if BOM
         , bool addBom = false
 #endif
         )
     {
+        if (GlobalSettings.RejectFilenameWithSlashAppPrefix)
+            GlobalSettings.CheckFilename(fileName);
+        
         byte[]? existing = null;
-        if (File.Exists(filename))
-            existing = File.ReadAllBytes(filename);
+        if (File.Exists(fileName))
+            existing = File.ReadAllBytes(fileName);
 #if BOM
         var newCodeBytes = Encode(content, addBom);
 #else
@@ -74,8 +77,8 @@ public static class CodeFileUtils
 #endif
         if (AreEqual(existing, newCodeBytes))
             return false;
-        new FileInfo(filename).Directory?.Create();
-        File.WriteAllBytes(filename, newCodeBytes);
+        new FileInfo(fileName).Directory?.Create();
+        File.WriteAllBytes(fileName, newCodeBytes);
         return true;
     }
 

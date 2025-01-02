@@ -15,6 +15,8 @@ public sealed class CsOutputFileInfo : IEquatable<CsOutputFileInfo>
     public CsOutputFileInfo(string fileName, bool isEmbedded)
     {
         FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+        if (GlobalSettings.RejectFilenameWithSlashAppPrefix)
+            GlobalSettings.CheckFilename(fileName);
         if (string.IsNullOrEmpty(fileName))
             throw new ArgumentException("File name can't be empty");
         IsEmbedded = isEmbedded;
