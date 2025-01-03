@@ -1,10 +1,9 @@
-namespace isukces.code.vssolutions
+namespace isukces.code.vssolutions;
+
+public enum NugetLoadCompatibility
 {
-    public enum NugetLoadCompatibility
-    {
-        None,
-        Partial,
-        Possible,
-        Full
-    }
+    None,
+    Partial,
+    Possible,
+    Full
 }

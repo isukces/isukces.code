@@ -1,9 +1,8 @@
-namespace iSukces.Code.VsSolutions
+namespace iSukces.Code.VsSolutions;
+
+public enum RangeEdge
 {
-    public enum RangeEdge
-    {
-        None,
-        Inclusive,
-        Exclusive
-    }
+    None,
+    Inclusive,
+    Exclusive
 }

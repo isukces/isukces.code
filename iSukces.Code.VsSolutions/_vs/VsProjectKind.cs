@@ -1,9 +1,8 @@
-﻿namespace iSukces.Code.VsSolutions
+﻿namespace iSukces.Code.VsSolutions;
+
+public enum VsProjectKind
 {
-    public enum VsProjectKind
-    {
-        Unknown,
-        Legacy,
-        Core
-    }
+    Unknown,
+    Legacy,
+    Core
 }

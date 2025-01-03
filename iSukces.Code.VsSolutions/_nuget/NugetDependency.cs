@@ -1,24 +1,23 @@
 using System.Xml.Linq;
 
-namespace iSukces.Code.VsSolutions
+namespace iSukces.Code.VsSolutions;
+
+public class NugetDependency
 {
-    public class NugetDependency
+    public static NugetDependency FromNode(XElement x)
     {
-        public static NugetDependency FromNode(XElement x)
+        var ver = (string)x.Attribute(Tags.Version);
+        return new NugetDependency
         {
-            var ver = (string)x.Attribute(Tags.Version);
-            return new NugetDependency
-            {
-                Id       = (string)x.Attribute("id"),
-                Versions = string.IsNullOrEmpty(ver) ? NugetVersionRange.Any : NugetVersionRange.Parse(ver)
-            };
-        }
+            Id       = (string)x.Attribute("id"),
+            Versions = string.IsNullOrEmpty(ver) ? NugetVersionRange.Any : NugetVersionRange.Parse(ver)
+        };
+    }
 
          
-        public override string ToString() => string.Format("NugetDependency {0} {1}", Id, Versions);
+    public override string ToString() => string.Format("NugetDependency {0} {1}", Id, Versions);
 
-        public string Id { get; private set; }
+    public string Id { get; private set; }
 
-        public NugetVersionRange Versions { get; private set; }
-    }
+    public NugetVersionRange Versions { get; private set; }
 }

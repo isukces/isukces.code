@@ -1,9 +1,8 @@
-namespace iSukces.Code.VsSolutions
+namespace iSukces.Code.VsSolutions;
+
+public enum VersionCheckResult
 {
-    public enum VersionCheckResult
-    {
-        Ok,
-        TooLow,
-        TooHigh
-    }
+    Ok,
+    TooLow,
+    TooHigh
 }

@@ -1,20 +1,19 @@
-namespace isukces.code.vssolutions
+namespace isukces.code.vssolutions;
+
+public enum FrameworkVersionGroup
 {
-    public enum FrameworkVersionGroup
-    {
-        Framework,
-        NetStandard,
-        NetCoreApp,
-        NetCore,
+    Framework,
+    NetStandard,
+    NetCoreApp,
+    NetCore,
 
-        Xamarin,
-        UniversalWindowsPlatform,
-        Tizen,
-        WindowsPhone,
-        Silverlight,
-        Windows,
-        MicroFramework,
+    Xamarin,
+    UniversalWindowsPlatform,
+    Tizen,
+    WindowsPhone,
+    Silverlight,
+    Windows,
+    MicroFramework,
 
-        Other
-    }
+    Other
 }

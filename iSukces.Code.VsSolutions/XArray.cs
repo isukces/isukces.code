@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace iSukces.Code.VsSolutions
-{
+namespace iSukces.Code.VsSolutions;
 #if NET451
     static class XArray
     {
@@ -21,10 +20,9 @@ namespace iSukces.Code.VsSolutions
         }
     }
 #else
-    static class XArray
-    {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] Empty<T>() => System.Array.Empty<T>();
-    }
-#endif
+static class XArray
+{
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static T[] Empty<T>() => System.Array.Empty<T>();
 }
+#endif

@@ -1,7 +1,6 @@
-namespace iSukces.Code.VsSolutions
+namespace iSukces.Code.VsSolutions;
+
+public static class Locking
 {
-    public static class Locking
-    {
-        public static object Lock { get; set; } = new object();
-    }
+    public static object Lock { get; set; } = new object();
 }
