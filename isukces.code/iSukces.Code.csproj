@@ -7,10 +7,10 @@
     <Product>iSukces.Code</Product>
     <ProjectGuid>{6C33E666-9D42-4CEB-8FB1-5D547A19676D}</ProjectGuid>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-    <AssemblyVersion>1.25.102.218</AssemblyVersion>
-    <FileVersion>1.25.102.218</FileVersion>
-    <Version>1.25.102.218</Version>
-    <AssemblyFileVersion>1.25.102.218</AssemblyFileVersion>
+    <AssemblyVersion>1.25.104.219</AssemblyVersion>
+    <FileVersion>1.25.104.219</FileVersion>
+    <Version>1.25.104.219</Version>
+    <AssemblyFileVersion>1.25.104.219</AssemblyFileVersion>
     <LangVersion>13</LangVersion>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>

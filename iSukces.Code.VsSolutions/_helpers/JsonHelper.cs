@@ -5,7 +5,7 @@ using Newtonsoft.Json.Converters;
 
 namespace iSukces.Code.VsSolutions;
 
-public  class JsonHelper
+public class JsonHelper
 {
     // ReSharper disable once MemberCanBePrivate.Global
     public static JsonSerializer DefaultSerializerFactory()

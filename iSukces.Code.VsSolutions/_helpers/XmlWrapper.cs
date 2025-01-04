@@ -1,25 +1,36 @@
+#nullable enable
 using System;
 using System.Linq;
 using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
 
-public abstract class XmlWrapper
+public class XmlWrapper
 {
     public XmlWrapper(XDocument document)
     {
-        Document = document;
+        Document  = document;
+        Namespace = document.Root?.Name.Namespace ?? "";
     }
 
-    protected XElement FindElementByPath(string path)
+    public static void UpdateFirstRemoveOthers(XElement[] elements, string value)
+    {
+        elements[0].Value = value;
+        for (var i = 1; i < elements.Length; i++)
+            elements[i].Remove();
+    }
+
+    public XElement? FindElementByPath(string path)
     {
         var el = Document.Root;
         if (el == null)
             return null;
-        var pathElements = path.Split('/').Select(PathElement.FromString).Where(a => a != null).ToArray();
+        var pathElements = path.Split('/')
+            .Select(PathElement.FromString)
+            .Where(a => a != null).ToArray();
         foreach (var pathElement in pathElements)
         {
-            el = el.Element(pathElement.ElementName);
+            el = el.Element(pathElement!.ElementName);
             if (el == null)
                 return null;
         }
@@ -54,14 +65,29 @@ public abstract class XmlWrapper
         return el?.Value?.Trim();
     }
 
+    public XName MakeName(string name)
+    {
+        return Namespace + name;
+    }
+
+
+    public void RemoveAll(XName remove)
+    {
+        var root = Document.Root;
+        if (root is null)
+            return;
+        var els = root.Descendants(remove).ToArray();
+        foreach (var el in els)
+            el.Remove();
+    }
+
     protected void SetValue(string path, string value)
     {
         var el = FindOrCreateElement(path);
         el.Value = value;
     }
 
-
     public XDocument Document { get; }
 
-    public XNamespace Namespace => Document.Root?.Name.Namespace;
+    public XNamespace Namespace { get; }
 }

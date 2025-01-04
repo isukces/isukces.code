@@ -1,8 +1,9 @@
+#nullable enable
 namespace iSukces.Code.VsSolutions;
 
 internal class PathElement
 {
-    public static PathElement FromString(string s)
+    public static PathElement? FromString(string? s)
     {
         s = s?.Trim();
         if (string.IsNullOrEmpty(s))
@@ -13,5 +14,5 @@ internal class PathElement
         };
     }
 
-    public string ElementName { get; set; }
+    public required string ElementName { get; init; }
 }

@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.VsSolutions", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Build.iSukces.Code", "Build.iSukces.Code\Build.iSukces.Code.csproj", "{A932EEDC-9387-4B8F-87E1-E61FAA7328AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iSukces.Code.VsSolutions.Tests", "iSukces.Code.VsSolutions.Tests\iSukces.Code.VsSolutions.Tests.csproj", "{C26A951B-4FFE-42BA-8388-FE9217BD4D42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,5 +69,9 @@ Global
 		{A932EEDC-9387-4B8F-87E1-E61FAA7328AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A932EEDC-9387-4B8F-87E1-E61FAA7328AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A932EEDC-9387-4B8F-87E1-E61FAA7328AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C26A951B-4FFE-42BA-8388-FE9217BD4D42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C26A951B-4FFE-42BA-8388-FE9217BD4D42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C26A951B-4FFE-42BA-8388-FE9217BD4D42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C26A951B-4FFE-42BA-8388-FE9217BD4D42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
