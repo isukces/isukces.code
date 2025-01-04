@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2025</Copyright>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <Company>Internet Sukces Piotr Stęclik</Company>
     <Product>iSukces.Code.Serenity</Product>
     <ProjectGuid>{2EB071BA-3139-4CA2-93CE-CE7C567A26F9}</ProjectGuid>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
@@ -13,7 +14,6 @@
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Description>iSukces.Code.Serenity</Description>
     <Description>Serenity extension for iSukces.Code</Description>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>

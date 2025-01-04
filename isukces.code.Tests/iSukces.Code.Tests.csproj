@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Company>Internet Sukces Piotr Stęclik</Company>
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2025</Copyright>
+    <Authors>Internet Sukces Piotr Stęclik</Authors>
+    <Company>Internet Sukces Piotr Stęclik</Company>
     <ProjectGuid>{E412B4DE-2EDF-4EC8-ADF0-1CE3F9C0F2C4}</ProjectGuid>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -11,7 +12,6 @@
     <LangVersion>13</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
