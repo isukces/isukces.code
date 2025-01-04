@@ -33,6 +33,7 @@ public struct TargetFramework
             _list = value?.Split(';')
                 .Select(a => a.Trim())
                 .Distinct()
+                .Where(a=>!string.IsNullOrEmpty(a))
                 .OrderBy(a => new FrameworkNameSorter(a))
                 .ToList()
         };

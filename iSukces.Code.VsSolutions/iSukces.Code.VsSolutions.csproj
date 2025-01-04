@@ -9,9 +9,9 @@
     <ProjectGuid>{5E891D4F-3E95-487F-8AC5-3EFEC19BE6A0}</ProjectGuid>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
-    <AssemblyVersion>1.25.104.17</AssemblyVersion>
-    <FileVersion>1.25.104.17</FileVersion>
-    <Version>1.25.104.17</Version>
+    <AssemblyVersion>1.25.104.18</AssemblyVersion>
+    <FileVersion>1.25.104.18</FileVersion>
+    <Version>1.25.104.18</Version>
     <LangVersion>13</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
@@ -39,16 +39,14 @@
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Update="Keys.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Keys.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="Keys.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Keys.tt</DependentUpon>
     </Compile>
+    <None Update="Keys.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Keys.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

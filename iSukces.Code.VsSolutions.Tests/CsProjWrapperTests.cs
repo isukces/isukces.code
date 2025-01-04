@@ -29,5 +29,34 @@ public class CsProjWrapperTests
                           </Project>
                           """;
         Assert.Equal(expected, doc);
+        
+        
+        w.TargetFramework.Value = "net5.0";
+        doc                     = x.ToString();
+        expected = """
+                   <Project Sdk="Microsoft.NET.Sdk">
+                     <PropertyGroup>
+                       <Authors>John Doe</Authors>
+                       <Company>iSukces</Company>
+                       <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2025</Copyright>
+                       <TargetFramework>net5.0</TargetFramework>
+                     </PropertyGroup>
+                   </Project>
+                   """;
+        Assert.Equal(expected, doc);
+        
+        
+        w.TargetFramework.Value = "";
+        doc                     = x.ToString();
+        expected = """
+                   <Project Sdk="Microsoft.NET.Sdk">
+                     <PropertyGroup>
+                       <Authors>John Doe</Authors>
+                       <Company>iSukces</Company>
+                       <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2025</Copyright>
+                     </PropertyGroup>
+                   </Project>
+                   """;
+        Assert.Equal(expected, doc);
     }
 }

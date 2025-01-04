@@ -36,6 +36,7 @@ internal class XmlTargetFrameworkCache : XmlCachedWrapper<TargetFramework>
         {
             RemoveAll(remove);
             RemoveAll(modify);
+            return value;
         }
 
         var root       = Document.Root!;
