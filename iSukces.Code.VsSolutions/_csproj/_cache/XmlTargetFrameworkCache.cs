@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
 
-internal class XmlTargetFrameworkCache : XmlCachedWrapper<TargetFramework>
+public class XmlTargetFrameworkCache : XmlCachedWrapper<TargetFramework>
 {
     public XmlTargetFrameworkCache(XDocument document)
         : base(document)
@@ -15,10 +15,10 @@ internal class XmlTargetFrameworkCache : XmlCachedWrapper<TargetFramework>
         var root = Document.Root;
         if (root is null)
             return default;
-        foreach (var i in root.Elements(Namespace + CsProjXmlTools.Names.PropertyGroup))
+        foreach (var i in root.Elements(Namespace + Tags.PropertyGroup))
         {
-            var q1 = i.Descendants(Namespace + CsProjXmlTools.Names.TargetFramework);
-            var q2 = i.Descendants(Namespace + CsProjXmlTools.Names.TargetFrameworks);
+            var q1 = i.Descendants(Namespace + Tags.TargetFramework);
+            var q2 = i.Descendants(Namespace + Tags.TargetFrameworks);
             foreach (var j in q1.Concat(q2))
                 return j.Value;
         }
@@ -29,8 +29,8 @@ internal class XmlTargetFrameworkCache : XmlCachedWrapper<TargetFramework>
     protected override TargetFramework SetValueInternal(TargetFramework value)
     {
         var ns     = Namespace;
-        var remove = ns + CsProjXmlTools.Names.TargetFrameworks;
-        var modify = ns + CsProjXmlTools.Names.TargetFramework;
+        var remove = ns + Tags.TargetFrameworks;
+        var modify = ns + Tags.TargetFramework;
 
         if (value.Text == "")
         {

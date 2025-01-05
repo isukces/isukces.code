@@ -2,16 +2,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyName>iSukces.Code.VsSolutions</AssemblyName>
-    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2025</Copyright>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
-    <Company>Internet Sukces Piotr Stęclik</Company>
     <Product>iSukces.Code</Product>
     <ProjectGuid>{5E891D4F-3E95-487F-8AC5-3EFEC19BE6A0}</ProjectGuid>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
-    <AssemblyVersion>1.25.104.18</AssemblyVersion>
-    <FileVersion>1.25.104.18</FileVersion>
-    <Version>1.25.104.18</Version>
+    <AssemblyVersion>1.25.105.19</AssemblyVersion>
+    <FileVersion>1.25.105.19</FileVersion>
+    <Version>1.25.105.19</Version>
     <LangVersion>13</LangVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
@@ -39,14 +36,23 @@
     <PackageReference Include="System.IO.Compression" Version="4.3.0" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Keys.cs">
+    <Compile Update="_keys\Keys.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Keys.tt</DependentUpon>
     </Compile>
-    <None Update="Keys.tt">
+    <None Update="_keys\Keys.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Keys.cs</LastGenOutput>
     </None>
+    <None Update="_vs\VsCoreProjectFile.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>VsCoreProjectFile.cs</LastGenOutput>
+    </None>
+    <Compile Update="_vs\VsCoreProjectFile.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VsCoreProjectFile.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

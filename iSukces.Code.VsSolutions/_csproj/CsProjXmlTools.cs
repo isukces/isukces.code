@@ -23,13 +23,13 @@ public static class CsProjXmlTools
 
     public static IEnumerable<XElement> ItemGroups(XDocument document)
     {
-        return Descendants(document, Names.ItemGroup);
+        return Descendants(document, Tags.ItemGroup);
     }
 
 
     public static IEnumerable<XElement> PropertyGroups(XDocument document)
     {
-        return Descendants(document, Names.PropertyGroup);
+        return Descendants(document, Tags.PropertyGroup);
     }
 
     public static void RemoveEmptyItemGroups(XDocument document)
@@ -52,12 +52,12 @@ public static class CsProjXmlTools
 
     public static XElement SureItemGroup(XDocument document)
     {
-        return SureRootElement(document, Names.ItemGroup);
+        return SureRootElement(document, Tags.ItemGroup);
     }
 
     public static XElement SurePropertyGroup(XDocument document)
     {
-        return SureRootElement(document, Names.PropertyGroup);
+        return SureRootElement(document, Tags.PropertyGroup);
     }
 
     public static XElement SureRootElement(XDocument document, string name)
@@ -76,19 +76,5 @@ public static class CsProjXmlTools
 
         return propertyGroup;
     }
-
-
-    public static class Names
-    {
-        #region Fields
-
-        public const string PropertyGroup = "PropertyGroup";
-        public const string ItemGroup = "ItemGroup";
-        public const string TargetFramework = "TargetFramework";
-        public const string TargetFrameworks = "TargetFrameworks";
-        public const string LangVersion = "LangVersion";
-        public const string Reference = "Reference";
-
-        #endregion
-    }
+    
 }

@@ -1,0 +1,134 @@
+<#@ template language="C#" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+#nullable enable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
+<#
+    var items = new Item[]
+    {
+        new("TargetFramework", "TargetFramework"),
+        new("Authors"),
+        new("Company"),
+        new("Copyright"),
+        new("LangVersion", "CsLangVersion"),
+        new("ProjectGuid", "Guid?"),
+        new("AssemblyFileVersion"),
+        new("AssemblyVersion"),
+        new("FileVersion"),
+        new("Version"),
+        new("RootNamespace"),
+        new("Description"),
+        new("AssemblyOriginatorKeyFile"),
+        new("SignAssembly", "bool?"),
+        new("Product"),
+        new("PackageId"),
+        new("PackageDescription"),
+        new("DocumentationFile"),
+
+        new("PackageVersion"),
+        new("PackageTags"),
+        new("PackageLicenseExpression"),
+        new("SymbolPackageFormat"),
+        new("PackageProjectUrl"),
+        new("PublishRepositoryUrl"),
+        new("RepositoryUrl"),
+        
+        new("IncludeSource", "bool?"),
+        new("IncludeSymbols", "bool?"),
+        new("GeneratePackageOnBuild", "bool?"),
+        new("ContinuousIntegrationBuild", "bool?"),
+        new("GenerateAssemblyDescriptionAttribute", "bool?"),
+        new("GenerateAssemblyTitleAttribute", "bool?"),
+        new("EmbedUntrackedSources", "bool?"),
+    };
+    var expandType = items.Max(a => a.PropType.Length);
+    var expandName = items.Max(a => a.Name.Length);
+
+#>
+
+namespace iSukces.Code.VsSolutions;
+
+public partial class VsCoreProjectFile : VsProjectFile
+{
+    [Obsolete("Use XDocument+CsprojDocumentKind constructor instead", true)]
+    public VsCoreProjectFile(XDocument document) 
+        : this(document, CsprojDocumentKind.Project)
+    {
+    }
+
+    public VsCoreProjectFile(XDocument document, CsprojDocumentKind kind) 
+        : base(document)
+    {
+        Kind            = kind;
+<#
+    foreach (var i in items)
+        i.Init(this, expandName);
+
+#>
+    }    
+
+    public CsprojDocumentKind              Kind            { get; }
+    
+<#
+    foreach (var i in items)
+        i.Property(this, expandType, expandName);
+
+#>
+
+}
+
+<#+
+    class Item
+    {
+        public Item(string name, string type = "string")
+        {
+            Name = name;
+            Type = type;
+        }
+
+        public string Name { get; }
+        public string Type { get; }
+        public string PropType => "IValueProvider<" + Type + ">";
+
+        public void Init(GeneratedTextTransformation p, int expandName)
+        {
+            var creator = GetCreator();
+            p.WriteLine($"        {ExpandName(Name, expandName)} = new {creator};");
+        }
+        
+        
+        public void Property(GeneratedTextTransformation p, int expandType, int expandName)
+        {
+            var type = ExpandName(PropType, expandType);
+            p.WriteLine($"    public {type} {ExpandName(Name,expandName)} {{ get; }}");
+        }
+
+        private static string ExpandName(string name, int max)
+        {
+            if (name.Length < max)
+                return name.PadRight(max);
+            return name;
+        }
+
+        private string GetCreator()
+        {
+            if (Name=="TargetFramework")
+                return "XmlTargetFrameworkCache(Document)";
+            if (Name=="LangVersion")
+                return "XmlCsLangVersionCache(Document)";
+            if (Name=="ProjectGuid")
+                return "XmlProjectGuidCache(Document)";
+            if (Type=="string")
+                return $"XmlPropertyGroupValueCache(Document, Tags.{Name})";
+            if (Type=="bool?")
+                return $"XmlPropertyGroupBoolValueCache(Document, Tags.{Name})";
+            return "????";
+        }
+
+    }
+
+#>

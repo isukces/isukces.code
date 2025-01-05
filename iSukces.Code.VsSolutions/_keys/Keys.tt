@@ -1,5 +1,5 @@
 <#@ template language="C#" #>
-<#@ include file="T4\PrimitiveObsession.ttinclude" once="true" #>
+<#@ include file="..\T4\PrimitiveObsession.ttinclude" once="true" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="Microsoft.VisualStudio.TextTemplating" #>
@@ -8,17 +8,15 @@
 
     Config.Namespace = "iSukces.Code.VsSolutions";
     Config.IncludeFeatures = Features.EqualityOperators;
-    /*
-    Config.IgnoreFeatures = Features.NewtonsoftJsonSerializer 
-        | Features.Comparable
-        | Features.PrimitiveWrapper;
-    */
     Config.ConvertFromPrimitive = TypeConversion.Explicit;
     Config.ConvertToPrimitive = TypeConversion.Implicit;
     
     var infos = new[]
     {
         new StringKey("CsLangVersion")
+        {
+            IsPartial = true
+        }
     };
 
     PrimitiveObsessionBase.WriteAll(infos, this);

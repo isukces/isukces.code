@@ -6,8 +6,6 @@ namespace iSukces.Code.VsSolutions;
 
 internal class XmlPropertyGroupValueCache : XmlCachedWrapper<string>
 {
-    public string Name { get; }
-
     public XmlPropertyGroupValueCache(XDocument document, string name)
         : base(document)
     {
@@ -19,7 +17,7 @@ internal class XmlPropertyGroupValueCache : XmlCachedWrapper<string>
         var root = Document.Root;
         if (root is null)
             return null;
-        foreach (var i in root.Elements(Namespace + CsProjXmlTools.Names.PropertyGroup))
+        foreach (var i in root.Elements(Namespace + Tags.PropertyGroup))
         {
             var q1 = i.Descendants(Namespace + Name);
             foreach (var j in q1)
@@ -41,7 +39,7 @@ internal class XmlPropertyGroupValueCache : XmlCachedWrapper<string>
             return null;
         }
 
-        var root       = Document.Root!;
+        var root = Document.Root!;
 
         var els = root.Descendants(modify).ToArray();
         if (els.Length == 0)
@@ -54,4 +52,6 @@ internal class XmlPropertyGroupValueCache : XmlCachedWrapper<string>
         UpdateFirstRemoveOthers(els, value);
         return value;
     }
+
+    public string Name { get; }
 }

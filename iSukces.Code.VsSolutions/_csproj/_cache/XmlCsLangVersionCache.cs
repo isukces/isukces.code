@@ -1,31 +1,12 @@
-﻿using System.Xml.Linq;
+﻿#nullable enable
+using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
 
-internal sealed class XmlCsLangVersionCache: XmlCachedWrapper<CsLangVersion>
+public sealed class XmlCsLangVersionCache(XDocument document)
+    : XmlPropertyGroupValueCache<CsLangVersion>(document, Tags.LangVersion)
 {
-    private readonly XmlPropertyGroupValueCache _internal;
+    protected override CsLangVersion Map(string? internalValue) => internalValue;
 
-    public XmlCsLangVersionCache(XDocument document)
-        : base(document)
-    {
-        _internal = new XmlPropertyGroupValueCache(document, CsProjXmlTools.Names.LangVersion);
-    }
-
-    public override void Invalidate()
-    {
-        base.Invalidate();
-        _internal.Invalidate();
-    }
-
-    protected override CsLangVersion GetValueInternal()
-    {
-        return _internal.Value;
-    }
-
-    protected override CsLangVersion SetValueInternal(CsLangVersion value)
-    {
-        _internal.Value = value;
-        return _internal.Value;
-    }
+    protected override string Map(CsLangVersion value) => value;
 }

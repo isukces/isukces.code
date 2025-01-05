@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.IO;
+// ReSharper disable UnusedMember.Global
 
 namespace iSukces.Code;
 

@@ -3,12 +3,7 @@ using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
 
-public interface IValueProvider<T>
-{
-    T? Value { get; set; }
-}
-
-internal abstract class XmlCachedWrapper<T> : XmlWrapper, IValueProvider<T>
+public abstract class XmlCachedWrapper<T> : XmlWrapper, IValueProvider<T>
 {
     protected XmlCachedWrapper(XDocument document)
         : base(document)
@@ -43,11 +38,7 @@ internal abstract class XmlCachedWrapper<T> : XmlWrapper, IValueProvider<T>
         }
     }
 
-    #region Fields
-
     private bool _isValid;
 
     private T? cached;
-
-    #endregion
 }

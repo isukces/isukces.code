@@ -11,7 +11,7 @@ public class CsProjWrapperTests
     {
         var a = "<Project Sdk=\"Microsoft.NET.Sdk\" />";
         var x = XDocument.Parse(a);
-        var w = new CsProjWrapper(x, CsprojDocumentKind.Project);
+        var w = new VsCoreProjectFile(x, CsprojDocumentKind.Project);
         w.Authors.Value         = "John Doe";
         w.TargetFramework.Value = "net5.0;net6.0";
         w.Company.Value         = "iSukces";

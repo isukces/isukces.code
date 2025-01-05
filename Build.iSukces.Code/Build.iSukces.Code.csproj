@@ -1,11 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Copyright>Copyright © Internet Sukces Piotr Stęclik 2024-2025</Copyright>
-    <Authors>Internet Sukces Piotr Stęclik</Authors>
-    <Company>Internet Sukces Piotr Stęclik</Company>
     <ProjectGuid>{346A5BE2-0F34-49FB-89A9-22040C4CB073}</ProjectGuid>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
