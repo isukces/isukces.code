@@ -41,6 +41,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Keys.tt</DependentUpon>
     </Compile>
+    <Compile Update="_vs\VsCoreProjectFile.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>VsCoreProjectFile.tt</DependentUpon>
+    </Compile>
     <None Update="_keys\Keys.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Keys.cs</LastGenOutput>
@@ -49,10 +54,5 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>VsCoreProjectFile.cs</LastGenOutput>
     </None>
-    <Compile Update="_vs\VsCoreProjectFile.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>VsCoreProjectFile.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
 </Project>

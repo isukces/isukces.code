@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <ProjectGuid>{85B775A5-450D-47A6-9E21-8213B95CFD3B}</ProjectGuid>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <AssemblyVersion>1.25.105.1</AssemblyVersion>
+    <FileVersion>1.25.105.1</FileVersion>
+    <Version>1.25.105.1</Version>
+    <LangVersion>13</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseWPF>false</UseWPF>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
+    <WarningsAsErrors>0169,0659,0661,0693,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,414,628,649,693,8321,8632</WarningsAsErrors>
+    <Description>Code generation for iSukces.Translation package</Description>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GenerateAssemblyDescriptionAttribute>true</GenerateAssemblyDescriptionAttribute>
+    <GenerateAssemblyTitleAttribute>true</GenerateAssemblyTitleAttribute>
+    <PackageTags>C#,Translations</PackageTags>
+    <PublicSign>true</PublicSign>
+    <Title>Source code generators for iSukces.Tran</Title>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSource>false</IncludeSource>
+    <IncludeSymbols>true</IncludeSymbols>
+    <PackageProjectUrl>https://github.com/isukces/iSukces.Code</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryUrl>https://github.com/isukces/iSukces.Code</RepositoryUrl>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <NoWarn>1573,1591,618</NoWarn>
+    <WarningsAsErrors>0659,0661,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,3245,414,628,649,693,8321,8632</WarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <NoWarn>1573,1591,618</NoWarn>
+    <WarningsAsErrors>0659,0661,105,108,1570,1572,1574,1587,162,168,169,1718,1734,219,3245,414,628,649,693,8321,8632</WarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="iSukces.Reflection" Version="1.25.102.4" />
+    <PackageReference Include="iSukces.Translation" Version="1.24.1201.14" />
+    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="_requests\TranslationTextSourceRequest.cs">
+      <DependentUpon>ProxyCreateRequest.cs</DependentUpon>
+    </Compile>
+    <None Remove="sync.ffs_db" />
+    <None Remove="iSukces.Code.Translations.csproj.DotSettings" />
+  </ItemGroup>
+  <Target Name="GetTargetPath" Returns="@(_FakeOutputPath)" />
+</Project>
