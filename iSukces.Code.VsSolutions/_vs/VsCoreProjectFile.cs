@@ -50,6 +50,10 @@ public partial class VsCoreProjectFile : VsProjectFile
         GenerateAssemblyDescriptionAttribute = new XmlPropertyGroupBoolValueCache(Document, Tags.GenerateAssemblyDescriptionAttribute);
         GenerateAssemblyTitleAttribute       = new XmlPropertyGroupBoolValueCache(Document, Tags.GenerateAssemblyTitleAttribute);
         EmbedUntrackedSources                = new XmlPropertyGroupBoolValueCache(Document, Tags.EmbedUntrackedSources);
+        UseWpf                               = new XmlPropertyGroupBoolValueCache(Document, Tags.UseWpf);
+        UseWindowsForms                      = new XmlPropertyGroupBoolValueCache(Document, Tags.UseWindowsForms);
+        Nullable                             = new XmlPropertyGroupEnableDisableValueCache(Document, Tags.Nullable);
+        ImplicitUsings                       = new XmlPropertyGroupEnableDisableValueCache(Document, Tags.ImplicitUsings);
     }    
 
     public CsprojDocumentKind              Kind            { get; }
@@ -86,6 +90,10 @@ public partial class VsCoreProjectFile : VsProjectFile
     public IValueProvider<bool?>           GenerateAssemblyDescriptionAttribute { get; }
     public IValueProvider<bool?>           GenerateAssemblyTitleAttribute       { get; }
     public IValueProvider<bool?>           EmbedUntrackedSources                { get; }
+    public IValueProvider<bool?>           UseWpf                               { get; }
+    public IValueProvider<bool?>           UseWindowsForms                      { get; }
+    public IValueProvider<bool?>           Nullable                             { get; }
+    public IValueProvider<bool?>           ImplicitUsings                       { get; }
 
 }
 

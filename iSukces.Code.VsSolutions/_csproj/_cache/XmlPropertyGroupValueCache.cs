@@ -4,7 +4,7 @@ using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
 
-internal class XmlPropertyGroupValueCache : XmlCachedWrapper<string>
+public class XmlPropertyGroupValueCache : XmlCachedWrapper<string>
 {
     public XmlPropertyGroupValueCache(XDocument document, string name)
         : base(document)

@@ -44,6 +44,18 @@ using System.Xml.Linq;
         new("GenerateAssemblyDescriptionAttribute", "bool?"),
         new("GenerateAssemblyTitleAttribute", "bool?"),
         new("EmbedUntrackedSources", "bool?"),
+        
+        new("UseWpf", "bool?"),
+        new("UseWindowsForms", "bool?"),
+        
+        new("Nullable", "bool?")
+        {
+            IsEnableDisable = true
+        },        
+        new("ImplicitUsings", "bool?")
+        {
+            IsEnableDisable = true
+        }
     };
     var expandType = items.Max(a => a.PropType.Length);
     var expandName = items.Max(a => a.Name.Length);
@@ -93,6 +105,7 @@ public partial class VsCoreProjectFile : VsProjectFile
         public string Name { get; }
         public string Type { get; }
         public string PropType => "IValueProvider<" + Type + ">";
+        public bool IsEnableDisable { get; set; }
 
         public void Init(GeneratedTextTransformation p, int expandName)
         {
@@ -124,8 +137,12 @@ public partial class VsCoreProjectFile : VsProjectFile
                 return "XmlProjectGuidCache(Document)";
             if (Type=="string")
                 return $"XmlPropertyGroupValueCache(Document, Tags.{Name})";
-            if (Type=="bool?")
+            if (Type == "bool?")
+            {
+                if (IsEnableDisable)
+                    return $"XmlPropertyGroupEnableDisableValueCache(Document, Tags.{Name})";
                 return $"XmlPropertyGroupBoolValueCache(Document, Tags.{Name})";
+            }
             return "????";
         }
 
