@@ -227,6 +227,8 @@ public partial class AutoCodeGenerator : FileSavedNotifierBase
 
     public List<IAutoCodeGeneratorBase> CodeGenerators { get; } = new();
 
+    
+    [Obsolete("Use CsFileFactory.Instance.CreateCsFile event instead")]
     public ISet<string> FileNamespaces { get; } = new HashSet<string>();
 
     /// <summary>

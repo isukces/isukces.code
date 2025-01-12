@@ -30,7 +30,7 @@ public enum AutoSealedKind
 
 public static class AutocodeTools
 {
-    internal static void Seal(CsClass cl)
+    public static void Seal(CsClass cl)
     {
         if (!cl.TrySeal()) return;
         var valueCode = cl.GetTypeName<AutoSealedKind>().Declaration + "." + AutoSealedKind.Ignore;
