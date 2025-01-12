@@ -68,7 +68,7 @@ namespace iSukces.Code.Translations
         public Type? CommonTranslations { get; set; }
         public Type? TranslationsInit   { get; set; }
 
-        public Func<object, IEnumerable<CreateLiteLocalTextSources_Request>>? ConvertRequests { get; set; }
+        public Func<object, IEnumerable<CreateLiteLocalTextSourcesRequest>>? ConvertRequests { get; set; }
 
         public IAutocodeAssemblies? AutocodeAssemblies { get; set; }
 

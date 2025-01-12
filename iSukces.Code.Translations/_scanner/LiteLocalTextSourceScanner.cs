@@ -68,8 +68,8 @@ namespace iSukces.Code.Translations
             
             
             var                                             result = m.Invoke(null, null);
-            IEnumerable<CreateLiteLocalTextSources_Request> reqs;
-            if (result is IEnumerable<CreateLiteLocalTextSources_Request> a)
+            IEnumerable<CreateLiteLocalTextSourcesRequest> reqs;
+            if (result is IEnumerable<CreateLiteLocalTextSourcesRequest> a)
                 reqs = a;
             else
                 reqs = TranslationAutocodeConfig.Instance.ConvertRequests(result);

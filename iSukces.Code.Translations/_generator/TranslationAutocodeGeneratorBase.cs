@@ -181,8 +181,7 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
     {
             
     }
-
-
+    
     private void GenerateCommonSources(Assembly assembly)
     {
         if (assembly == null) throw new ArgumentNullException(nameof(assembly));
@@ -207,7 +206,7 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
                     typeof(StaticPropertyReference)
                 );
             csFile.AddImportNamespace(
-                typeof(CreateLiteLocalTextSources_Request),
+                typeof(CreateLiteLocalTextSourcesRequest),
                 typeof(IEnumerable<object>),
                 typeof(LiteLocalTextSource)
             );
@@ -223,7 +222,9 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
         var types = qqq1.Keys.Concat(qqq2.Keys).Distinct();
         foreach (var type in types)
         {
-            var shouldProcess = TranslationAutocodeConfig.Instance.AutocodeAssemblies.ShouldProcessType(type);
+            if (type is null)
+                continue;
+            var shouldProcess = TranslationAutocodeConfig.Instance.AutocodeAssemblies?.ShouldProcessType(type) ?? false;
             if (!shouldProcess)
                 continue;
             var csClass = csFile.GetOrCreateClass(TypeProvider.FromType(type));
@@ -324,28 +325,4 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
 
     private readonly IAssemblyFilenameProvider _filenameProvider;
     protected readonly HashSet<CultureInfo> TargetLanguages = new HashSet<CultureInfo>();
-}
-
-public sealed class TranslationAutocodeGeneratorConfig
-{
-    public DirectoryInfo? ResourcesTarget      { get; set; }
-    public DirectoryInfo? TranslationSourceDir { get; set; }
-    public Type?          InitType             { get; set; }
-    public DirectoryInfo? InitTypeDir          { get; set; }
-
-    public string InitTypeClassFile
-    {
-        get
-        {
-            var allStatic = BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public;
-            var m         = InitType.GetMethod("GetClassFile", allStatic);
-            if (m is null)
-            {
-                throw new Exception($"Method {InitType.FullName}.GetClassFile not found");
-            }
-
-            var f = (string)m.Invoke(null, null);
-            return f;
-        }
-    }
 }

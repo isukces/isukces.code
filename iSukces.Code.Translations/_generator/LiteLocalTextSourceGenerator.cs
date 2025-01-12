@@ -8,7 +8,6 @@ namespace iSukces.Code.Translations;
 
 public delegate void AfterCreatedDelegate(string fieldName, string sourceTextToTranslate);
 
-
 public static class LiteLocalTextSourceGenerator
 {
     public static void Create(CsClass csClass, IList<ICreateLiteLocalTextRequest> requests,
@@ -20,14 +19,13 @@ public static class LiteLocalTextSourceGenerator
         var writer = new CsMethodCodeWriter(csClass);
         writer.Location = SourceCodeLocation.Make()
             .WithGeneratorClass(typeof(LiteLocalTextSourceGenerator));
-        writer.WriteLine("// generator : " + writer.Location.ToString());
+        writer.WriteLine("// generator : " + writer.Location);
         //writer.WriteLine("#if DEBUG");
-        var tLiteLocalTextSource                = csClass.GetTypeName<LiteLocalTextSource>();
-        var tCreateLiteLocalTextSources_Request = csClass.GetTypeName<CreateLiteLocalTextSources_Request>();
-            
+        var tLiteLocalTextSource               = csClass.GetTypeName<LiteLocalTextSource>();
+        var tCreateLiteLocalTextSourcesRequest = csClass.GetTypeName<CreateLiteLocalTextSourcesRequest>();
 
         {
-            var code =CsCodeWriter.Create(typeof(LiteLocalTextSourceGenerator));
+            var code = CsCodeWriter.Create(typeof(LiteLocalTextSourceGenerator));
             foreach (var request in requests)
                 code.WriteLine($"{request.FieldName}.{nameof(LiteLocalTextSource.Attach)}(th);");
 
@@ -38,9 +36,8 @@ public static class LiteLocalTextSourceGenerator
             m.AddParam<ITranslationHolder>("th", csClass)
                 .WithAttribute(csClass, typeof(NotNullAttribute));
             TranslationAutocodeConfig.Instance.AddAppInitAttribute?.Invoke(m, csClass);
-
         }
-            
+
         foreach (var request in requests)
         {
             var sourceTextToTranslate = request.GetSourceTextToTranslate();
@@ -49,12 +46,11 @@ public static class LiteLocalTextSourceGenerator
                 field.IsReadOnly  = true;
                 field.IsStatic    = true;
                 field.Visibility  = Visibilities.Public;
-                field.ConstValue  = tLiteLocalTextSource.New(request.Key.CsEncode(), sourceTextToTranslate.CsEncode()); 
+                field.ConstValue  = tLiteLocalTextSource.New(request.Key.CsEncode(), sourceTextToTranslate.CsEncode());
                 field.Description = $"Text: {sourceTextToTranslate}\r\n{csClass.Name.GetMemberCode(request.FieldName)}";
             }
             afterCreated(request.FieldName, sourceTextToTranslate);
 
-                
             var properties = new List<string>();
 
             void Add(string name, string code)
@@ -63,10 +59,10 @@ public static class LiteLocalTextSourceGenerator
                     properties.Add(name + "= " + code);
             }
 
-            if (request.FieldName != CreateLiteLocalTextSources_Request.DefaultFieldName(request.Key))
+            if (request.FieldName != CreateLiteLocalTextSourcesRequest.DefaultFieldName(request.Key))
             {
                 var code = "nameof(" + request.FieldName + ")";
-                Add(nameof(CreateLiteLocalTextSources_Request.FieldName), code);
+                Add(nameof(CreateLiteLocalTextSourcesRequest.FieldName), code);
             }
 
             var constructorArguments =
@@ -78,14 +74,14 @@ public static class LiteLocalTextSourceGenerator
             if (!string.IsNullOrEmpty(propertySettings))
                 propertySettings = " {" + propertySettings + "}";
 
-            var ex1       = tCreateLiteLocalTextSources_Request.New(constructorArguments);
+            var ex1       = tCreateLiteLocalTextSourcesRequest.New(constructorArguments);
             var yieldCode = $"yield return {ex1}{propertySettings};";
             writer.WriteLine(yieldCode);
         }
 
         // writer.WriteLine("#else").WriteLine("yield break;").WriteLine("#endif");
 
-        var tResult = csClass.GetTypeName<IEnumerable<CreateLiteLocalTextSources_Request>>();
+        var tResult = csClass.GetTypeName<IEnumerable<CreateLiteLocalTextSourcesRequest>>();
         var method = csClass.AddMethod(LiteLocalTextSourceScannerBase.MethodName, tResult)
             .WithBody(writer)
             .WithStatic()

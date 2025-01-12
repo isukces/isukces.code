@@ -1,15 +1,14 @@
 using iSukces.Translation;
 
-namespace iSukces.Code.Translations
+namespace iSukces.Code.Translations;
+
+/// <summary>
+///     Żądanie stworzenia autokodu z propertisami sięgającymi do tłumaczeń
+/// </summary>
+public interface ITranslationProxyCreateRequest : ITranslationProxyRequest
 {
     /// <summary>
-    ///     Żądanie stworzenia autokodu z propertisami sięgającymi do tłumaczeń
+    ///  czy może zmienić nazwę własności na bardziej odpowiadającą tłumaczeniu
     /// </summary>
-    public interface ITranslationProxyCreateRequest : ITranslationProxyRequest
-    {
-        /// <summary>
-        ///  czy może zmienić nazwę własności na bardziej odpowiadającą tłumaczeniu
-        /// </summary>
-        bool CanChangePropertyName { get; }
-    }
+    bool CanChangePropertyName { get; }
 }
