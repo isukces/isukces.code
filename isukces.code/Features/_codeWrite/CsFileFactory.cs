@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Reflection;
 
@@ -51,3 +50,4 @@ public sealed class CreateCsFileEventArgs : EventArgs
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
     public CsFile File { get; set; }
 }
+

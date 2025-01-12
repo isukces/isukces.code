@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+#nullable disable
+using System.Reflection;
 using iSukces.Code;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;

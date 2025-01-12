@@ -1,3 +1,4 @@
+#nullable disable
 using iSukces.Code.AutoCode;
 
 namespace Sample.AppWithCSharpCodeEmbedding.AutoCode
@@ -10,3 +11,4 @@ namespace Sample.AppWithCSharpCodeEmbedding.AutoCode
         }
     }
 }
+

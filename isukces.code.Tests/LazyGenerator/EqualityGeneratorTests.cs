@@ -1,4 +1,3 @@
-#nullable enable
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using iSukces.Code.AutoCode;
@@ -20,7 +19,7 @@ public partial class LazyGeneratorTests
     {
         IMemberNullValueChecker c   = new MyValueChecker();
         var                     q   = new Generators.LazyGenerator();
-        var                     ctx = new TestContext();
+        var            ctx = new TestContext();
         q.Generate(typeof(T), ctx);
         CompareCode(ctx.Code, method, file);
     }

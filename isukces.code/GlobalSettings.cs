@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 
 namespace iSukces.Code;
@@ -37,3 +36,4 @@ public enum InvalidOperationNotification
     ReturnWarningText,
     EmergencyLog
 }
+

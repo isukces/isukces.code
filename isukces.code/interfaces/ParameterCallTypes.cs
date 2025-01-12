@@ -1,7 +1,3 @@
-﻿#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
 namespace iSukces.Code
 {
     public enum ParameterCallTypes
@@ -11,3 +7,4 @@ namespace iSukces.Code
         Reference
     }
 }
+

@@ -1,4 +1,5 @@
-﻿using iSukces.Code.Interfaces;
+#nullable disable
+using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Tests;
 
@@ -9,3 +10,4 @@ public static class Ext
         cl.MakeCode(writer, default);
     }
 }
+

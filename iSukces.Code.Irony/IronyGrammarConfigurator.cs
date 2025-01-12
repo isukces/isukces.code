@@ -5,6 +5,7 @@ using Irony.Interpreter.Ast;
 using Irony.Parsing;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony;
 
 public abstract class IronyGrammarConfigurator
@@ -136,3 +137,4 @@ public abstract class IronyAutocodeConfigurator<TBaseAstType> : IronyGrammarConf
     private IronyAutocodeGenerator _generator;
     // private ITypeNameResolver _resolver;
 }
+

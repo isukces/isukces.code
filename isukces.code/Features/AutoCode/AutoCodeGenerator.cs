@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -87,7 +86,7 @@ public partial class AutoCodeGenerator : FileSavedNotifierBase
         var types = assembly.GetTypes();
         types = types.OrderBy(GetNamespace).ToArray();
         {
-            var contextWrapper = GetContextWrapper(null);
+            var                        contextWrapper = GetContextWrapper(null);
             var context        = contextWrapper.Context;
             foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
                 i.AssemblyStart(assembly, context);
@@ -95,9 +94,9 @@ public partial class AutoCodeGenerator : FileSavedNotifierBase
 
         for (int index = 0, length = types.Length; index < length; index++)
         {
-            var type           = types[index];
-            var csFileInfo     = TypeBasedOutputProvider?.GetOutputFileInfo(type);
-            var contextWrapper = GetContextWrapper(csFileInfo);
+            var                        type           = types[index];
+            var                        csFileInfo     = TypeBasedOutputProvider?.GetOutputFileInfo(type);
+            var                        contextWrapper = GetContextWrapper(csFileInfo);
             var context        = contextWrapper.Context;
             context.OnFileSaved += HandleNestedSave;
             foreach (var i in CodeGenerators.OfType<IAutoCodeGenerator>())
@@ -109,7 +108,7 @@ public partial class AutoCodeGenerator : FileSavedNotifierBase
 
         foreach (var i in CodeGenerators.OfType<IAssemblyAutoCodeGenerator>())
         {
-            var contextWrapper = GetContextWrapper(null);
+            var                        contextWrapper = GetContextWrapper(null);
             var context        = contextWrapper.Context;
             context.OnFileSaved += HandleNestedSave;
             i.AssemblyEnd(assembly, context);
@@ -266,3 +265,4 @@ public partial class AutoCodeGenerator : FileSavedNotifierBase
 #endif
     }
 }
+

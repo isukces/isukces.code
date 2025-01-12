@@ -1,3 +1,4 @@
+#nullable disable
 // ReSharper disable All
 // suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.LazyGenerator
@@ -63,3 +64,4 @@ namespace iSukces.Code.Tests.LazyGenerator
 
     }
 }
+

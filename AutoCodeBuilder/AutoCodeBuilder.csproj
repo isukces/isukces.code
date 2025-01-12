@@ -4,6 +4,7 @@
     <ProjectGuid>{DA5F5E1B-AAF1-4C80-9343-D70996ECF513}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <UseWPF>false</UseWPF>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>

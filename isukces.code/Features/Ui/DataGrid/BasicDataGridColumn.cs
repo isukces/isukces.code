@@ -1,4 +1,3 @@
-#nullable enable
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -30,3 +29,4 @@ namespace iSukces.Code.Ui.DataGrid
         public Dictionary<string, object> CustomValues { get; } = new Dictionary<string, object>();
     }
 }
+

@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 
 namespace iSukces.Code;
@@ -63,3 +62,4 @@ public partial struct ReflectionTypeWrapper
 
 }
 #endif*/
+

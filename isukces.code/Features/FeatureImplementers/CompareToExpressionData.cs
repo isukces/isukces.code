@@ -1,4 +1,3 @@
-#nullable enable
 using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.FeatureImplementers
@@ -36,3 +35,4 @@ namespace iSukces.Code.FeatureImplementers
         public string       Instance           { get; }
     }
 }
+

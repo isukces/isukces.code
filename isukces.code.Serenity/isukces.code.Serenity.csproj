@@ -8,6 +8,7 @@
     <FileVersion>1.23.1218.82</FileVersion>
     <Version>1.23.1218.82</Version>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>

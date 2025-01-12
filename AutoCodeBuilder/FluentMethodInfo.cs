@@ -1,3 +1,4 @@
+#nullable disable
 namespace AutoCodeBuilder
 {
     internal class FluentMethodInfo

@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
 #if NET451
@@ -28,3 +29,5 @@ namespace iSukces.Code.Irony
     }
 #endif
 }
+
+

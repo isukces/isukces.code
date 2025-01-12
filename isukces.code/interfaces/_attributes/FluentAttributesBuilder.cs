@@ -1,4 +1,3 @@
-#nullable enable
 using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.Interfaces;
@@ -53,3 +52,4 @@ public class FluentAttributesBuilder<T>
     private readonly INamespaceContainer _nsContainer;
     private CsAttribute _attribute;
 }
+

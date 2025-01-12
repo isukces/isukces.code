@@ -1,4 +1,5 @@
-﻿namespace iSukces.Code.VsSolutions;
+#nullable disable
+namespace iSukces.Code.VsSolutions;
 
 public enum VsProjectKind
 {

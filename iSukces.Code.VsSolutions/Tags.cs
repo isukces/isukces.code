@@ -1,3 +1,4 @@
+#nullable disable
 namespace iSukces.Code.VsSolutions;
 
 public static class Tags
@@ -24,7 +25,7 @@ public static class Tags
     public const string Company = "Company";
     public const string Copyright = "Copyright";
     public const string ProjectGuid = "ProjectGuid";
-    
+
     public const string AssemblyFileVersion = "AssemblyFileVersion";
     public const string AssemblyVersion = "AssemblyVersion";
     public const string FileVersion = "FileVersion";
@@ -32,17 +33,17 @@ public static class Tags
 
     public const string RootNamespace = "RootNamespace";
     public const string Description = "Description";
-    
+
     public const string PackageVersion = "PackageVersion";
     public const string PackageTags = "PackageTags";
     public const string AssemblyOriginatorKeyFile = "AssemblyOriginatorKeyFile";
-    
+
     public const string SignAssembly = "SignAssembly";
     public const string Product = "Product";
     public const string PackageId = "PackageId";
     public const string PackageDescription = "PackageDescription";
     public const string DocumentationFile = "DocumentationFile";
-    
+
     public const string IncludeSource = "IncludeSource";
     public const string IncludeSymbols = "IncludeSymbols";
     public const string GeneratePackageOnBuild = "GeneratePackageOnBuild";
@@ -56,6 +57,11 @@ public static class Tags
     public const string GenerateAssemblyTitleAttribute = "GenerateAssemblyTitleAttribute";
     public const string EmbedUntrackedSources = "EmbedUntrackedSources";
 
+    public const string UseWpf = "UseWpf";
+    public const string UseWindowsForms = "UseWindowsForms";
+    public const string Nullable = "Nullable";
+    public const string ImplicitUsings = "ImplicitUsings";
+
     public static class AppCfg
     {
         public const string DependentAssembly = "dependentAssembly";
@@ -63,4 +69,6 @@ public static class Tags
         public const string Runtime = "runtime";
         public const string AssemblyBinding = "assemblyBinding";
     }
+
 }
+

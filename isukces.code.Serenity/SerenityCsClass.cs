@@ -1,3 +1,4 @@
+#nullable disable
 namespace iSukces.Code.Serenity
 {/*
     public class SerenityClass

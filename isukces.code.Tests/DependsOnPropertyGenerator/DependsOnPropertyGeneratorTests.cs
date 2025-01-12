@@ -1,3 +1,4 @@
+#nullable disable
 using iSukces.Code;
 using iSukces.Code.Interfaces;
 using Xunit;

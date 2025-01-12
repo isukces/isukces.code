@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Reflection;
 
@@ -16,3 +15,4 @@ public sealed class AssumeDefinedNamespaceAttribute : Attribute
             : FileScopeNamespaceConfiguration.AssumeDefined(typeNamespace);
     }
 }
+

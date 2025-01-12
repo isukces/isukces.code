@@ -1,4 +1,5 @@
-﻿#if !NET7_0_OR_GREATER
+#nullable disable
+#if !NET7_0_OR_GREATER
 // ReSharper disable once CheckNamespace
 namespace System.Runtime.CompilerServices;
 

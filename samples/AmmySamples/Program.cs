@@ -1,4 +1,5 @@
-﻿using iSukces.Code.AutoCode;
+#nullable disable
+using iSukces.Code.AutoCode;
 
 namespace AmmySamples
 {
@@ -20,3 +21,4 @@ namespace AmmySamples
         public string Name { get; set; }
     }
 }
+

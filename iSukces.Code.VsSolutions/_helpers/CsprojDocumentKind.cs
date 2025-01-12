@@ -1,3 +1,4 @@
+#nullable disable
 namespace iSukces.Code.VsSolutions;
 
 public enum CsprojDocumentKind
@@ -6,3 +7,4 @@ public enum CsprojDocumentKind
     Project,
     Props
 }
+

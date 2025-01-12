@@ -4,6 +4,7 @@
     <ProjectGuid>{7F4080E5-75ED-4BC2-A90D-23DEEA605DA8}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
     <AssemblyOriginatorKeyFile>..\key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>

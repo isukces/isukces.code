@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -357,3 +356,4 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     private string _suggestedFileName = string.Empty;
 }
+

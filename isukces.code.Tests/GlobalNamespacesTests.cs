@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using System.Globalization;
 using iSukces.Code.Interfaces;

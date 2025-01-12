@@ -1,4 +1,5 @@
-﻿using System;
+#nullable disable
+using System;
 using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
@@ -38,3 +39,4 @@ public class CsProjWrapper : XmlWrapper
     public IValueProvider<string> Version         { get; }
     public IValueProvider<string> RootNamespace   { get; }
 }
+

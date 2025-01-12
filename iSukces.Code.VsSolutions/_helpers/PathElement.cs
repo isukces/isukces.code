@@ -1,4 +1,3 @@
-#nullable enable
 namespace iSukces.Code.VsSolutions;
 
 internal class PathElement

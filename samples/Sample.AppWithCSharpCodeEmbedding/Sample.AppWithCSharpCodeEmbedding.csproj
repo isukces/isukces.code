@@ -4,6 +4,7 @@
     <ProjectGuid>{C992A140-5B90-4C1E-B913-3B105CB100C0}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>

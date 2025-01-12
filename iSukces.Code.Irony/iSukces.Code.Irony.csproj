@@ -4,6 +4,7 @@
     <ProjectGuid>{CDB6A2AF-A22B-4C03-94DD-8707CD24545D}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DefineConstants>TRACE;IGNORECSTYPE</DefineConstants>

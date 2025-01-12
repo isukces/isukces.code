@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public class NonTerminalInfo : TokenInfo, ICsExpression
@@ -274,3 +275,4 @@ namespace iSukces.Code.Irony
         Both = Starting | Trailing
     }
 }
+

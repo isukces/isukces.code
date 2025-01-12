@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using iSukces.Code.Interfaces;
 
@@ -162,3 +161,4 @@ return reader.Value switch
         #endregion
     }
 }
+

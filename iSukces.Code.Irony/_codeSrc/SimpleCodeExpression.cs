@@ -1,5 +1,6 @@
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public class SimpleCodeExpression : ICsExpression
@@ -11,3 +12,4 @@ namespace iSukces.Code.Irony
         public string Code { get; }
     }
 }
+

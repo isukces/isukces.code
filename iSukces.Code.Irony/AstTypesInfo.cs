@@ -3,6 +3,7 @@ using Irony.Interpreter.Ast;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony;
 
 public sealed class AstTypesInfo : IAstTypesInfo
@@ -105,3 +106,4 @@ public sealed class AstTypesInfo : IAstTypesInfo
 
     public Func<GetEvaluateExpressionInput, GetEvaluateExpressionOutput> GetEvaluateExpression { get; set; }
 }
+

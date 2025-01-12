@@ -23,7 +23,7 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
         return a.ProxyType?.Assembly ?? TranslationAutocodeConfig.Instance.DefaultProxyType.Assembly;
     }
 
-    private static Type GetRequestCreationType(object value)
+    private static Type? GetRequestCreationType(object value)
     {
         switch (value)
         {
@@ -194,7 +194,7 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
         var createLiteLocalTextRequestForAssembly
             = TranslationAutocodeConfig.Instance.Requests
                 .OfType<ICreateLiteLocalTextRequest>()
-                .Where(a => a.FieldHostingType.Assembly == assembly)
+                .Where(a => a.FieldHostingType?.Assembly == assembly)
                 .ToList();
 
         var csFile = CsFileFactory.Instance.Create(typeof(TranslationAutocodeGeneratorBase));

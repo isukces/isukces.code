@@ -21,7 +21,7 @@ namespace iSukces.Code.Translations
             writer.WriteLine($"{target}.Attach({instance});");
         }
 
-        public void Generate(Type type, IAutoCodeGeneratorContext context)
+        public void Generate(Type type, IAutoCodeGeneratorContext? context)
         {
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
             var                requests     = TranslationAutocodeConfig.Instance.InitTranslationRequests;

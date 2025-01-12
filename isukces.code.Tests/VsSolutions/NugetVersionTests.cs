@@ -1,3 +1,4 @@
+#nullable disable
 using iSukces.Code.VsSolutions;
 using Xunit;
 

@@ -1,3 +1,4 @@
+#nullable disable
 using Irony.Interpreter;
 
 namespace Bitbrains.AmmyParser

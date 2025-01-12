@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -52,3 +51,4 @@ namespace iSukces.Code
         private const string Limiter2 = "=====-----";
     }
 }
+

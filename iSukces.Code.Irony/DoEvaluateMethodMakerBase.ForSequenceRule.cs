@@ -1,5 +1,6 @@
 using System;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public abstract partial class DoEvaluateMethodMakerBase
@@ -44,3 +45,4 @@ namespace iSukces.Code.Irony
         }
     }
 }
+

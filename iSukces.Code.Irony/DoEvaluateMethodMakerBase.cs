@@ -4,6 +4,7 @@ using Irony.Interpreter;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public abstract partial class DoEvaluateMethodMakerBase
@@ -134,3 +135,4 @@ return r;
         protected const string thread = "thread";
     }
 }
+

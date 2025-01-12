@@ -1,4 +1,3 @@
-#nullable enable
 using System.Text;
 using iSukces.Code.Interfaces;
 
@@ -65,3 +64,4 @@ public class CsClassField : CsMethodParameter, ICsClassMember, ICommentable, ICl
     
     public CsClassField WithAttribute<T>() => this.WithAttribute(Owner, typeof(T));
 }
+

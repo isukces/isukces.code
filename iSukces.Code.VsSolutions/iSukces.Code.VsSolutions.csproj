@@ -10,6 +10,7 @@
     <FileVersion>1.25.105.19</FileVersion>
     <Version>1.25.105.19</Version>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SignKey)</AssemblyOriginatorKeyFile>
     <Description>small C# code generating framework</Description>

@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,7 +28,7 @@ public interface IFinalizableAutoCodeGeneratorContext : IAutoCodeGeneratorContex
 
 public static class AutoCodeGeneratorContextExtensions
 {
-    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext self, Type type)
+    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext? self, Type type)
     {
         if (self == null) throw new ArgumentNullException(nameof(self));
         if (type is null)

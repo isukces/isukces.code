@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Diagnostics;
 
@@ -12,3 +11,4 @@ public sealed class AutocodeCustomOutputMethodAttribute : Attribute
 
     public string MethodName { get; }
 }
+

@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Text.RegularExpressions;
 
@@ -58,3 +57,4 @@ public struct FrameworkNameSorter : IComparable<FrameworkNameSorter>, IComparabl
     static Regex SplitRegex = new Regex(SplitFilter, RegexOptions.Multiline | RegexOptions.Compiled);
         
 }
+

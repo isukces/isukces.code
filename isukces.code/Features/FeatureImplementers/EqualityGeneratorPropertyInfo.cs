@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Reflection;
 using iSukces.Code.AutoCode;
@@ -221,3 +220,4 @@ namespace iSukces.Code.FeatureImplementers
         public ITypeNameResolver Resolver { get; }
     }
 }
+

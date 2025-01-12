@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -92,3 +91,4 @@ public partial class Generators
         private IReadOnlyList<PropertyInfo> GetInstanceProperties() => Type.GetInstanceProperties();
     }
 }
+

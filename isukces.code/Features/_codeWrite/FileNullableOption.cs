@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Runtime.CompilerServices;
 
 namespace iSukces.Code;
@@ -18,3 +17,4 @@ public static class FileNullableOptionExtensions
     public static bool IsNullableReferenceEnabled(this FileNullableOption option)
         => option is FileNullableOption.GlobalEnabled or FileNullableOption.LocalEnabled;
 }
+

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public sealed class TerminalsList : List<TerminalInfo>
@@ -14,3 +15,4 @@ namespace iSukces.Code.Irony
         }
     }
 }
+

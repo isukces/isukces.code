@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -404,3 +403,4 @@ public partial class EqualityFeatureImplementer
         All = Equality | CompareTo | CompareOperators
     }
 }
+

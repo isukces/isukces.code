@@ -58,7 +58,7 @@ namespace iSukces.Code.Translations
             return key is not null ? key.Path : DefaultClassMemberKeyPrefix;
         }
 
-        public void Generate(Type type, IAutoCodeGeneratorContext context)
+        public void Generate(Type type, IAutoCodeGeneratorContext? context)
         {
 #if DEBUGx
             if (type.Name=="ConectDotsTranslations")

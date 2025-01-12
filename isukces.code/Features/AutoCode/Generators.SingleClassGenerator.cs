@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +9,7 @@ public partial class Generators
     public abstract class SingleClassGenerator<TAttribute> : SingleClassGenerator
         where TAttribute : Attribute
     {
-        public override void Generate(Type type, IAutoCodeGeneratorContext context)
+        public override void Generate(Type type, IAutoCodeGeneratorContext? context)
         {
             Attribute = type.GetTypeInfo().GetCustomAttribute<TAttribute>();
             if (Attribute == null)
@@ -25,7 +24,7 @@ public partial class Generators
         : SingleClassGenerator
         where TAttribute : Attribute
     {
-        public override void Generate(Type type, IAutoCodeGeneratorContext context)
+        public override void Generate(Type type, IAutoCodeGeneratorContext? context)
         {
             Attributes = type
 #if COREFX
@@ -37,19 +36,19 @@ public partial class Generators
         }
 
 
-        protected TAttribute[] Attributes { get; private set; }
+        protected TAttribute[] Attributes { get; private set; } = [];
     }
         
     public abstract class SingleClassGenerator : IAutoCodeGenerator
     {
-        internal void Setup(Type type, IAutoCodeGeneratorContext context)
+        internal void Setup(Type type, IAutoCodeGeneratorContext? context)
         {
             Type    = type;
             _class  = null;
             Context = context;
         }
             
-        public virtual void Generate(Type type, IAutoCodeGeneratorContext context)
+        public virtual void Generate(Type type, IAutoCodeGeneratorContext? context)
         {
             Setup(type, context);
             GenerateInternal();
@@ -68,8 +67,8 @@ public partial class Generators
             }
         }
 
-        protected Type                      Type    { get; private set; }
-        protected IAutoCodeGeneratorContext Context { get; private set; }
+        protected Type                       Type    { get; private set; }
+        protected IAutoCodeGeneratorContext? Context { get; private set; }
 
         protected T? GetCustomAttribute<T>(bool inherit= true)
             where T : Attribute
@@ -91,7 +90,7 @@ public partial class Generators
                 .GetCustomAttributes<T>(inherit).ToArray();
         }
 
-        private CsClass _class;
+        private CsClass? _class;
     }
  
 }

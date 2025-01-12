@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
@@ -21,3 +20,4 @@ public sealed class XmlPropertyGroupEnableDisableValueCache(XDocument document, 
     }
 
 }
+

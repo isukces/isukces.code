@@ -1,3 +1,4 @@
+#nullable disable
 using Xunit;
 
 namespace Bitbrains.AmmyParser.Tests

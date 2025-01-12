@@ -1,3 +1,4 @@
+#nullable disable
 // ReSharper disable All
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
@@ -683,3 +684,4 @@ namespace Bitbrains.AmmyParser
 
     }
 }
+

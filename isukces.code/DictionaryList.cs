@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Collections.Generic;
 
 namespace iSukces.Code
@@ -23,3 +22,4 @@ namespace iSukces.Code
         }
     }
 }
+

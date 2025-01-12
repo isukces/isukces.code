@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 
 namespace iSukces.Code
@@ -10,3 +9,4 @@ namespace iSukces.Code
         }
     }
 }
+

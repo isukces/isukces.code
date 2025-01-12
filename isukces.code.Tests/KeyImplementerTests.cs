@@ -1,4 +1,5 @@
-﻿using iSukces.Code.FeatureImplementers;
+#nullable disable
+using iSukces.Code.FeatureImplementers;
 using Xunit;
 
 namespace iSukces.Code.Tests;

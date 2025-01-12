@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Text;
 using iSukces.Code.Interfaces;
 
@@ -177,3 +176,4 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     
     public CsProperty WithAttribute<T>() => this.WithAttribute(Owner, typeof(T));
 }
+

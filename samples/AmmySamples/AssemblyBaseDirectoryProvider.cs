@@ -1,3 +1,4 @@
+#nullable disable
 using System.IO;
 using System.Reflection;
 using iSukces.Code.AutoCode;

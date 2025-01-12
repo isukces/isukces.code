@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -69,3 +68,4 @@ public class CsEnum : ClassMemberBase, IAnnotableByUser
 
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 }
+

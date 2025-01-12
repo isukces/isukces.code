@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;

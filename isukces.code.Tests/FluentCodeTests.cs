@@ -1,4 +1,5 @@
-﻿using System;
+#nullable disable
+using System;
 using Xunit;
 using Xunit.Abstractions;
 

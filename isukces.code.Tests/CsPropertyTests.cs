@@ -1,4 +1,5 @@
-﻿using Xunit;
+#nullable disable
+using Xunit;
 
 namespace iSukces.Code.Tests;
 

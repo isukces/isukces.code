@@ -1,4 +1,3 @@
-#nullable enable
 #define _AutoCloseText
 using System;
 using System.Collections.Generic;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Irony.Parsing;
 using JetBrains.Annotations;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public class IronyAutocodeGeneratorModel
@@ -133,3 +134,4 @@ namespace iSukces.Code.Irony
         }
     }
 }
+

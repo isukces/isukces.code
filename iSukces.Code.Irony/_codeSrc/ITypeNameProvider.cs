@@ -1,5 +1,6 @@
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public interface ITypeNameProvider
@@ -7,3 +8,4 @@ namespace iSukces.Code.Irony
         FullTypeName GetTypeName(ITypeNameResolver resolver, string baseNamespace);
     }
 }
+

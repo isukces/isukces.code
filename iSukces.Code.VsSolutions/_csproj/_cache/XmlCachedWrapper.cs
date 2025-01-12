@@ -1,4 +1,3 @@
-#nullable enable
 using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
@@ -42,3 +41,4 @@ public abstract class XmlCachedWrapper<T> : XmlWrapper, IValueProvider<T>
 
     private T? cached;
 }
+

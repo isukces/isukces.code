@@ -1,5 +1,6 @@
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public abstract class TokenInfo : ICsExpression, ITokenNameSource
@@ -30,3 +31,4 @@ namespace iSukces.Code.Irony
         public CsClass            DataClass       { get; set; }
     }
 }
+

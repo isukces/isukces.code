@@ -1,6 +1,7 @@
 using System;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public class MethodTypeNameProvider : ITypeNameProvider
@@ -14,3 +15,4 @@ namespace iSukces.Code.Irony
         private readonly Func<ITypeNameResolver, string, FullTypeName> _func;
     }
 }
+

@@ -1,6 +1,7 @@
 using System;
 using iSukces.Code.AutoCode;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public partial class IronyAutocodeGenerator
@@ -64,3 +65,4 @@ namespace iSukces.Code.Irony
         }
     }
 }
+

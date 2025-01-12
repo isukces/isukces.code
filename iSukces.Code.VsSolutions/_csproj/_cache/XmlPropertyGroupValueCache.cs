@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Linq;
 using System.Xml.Linq;
 
@@ -55,3 +54,4 @@ public class XmlPropertyGroupValueCache : XmlCachedWrapper<string>
 
     public string Name { get; }
 }
+

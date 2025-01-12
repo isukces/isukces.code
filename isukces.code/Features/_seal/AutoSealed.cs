@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using iSukces.Code.Interfaces;
 
@@ -39,3 +38,4 @@ public static class AutocodeTools
         cl.Attributes.Add(at);
     }
 }
+

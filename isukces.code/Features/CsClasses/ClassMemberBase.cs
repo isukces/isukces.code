@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 
@@ -22,3 +21,4 @@ public abstract class ClassMemberBase : IAttributable, ICsClassMember
 
     private IList<ICsAttribute> _attributes = new List<ICsAttribute>();
 }
+

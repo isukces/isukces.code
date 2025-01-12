@@ -1,4 +1,5 @@
-﻿using System;
+#nullable disable
+using System;
 using System.Reflection;
 
 namespace iSukces.Code.AutoCode;
@@ -27,3 +28,4 @@ public class SimpleCsOutputProvider : ICsOutputProvider
 
     public static string DefaultMethodName = "GetCodeFilePath";
 }
+

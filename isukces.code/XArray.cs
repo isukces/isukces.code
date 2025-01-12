@@ -1,4 +1,3 @@
-#nullable enable
 using System.Runtime.CompilerServices;
 
 namespace iSukces.Code
@@ -29,3 +28,4 @@ namespace iSukces.Code
     }
 #endif
 }
+

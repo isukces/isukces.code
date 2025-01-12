@@ -1,3 +1,4 @@
+#nullable disable
 namespace iSukces.Code.Tests.Ui
 {
     public class SampleStaticTextSource

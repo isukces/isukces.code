@@ -2,6 +2,7 @@ using System;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public abstract partial class DoEvaluateMethodMakerBase
@@ -59,3 +60,4 @@ namespace iSukces.Code.Irony
         }
     }
 }
+

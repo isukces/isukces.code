@@ -1,3 +1,4 @@
+#nullable disable
 using System;
 using iSukces.Code.Interfaces;
 using iSukces.Code.IO;
@@ -65,3 +66,4 @@ namespace Sample.AppWithCSharpCodeEmbedding
 
     }
 }
+

@@ -1,10 +1,9 @@
-#nullable enable
 using System;
 using System.Reflection;
 
 namespace iSukces.Code.AutoCode;
 
-public delegate IAutoCodeGeneratorContext ContextFactoryDelegate
+public delegate IAutoCodeGeneratorContext? ContextFactoryDelegate
     (CsFile file, Assembly assembly);
 
 public partial class AutoCodeGenerator
@@ -18,7 +17,7 @@ public partial class AutoCodeGenerator
             Context    = contextFactory(File, assembly);
         }
 
-        public IAutoCodeGeneratorContext Context { get; }
+        public IAutoCodeGeneratorContext? Context { get; }
             
         public CsOutputFileInfo SourceInfo { get; }
             

@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Reflection;
 
@@ -70,3 +69,4 @@ namespace iSukces.Code.FeatureImplementers
         public GetHashCodeExpressionData Code   { get; }
     }
 }
+

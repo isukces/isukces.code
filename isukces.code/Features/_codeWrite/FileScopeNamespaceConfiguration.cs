@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -204,3 +203,4 @@ public sealed class FileScopeNamespaceConfiguration : IEquatable<FileScopeNamesp
         private static readonly Regex Regex2 = new Regex(Filter2, RegexOptions.IgnoreCase | RegexOptions.Compiled);
     }
 }
+

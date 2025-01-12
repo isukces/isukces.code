@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+#nullable disable
+using System.Reflection;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
@@ -12,3 +13,4 @@ namespace Sample.AppWithCSharpCodeEmbedding.AutoCode
         }
     }
 }
+

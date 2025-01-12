@@ -1,5 +1,6 @@
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     internal class ToTermFunctionCall : ICsExpression, ITokenNameSource
@@ -15,3 +16,4 @@ namespace iSukces.Code.Irony
         public string Text { get; }
     }
 }
+

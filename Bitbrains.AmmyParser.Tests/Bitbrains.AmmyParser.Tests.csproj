@@ -4,6 +4,7 @@
     <ProjectGuid>{03A161A6-C78E-4E38-B9F8-FCE105B7C41C}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>

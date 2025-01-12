@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;

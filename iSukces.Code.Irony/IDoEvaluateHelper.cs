@@ -1,5 +1,6 @@
 using iSukces.Code.AutoCode;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public interface IDoEvaluateHelper
@@ -22,3 +23,4 @@ namespace iSukces.Code.Irony
         public CsExpression                Expression { get; set; }
     }
 }
+

@@ -1,3 +1,4 @@
+#nullable disable
 using System.IO;
 using System.Xml.Linq;
 
@@ -30,3 +31,4 @@ public abstract class VsProjectFile : XmlWrapper
         };
     }
 }
+

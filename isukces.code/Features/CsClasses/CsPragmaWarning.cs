@@ -1,8 +1,3 @@
-#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
 namespace iSukces.Code;
 
 public record struct CsPragmaWarning(Enabling Enabling, string Name)

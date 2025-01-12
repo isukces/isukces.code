@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using iSukces.Code.Interfaces;
@@ -220,3 +219,4 @@ public static class CsMethodParameterExt
         return src;
     }
 }
+

@@ -1,3 +1,4 @@
+#nullable disable
 #if OBSOLETE
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
-﻿namespace iSukces.Code;
+#nullable disable
+namespace iSukces.Code;
 
 public static class CompilerDirectives
 {

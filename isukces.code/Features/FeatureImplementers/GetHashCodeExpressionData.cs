@@ -1,4 +1,3 @@
-#nullable enable
 using iSukces.Code.AutoCode;
 
 namespace iSukces.Code.FeatureImplementers
@@ -34,3 +33,4 @@ namespace iSukces.Code.FeatureImplementers
         public bool HasMinMax => Min.HasValue && Max.HasValue;
     }
 }
+

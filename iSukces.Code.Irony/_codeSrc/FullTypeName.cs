@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
+#nullable disable
 namespace iSukces.Code.Irony;
 
 public class FullTypeName
@@ -15,3 +16,4 @@ public class FullTypeName
 
     public CsType Name { get; }
 }
+

@@ -1,5 +1,6 @@
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public interface IGrammarNamespaces
@@ -40,3 +41,4 @@ namespace iSukces.Code.Irony
         public static string DataSuffix = ".Data";
     }
 }
+

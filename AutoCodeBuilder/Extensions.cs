@@ -1,3 +1,4 @@
+#nullable disable
 using System.Collections.Generic;
 
 namespace AutoCodeBuilder
@@ -14,3 +15,4 @@ namespace AutoCodeBuilder
         }
     }
 }
+

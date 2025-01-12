@@ -1,5 +1,6 @@
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public class StringTypeNameProvider : ITypeNameProvider
@@ -16,3 +17,4 @@ namespace iSukces.Code.Irony
         public string ClassName { get; }
     }
 }
+

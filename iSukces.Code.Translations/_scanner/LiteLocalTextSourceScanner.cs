@@ -45,7 +45,7 @@ namespace iSukces.Code.Translations
             return true;
         }
         
-        public void Generate(Type type, IAutoCodeGeneratorContext context)
+        public void Generate(Type type, IAutoCodeGeneratorContext? context)
         {
             AddAutoGridTranslations(type);
             foreach (var fi in type.GetFields(flags))

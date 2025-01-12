@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.IO;
 // ReSharper disable UnusedMember.Global
@@ -47,3 +46,4 @@ public static class CallerFilePathFixer
         public required string Path { get; set; }
     }
 }
+

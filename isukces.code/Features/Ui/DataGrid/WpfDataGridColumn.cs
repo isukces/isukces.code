@@ -1,7 +1,3 @@
-#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
 namespace iSukces.Code.Ui.DataGrid
 {
     public class WpfDataGridColumn:BasicDataGridColumn
@@ -53,3 +49,4 @@ namespace iSukces.Code.Ui.DataGrid
 
     }
 }
+

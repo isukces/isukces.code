@@ -1,4 +1,5 @@
-﻿using System;
+#nullable disable
+using System;
 using System.Globalization;
 using iSukces.Code.Interfaces;
 using Xunit;

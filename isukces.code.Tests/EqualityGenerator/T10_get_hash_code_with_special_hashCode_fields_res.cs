@@ -1,3 +1,4 @@
+#nullable disable
 // ReSharper disable All
 using System;
 
@@ -37,3 +38,4 @@ namespace iSukces.Code.Tests.EqualityGenerator
 
     }
 }
+

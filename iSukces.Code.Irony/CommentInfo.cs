@@ -3,6 +3,7 @@ using System.Linq;
 using Irony.Parsing;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public class CommentInfo
@@ -29,3 +30,4 @@ namespace iSukces.Code.Irony
         public string[] EndSymbols  { get; }
     }
 }
+

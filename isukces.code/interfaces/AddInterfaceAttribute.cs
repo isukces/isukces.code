@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 
 namespace iSukces.Code.Interfaces
@@ -25,3 +24,4 @@ namespace iSukces.Code.Interfaces
 
     }
 }
+

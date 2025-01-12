@@ -1,3 +1,4 @@
+#nullable disable
 using System.IO;
 
 namespace iSukces.Code.VsSolutions;

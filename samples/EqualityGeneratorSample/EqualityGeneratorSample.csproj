@@ -4,6 +4,7 @@
     <ProjectGuid>{89793A6B-BC7E-478A-801C-5797600C2216}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
+    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <DefineConstants>JETBRAINS_ANNOTATIONS</DefineConstants>
   </PropertyGroup>

@@ -1,4 +1,3 @@
-﻿#nullable enable
 #if !COREFX || NET80
 #define HAS_ICLONEABLE
 #endif

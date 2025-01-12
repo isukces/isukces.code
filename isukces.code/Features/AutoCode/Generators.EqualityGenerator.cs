@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +87,7 @@ namespace iSukces.Code.AutoCode
                 return false;
             }
 
-            public void Generate(Type type, IAutoCodeGeneratorContext context)
+            public void Generate(Type type, IAutoCodeGeneratorContext? context)
             {
                 var typeInfo = type.GetTypeInfo();
                 _attEq   = typeInfo.GetCustomAttribute<Auto.EqualityGeneratorAttribute>();

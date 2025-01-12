@@ -1,7 +1,3 @@
-﻿#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
 namespace iSukces.Code
 {
     /*
@@ -452,3 +448,4 @@ namespace iSukces.Code
      }
      */
 }
+

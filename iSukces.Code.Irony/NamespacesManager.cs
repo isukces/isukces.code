@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 
+#nullable disable
 namespace iSukces.Code.Irony;
 
 internal class NamespacesManager
@@ -39,3 +40,4 @@ internal class NamespacesManager
     private readonly Dictionary<string, HashSet<string>> _dictionary
         = new Dictionary<string, HashSet<string>>();
 }
+

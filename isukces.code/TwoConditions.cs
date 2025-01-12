@@ -1,7 +1,3 @@
-#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
 namespace iSukces.Code;
 
 public struct TwoConditions
@@ -57,3 +53,4 @@ public struct TwoConditions
 
     #endregion
 }
+

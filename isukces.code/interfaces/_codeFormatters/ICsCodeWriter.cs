@@ -1,4 +1,3 @@
-#nullable enable
 // ReSharper disable MemberCanBePrivate.Global
 
 using System;

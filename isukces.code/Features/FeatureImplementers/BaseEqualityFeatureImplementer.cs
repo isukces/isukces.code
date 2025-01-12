@@ -1,7 +1,3 @@
-﻿#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
 namespace iSukces.Code.FeatureImplementers;
 
 public class BaseEqualityFeatureImplementer
@@ -52,3 +48,4 @@ public class BaseEqualityFeatureImplementer
     public CsClass cl       { get; }
     public string  TypeName { get; }
 }
+

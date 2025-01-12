@@ -1,4 +1,3 @@
-#nullable enable
 using System.Xml.Linq;
 
 namespace iSukces.Code.VsSolutions;
@@ -34,3 +33,4 @@ public abstract class XmlPropertyGroupValueCache<T> : XmlCachedWrapper<T>
 
     private readonly XmlPropertyGroupValueCache _internal;
 }
+

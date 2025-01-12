@@ -2,6 +2,7 @@ using System;
 using Irony.Interpreter.Ast;
 using Irony.Parsing;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public enum SpecialTerminalKind
@@ -66,3 +67,4 @@ namespace iSukces.Code.Irony
     {
     }
 }
+

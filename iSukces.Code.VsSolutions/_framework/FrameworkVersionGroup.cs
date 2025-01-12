@@ -1,3 +1,4 @@
+#nullable disable
 namespace isukces.code.vssolutions;
 
 public enum FrameworkVersionGroup

@@ -1,3 +1,4 @@
+#nullable disable
 namespace iSukces.Code.Irony
 {
     internal sealed class Exchange
@@ -31,3 +32,4 @@ namespace iSukces.Code.Irony
         }
     }
 }
+

@@ -1,4 +1,5 @@
-﻿namespace iSukces.Code.VsSolutions;
+#nullable disable
+namespace iSukces.Code.VsSolutions;
 
 public partial struct CsLangVersion
 {
@@ -7,3 +8,4 @@ public partial struct CsLangVersion
     public static readonly CsLangVersion Ver13 = "13";
     public static readonly CsLangVersion Latest = "latest";
 }
+

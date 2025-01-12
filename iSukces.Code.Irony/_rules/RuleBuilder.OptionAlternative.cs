@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public abstract partial class RuleBuilder
@@ -26,3 +27,4 @@ namespace iSukces.Code.Irony
         }
     }
 }
+

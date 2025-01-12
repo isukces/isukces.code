@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 
@@ -151,3 +150,4 @@ public class TypeName : object
 
     #endregion
 }
+

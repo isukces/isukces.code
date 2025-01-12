@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public class TypeNameProviderEx
@@ -53,3 +54,4 @@ namespace iSukces.Code.Irony
         CreateAutoCode = 4
     }
 }
+

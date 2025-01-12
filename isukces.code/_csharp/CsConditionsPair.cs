@@ -1,7 +1,3 @@
-#nullable enable
-#nullable enable
-#nullable enable
-#nullable enable
 #if OBSOLETE
 namespace iSukces.Code;
 

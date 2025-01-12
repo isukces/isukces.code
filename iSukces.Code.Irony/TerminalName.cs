@@ -2,6 +2,7 @@ using System;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public struct TokenName : IEquatable<TokenName>, ICsExpression, ITokenNameSource
@@ -51,3 +52,4 @@ namespace iSukces.Code.Irony
         Terminal
     }
 }
+

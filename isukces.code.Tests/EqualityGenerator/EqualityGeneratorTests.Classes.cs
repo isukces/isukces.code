@@ -1,3 +1,4 @@
+#nullable disable
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.Tests.EqualityGenerator

@@ -4,6 +4,7 @@ using System.Reflection;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;
 
+#nullable disable
 namespace iSukces.Code.Irony;
 
 public class ConstructorBuilder
@@ -109,3 +110,4 @@ public class ConstructorBuilder
         #endregion
     }
 }
+

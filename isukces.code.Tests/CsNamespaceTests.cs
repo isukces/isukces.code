@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 using Xunit;
@@ -76,3 +75,4 @@ public class SomeClass
         Assert.Equal(expected.Trim(), code);
     }
 }
+

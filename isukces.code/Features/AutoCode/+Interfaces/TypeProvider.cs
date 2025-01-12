@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Linq;
 using iSukces.Code.Interfaces;
@@ -49,3 +48,4 @@ public readonly struct TypeProvider : IEquatable<TypeProvider>
     public CsType                TypeName { get; }
     public CsNamespaceMemberKind Kind     { get; }
 }
+

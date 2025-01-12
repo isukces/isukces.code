@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System.Collections.Generic;
 using iSukces.Code.Interfaces;
 using JetBrains.Annotations;

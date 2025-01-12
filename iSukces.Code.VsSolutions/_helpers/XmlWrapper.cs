@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Linq;
 using System.Xml.Linq;
@@ -91,3 +90,4 @@ public class XmlWrapper
 
     public XNamespace Namespace { get; }
 }
+

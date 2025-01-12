@@ -1,4 +1,3 @@
-#nullable enable
 using System;
 using System.Collections.Generic;
 
@@ -174,3 +173,4 @@ public enum SequenceFlags
     PreferShift  = 1,
     PreferReduce = 2
 }
+

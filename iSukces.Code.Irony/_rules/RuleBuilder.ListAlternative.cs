@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
+#nullable disable
 namespace iSukces.Code.Irony
 {
     public abstract partial class RuleBuilder
@@ -63,3 +64,4 @@ namespace iSukces.Code.Irony
         IReadOnlyList<MapInfo> Map { get; }
     }
 }
+

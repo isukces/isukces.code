@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 
 namespace iSukces.Code.FeatureImplementers;
@@ -27,3 +26,4 @@ public static partial class CommonKeyType
         String,
     }
 }
+

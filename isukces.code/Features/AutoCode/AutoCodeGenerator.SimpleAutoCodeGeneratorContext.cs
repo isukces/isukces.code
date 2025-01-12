@@ -1,4 +1,3 @@
-﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -74,3 +73,4 @@ public partial class AutoCodeGenerator
         public event EventHandler<FileSavedEventArgs>? OnFileSaved;
     }
 }
+
