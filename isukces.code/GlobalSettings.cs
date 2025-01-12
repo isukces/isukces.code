@@ -5,7 +5,7 @@ namespace iSukces.Code;
 
 public static class GlobalSettings
 {
-    internal static void CheckFilename(string? fileName)
+    public static void CheckFilename(string? fileName)
     {
         if (string.IsNullOrEmpty(fileName))
             throw new ArgumentException("File name can't be empty");

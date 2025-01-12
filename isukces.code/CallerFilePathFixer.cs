@@ -33,7 +33,7 @@ public static class CallerFilePathFixer
     /// <exception cref="Exception"></exception>
     public static void FixSlashApp(ProcessSaveFileNameEventArgs args, DirectoryInfo solutionDir)
     {
-        if (args.Path.StartsWith(GlobalSettings.SlashAppPrefix, StringComparison.Ordinal))
+        if (args.Path.StartsWith(GlobalSettings.SlashAppPrefix, StringComparison.OrdinalIgnoreCase))
         {
             var path = args.Path[7..].Replace('/', '\\');
             args.Path = Path.Combine(solutionDir.FullName, path);
