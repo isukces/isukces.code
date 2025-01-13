@@ -14,7 +14,7 @@ public class ProjectReference
         var hintPath        = hintPathElement == null ? null : hintPathElement.Value;
         return new ProjectReference
         {
-            Name = (string)reference.Attribute(Tags.Include),
+            Name = (string)reference.Attribute(Tags.Include!),
             HintPath = string.IsNullOrEmpty(hintPath)
                 ? null
                 : new FileInfo(Path.Combine(baseDir.FullName, hintPath))
@@ -27,7 +27,7 @@ public class ProjectReference
         return new ProjectReference
         {
             Name    = arg.Element(ns + "Name")?.Value,
-            Include = (string)arg.Attribute(Tags.Include)
+            Include = (string)arg.Attribute(Tags.Include!)
         };
         /*
 * <ProjectReference Include="..\Effective.Interfaces\Effective.Interfaces.csproj" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">

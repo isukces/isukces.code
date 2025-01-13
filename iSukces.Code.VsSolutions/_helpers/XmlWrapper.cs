@@ -43,7 +43,7 @@ public class XmlWrapper
         if (el == null)
             throw new NullReferenceException("el");
         var pathElements = path.Split('/').Select(PathElement.FromString).Where(a => a != null).ToArray();
-        foreach (var pathElement in pathElements)
+        foreach (PathElement? pathElement in pathElements)
         {
             var next = el.Element(pathElement.ElementName);
             if (next == null)
@@ -58,7 +58,7 @@ public class XmlWrapper
         return el;
     }
 
-    protected string FromElement(string path)
+    protected string? FromElement(string path)
     {
         var el = FindElementByPath(path);
         return el?.Value?.Trim();

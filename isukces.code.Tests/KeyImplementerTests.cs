@@ -1,4 +1,3 @@
-#nullable disable
 using iSukces.Code.FeatureImplementers;
 using Xunit;
 
@@ -68,3 +67,4 @@ public class SomeKey : System.IEquatable<SomeKey>
         Assert.Equal(expected.Trim(), code.Trim());
     }
 }
+

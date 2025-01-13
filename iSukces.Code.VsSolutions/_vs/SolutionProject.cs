@@ -67,7 +67,7 @@ public sealed class SolutionProject : IEquatable<SolutionProject>
             {
                 var r = new NugetPackage
                 {
-                    Id = (string)q.Attribute(Tags.Include)
+                    Id = (string)q.Attribute(Tags.Include!)
                 };
                 var ver = (string)q.Attribute(Tags.Version);
 

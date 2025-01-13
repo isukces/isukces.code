@@ -24,12 +24,12 @@ public partial class VsCoreProjectFile
                 result = true;
             }
 
-            if (!string.Equals(forceSearchId, (string)xElement.Attribute(Tags.Include),
+            if (!string.Equals(forceSearchId, (string?)xElement.Attribute(Tags.Include!),
                     StringComparison.OrdinalIgnoreCase)) continue;
-            if ((string)xElement.Attribute(Tags.Include) != request.Id)
+            if ((string?)xElement.Attribute(Tags.Include!) != request.Id)
             {
-                //message += "Change " + (string)xElement.Attribute(Tags.Include) + " => " + packageInfo.Id;
-                xElement.SetAttributeValue(Tags.Include, request.Id);
+                //message += "Change " + (string?)xElement.Attribute(Tags.Include!) + " => " + packageInfo.Id;
+                xElement.SetAttributeValue(Tags.Include!, request.Id);
                 result = true;
             }
 
@@ -38,7 +38,7 @@ public partial class VsCoreProjectFile
             {
                 /*if (string.IsNullOrEmpty(message))
                     message = packageInfo.Id;
-                message += $", change version {(string)xElement.Attribute(Tags.Version)}=>{packageInfo.PackageVersion}";*/
+                message += $", change version {(string?)xElement.Attribute(Tags.Version)}=>{packageInfo.PackageVersion}";*/
                 xElement.SetAttributeValue(Tags.Version, request.PackageVersion);
                 result = true;
             }
@@ -50,7 +50,7 @@ public partial class VsCoreProjectFile
         //Console.WriteLine("Add " + request.Id + " " + request.PackageVersion);
         var pNode = FindOrCreateElement(Tags.ItemGroup);
         pNode.Add(new XElement(Tags.PackageReference,
-            new XAttribute(Tags.Include, request.Id),
+            new XAttribute(Tags.Include!, request.Id),
             new XAttribute(Tags.Version, request.PackageVersion)
         ));
         return true;
@@ -75,19 +75,19 @@ public partial class VsCoreProjectFile
 </ItemGroup>
          */
         foreach (var pr in ProjectReferences)
-            if (string.Equals(projectReference.Include, (string)pr.Attribute(Tags.Include),
+            if (string.Equals(projectReference.Include, (string?)pr.Attribute(Tags.Include!),
                     StringComparison.OrdinalIgnoreCase))
             {
-                if (!string.Equals(projectReference.Include, (string)pr.Attribute(Tags.Include),
+                if (!string.Equals(projectReference.Include, (string?)pr.Attribute(Tags.Include!),
                         StringComparison.Ordinal))
-                    pr.SetAttributeValue(Tags.Include, projectReference.Include);
+                    pr.SetAttributeValue(Tags.Include!, projectReference.Include);
 
                 return;
             }
 
         var pNode = FindOrCreateElement(Tags.ItemGroup);
-        pNode.Add(new XElement(Tags.ProjectReference,
-            new XAttribute(Tags.Include, projectReference.Include)
+        pNode.Add(new XElement(Tags.ProjectReference!,
+            new XAttribute(Tags.Include!, projectReference.Include)
         ));
     }
 
@@ -97,8 +97,8 @@ public partial class VsCoreProjectFile
         foreach (var j in PackageReferences)
             yield return new PackagesConfigItem
             {
-                Id             = (string)j.Attribute(Tags.Include),
-                PackageVersion = NugetVersion.FromAttribute(j.Attribute(Tags.Version))
+                Id             = (string?)j.Attribute(Tags.Include!),
+                PackageVersion = NugetVersion.FromAttribute(j.Attribute(Tags.Version!))
             };
     }
 
@@ -110,9 +110,9 @@ public partial class VsCoreProjectFile
         //var message = "";
         foreach (var j in PackageReferences)
         {
-            if (!string.Equals(forceSearchId, (string)j.Attribute(Tags.Include),
+            if (!string.Equals(forceSearchId, (string?)j.Attribute(Tags.Include!),
                     StringComparison.OrdinalIgnoreCase)) continue;
-            // message += "Remove " + (string)j.Attribute(Tags.Include) + " => " + packageInfo.Id;
+            // message += "Remove " + (string)j.Attribute(Tags.Include!) + " => " + packageInfo.Id;
             j.Remove();
             result = true;
         }
@@ -125,10 +125,10 @@ public partial class VsCoreProjectFile
     {
         foreach (var pr in PackageReferences)
         {
-            if (!string.Equals(packageId, (string)pr.Attribute(Tags.Include),
+            if (!string.Equals(packageId, (string?)pr.Attribute(Tags.Include!),
                     StringComparison.OrdinalIgnoreCase)) continue;
             pr.Remove();
-            // Console.WriteLine("Remove " + packageId + " " + (string)pr.Attribute(Tags.Version));
+            // Console.WriteLine("Remove " + packageId + " " + (string?)pr.Attribute(Tags.Version));
             return true;
         }
 
@@ -180,7 +180,7 @@ public partial class VsCoreProjectFile
     {
         get
         {
-            var sdk = (string)Document.Root?.Attribute(Tags.Sdk);
+            var sdk = (string?)Document.Root?.Attribute(Tags.Sdk!);
             return sdk == Tags.MicrosoftNetSdkWeb;
         }
     }
