@@ -110,7 +110,7 @@ public static class CsCodeWriterExtensions
 
     private static void PragmaWarnings(ICsCodeWriter self, IList<CsPragmaWarning>? list, bool start)
     {
-        if (list == null || list.Count == 0)
+        if (list is null || list.Count == 0)
             return;
         foreach (var gr in GetActions()
                      .GroupBy(a => a.Item1)
@@ -267,7 +267,7 @@ public static class CsCodeWriterExtensions
         where T : ICsCodeWriter
 
     {
-        if (x == null)
+        if (x is null)
         {
             if (skipIfEmpty)
                 return src;

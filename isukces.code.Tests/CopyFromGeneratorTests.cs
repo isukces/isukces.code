@@ -40,7 +40,7 @@ namespace iSukces.Code.Tests
                 if (ReferenceEquals(source, null))
                     throw new ArgumentNullException(nameof(source));
                 Number = source.Number; // int
-                if (source.Doubles == null)
+                if (source.Doubles is null)
                     Doubles = null;
                 else {
                     var sourceDoubles = source.Doubles;

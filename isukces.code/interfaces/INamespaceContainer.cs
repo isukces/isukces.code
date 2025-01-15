@@ -67,7 +67,7 @@ public static class NamespaceCollectionExt
 {
     public static void AddImportNamespace(this INamespaceCollection self, params string[]? namespaces)
     {
-        if (namespaces == null || namespaces.Length == 0)
+        if (namespaces is null || namespaces.Length == 0)
             return;
         for (var index = 0; index < namespaces.Length; index++)
         {
@@ -78,7 +78,7 @@ public static class NamespaceCollectionExt
 
     public static void AddImportNamespace(this INamespaceCollection self, params Type[]? types)
     {
-        if (types == null || types.Length == 0)
+        if (types is null || types.Length == 0)
             return;
         for (var index = 0; index < types.Length; index++)
         {

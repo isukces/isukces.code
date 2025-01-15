@@ -20,7 +20,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             return c[0];
 
         var constructors2 = c
-            .Where(a => a.GetCustomAttribute<Auto.CloneableConstructorAttribute>() != null)
+            .Where(a => a.GetCustomAttribute<Auto.CloneableConstructorAttribute>() is not null)
             .ToArray();
         if (constructors2.Length == 1)
             return constructors2[0];
@@ -53,7 +53,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
     private static void CopyArray(PropertyInfo pi, string type, ICsCodeWriter writer, ITypeNameResolver res)
     {
         var wm = GeneratorsHelper.GetWriteMemeberName(pi);
-        writer.WriteLine("if (source.{0} == null)", pi.Name);
+        writer.WriteLine("if (source.{0} is null)", pi.Name);
         writer.WriteLine("    {0} = null;", wm);
         writer.WriteLine("else {");
         writer.IncIndent();
@@ -111,9 +111,9 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
     protected override void GenerateInternal()
     {
         _copyFromAttribute = GetCustomAttribute<Auto.CopyFromAttribute>();
-        _doCloneable       = GetCustomAttribute<Auto.CloneableAttribute>() != null;
+        _doCloneable       = GetCustomAttribute<Auto.CloneableAttribute>() is not null;
 
-        if (!_doCloneable && _copyFromAttribute == null)
+        if (!_doCloneable && _copyFromAttribute is null)
             return;
         {
             var cm = Class.AddMethod("CopyFrom", CsType.Void);
@@ -142,7 +142,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
         var               allowReferenceNullable = Class.AllowReferenceNullable();
         {
             var at = pi.GetCustomAttribute<Auto.CopyFromByMethodAttribute>();
-            if (at != null)
+            if (at is not null)
             {
                 var typename1    = resolver.GetTypeName<CopyPropertyValueArgs>();
                 var typenameDot2 = at.Type != Type ? resolver.GetTypeName(at.Type) + "." : "";
@@ -180,7 +180,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
 
         {
             var tmp = pi.GetCustomAttribute<Auto.CopyBy.CloneableAttribute>();
-            if (tmp != null)
+            if (tmp is not null)
             {
                 writer.WriteLine("{0} = ({1})((ICloneable)source.{0})?.Clone(); // BY Icloneable {1}", pi.Name,
                     pi.PropertyType);
@@ -188,10 +188,10 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             }
         }
         {
-            if (attr != null && attr.HasSkip(pi.Name))
+            if (attr is not null && attr.HasSkip(pi.Name))
                 return;
             var tmp = pi.GetCustomAttribute<Auto.CopyBy.ReferenceAttribute>();
-            if (tmp != null || attr != null && attr.HasCopyByReference(pi.Name))
+            if (tmp is not null || attr is not null && attr.HasCopyByReference(pi.Name))
             {
                 writer.WriteLine("{0} = source.{0}; // BY REF {1}", pi.Name, pi.PropertyType);
                 return;
@@ -199,7 +199,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
         }
         {
             var tmp = pi.GetCustomAttribute<Auto.CopyBy.ValuesProcessorAttribute>();
-            if (tmp != null)
+            if (tmp is not null)
             {
                 CloneWithValuesProcessor(pi, writer, resolver);
                 return;
@@ -235,7 +235,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
         {
             var writeMemeber = GeneratorsHelper.GetWriteMemeberName(pi);
             var other        = string.Format("Tuple.Create(source.{0}.Item1, source.{0}.Item2)", writeMemeber);
-            writer.WriteLine("{0} = source.{0} == null ? null : {0};", writeMemeber, other);
+            writer.WriteLine("{0} = source.{0} is null ? null : {0};", writeMemeber, other);
             return;
         }
 
@@ -244,7 +244,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
             if (pi.CanWrite)
             {
-                writer.WriteLine("if (source.{0} == null)", wm);
+                writer.WriteLine("if (source.{0} is null)", wm);
                 writer.WriteLine("\t{0} = null;", wm);
                 writer.WriteLine("else");
                 writer.WriteLine("{");
@@ -296,10 +296,10 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
         if (pi.PropertyType == typeof(Dictionary<string, string>))
         {
             var wm = GeneratorsHelper.GetWriteMemeberName(pi);
-            writer.WriteLine("if (source.{0} == null)", pi.Name);
+            writer.WriteLine("if (source.{0} is null)", pi.Name);
             writer.WriteLine("    {0} = null;", wm);
             writer.WriteLine("else {");
-            writer.WriteLine("    if ({0} == null)", wm);
+            writer.WriteLine("    if ({0} is null)", wm);
             writer.WriteLine("        {0} = new System.Collections.Generic.Dictionary<string, string>();", wm);
             writer.WriteLine("    else");
             writer.WriteLine("        {0}.Clear();", wm);
@@ -328,27 +328,27 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
     private void AddRange(ICsCodeWriter writer, string target, string source)
     {
         var listExtension = Configuration?.ListExtension;
-        if (listExtension == null)
+        if (listExtension is null)
             throw new NotImplementedException("Configuration.ListExtension is null");
         var m = listExtension
 #if COREFX
                                   .GetTypeInfo()
 #endif
             .GetMethod("AddRange", BindingFlags.Static | BindingFlags.Public);
-        if (m == null)
+        if (m is null)
             throw new Exception("Unable to find AddRange method");
         var isExtension = m.IsDefined(typeof(ExtensionAttribute), true);
         if (isExtension)
         {
             var t = m.DeclaringType;
-            if (t != null)
+            if (t is not null)
             {
-                while (t.DeclaringType != null)
+                while (t.DeclaringType is not null)
                     t = t.DeclaringType;
                 object? owner = Class.Owner;
                 var nsCollection = owner as
                     INamespaceCollection;
-                while (nsCollection == null && owner != null)
+                while (nsCollection is null && owner is not null)
                 {
                     if (owner is CsClass csClass)
                         owner = csClass.Owner;
@@ -357,7 +357,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
                     nsCollection = owner as INamespaceCollection;
                 }
 
-                if (nsCollection != null)
+                if (nsCollection is not null)
                 {
                     nsCollection.AddImportNamespace(t.Namespace);
                     writer.WriteLine("{0}.AddRange({1});", target, source);
@@ -379,7 +379,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
                           || pi.PropertyType.GetInterfaces().Any(a => a == typeof(ICloneable));
         if (isCloneable)
         {
-            writer.WriteLine("if (source.{0} != null)", pi.Name);
+            writer.WriteLine("if (source.{0} is not null)", pi.Name);
             writer.WriteLine("    {0} = ({1})(source.{2} as {3}).Clone();",
                 wm,
                 resolver.GetTypeName(pi.PropertyType),
@@ -392,7 +392,7 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
 #endif
 
         var cloneMethod = Configuration?.CustomCloneMethod;
-        if (cloneMethod == null)
+        if (cloneMethod is null)
             throw new Exception("Unable to clone value of type " + pi.PropertyType);
         writer.WriteLine("{0} = {1}.{2}(source.{3}); // {4}",
             wm,

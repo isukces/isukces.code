@@ -51,7 +51,7 @@ public class CsEnum : ClassMemberBase, IAnnotableByUser
         if (!UnderlyingType.IsVoid)
             def += ": " + UnderlyingType.Declaration;
         writer.Open(def);
-        //if (Items != null)
+        //if (Items is not null)
         {
             var cnt = Items.Count;
             foreach (var i in Items)

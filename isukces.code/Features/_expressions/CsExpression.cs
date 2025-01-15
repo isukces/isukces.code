@@ -117,7 +117,7 @@ namespace iSukces.Code.AutoCode
 
         public CsExpression Coalesce(CsExpression expr)
         {
-            if (expr == null) throw new ArgumentNullException(nameof(expr));
+            if (expr is null) throw new ArgumentNullException(nameof(expr));
             const CsOperatorPrecendence op    = CsOperatorPrecendenceUtils.DoubleQuestion;
             var                         code1 = GetCode(op, ExpressionAppend.Before);
             var                         code2 = expr.GetCode(op, ExpressionAppend.After);

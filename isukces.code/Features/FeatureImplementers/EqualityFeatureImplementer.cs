@@ -120,7 +120,7 @@ public partial class EqualityFeatureImplementer
 
     public EqualityFeatureImplementer WithCompareToExpressions(IEnumerable<CompareToExpressionData> expressions)
     {
-        if (CompareToExpressions == null)
+        if (CompareToExpressions is null)
             CompareToExpressions = new List<CompareToExpressionData>();
         else
             CompareToExpressions.Clear();
@@ -130,7 +130,7 @@ public partial class EqualityFeatureImplementer
 
     public EqualityFeatureImplementer WithEqualityExpressions(IEnumerable<EqualsExpressionData> expressions)
     {
-        if (EqualityExpressions == null)
+        if (EqualityExpressions is null)
             EqualityExpressions = new List<EqualsExpressionData>();
         else
             EqualityExpressions.Clear();
@@ -141,7 +141,7 @@ public partial class EqualityFeatureImplementer
     public EqualityFeatureImplementer WithGetHashCodeExpressions(
         IEnumerable<GetHashCodeExpressionDataWithMemberInfo> expressions)
     {
-        if (GetHashCodeExpressions == null)
+        if (GetHashCodeExpressions is null)
             GetHashCodeExpressions = new List<GetHashCodeExpressionDataWithMemberInfo>();
         else
             GetHashCodeExpressions.Clear();

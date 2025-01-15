@@ -11,7 +11,7 @@ public static class IsukcesCodeExtensions
 {
     public static DirectoryInfo? ScanDirectoryUp(DirectoryInfo? dir, Predicate<DirectoryInfo> accept)
     {
-        while (dir != null)
+        while (dir is not null)
         {
             if (accept(dir))
                 return dir;
@@ -70,7 +70,7 @@ public static class IsukcesCodeExtensions
 
     public static void WriteAttributes(this ICsCodeWriter writer, ICollection<ICsAttribute>? attributes)
     {
-        if (attributes == null || attributes.Count == 0)
+        if (attributes is null || attributes.Count == 0)
             return;
         foreach (var j in attributes)
         {

@@ -4,7 +4,7 @@
     <AssemblyName>iSukces.Code.VsSolutions</AssemblyName>
     <Product>iSukces.Code</Product>
     <ProjectGuid>{5E891D4F-3E95-487F-8AC5-3EFEC19BE6A0}</ProjectGuid>
-    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
     <AssemblyVersion>1.25.113.20</AssemblyVersion>
     <FileVersion>1.25.113.20</FileVersion>

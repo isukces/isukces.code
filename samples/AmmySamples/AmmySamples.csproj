@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <ProjectGuid>{5F715A24-4DA1-460B-80CF-95F82A69B8AF}</ProjectGuid>
-    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <LangVersion>13</LangVersion>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>

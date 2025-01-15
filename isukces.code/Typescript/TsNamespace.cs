@@ -34,7 +34,7 @@ namespace iSukces.Code.Typescript
         public void WriteCodeTo(ITsCodeWriter writer)
         {
             writer.Open($"{(IsExport ? "export " : "")}namespace {Name}");
-            if (Members != null)
+            if (Members is not null)
                 foreach (var i in Members)
                     i.WriteCodeTo(writer);
             writer.Close();

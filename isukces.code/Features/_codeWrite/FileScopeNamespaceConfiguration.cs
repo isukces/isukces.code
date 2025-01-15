@@ -65,7 +65,7 @@ public sealed class FileScopeNamespaceConfiguration : IEquatable<FileScopeNamesp
     public override int GetHashCode()
     {
 #if NET48
-        return Number * 397 ^ (FileScopeNamespace != null ? FileScopeNamespace.GetHashCode() : 0);
+        return Number * 397 ^ (FileScopeNamespace is not null ? FileScopeNamespace.GetHashCode() : 0);
 #else
         return HashCode.Combine(Number, FileScopeNamespace);
 #endif

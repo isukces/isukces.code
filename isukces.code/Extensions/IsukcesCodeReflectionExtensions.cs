@@ -15,23 +15,23 @@ public static class IsukcesCodeReflectionExtensions
             if (propertyInfo.CanRead)
             {
                 var tmp = propertyInfo.GetGetMethod();
-                if (tmp == null)
+                if (tmp is null)
                     tmp = propertyInfo.GetSetMethod();
-                if (tmp == null)
+                if (tmp is null)
                 {
                     var pi = mi.GetType()
 #if COREFX
                             .GetTypeInfo()
 #endif
                         .GetField("m_bindingFlags", BindingFlags.Instance | BindingFlags.NonPublic);
-                    if (pi != null)
+                    if (pi is not null)
                     {
                         var v = (BindingFlags)pi.GetValue(mi);
                         return v.HasFlag(BindingFlags.Static);
                     }
                 }
 
-                if (tmp == null)
+                if (tmp is null)
                     throw new NotSupportedException();
                 // ReSharper disable once TailRecursiveCall
                 return IsMemberStatic(tmp);
@@ -61,7 +61,7 @@ public static class IsukcesCodeReflectionExtensions
         {
             // nullable support 
             var nullableType = new ReflectionTypeWrapper(t).UnwrapNullable(true);
-            if (nullableType != null)
+            if (nullableType is not null)
             {
                 var simple = SimpleTypeName(nullableType);
                 if (string.IsNullOrEmpty(simple))

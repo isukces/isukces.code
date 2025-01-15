@@ -23,7 +23,7 @@ namespace iSukces.Code.AutoCode
             protected override void GenerateInternal()
             {
                 var attributes = GetCustomAttributes<Auto.ReactiveCommandAttribute>(false);
-                if (attributes == null || attributes.Length < 1) return;
+                if (attributes is null || attributes.Length < 1) return;
                 var csClass = Class;
                 Context.AddNamespace("ReactiveUI");
                 foreach (var attribute in attributes)
@@ -94,7 +94,7 @@ namespace iSukces.Code.AutoCode
 
                 private string? GetDefaultValueAsString(string propertyTypeName)
                 {
-                    if (DefaultValue == null) return null;
+                    if (DefaultValue is null) return null;
                     if (DefaultValue is bool && PropetyType == typeof(bool))
                         return (bool)DefaultValue ? "true" : "false";
                     var initStr = DefaultValue.ToString().Trim();

@@ -20,7 +20,7 @@ public partial class Generators
             foreach (var parameter in constructorParameters)
             {
                 var parameterName = parameter.Name;
-                Debug.Assert(parameterName != null, nameof(parameterName) + " != null");
+                Debug.Assert(parameterName is not null, nameof(parameterName) + " is not null");
                 if (!dictionary.TryGetValue(parameterName, out var propertyInfo))
                     return null;
                 args.Add(propertyInfo.Name);
@@ -81,7 +81,7 @@ public partial class Generators
             foreach (var i in constructors)
             {
                 var list = GetConstructorArgs(i, properties);
-                if (list != null)
+                if (list is not null)
                     return list;
             }
 

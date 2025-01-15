@@ -75,7 +75,7 @@ public partial class Generators
             if (properties.Length == 0) return;
             var list = (from i in properties
                 let at = i.GetCustomAttribute<Auto.ShouldSerializeAttribute>(false)
-                where at != null
+                where at is not null
                 select Tuple.Create(i, at)).ToList();
             if (list.Count == 0)
                 return;

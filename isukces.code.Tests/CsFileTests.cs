@@ -25,9 +25,9 @@ public sealed class CsFileTests
         file.MakeCode(w);
         var newExpected = Encode(w.Code);
         var expected = @"
+#nullable enable
 // ReSharper disable All
 // suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
-#nullable enable
 namespace Bla
 {
     public class ClassName
@@ -51,15 +51,16 @@ namespace Bla
         file.MakeCode(w);
         var newExpected = Encode(w.Code);
         var expected = @"
+#nullable disable
 // ReSharper disable All
 // suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
-#nullable disable
 namespace Bla
 {
     public class ClassName
     {
     }
 }
+
 ";
         Assert.Equal(expected.Trim(), w.Code.Trim());
     }

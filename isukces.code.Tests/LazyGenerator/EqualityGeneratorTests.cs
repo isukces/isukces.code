@@ -8,27 +8,37 @@ namespace iSukces.Code.Tests.LazyGenerator;
 
 public partial class LazyGeneratorTests
 {
-    private static void CompareCode(string code,
+    private static void CompareCode(bool addFrameworkPrefix, string code,
         [CallerMemberName] string? method = null, [CallerFilePath] string? file = null)
     {
-        TestUtils.CompareWithResource(code, "iSukces.Code.Tests.LazyGenerator.", method, file, "_res.cs");
+        var resCs = "_res.cs";
+        if (addFrameworkPrefix)
+        {
+#if NET9_0_OR_GREATER
+            resCs = "_res.net9.cs1";
+#else
+            resCs = "_res.net8.cs1";
+#endif
+        }
+        TestUtils.CompareWithResource(code, "iSukces.Code.Tests.LazyGenerator.", method, file, resCs);
     }
 
     private static void DoTest<T>(
+        bool addFrameworkPrefix = false,
         [CallerMemberName] string? method = null, [CallerFilePath] string? file = null)
     {
         IMemberNullValueChecker c   = new MyValueChecker();
         var                     q   = new Generators.LazyGenerator();
         var            ctx = new TestContext();
         q.Generate(typeof(T), ctx);
-        CompareCode(ctx.Code, method, file);
+        CompareCode(addFrameworkPrefix, ctx.Code, method, file);
     }
 
 
     [Fact]
     public void T01_Should_create()
     {
-        DoTest<SampleClass>();
+        DoTest<SampleClass>(true);
     }
 
 

@@ -12,7 +12,7 @@ public partial class Generators
         public override void Generate(Type type, IAutoCodeGeneratorContext? context)
         {
             Attribute = type.GetTypeInfo().GetCustomAttribute<TAttribute>();
-            if (Attribute == null)
+            if (Attribute is null)
                 return;
             base.Generate(type, context);
         }
@@ -31,7 +31,7 @@ public partial class Generators
                     .GetTypeInfo()
 #endif
                 .GetCustomAttributes<TAttribute>(false).ToArray();
-            if (Attributes == null || Attributes.Length < 1) return;
+            if (Attributes is null || Attributes.Length < 1) return;
             base.Generate(type, context);
         }
 
@@ -60,7 +60,7 @@ public partial class Generators
         {
             get
             {
-                if (_class != null)
+                if (_class is not null)
                     return _class;
                 _class = Context.GetOrCreateClass(Type);
                 return _class;

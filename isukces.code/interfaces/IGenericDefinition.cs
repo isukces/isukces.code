@@ -12,7 +12,7 @@ public static class GenericDefinitionExtensions
     public static string GetTriangleBracketsInfo(this CsGenericArguments? genericArguments)
     {
         var types = genericArguments?.Types;
-        if (types == null || types.Count == 0)
+        if (types is null || types.Count == 0)
             return string.Empty;
         return "<" + types.CommaJoin() + ">";
     }

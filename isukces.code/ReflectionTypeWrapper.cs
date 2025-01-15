@@ -23,7 +23,7 @@ public struct ReflectionTypeWrapper
 
     public Type? UnwrapNullable(bool nullIfNotNullable = false)
     {
-        if (Type == null) return null;
+        if (Type is null) return null;
         if (!_typeInfo.IsGenericType) return nullIfNotNullable ? null : Type;
         var gt = _typeInfo.GetGenericTypeDefinition();
         if (gt != typeof(Nullable<>)) return nullIfNotNullable ? null : Type;

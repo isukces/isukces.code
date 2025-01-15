@@ -59,7 +59,7 @@ namespace iSukces.Code.AutoCode
 
         public static Type GetMemberResultType(MemberInfo mi)
         {
-            if (mi == null) throw new ArgumentNullException(nameof(mi));
+            if (mi is null) throw new ArgumentNullException(nameof(mi));
             if (mi is PropertyInfo pi)
                 return pi.PropertyType;
             if (mi is FieldInfo fi)
@@ -72,7 +72,7 @@ namespace iSukces.Code.AutoCode
         public static CsType GetTypeName(this INamespaceContainer? container, Type? type)
         {
             //todo: Generic types
-            if (type == null)
+            if (type is null)
                 return CsType.Void;
             if (type.IsArray)
             {
@@ -85,7 +85,7 @@ namespace iSukces.Code.AutoCode
             if (!string.IsNullOrEmpty(simple))
                 return new CsType(simple);
             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (type.DeclaringType != null)
+            if (type.DeclaringType is not null)
                 return GetTypeName(container, type.DeclaringType).AppendBase("." + type.Name);
             {
                 var alias = container?.TryGetTypeAlias(TypeProvider.FromType(type));
@@ -108,7 +108,7 @@ namespace iSukces.Code.AutoCode
                     {
                         {
                             var nullable = w.UnwrapNullable(true);
-                            if (nullable != null)
+                            if (nullable is not null)
                             {
                                 var n1 = GetTypeName(container, nullable);
                                 n1.Nullable = NullableKind.ValueNullable;
@@ -152,13 +152,13 @@ namespace iSukces.Code.AutoCode
             IEnumerable<T>? remove = null)
         {
             var s = new HashSet<T>();
-            if (source != null)
+            if (source is not null)
                 foreach (var i in source)
                     s.Add(i);
-            if (append != null)
+            if (append is not null)
                 foreach (var i in append)
                     s.Add(i);
-            if (remove != null)
+            if (remove is not null)
                 foreach (var i in remove)
                     s.Remove(i);
             return s;

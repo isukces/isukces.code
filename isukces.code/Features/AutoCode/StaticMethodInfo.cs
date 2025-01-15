@@ -12,6 +12,6 @@ namespace iSukces.Code
 
         public Type   OwnerType  { get; }
         public string MethodName { get; }
-        public bool   IsEmpty    => OwnerType == null || string.IsNullOrEmpty(MethodName);
+        public bool   IsEmpty    => OwnerType is null || string.IsNullOrEmpty(MethodName);
     }
 }

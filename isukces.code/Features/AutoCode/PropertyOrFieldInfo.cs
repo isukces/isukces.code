@@ -47,9 +47,9 @@ namespace iSukces.Code.AutoCode
             }
         }
 
-        public bool IsNullIsEmpty => Member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null;
+        public bool IsNullIsEmpty => Member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() is not null;
 
-        public bool IsEqualityGeneratorSkip => Member.GetCustomAttribute<Auto.EqualityGeneratorSkipAttribute>() != null;
+        public bool IsEqualityGeneratorSkip => Member.GetCustomAttribute<Auto.EqualityGeneratorSkipAttribute>() is not null;
 
         
         

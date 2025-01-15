@@ -35,7 +35,7 @@ namespace AutoCodeBuilder
 
         private static void GenerateGetMap(IReadOnlyCollection<int> map, CsClass grammarClass)
         {
-            if (map == null || map.Count == 0) return;
+            if (map is null || map.Count == 0) return;
             var expression = "new [] { " + string.Join(", ", map) + " }";
             grammarClass.AddMethod("GetMap", CsType.Int32.MakeArray())
                 .WithBodyAsExpression(expression)
@@ -45,7 +45,7 @@ namespace AutoCodeBuilder
 
         private static bool IsAlternativeFor(AmmyGrammarAutogeneratorInfo info, AmmyGrammarAutogeneratorInfo i)
         {
-            if (i == info || i.Alternatives == null || i.Alternatives.Length == 0)
+            if (i == info || i.Alternatives is null || i.Alternatives.Length == 0)
                 return false;
             foreach (var a in i.Alternatives)
                 if (a == info.TerminalName)

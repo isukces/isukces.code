@@ -124,7 +124,7 @@ public partial class AutoCodeGenerator : FileSavedNotifierBase
             var info     = wrapper.SourceInfo;
             var csFile   = wrapper.File;
             var fileName = string.IsNullOrEmpty(key) ? fileNameAssembly : key;
-            if (eventHandler != null)
+            if (eventHandler is not null)
             {
                 var args = new BeforeSaveEventArgs
                 {

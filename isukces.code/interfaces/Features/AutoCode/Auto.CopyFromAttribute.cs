@@ -11,10 +11,10 @@ public partial class Auto
     {
 
         public bool HasCopyByReference(string name) =>
-            _copyByReferenceHash != null && _copyByReferenceHash.Contains(name);
+            _copyByReferenceHash is not null && _copyByReferenceHash.Contains(name);
 
 
-        public bool HasSkip(string name) => _skipHash != null && _skipHash.Contains(name);
+        public bool HasSkip(string name) => _skipHash is not null && _skipHash.Contains(name);
 
         public string CopyByReference
         {

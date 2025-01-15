@@ -32,7 +32,7 @@ public class SlnAssemblyBaseDirectoryProvider : IAssemblyBaseDirectoryProvider
 #endif
             .Assembly;
         var solutionDir = CodeUtils.SearchFoldersUntilFileExists(myAssembly, slnShortFilename);
-        if (solutionDir == null)
+        if (solutionDir is null)
             throw new Exception($"Unable to find {slnShortFilename}.");
         return new SlnAssemblyBaseDirectoryProvider(solutionDir, optionalSubDirectory);
     }

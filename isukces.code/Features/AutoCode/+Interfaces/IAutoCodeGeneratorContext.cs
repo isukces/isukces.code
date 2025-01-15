@@ -30,7 +30,7 @@ public static class AutoCodeGeneratorContextExtensions
 {
     public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext? self, Type type)
     {
-        if (self == null) throw new ArgumentNullException(nameof(self));
+        if (self is null) throw new ArgumentNullException(nameof(self));
         if (type is null)
             throw new NullReferenceException(nameof(type));
         return self.GetOrCreateClass(TypeProvider.FromType(type));

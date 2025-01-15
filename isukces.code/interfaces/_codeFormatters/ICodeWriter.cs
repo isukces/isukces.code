@@ -74,7 +74,7 @@ public static class CodeFormatterExt
 
     public static string GetCodeTrim(this ICodeWriter writer)
     {
-        if (writer == null) throw new ArgumentNullException(nameof(writer));
+        if (writer is null) throw new ArgumentNullException(nameof(writer));
         return writer.Code.Trim();
     }
 

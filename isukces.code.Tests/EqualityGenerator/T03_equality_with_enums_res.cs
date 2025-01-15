@@ -1,4 +1,3 @@
-#nullable disable
 // ReSharper disable All
 using System;
 
@@ -9,14 +8,14 @@ namespace iSukces.Code.Tests.EqualityGenerator
     {
         partial class ClassWithEnumProperties1 : iSukces.Code.AutoCode.IAutoEquatable<EqualityGeneratorTests.ClassWithEnumProperties1>
         {
-            public override bool Equals(object other)
+            public override bool Equals(object? other)
             {
                 if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
                 return other is ClassWithEnumProperties1 otherCasted && Equals(otherCasted);
             }
 
-            public bool Equals(ClassWithEnumProperties1 other)
+            public bool Equals(ClassWithEnumProperties1? other)
             {
                 if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
@@ -48,4 +47,3 @@ namespace iSukces.Code.Tests.EqualityGenerator
 
     }
 }
-

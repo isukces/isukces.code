@@ -98,13 +98,13 @@ namespace iSukces.Code.AutoCode
                 // context.AddNamespace("Pd.Interfaces");
                 context.AddNamespace("System");
                 _class = context.GetOrCreateClass(type);
-                if (_attEq != null)
+                if (_attEq is not null)
                 {
                     var eqType = typeof(IAutoEquatable<>).MakeGenericType(type);
                     _class.ImplementedInterfaces.Add(_class.GetTypeName(eqType));
                 }
 
-                if (_attComp != null)
+                if (_attComp is not null)
                 {
                     var eqType = typeof(IAutoComparable<>).MakeGenericType(type);
                     _class.ImplementedInterfaces.Add(_class.GetTypeName(eqType));
@@ -130,7 +130,7 @@ namespace iSukces.Code.AutoCode
                     CanBeNull                        = _canBeNull,
                     ImplementFeatures                = GetImplementFeatures()
                 }.WithCompareToExpressions(GetCompareToExpressions());
-                if (_attEq != null)
+                if (_attEq is not null)
                 {
                     var otherName = implementer.OtherArgName;
                     var equalityExpressions = _propsForEqual
@@ -222,7 +222,7 @@ namespace iSukces.Code.AutoCode
                 else
                 {
                     var info = EqualityGeneratorPropertyInfo.Find(property.Member, NullChecker);
-                    if (info != null) return info.GetRelationalComparerExpression(input);
+                    if (info is not null) return info.GetRelationalComparerExpression(input);
                 }
 
                 if (!property.PropertyValueCanBeNull)
@@ -276,7 +276,7 @@ namespace iSukces.Code.AutoCode
 
                 {
                     var info = EqualityGeneratorPropertyInfo.Find(property.Member, NullChecker);
-                    if (info != null)
+                    if (info is not null)
                     {
                         var code = info.EqualsCode1(_class);
                         return code.WithCost(Auto.EqualityCostAttribute.String);
@@ -329,7 +329,7 @@ namespace iSukces.Code.AutoCode
 
                 {
                     var info = EqualityGeneratorPropertyInfo.Find(prop.Member, NullChecker);
-                    if (info != null)
+                    if (info is not null)
                         return info.GetHash(propNameExpression, _class);
                 }
                 if (typeStripped.GetTypeInfo().IsEnum)
@@ -380,7 +380,7 @@ namespace iSukces.Code.AutoCode
                 if (typeInfo.IsEnum)
                     return Auto.EqualityCostAttribute.Int + offset;
                 var at = typeInfo.GetCustomAttribute<Auto.EqualityCostAttribute>();
-                if (at != null)
+                if (at is not null)
                     return at.Cost;
                 return 100;
             }
@@ -419,11 +419,11 @@ namespace iSukces.Code.AutoCode
                     if (!string.IsNullOrEmpty(att.IsEmptyProperty))
                         if (att.IsEmptyProperty == prop.Name)
                             return false;
-                    if (useOnly != null)
+                    if (useOnly is not null)
                         return useOnly.Contains(prop.Name);
                     if (SkipPropertiesDependsOnPropertyAttribute)
                     {
-                        if (prop.Member.GetCustomAttribute<DependsOnPropertyAttribute>() != null)
+                        if (prop.Member.GetCustomAttribute<DependsOnPropertyAttribute>() is not null)
                             return false;
                     }
                     return !prop.IsEqualityGeneratorSkip;
@@ -468,7 +468,7 @@ namespace iSukces.Code.AutoCode
             private IEnumerable<GetHashCodeExpressionDataWithMemberInfo> GetGetHashCodeExpressions()
             {
                 var filter = _attEq?.GetHashCodeProperties.ToHashSet();
-                var hasFilter    = filter != null && filter.Any();
+                var hasFilter    = filter is not null && filter.Any();
                 var props  = hasFilter ? _propsAll : _propsForEqual;
                 
                 for (var i = 0; i < props.Length; i++)
@@ -485,7 +485,7 @@ namespace iSukces.Code.AutoCode
 
             private EqualityFeatureImplementer.Features GetImplementFeatures()
             {
-                var result = _attEq != null
+                var result = _attEq is not null
                     ? EqualityFeatureImplementer.Features.Equality
                     : EqualityFeatureImplementer.Features.None;
                 return _attComp is null

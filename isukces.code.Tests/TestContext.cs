@@ -1,8 +1,5 @@
 #nullable disable
-using System;
 using System.Collections.Generic;
-using System.IO;
-using iSukces.Code;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Interfaces;
 
@@ -10,6 +7,14 @@ namespace iSukces.Code.Tests;
 
 public class TestContext : FileSavedNotifierBase, IAutoCodeGeneratorContext
 {
+    public TestContext()
+    {
+        _file = new CsFile
+        {
+            Nullable = FileNullableOption.GlobalEnabled
+        };
+    }
+
     public void AddNamespace(string namepace)
     {
         _file.AddImportNamespace(namepace);
@@ -18,24 +23,20 @@ public class TestContext : FileSavedNotifierBase, IAutoCodeGeneratorContext
 
     public CsClass GetOrCreateClass(TypeProvider type)
     {
-        if (_file == null)
-            _file = new CsFile();
+        // if (_file == null) _file = new CsFile();
         return _file.GetOrCreateClass(type);
     }
 
-    public CsNamespace GetOrCreateNamespace(string namespaceName) => _file.GetOrCreateNamespace(namespaceName);
-
-    public IList<object> Tags         { get; } = new List<object>();
-
-    public ITypeNameResolver FileLevelResolver
+    public CsNamespace GetOrCreateNamespace(string namespaceName)
     {
-        get { return (ITypeNameResolver)_file ?? FullNameTypeNameResolver.Instance; }
+        return _file.GetOrCreateNamespace(namespaceName);
     }
 
-    public string Code
-    {
-        get { return _file?.GetCode(); }
-    }
+    public string Code => _file?.GetCode();
 
-    private CsFile _file = new CsFile();
+    public IList<object> Tags { get; } = new List<object>();
+
+    public ITypeNameResolver FileLevelResolver => (ITypeNameResolver)_file ?? FullNameTypeNameResolver.Instance;
+
+    private readonly CsFile _file;
 }

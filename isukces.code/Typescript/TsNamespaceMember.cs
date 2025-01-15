@@ -40,7 +40,7 @@ namespace iSukces.Code.Typescript
             } 
                 
             Introduction?.WriteCodeTo(writer);
-            if (Decorators != null && Decorators.Any())
+            if (Decorators is not null && Decorators.Any())
                 foreach (var i in Decorators)
                     i.WriteCodeTo(writer);
         }

@@ -56,9 +56,9 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
         partial class Test
         {
             [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-            private static string TestGetDependentProperties(string propertyName)
+            private static string? TestGetDependentProperties(string propertyName)
             {
-                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:122
+                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:121
                 switch (propertyName)
                 {
                     case nameof(Master): return MasterDependent; // Slave
@@ -101,9 +101,9 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
         partial class TestCascade
         {
             [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-            private static string TestGetDependentProperties(string propertyName)
+            private static string? TestGetDependentProperties(string propertyName)
             {
-                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:122
+                // generator : DependsOnPropertyGenerator.MakeGetDependentProperties:121
                 switch (propertyName)
                 {
                     case nameof(Master): return MasterDependent; // Slave,DeepSlave,EvenDeeperSlave

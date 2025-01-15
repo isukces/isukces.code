@@ -143,7 +143,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsClassField AddConstString(string name, string? plainValue)
     {
-        var encodedValue = plainValue == null ? "null" : plainValue.CsEncode();
+        var encodedValue = plainValue is null ? "null" : plainValue.CsEncode();
         return AddConst(name, CsType.String, encodedValue);
     }
 
@@ -197,7 +197,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     }
     
     public CsMethod AddMethod(string name, Type? type, string? description = null)
-        => AddMethod(name, type == null ? default : GetTypeName(type), description);
+        => AddMethod(name, type is null ? default : GetTypeName(type), description);
 
     public CsMethod AddMethod(string? name, CsType type, string? description = null)
     {
@@ -276,7 +276,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     {
         var x                  = new List<string>(4);
         var visibilityAsString = Visibility.ToCsCode();
-        if (visibilityAsString != null) x.Add(visibilityAsString);
+        if (visibilityAsString is not null) x.Add(visibilityAsString);
         switch (Kind)
         {
             case CsNamespaceMemberKind.Class:
@@ -512,7 +512,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     {
         var existing = _nestedClasses
             .FirstOrDefault(csClass => csClass.Name == typeName);
-        if (existing != null)
+        if (existing is not null)
         {
             isCreatedNew = false;
             return existing;
@@ -529,7 +529,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsType GetTypeName(Type type)
     {
-        if (Owner == null)
+        if (Owner is null)
             throw new NullReferenceException(nameof(Owner));
         var result = Owner.GetTypeName(type);
         if (Owner is not CsClass cl) return result;

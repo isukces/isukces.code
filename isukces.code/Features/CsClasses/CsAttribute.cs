@@ -125,7 +125,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
     {
         get
         {
-            if (_list == null || _list.Count == 0)
+            if (_list is null || _list.Count == 0)
                 return Name;
                 
             return _list.Select(KeyValuePairToString)

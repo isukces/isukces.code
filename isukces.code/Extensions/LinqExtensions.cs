@@ -6,7 +6,7 @@ namespace iSukces.Code
     {
         internal static HashSet<T> ToHashSet<T>(this IEnumerable<T>? src)
         {
-            return src == null ? new HashSet<T>() : new HashSet<T>(src);
+            return src is null ? new HashSet<T>() : new HashSet<T>(src);
         }
     }
 }

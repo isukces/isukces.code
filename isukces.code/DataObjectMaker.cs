@@ -133,7 +133,7 @@ namespace iSukces.Code
              PropertyInfo fi = item.DeclaringPropertyInfo[0];
              string type = TypeName.FromType(item.PropertyType, nsPrefixes).FullName;
              string rType = type;
-             if (item.PreferredType != null)
+             if (item.PreferredType is not null)
                  rType = TypeName.FromType(item.PropertyType, nsPrefixes).FullName;
 
 
@@ -368,7 +368,7 @@ namespace iSukces.Code
              get {
                  foreach (PropertyInfo pi in DeclaringPropertyInfo)
                      foreach (DataPropertyInfoAttribute l in pi.GetAttributes<DataPropertyInfoAttribute>(true))
-                         if (l.PreferredRealType != null) return l.PreferredRealType;
+                         if (l.PreferredRealType is not null) return l.PreferredRealType;
                  return null;
              }
          }

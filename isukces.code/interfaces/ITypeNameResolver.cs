@@ -31,7 +31,7 @@ public static class TypeToNameResolverExtensions
 
         var    names = e.GetFlagStrings(value, c);
         string result;
-        if (joinFunc != null)
+        if (joinFunc is not null)
             result = joinFunc(names.ToArray());
         else
             result = string.Join(" | ", names);

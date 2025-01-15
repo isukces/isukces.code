@@ -1,4 +1,3 @@
-#nullable disable
 // ReSharper disable All
 // suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace iSukces.Code.Tests.LazyGenerator
@@ -10,9 +9,9 @@ namespace iSukces.Code.Tests.LazyGenerator
             public string OtherName()
             {
                 var result = _xotherNameField;
-                if (result == null)
+                if (result is null)
                     lock(_sync)
-                        if (result == null)
+                        if (result is null)
                             _xotherNameField = result = LazyText();
                 return result;
             }
@@ -26,9 +25,9 @@ namespace iSukces.Code.Tests.LazyGenerator
             public int Value()
             {
                 var result = _value;
-                if (result == null)
+                if (result is null)
                     lock(_sync)
-                        if (result == null)
+                        if (result is null)
                             _value = result = new System.Tuple<int>(LazyValue());
                 return result.Item1;
             }
@@ -48,15 +47,15 @@ namespace iSukces.Code.Tests.LazyGenerator
                 }
             }
 
-            private readonly object _sync = new object();
+            private readonly System.Threading.Lock _sync = new System.Threading.Lock();
 
-            private volatile System.Tuple<int> _value;
+            private volatile System.Tuple<int>? _value;
 
-            private volatile string _xotherNameField;
+            private volatile string? _xotherNameField;
 
-            private System.Lazy<string> _otherTextAsMethod;
+            private System.Lazy<string>? _otherTextAsMethod;
 
-            private System.Lazy<string> _otherTextAsProperty;
+            private System.Lazy<string>? _otherTextAsProperty;
 
             private const string LazyNotInitializedMessage = "Lazy not initialized. Call AutocodeInit method in constructor.";
 
@@ -64,4 +63,3 @@ namespace iSukces.Code.Tests.LazyGenerator
 
     }
 }
-

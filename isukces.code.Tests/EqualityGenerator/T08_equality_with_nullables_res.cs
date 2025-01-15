@@ -1,4 +1,3 @@
-#nullable disable
 // ReSharper disable All
 using System;
 
@@ -9,14 +8,14 @@ namespace iSukces.Code.Tests.EqualityGenerator
     {
         partial class ClassWithNullable : iSukces.Code.AutoCode.IAutoEquatable<EqualityGeneratorTests.ClassWithNullable>
         {
-            public override bool Equals(object other)
+            public override bool Equals(object? other)
             {
                 if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
                 return other is ClassWithNullable otherCasted && Equals(otherCasted);
             }
 
-            public bool Equals(ClassWithNullable other)
+            public bool Equals(ClassWithNullable? other)
             {
                 if (other is null) return false;
                 if (ReferenceEquals(this, other)) return true;
@@ -46,4 +45,3 @@ namespace iSukces.Code.Tests.EqualityGenerator
 
     }
 }
-

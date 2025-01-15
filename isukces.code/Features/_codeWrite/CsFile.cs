@@ -63,13 +63,13 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
             throw new ArgumentException("Value can't be empty", nameof(typeP));
         if (_classesCache.TryGetValue(typeP, out var c))
         {
-            if (c.DotNetType == null && typeP.Type != null)
+            if (c.DotNetType is null && typeP.Type is not null)
                 c.DotNetType = typeP.Type;
             isCreatedNew = false;
             return c;
         }
 
-        if (typeP.Type != null)
+        if (typeP.Type is not null)
         {
             var type = typeP.Type;
             var name = new CsType(type.Name);
@@ -81,7 +81,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
                 name = new CsType(type.Name.Split('`')[0]);
                 var genericArguments = ti.GetGenericArguments();
                 var nn               = genericArguments.Select(a => a.Name);
-                if (type.DeclaringType != null)
+                if (type.DeclaringType is not null)
                 {
                     var genericArguments2 = type
                         .DeclaringType
@@ -97,11 +97,11 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
                 //name += nn1.CommaJoin().TriangleBrackets();
             }
 
-            if (type.DeclaringType == null)
+            if (type.DeclaringType is null)
             {
                 var ns       = GetOrCreateNamespace(type.Namespace);
                 var existing = ns.Classes.FirstOrDefault(a => a.Name == name);
-                if (existing == null)
+                if (existing is null)
                 {
                     existing = new CsClass(name)
                     {
@@ -141,7 +141,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
             var name   = new CsType(shortClassName);
             var result = ns.Classes.FirstOrDefault(aa => aa.Name == name);
-            if (result != null)
+            if (result is not null)
             {
                 isCreatedNew = false;
                 return _classesCache[typeP] = result;
@@ -165,7 +165,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     public CsNamespace GetOrCreateNamespace(string name)
     {
         var result = Namespaces.FirstOrDefault(ns => ns.Name == name);
-        if (result != null)
+        if (result is not null)
             return result;
         result = new CsNamespace(this, name);
         ((List<CsNamespace>)Namespaces).Add(result);
@@ -179,7 +179,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     public void MakeCode(ICsCodeWriter writer, bool isEmbedded = false)
     {
-        if (Namespaces == null || Namespaces.Count == 0)
+        if (Namespaces is null || Namespaces.Count == 0)
             return;
         switch (Nullable)
         {
@@ -276,7 +276,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
     private void Save(string filename)
     {
         var fi = new FileInfo(filename);
-        if (fi.Directory == null)
+        if (fi.Directory is null)
             throw new NullReferenceException("fi.Directory");
         fi.Directory.Create();
         var       x  = Encoding.UTF8.GetBytes(GetCode());
@@ -335,6 +335,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     public FileNullableOption Nullable { get; set; }
 
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
     public bool ReSharperDisableAll { get; set; } = GlobalSettings.DefaultReSharperDisableAll;
 
 

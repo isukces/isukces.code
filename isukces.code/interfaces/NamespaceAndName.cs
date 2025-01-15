@@ -56,8 +56,8 @@ namespace iSukces.Code.Interfaces
         {
             unchecked
             {
-                return ((Namespace != null ? Namespace.GetHashCode() : 0) * 397) ^
-                       (Name != null ? Name.GetHashCode() : 0);
+                return ((Namespace is not null ? Namespace.GetHashCode() : 0) * 397) ^
+                       (Name is not null ? Name.GetHashCode() : 0);
             }
         }
 

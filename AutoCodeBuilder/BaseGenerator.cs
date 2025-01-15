@@ -11,7 +11,7 @@ public class BaseGenerator
 {
     protected static bool CheckIfAnonymousType(Type type)
     {
-        if (type == null)
+        if (type is null)
             throw new ArgumentNullException(nameof(type));
 
         // HACK: The only way to detect anonymous types right now.

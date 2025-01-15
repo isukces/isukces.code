@@ -27,7 +27,7 @@ public class GetCodeFilePathGenerator : Generators.SingleClassGenerator
             if (t is null)
                 return;
             method = t.GetMethod(name, GeneratorsHelper.AllStatic);
-            if (method != null)
+            if (method is not null)
             {
                 var attribute = new CsAttribute("SuppressMessage")
                     .WithArgumentCode("ReSharper".CsEncode())

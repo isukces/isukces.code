@@ -131,7 +131,7 @@ namespace iSukces.Code.AutoCode
 
                 private string? GetDefaultValueAsString(string propertyTypeName)
                 {
-                    if (DefaultValue == null) return null;
+                    if (DefaultValue is null) return null;
                     if (DefaultValue is bool boolValue && PropetyType == typeof(bool))
                         return boolValue ? "true" : "false";
                     var initStr = DefaultValue.ToString().Trim();

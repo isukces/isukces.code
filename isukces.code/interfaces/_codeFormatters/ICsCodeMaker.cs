@@ -21,7 +21,7 @@ namespace iSukces.Code.Interfaces
         public static T AppendTextFormat<T>([NotNull] this T writer, string format, params object[] args)
             where T : ICodeWriter
         {
-            if (writer == null) throw new ArgumentNullException(nameof(writer));
+            if (writer is null) throw new ArgumentNullException(nameof(writer));
             var text = string.Format(format, args);
             writer.AppendText(text);
             return writer;

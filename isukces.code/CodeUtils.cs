@@ -28,7 +28,7 @@ namespace iSukces.Code
             if (expression is null)
                 throw new NotSupportedException(expression.NodeType.ToString());
             var list = new List<string>();
-            while (mi != null)
+            while (mi is not null)
             {
                 list.Add(mi.Member.Name);
                 if (mi.Expression is UnaryExpression ue)
@@ -77,7 +77,7 @@ namespace iSukces.Code
 
         public static DirectoryInfo? SearchFoldersUntilFileExists(DirectoryInfo di, string fileName)
         {
-            while (di != null)
+            while (di is not null)
             {
                 if (!di.Exists)
                     return null;

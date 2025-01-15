@@ -8,7 +8,7 @@ namespace iSukces.Code
     {
         public static CsNamespaceMemberKind GetNamespaceMemberKind(this Type type)
         {
-            if (type == null) throw new ArgumentNullException(nameof(type));
+            if (type is null) throw new ArgumentNullException(nameof(type));
             var ti = type.GetTypeInfo();
             if (ti.IsInterface)
                 return CsNamespaceMemberKind.Interface;

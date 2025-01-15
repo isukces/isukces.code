@@ -208,14 +208,14 @@ public abstract partial class Generators
                 {
                     PropertyName = propName,
                     PropertyType = pa?.Type ?? parameterInfo.ParameterType,
-                    SkipWithMethod = at.SkipWithFor != null && at.SkipWithFor.Length > 0 &&
+                    SkipWithMethod = at.SkipWithFor is not null && at.SkipWithFor.Length > 0 &&
                                      at.SkipWithFor.Contains(propName),
                     Create = pa?.Create ?? false
                     //ExpandFlags = pa?.ExpandFlags ?? false
                 };
                 if (pa?.ExpandFlags ?? false)
                     if (a.PropertyType.IsEnum)
-                        if (a.PropertyType.GetCustomAttribute<FlagsAttribute>() != null)
+                        if (a.PropertyType.GetCustomAttribute<FlagsAttribute>() is not null)
                             a.ExpandFlags = true;
                 return a;
             }

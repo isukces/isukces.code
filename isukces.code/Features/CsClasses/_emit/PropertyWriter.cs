@@ -18,7 +18,7 @@ internal class PropertyWriter
 
     private static string OptionalVisibility(Visibilities? memberVisibility)
     {
-        var v = memberVisibility == null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
+        var v = memberVisibility is null ? "" : memberVisibility.Value.ToString().ToLower() + " ";
         return v;
     }
 

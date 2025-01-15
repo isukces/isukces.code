@@ -1,4 +1,3 @@
-#nullable disable
 // ReSharper disable All
 using System;
 
@@ -7,7 +6,7 @@ namespace iSukces.Code.Tests.EqualityGenerator
 {
     partial struct TestStructWithSpecialHashCodeField : iSukces.Code.AutoCode.IAutoEquatable<TestStructWithSpecialHashCodeField>
     {
-        public override bool Equals(object other)
+        public override bool Equals(object? other)
         {
             if (other is null) return false;
             if (other.GetType() != typeof(TestStructWithSpecialHashCodeField)) return false;
@@ -38,4 +37,3 @@ namespace iSukces.Code.Tests.EqualityGenerator
 
     }
 }
-

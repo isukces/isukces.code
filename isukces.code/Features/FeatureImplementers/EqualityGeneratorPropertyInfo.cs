@@ -29,7 +29,7 @@ namespace iSukces.Code.FeatureImplementers
             IMemberNullValueChecker checker)
         {
             var sca = member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>();
-            if (sca == null)
+            if (sca is null)
                 return null;
             var info = new EqualityGeneratorPropertyInfo(GeneratorsHelper.GetMemberResultType(member))
                 .WithMemberAttributes(member);
@@ -134,7 +134,7 @@ namespace iSukces.Code.FeatureImplementers
 
         public EqualityGeneratorPropertyInfo With(Auto.AbstractEqualityComparisonAttribute? sca)
         {
-            if (sca == null)
+            if (sca is null)
                 return this;
             GetCoalesceExpression           = sca.GetCoalesceExpression;
             GetEqualsExpression             = sca.GetEqualsExpression;
@@ -146,7 +146,7 @@ namespace iSukces.Code.FeatureImplementers
 
         public EqualityGeneratorPropertyInfo WithMemberAttributes(MemberInfo member)
             => With(member.GetCustomAttribute<Auto.AbstractEqualityComparisonAttribute>())
-                .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() != null);
+                .WithNullToEmpty(member.GetCustomAttribute<Auto.NullIsEmptyAttribute>() is not null);
 
 
         public EqualityGeneratorPropertyInfo WithNullToEmpty(bool nullToEmpty)

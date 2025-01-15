@@ -58,10 +58,10 @@ namespace iSukces.Code.Ui.DataGrid
                 Member       = propertyInfo,
             };
 
-            if (propertyInfo != null)
+            if (propertyInfo is not null)
             {
                 var att = propertyInfo.GetCustomAttribute<DecimalPlacesAttribute>();
-                if (att != null)
+                if (att is not null)
                     result = result.WithDataFormatString(att.Format);
             }
 

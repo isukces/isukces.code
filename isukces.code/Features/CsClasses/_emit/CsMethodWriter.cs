@@ -51,7 +51,7 @@ internal sealed class CsMethodWriter
 
     private void Check()
     {
-        if (_method.GenericArguments != null)
+        if (_method.GenericArguments is not null)
         {
             if (Kind == MethodKind.Constructor)
                 throw new Exception("Construction can't have generic arguments");

@@ -146,7 +146,7 @@ public struct CsType
 
     public override int GetHashCode()
     {
-        return (BaseName != null ? BaseName.GetHashCode() : 0) * 397 + GenericParamaters.Count;
+        return (BaseName is not null ? BaseName.GetHashCode() : 0) * 397 + GenericParamaters.Count;
     }
 
     public string GetMemberCode(string member)

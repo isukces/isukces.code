@@ -1,4 +1,3 @@
-#nullable disable
 // ReSharper disable All
 using System;
 
@@ -9,7 +8,7 @@ namespace iSukces.Code.Tests.EqualityGenerator
     {
         partial struct OnePropertyStruct : iSukces.Code.AutoCode.IAutoEquatable<EqualityGeneratorTests.OnePropertyStruct>
         {
-            public override bool Equals(object other)
+            public override bool Equals(object? other)
             {
                 if (other is null) return false;
                 if (other.GetType() != typeof(OnePropertyStruct)) return false;
@@ -40,4 +39,3 @@ namespace iSukces.Code.Tests.EqualityGenerator
 
     }
 }
-

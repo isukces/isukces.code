@@ -12,13 +12,13 @@ public partial class Generators
     {
         // private CsMethod _initLazyMethod;
 
-        private static string? CoalesceNotEmpty(ISet<string> accept, params string[]? items)
+        private static string? CoalesceNotEmpty(ISet<string>? accept, params string?[]? items)
         {
-            if (items == null || items.Length == 0) return null;
+            if (items is null || items.Length == 0) return null;
             for (var index = 0; index < items.Length; index++)
             {
                 var tmp = items[index]?.Trim();
-                if (string.IsNullOrEmpty(tmp) || accept != null && accept.Contains(tmp))
+                if (string.IsNullOrEmpty(tmp) || accept is not null && accept.Contains(tmp))
                     continue;
                 accept?.Add(tmp);
                 return tmp;
@@ -73,14 +73,14 @@ public partial class Generators
             ICsCodeWriter writer = new CsCodeWriter();
             writer.WriteLine("var result = {0};", fieldName);
             // writer.WriteLine("// ReSharper disable once InvertIf");
-            writer.WriteLine("if (result == null)");
+            writer.WriteLine("if (result is null)");
             writer.IncIndent();
             {
                 writer.WriteLine("lock({0})", syncName);
                 writer.IncIndent();
                 {
                     // writer.WriteLine("// ReSharper disable once ConditionIsAlwaysTrueOrFalse");
-                    writer.WriteLine("if (result == null)");
+                    writer.WriteLine("if (result is null)");
                     writer.Indent++;
                     writer.WriteLine("{0} = result = {1};", fieldName,
                         assignS.Assign1(callCalulatedValue));
@@ -125,7 +125,7 @@ public partial class Generators
             {
                 if (methodInfo.DeclaringType != type) continue;
                 var attribute = methodInfo.GetCustomAttribute<Auto.LazyAttribute>();
-                if (attribute != null)
+                if (attribute is not null)
                     list.Add(Tuple.Create(methodInfo, attribute));
             }
 
@@ -143,7 +143,7 @@ public partial class Generators
             {
                 if (propertyInfo.DeclaringType != type) continue;
                 var attribute = propertyInfo.GetCustomAttribute<Auto.LazyAttribute>();
-                if (attribute != null)
+                if (attribute is not null)
                     list.Add(Tuple.Create(propertyInfo, attribute));
             }
 
@@ -166,22 +166,34 @@ public partial class Generators
             //_initLazyMethod = null;
         }
 
+#if NET9_0_OR_GREATER
+        public LockType LockType { get; set; } = LockType.ThreadingLock;
+#else
+        public LockType LockType { get; set; } = LockType.Object;
+#endif
+
         private void AddSyncField(Auto.LazyAttribute at, string fieldName)
         {
             if (!at.DeclareAndCreateSyncObject) return;
             var existing = Class.Fields.FirstOrDefault(a => a.Name == fieldName);
-            if (existing != null)
+            if (existing is not null)
             {
                 if (existing.IsStatic == at.StaticSyncObject)
                     return;
                 throw new Exception($"Sync object {fieldName} can't be both static and instance");
             }
 
-            var f = Class.AddField(fieldName, typeof(object))
+            CsType lockType;
+            if (LockType==LockType.ThreadingLock)
+                lockType = Class.GetTypeName<System.Threading.Lock>();
+            else
+                lockType = CsType.Object;
+            
+            var f = Class.AddField(fieldName, lockType)
                 .WithStatic(at.StaticSyncObject)
                 .WithIsReadOnly()
                 .WithVisibility(Visibilities.Private)
-                .WithConstValue("new object()");
+                .WithConstValue(lockType.New());
         }
 
         private AssignStrategy GetAssignStrategy(Type t, bool canUseLazy)
@@ -243,13 +255,14 @@ public partial class Generators
             var callCalulatedValue = GetCalculatedValue(mi);
 
             if (!useSystemLazy)
-                AddSyncField(at, syncName);
+                AddSyncField(at, syncName!);
 
             var assignS = GetAssignStrategy(resultType, useSystemLazy);
             var fieldType = useSystemLazy
                 ? typeof(Lazy<>).MakeGenericType(resultType)
                 : assignS.FieldType;
-            var f = Class.AddField(fieldName, fieldType)
+            var fieldTypeName = Class.GetTypeName(fieldType).WithReferenceNullable();
+            var f = Class.AddField(fieldName!, fieldTypeName)
                 .WithVisibility(Visibilities.Private)
                 .WithIsVolatile(!useSystemLazy);
             if (useSystemLazy)
@@ -257,7 +270,6 @@ public partial class Generators
                 f.IsReadOnly = true;
                 var typeName = Class.GetTypeName(assignS.FieldType);
                 var init     = typeName.New(mi.Name);
-                //var init     = $"new {typeName.Declaration}({mi.Name})";
                 if (mi.IsMemberStatic())
                     f.ConstValue = init;
                 else
@@ -270,8 +282,6 @@ public partial class Generators
             string code;
             if (useSystemLazy)
             {
-                    
-
                 if (Class.Fields.All(a => a.Name != ErrorMessageConstName))
                 {
                     const string msg = $"Lazy not initialized. Call {GeneratorsHelper.AutoCodeInitMethodName} method in constructor.";

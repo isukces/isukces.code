@@ -21,7 +21,7 @@ public struct FrameworkNameSorter : IComparable<FrameworkNameSorter>, IComparabl
     {
         get
         {
-            // net48;net6.0;net8.0;net9.0;netcoreapp3.1
+            // net48;net8.0;net9.0;netcoreapp3.1
             if (Prefix == "net") return Version.Contains('.') ? 4 : 1;
             if (Prefix == "netcoreapp")
                 return 2;

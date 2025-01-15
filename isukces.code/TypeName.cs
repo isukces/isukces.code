@@ -35,7 +35,7 @@ public class TypeName : object
         if (!type.IsGenericType)
         {
             var tn1 = type.FullName;
-            if (reductor == null) return tn1;
+            if (reductor is null) return tn1;
             var d = tn1.Substring(0, tn1.LastIndexOf('.'));
             tn1 = tn1.Substring(tn1.LastIndexOf('.') + 1);
             if (reductor.ContainsKey(d))
@@ -77,7 +77,7 @@ public class TypeName : object
             var tn = TypeNameNoGeneric(BaseType);
 
             var d = tn.Substring(0, tn.LastIndexOf('.'));
-            if (Reductor == null) return d;
+            if (Reductor is null) return d;
             if (Reductor.TryGetValue(d, out var domain))
                 return domain;
             return d;

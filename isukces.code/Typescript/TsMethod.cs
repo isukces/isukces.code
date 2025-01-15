@@ -14,7 +14,7 @@ namespace iSukces.Code.Typescript
 
         public TsMethod WithArgument(string name, string? type = null)
         {
-            if (name == null) throw new ArgumentNullException(nameof(name));
+            if (name is null) throw new ArgumentNullException(nameof(name));
             var isOptional = name.EndsWith("?", StringComparison.Ordinal);
             if (isOptional)
                 name = name.TrimEnd('?', ' ');
@@ -91,7 +91,7 @@ namespace iSukces.Code.Typescript
 
         private string GetNameWithArguments()
         {
-            if (Arguments == null || Arguments.Count == 0)
+            if (Arguments is null || Arguments.Count == 0)
                 return $"{Name}()";
             return Name + "(" + string.Join(",", Arguments.Select(a => a.GetTsCode())) + ")";
         }

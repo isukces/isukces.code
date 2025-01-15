@@ -13,7 +13,7 @@ namespace iSukces.Code.Ui.DataGrid
 
         public bool IsEmpty
         {
-            get { return Source == null; }
+            get { return Source is null; }
         }
     }
 }
