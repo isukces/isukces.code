@@ -119,7 +119,7 @@ public interface ITest
 
 
         [Fact]
-        public void T05_Should_generate_compiler_directive()
+        public void T05A_Should_generate_compiler_directive()
         {
             var cl = new CsClass((CsType)"Src1");
             var p  = cl.AddProperty("A", CsType.Int32);
@@ -142,6 +142,78 @@ public class Src1
         }
 
         [Fact]
+        public void T05B_Should_generate_compiler_directive_for_multiple_properties()
+        {
+            var cl = new CsClass((CsType)"Src1");
+            var p = cl.AddProperty("A", CsType.Int32)
+                .WithMakeAutoImplementIfPossible();
+            p.CompilerDirective          = "DEBUG";
+            
+            p = cl.AddProperty("B", CsType.Int32)
+                .WithMakeAutoImplementIfPossible();
+            p.CompilerDirective          = "DEBUG";
+            p = cl.AddProperty("C", CsType.Int32)
+                .WithMakeAutoImplementIfPossible();
+            p = cl.AddProperty("D", CsType.Int32)
+                .WithMakeAutoImplementIfPossible();
+            p.CompilerDirective          = "DEBUG";
+
+            var w = new CsCodeWriter();
+            cl.MakeCode(w);
+            const string expected = @"
+public class Src1
+{
+#if DEBUG
+    public int A { get; set; }
+
+    public int B { get; set; }
+#endif
+
+    public int C { get; set; }
+
+#if DEBUG
+    public int D { get; set; }
+#endif
+
+}
+";
+            var got = w.GetCodeTrim();
+            Assert.Equal(expected.Trim(), got);
+        }
+
+        [Fact]
+        public void T05C_Should_generate_compiler_directive_for_multiple_fields()
+        {
+            var cl = new CsClass((CsType)"Src1");
+            cl.AddField("A", CsType.Int32).CompilerDirective = "DEBUG";
+            cl.AddField("B", CsType.Int32).CompilerDirective = "DEBUG";
+            cl.AddField("C", CsType.Int32);
+            cl.AddField("D", CsType.Int32).CompilerDirective = "DEBUG";
+
+            var w = new CsCodeWriter();
+            cl.MakeCode(w);
+            const string expected = @"
+public class Src1
+{
+#if DEBUG
+    public int A;
+
+    public int B;
+#endif
+
+    public int C;
+
+#if DEBUG
+    public int D;
+#endif
+
+}
+";
+            var got = w.GetCodeTrim();
+            Assert.Equal(expected.Trim(), got);
+        }
+
+        [Fact]
         public void T06_Should_cut_namespace()
         {
             var f = new CsFile();
@@ -150,7 +222,7 @@ public class Src1
             ns.AddImportNamespace("Custom.Private");
             var c = ns.GetOrCreateClass((CsType)"Gamma");
 
-            Assert.True(c.IsKnownNamespace("Custom.Beta"));
+            Assert.True(c.GetNamespaceInfo("Custom.Beta").IsKnownWithoutAlias());
             Assert.True(c.IsKnownNamespace("System.Alpha"));
             Assert.True(c.IsKnownNamespace("Custom.Private"));
             Assert.False(c.IsKnownNamespace("Some.Unknown.Namespace"));

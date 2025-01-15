@@ -31,9 +31,11 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         BaseClass = baseClass;
     }
 
-    private static void Emit_single_field(ICsCodeWriter writer, CsClassField field, CodeEmitConfig config)
+    private static void Emit_single_field(ICsCodeWriter writer, CsClassField field, CodeEmitConfig config,
+        CodeEmitState state)
     {
-        writer.OpenCompilerIf(field);
+        state.StartItem(writer, field);
+        // writer.OpenCompilerIf(field);
         writer.WriteComment(field);
         try
         {
@@ -77,12 +79,12 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
                 if (lines.Length > 1)
                     writer.Indent--;
-                writer.EmptyLine();
+                state.WriteEmptyLine = true;// writer.EmptyLine();
             }
         }
         finally
         {
-            writer.CloseCompilerIf(field);
+            // writer.CloseCompilerIf(field);
         }
     }
 
@@ -411,9 +413,14 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         if (all.Count == 0) return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
 
+        CodeEmitState state= new();
         addEmptyLineBeforeRegion = w.WriteMethodAction(writer, all, "Fields",
-            field => { Emit_single_field(writer, field, config); }
+            field =>
+            {
+                Emit_single_field(writer, field, config, state);
+            }
         );
+        state.Flush(writer);
         return addEmptyLineBeforeRegion;
     }
 
@@ -464,14 +471,17 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     private bool Emit_properties(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
     {
         var w = new CsClassWriter(this);
-        if (_properties.Count == 0) return addEmptyLineBeforeRegion;
+        if (_properties.Count == 0) 
+            return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
+        CodeEmitState state = new();
         addEmptyLineBeforeRegion = w.WriteMethodAction(writer, _properties, "Properties",
             i =>
             {
                 var tmp = new PropertyWriter(this, i);
-                tmp.EmitProperty(writer);
+                tmp.EmitProperty(writer, state);
             });
+        state.Flush(writer);
         return addEmptyLineBeforeRegion;
     }
 

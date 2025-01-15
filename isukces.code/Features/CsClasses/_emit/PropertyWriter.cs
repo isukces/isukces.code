@@ -23,9 +23,9 @@ internal class PropertyWriter
     }
 
 
-    internal void EmitProperty(ICsCodeWriter writer)
+    internal void EmitProperty(ICsCodeWriter writer, CodeEmitState state)
     {
-        writer.OpenCompilerIf(_property);
+        state.StartItem(writer, _property);
         try
         {
             writer.WriteComment(_property);
@@ -53,10 +53,11 @@ internal class PropertyWriter
         }
         finally
         {
-            writer.CloseCompilerIf(_property);
+            // writer.CloseCompilerIf(_property);
         }
 
-        writer.EmptyLine();
+        state.WriteEmptyLine = true;
+        // writer.EmptyLine();
     }
 
     private string GetPropertyHeader()
@@ -183,4 +184,3 @@ internal class PropertyWriter
         Setter
     }
 }
-
