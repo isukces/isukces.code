@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 
 namespace iSukces.Code.Translations;
 
-public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
+public abstract class TranslationAutocodeGeneratorBase : FileSavedNotifierBase
 {
     protected TranslationAutocodeGeneratorBase(IAssemblyFilenameProvider filenameProvider)
     {
@@ -66,7 +66,7 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
             if (needDeclareVariable)
             {
                 cw.WritelineNoIndent("#pragma warning disable 168");
-                cw.WriteLine("string text;");
+                cw.WriteLine("string? text;");
                 cw.WritelineNoIndent("#pragma warning restore 168");
                 needDeclareVariable = false;
             }
@@ -76,30 +76,6 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
             const string method                   = "tr.TryGetValue(";
             var          condition                = $"{method}{singleKeyTranslations.Key.CsEncode()}, {variable})";
             var          currentCompilerDirective = "";
-
-            void Check(ITranslationRequest? key1, bool open)
-            {
-                if (!open)
-                {
-                    if (!string.IsNullOrEmpty(currentCompilerDirective))
-                    {
-                        cw.WriteLine("#endif");
-                        currentCompilerDirective = "";
-                    }
-
-                    return;
-                }
-
-                var compilerDirective = GetCompilerDirectiveByTranslationKey(key1?.Key ?? "") ?? "";
-                if (compilerDirective == currentCompilerDirective)
-                    return;
-                Check(null, false);
-
-                if (string.IsNullOrEmpty(compilerDirective))
-                    return;
-                currentCompilerDirective = compilerDirective;
-                cw.WriteLine("#if " + compilerDirective);
-            }
 
             if (translations.Length == 1)
             {
@@ -123,6 +99,32 @@ public abstract class TranslationAutocodeGeneratorBase:FileSavedNotifierBase
                     Check(null, false);
                 }
                 cw.Close();
+            }
+
+            continue;
+
+            void Check(ITranslationRequest? key1, bool open)
+            {
+                if (!open)
+                {
+                    if (!string.IsNullOrEmpty(currentCompilerDirective))
+                    {
+                        cw.WriteLine("#endif");
+                        currentCompilerDirective = "";
+                    }
+
+                    return;
+                }
+
+                var compilerDirective = GetCompilerDirectiveByTranslationKey(key1?.Key ?? "") ?? "";
+                if (compilerDirective == currentCompilerDirective)
+                    return;
+                Check(null, false);
+
+                if (string.IsNullOrEmpty(compilerDirective))
+                    return;
+                currentCompilerDirective = compilerDirective;
+                cw.WriteLine("#if " + compilerDirective);
             }
         }
 

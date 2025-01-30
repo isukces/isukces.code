@@ -1,4 +1,3 @@
-#nullable disable
 using iSukces.Code;
 using iSukces.Code.Interfaces;
 using Xunit;
@@ -177,8 +176,8 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
             public int EvenDeeperSlave => DeepSlave + 1;
             
             
-            public string FirstName { get; set; }
-            public string LastName  { get; set; }
+            public string? FirstName { get; set; }
+            public string? LastName  { get; set; }
             
             [DependsOnProperty(nameof(FirstName), nameof(LastName), Flags = DependsOnPropertyFlags.SkipCreatingConstants)]
             public string FullNameA  => FirstName + " " + LastName;
@@ -205,8 +204,8 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
     public class WrongClass
     {
         [DependsOnProperty(Flags = DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod)]
-        public string FirstName { get; set; }
-        public string LastName  { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName  { get; set; }
             
         
         [DependsOnProperty(nameof(FirstName), nameof(LastName))]
@@ -214,3 +213,4 @@ namespace iSukces.Code.Tests.DependsOnPropertyGenerator
     }
 
 }
+

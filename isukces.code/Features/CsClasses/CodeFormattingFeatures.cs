@@ -13,9 +13,16 @@ public enum CodeFormattingFeatures
     /// Allow 'is not null' 
     /// </summary>
     IsNotNull = 4,
+    
     MakeAutoImplementIfPossible = 8,
     
-    Cs12 = ExpressionBody |  IsNotNull | MakeAutoImplementIfPossible
+    /// <summary>
+    /// i.e. dict.TryGetValue(key, out var text)
+    /// </summary>
+    OutVar = 16,
+    
+    Cs7 = OutVar, 
+    Cs12 = ExpressionBody |  IsNotNull | MakeAutoImplementIfPossible | Cs7
 }
 
 public struct CodeFormatting

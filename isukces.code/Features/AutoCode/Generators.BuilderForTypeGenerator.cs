@@ -61,10 +61,13 @@ public abstract partial class Generators
 #endif
         }
 
-        protected virtual void AddWithMethod(string propName, Type propertyType)
+        protected virtual void AddWithMethod(string propName, Type propertyType, bool referenceNullable)
         {
             var pName            = "new" + propName;
             var propertyTypeName = _class.GetTypeName(propertyType);
+            if (referenceNullable)
+                propertyTypeName = propertyTypeName.WithReferenceNullable();
+            
             var m = _class.AddMethod($"With{propName}", _class.Name)
                 .WithAggressiveInlining(_class)
                 .WithBody($"{propName} = {pName};\r\nreturn this;");
@@ -79,7 +82,7 @@ public abstract partial class Generators
             for (var index = 0; index < _builderPropertyInfos.Length; index++)
             {
                 var info             = _builderPropertyInfos[index];
-                var propertyTypeName = _class.GetTypeName(info.PropertyType);
+                var propertyTypeName = info.GetTypeName(_class);
                 var prop = _class.AddProperty(info.PropertyName, propertyTypeName)
                     .WithMakeAutoImplementIfPossible();
 
@@ -87,7 +90,7 @@ public abstract partial class Generators
                     prop.WithConstValue(propertyTypeName.New());
 
                 if (!info.SkipWithMethod)
-                    AddWithMethod(info.PropertyName, info.PropertyType);
+                    AddWithMethod(info.PropertyName, info.PropertyType, info.ReferenceNullable);
 
                 if (!info.ExpandFlags) continue;
                 // var enumUnderlyingType = Enum.GetUnderlyingType(info.PropertyType);
@@ -99,7 +102,7 @@ public abstract partial class Generators
                         continue;
 
                     var enumName = Enum.GetName(info.PropertyType, enumValue);
-                    var propName = enumName.FirstUpper();
+                    var propName = enumName!.FirstUpper();
                     var prop1 = _class.AddProperty(propName, CsType.Bool)
                         .WithNoEmitField();
                     var v = $"{propertyTypeName.Declaration}.{enumName}";
@@ -108,30 +111,29 @@ public abstract partial class Generators
                         $"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};");
                     // metoda
                     if (!info.SkipWithMethod)
-                        AddWithMethod(propName, typeof(bool));
+                        AddWithMethod(propName, typeof(bool), false);
                 }
             }
         }
 
 
         protected void AddWithMethodUsingPropertyTypeConstructor(NameAndTypeName property,
-            params NameAndType[] constructorParams)
+            params NameAndTypeName[] constructorParams)
         {
-            var m = _class.AddMethod("With" + property.PropName, _class.Name)
+            var m = _class.AddMethod("With" + property.Name, _class.Name)
                 .WithAggressiveInlining(_class);
             var l = new List<string>();
             foreach (var i in constructorParams)
             {
                 var pName = $"new{i.Name}X";
                 l.Add(pName);
-                m.AddParam(pName, _class.GetTypeName(i.Type ?? typeof(double)));
+                m.AddParam(pName, i.Type);
             }
 
-            var constructorCall = l
-                .CommaJoin()
-                .New(property.PropertyTypeName.Declaration);
+            var constructorCall = l.CommaJoin()
+                .New(property.Type.Declaration);
 
-            m.Body = $"{property.PropName} = {constructorCall};\r\nreturn this;";
+            m.Body = $"{property.Name} = {constructorCall};\r\nreturn this;";
         }
 
         protected virtual void AfterAddWithMethod(Type propertyType, NameAndTypeName property)
@@ -183,14 +185,17 @@ public abstract partial class Generators
             }
         }
 
+        #region Properties
+
         public bool AddCs8618WarningDisable { get; set; } = true;
+
+        #endregion
 
         #region Fields
 
         private IReadOnlyDictionary<string, Auto.BuilderForTypePropertyAttribute> _attributesForProperties;
-
         private BuilderPropertyInfo[] _builderPropertyInfos;
-        private CsClass               _class;
+        private CsClass _class;
 
         #endregion
 
@@ -200,18 +205,18 @@ public abstract partial class Generators
                 IReadOnlyDictionary<string, Auto.BuilderForTypePropertyAttribute> attributesForProperties,
                 Auto.BuilderForTypeAttribute at)
             {
+                var nullable = ReferenceNullableTools.IsReferenceTypeNullable(parameterInfo);
                 var propName = parameterInfo.Name.FirstUpper();
 
                 attributesForProperties.TryGetValue(propName, out var pa);
 
                 var a = new BuilderPropertyInfo
                 {
-                    PropertyName = propName,
-                    PropertyType = pa?.Type ?? parameterInfo.ParameterType,
-                    SkipWithMethod = at.SkipWithFor is not null && at.SkipWithFor.Length > 0 &&
-                                     at.SkipWithFor.Contains(propName),
-                    Create = pa?.Create ?? false
-                    //ExpandFlags = pa?.ExpandFlags ?? false
+                    PropertyName      = propName,
+                    PropertyType      = pa?.Type ?? parameterInfo.ParameterType,
+                    SkipWithMethod    = at.SkipWithFor.Length > 0 && at.SkipWithFor.Contains(propName),
+                    Create            = pa?.Create ?? false,
+                    ReferenceNullable = nullable
                 };
                 if (pa?.ExpandFlags ?? false)
                     if (a.PropertyType.IsEnum)
@@ -220,11 +225,20 @@ public abstract partial class Generators
                 return a;
             }
 
-            public string PropertyName   { get; private set; }
-            public Type   PropertyType   { get; private set; }
-            public bool   SkipWithMethod { get; private set; }
-            public bool   Create         { get; private set; }
-            public bool   ExpandFlags    { get; set; }
+            public CsType GetTypeName(ITypeNameResolver resolver)
+            {
+                var propertyTypeName = resolver.GetTypeName(PropertyType);
+                if (ReferenceNullable)
+                    propertyTypeName = propertyTypeName.WithReferenceNullable();
+                return propertyTypeName;
+            }
+
+            public string PropertyName      { get; private init; } = null!;
+            public Type   PropertyType      { get; private init; } = null!;
+            public bool   SkipWithMethod    { get; private init; }
+            public bool   Create            { get; private init; }
+            public bool   ExpandFlags       { get; private set; }
+            public bool   ReferenceNullable { get; private init; }
         }
     }
 }
