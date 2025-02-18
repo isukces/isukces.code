@@ -13,8 +13,9 @@ public partial class Auto
             SkipWithFor = skipWithFor ?? [];
         }
 
-        public Type     TargetType  { get; }
-        public string[] SkipWithFor { get; } // sprawdzone not null
+        public Type     TargetType     { get; }
+        public string[] SkipWithFor    { get; } // sprawdzone not null
+        public bool     SkipWithForAll { get; set; }
     }
         
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]

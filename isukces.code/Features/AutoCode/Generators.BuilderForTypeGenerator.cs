@@ -179,25 +179,17 @@ public abstract partial class Generators
             }
             finally
             {
-                _class                   = null;
-                _attributesForProperties = null;
-                _builderPropertyInfos    = null;
+                _class                   = null!;
+                _attributesForProperties = null!;
+                _builderPropertyInfos    = null!;
             }
         }
 
-        #region Properties
-
         public bool AddCs8618WarningDisable { get; set; } = true;
 
-        #endregion
-
-        #region Fields
-
-        private IReadOnlyDictionary<string, Auto.BuilderForTypePropertyAttribute> _attributesForProperties;
-        private BuilderPropertyInfo[] _builderPropertyInfos;
-        private CsClass _class;
-
-        #endregion
+        private IReadOnlyDictionary<string, Auto.BuilderForTypePropertyAttribute> _attributesForProperties = null!;
+        private BuilderPropertyInfo[] _builderPropertyInfos = null!;
+        private CsClass _class = null!;
 
         private sealed class BuilderPropertyInfo
         {
@@ -206,15 +198,16 @@ public abstract partial class Generators
                 Auto.BuilderForTypeAttribute at)
             {
                 var nullable = ReferenceNullableTools.IsReferenceTypeNullable(parameterInfo);
-                var propName = parameterInfo.Name.FirstUpper();
+                var propName = parameterInfo.Name!.FirstUpper();
 
                 attributesForProperties.TryGetValue(propName, out var pa);
 
                 var a = new BuilderPropertyInfo
                 {
-                    PropertyName      = propName,
-                    PropertyType      = pa?.Type ?? parameterInfo.ParameterType,
-                    SkipWithMethod    = at.SkipWithFor.Length > 0 && at.SkipWithFor.Contains(propName),
+                    PropertyName = propName,
+                    PropertyType = pa?.Type ?? parameterInfo.ParameterType,
+                    SkipWithMethod =
+                        at.SkipWithForAll || at.SkipWithFor.Length > 0 && at.SkipWithFor.Contains(propName),
                     Create            = pa?.Create ?? false,
                     ReferenceNullable = nullable
                 };
