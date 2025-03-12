@@ -37,7 +37,7 @@ public class PrincipalTests
     [InlineData("", "", 0)]
     [InlineData("a", null, 97)]
     [InlineData(null, "a", -97)]
-    public void T03_Should_check_equals_for_string_with_null_is_empty_option(string a, string b, int expect)
+    public void T03_Should_check_equals_for_string_with_null_is_empty_option(string? a, string? b, int expect)
     {
         var result = StringComparer.Ordinal.Compare(a ?? string.Empty, b ?? string.Empty);
         Assert.Equal(expect, result);

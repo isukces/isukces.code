@@ -110,10 +110,10 @@ EditedRow = new X {
     }
 
     [Fact]
-    public void T05a_Should_create_SetCreateObject()
+    public void T05a_Should_create_AsCreateObject()
     {
         var uu = new FluentCode()
-            .SetCreateObject("EditedRow", "new X", true, true);
+            .AsCreateObject("EditedRow", "new X", true, true);
         uu.AddLine("Id = 1");
         uu.AddLine("X = 2");
         var cs = new CsCodeWriter();
@@ -130,10 +130,10 @@ EditedRow = new X {
     }
 
     [Fact]
-    public void T05b_Should_create_SetCreateObject()
+    public void T05b_Should_create_AsCreateObject()
     {
         var uu = new FluentCode()
-            .SetCreateObject("EditedRow", "new X", true, true);
+            .AsCreateObject("EditedRow", "new X", true, true);
 
         var cs = new CsCodeWriter();
         uu.Write(cs);
@@ -145,10 +145,10 @@ EditedRow = new X {
 
 
     [Fact]
-    public void T05c_Should_create_SetCreateObject()
+    public void T05c_Should_create_AsCreateObject()
     {
         var uu = new FluentCode()
-            .SetCreateObject("EditedRow", "new X", false, true);
+            .AsCreateObject("EditedRow", "new X", false, true);
         uu.AddLine("Id = 1");
         uu.AddLine("X = 2");
         var cs = new CsCodeWriter();
@@ -165,10 +165,10 @@ EditedRow = new X {
     }
 
     [Fact]
-    public void T05d_Should_create_SetCreateObject()
+    public void T05d_Should_create_AsCreateObject()
     {
         var uu = new FluentCode()
-            .SetCreateObject("EditedRow", "new X", false, true);
+            .AsCreateObject("EditedRow", "new X", false, true);
 
         var cs = new CsCodeWriter();
         uu.Write(cs);
@@ -180,10 +180,10 @@ EditedRow = new X {
 
 
     [Fact]
-    public void T05e_Should_create_SetCreateObject()
+    public void T05e_Should_create_AsCreateObject()
     {
         var uu = new FluentCode()
-            .SetCreateObject("EditedRow", "new X(1, 2)", false, false);
+            .AsCreateObject("EditedRow", "new X(1, 2)", false, false);
         uu.AddLine("Id = 1");
         uu.AddLine("X = 2");
         var cs = new CsCodeWriter();
@@ -200,10 +200,10 @@ EditedRow = new X(1, 2) {
     }
 
     [Fact]
-    public void T05f_Should_create_SetCreateObject()
+    public void T05f_Should_create_AsCreateObject()
     {
         var uu = new FluentCode()
-            .SetCreateObject("EditedRow", "new X(1, 2)", false, false);
+            .AsCreateObject("EditedRow", "new X(1, 2)", false, false);
 
         var cs = new CsCodeWriter();
         uu.Write(cs);

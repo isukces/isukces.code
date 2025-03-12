@@ -44,8 +44,8 @@ namespace iSukces.Code.Ui.DataGrid
                 .GetProperty(bindingPath);
         }
 
-        protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object headerSource,
-            int? width = null)
+        protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, object? headerSource,
+            UiWidth width = default)
         {
             var bindingPath  = CodeUtils.GetMemberPath(func);
             var propertyInfo = GetPropertyInfo(func, bindingPath);
@@ -68,7 +68,7 @@ namespace iSukces.Code.Ui.DataGrid
             return result;
         }
 
-        protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, int width)
+        protected TColumn Col<TValue>(Expression<Func<TRow, TValue>> func, UiWidth width)
         {
             var col = Col(func, null, width);
             return col;
