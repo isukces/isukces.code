@@ -1,5 +1,6 @@
 #nullable disable
 using iSukces.Code.Interfaces;
+// ReSharper disable All
 
 namespace iSukces.Code.Tests.EqualityGenerator
 {
