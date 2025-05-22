@@ -191,7 +191,7 @@ namespace iSukces.Code.Irony
                 ProcessProperty(csProp, false);
                 csProp.SetterVisibility = Visibilities.Private;
 
-                csProp.IsPropertyReadOnly    = true;
+                csProp.SetterType            = PropertySetter.None;
                 csProp.OwnGetterIsExpression = true;
                 csProp.OwnGetter             = "ChildNodes[0]";
                 if (alts.Length > 1)
@@ -332,7 +332,7 @@ namespace iSukces.Code.Irony
                     var code = string.Format("({0})ChildNodes[{1}];",
                         propType,
                         i.AstIndex.ToString(CultureInfo.InvariantCulture));
-                    csProp.IsPropertyReadOnly    = true;
+                    csProp.SetterType            = PropertySetter.None;
                     csProp.OwnGetter             = code;
                     csProp.OwnGetterIsExpression = true;
 

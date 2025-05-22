@@ -32,7 +32,7 @@ public class FluentCode
         return this;
     }
 
-    [Obsolete("Use AsMethodChain() instead", true)]
+    [Obsolete("Use AsCreateObject() instead", true)]
     public FluentCode SetCreateObject(string variable, string constructor, bool addSemicolon, bool isConstructor)
     {
         return AsCreateObject(variable, constructor, addSemicolon, isConstructor);

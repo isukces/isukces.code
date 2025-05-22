@@ -301,10 +301,10 @@ public partial class Generators
             if (isProperty)
             {
                 var prop = Class.AddProperty(baseName, resultType);
-                prop.IsStatic           = mi.IsMemberStatic();
-                prop.IsPropertyReadOnly = true;
-                prop.EmitField          = false;
-                prop.OwnGetter          = code;
+                prop.IsStatic   = mi.IsMemberStatic();
+                prop.SetterType = PropertySetter.None;
+                prop.EmitField  = false;
+                prop.OwnGetter  = code;
             }
             else
                 Class.AddMethod(baseName, resultType)

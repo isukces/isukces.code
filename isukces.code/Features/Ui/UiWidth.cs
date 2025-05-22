@@ -2,7 +2,7 @@
 
 namespace iSukces.Code.Ui;
 
-public record UiWidth
+public struct UiWidth
 {
     public UiWidth(int value, UiWidthKind unit)
     {
@@ -30,8 +30,10 @@ public record UiWidth
         };
     }
 
-    public int         Value { get; }
-    public UiWidthKind Unit  { get; }
+    public int         Value         { get; }
+    public UiWidthKind Unit          { get; }
+    public bool        IsEmpty       => Unit == UiWidthKind.None;
+    public bool        IsEmptyOrZero => Unit == UiWidthKind.None || Value == 0;
 }
 
 public enum UiWidthKind

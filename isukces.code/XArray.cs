@@ -24,7 +24,7 @@ namespace iSukces.Code
     static class XArray
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T[] Empty<T>() => System.Array.Empty<T>();
+        public static T[] Empty<T>() => [];
     }
 #endif
 }

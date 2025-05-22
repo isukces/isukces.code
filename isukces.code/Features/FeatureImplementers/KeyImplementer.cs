@@ -291,7 +291,7 @@ public class KeyImplementer
         var p = _cl.AddProperty("Zero", _cl.Name);
         p.IsStatic              = true;
         p.EmitField             = false;
-        p.IsPropertyReadOnly    = true;
+        p.SetterType            = PropertySetter.None;
         p.OwnGetter             = _cl.Name.New("0");
         p.OwnGetterIsExpression = true;
         return p;

@@ -126,17 +126,24 @@ internal class PropertyWriter
         if (IsInterface || _property.MakeAutoImplementIfPossible && string.IsNullOrEmpty(_property.OwnSetter) &&
             string.IsNullOrEmpty(_property.OwnGetter))
         {
-            var gs = _property.IsPropertyReadOnly
-                ? $"{{ {OptionalVisibility(_property.GetterVisibility)}get; }}"
-                : $"{{ {OptionalVisibility(_property.GetterVisibility)}get; {OptionalVisibility(_property.SetterVisibility)}set; }}";
-            var c = header + " " + gs;
+            string gs;
+            var    tmp = OptionalVisibility(_property.GetterVisibility);
+            if (_property.SetterType == PropertySetter.None)
+                gs = $"{{ {tmp}get; }}";
+            else
+            {
+                var keyword = _property.SetterType == PropertySetter.Set ? "set" : "init";
+                gs = $"{{ {tmp}get; {OptionalVisibility(_property.SetterVisibility)}{keyword}; }}";
+            }
+
+            var    c = header + " " + gs;
             if (!IsInterface && !string.IsNullOrEmpty(_property.ConstValue))
                 c += " = " + _property.ConstValue + ";";
             writer.WriteLine(c);
             return false;
         }
 
-        if (_allowExpressionBodies && _property.IsPropertyReadOnly)
+        if (_allowExpressionBodies && _property.SetterType == PropertySetter.None)
         {
             var lines = _property.GetGetterLines();
             if (lines.IsExpressionBody)
@@ -150,7 +157,7 @@ internal class PropertyWriter
             writer.Open(header);
             {
                 WriteGetterOrSetter(writer, GsKind.Getter);
-                if (!_property.IsPropertyReadOnly)
+                if (_property.SetterType != PropertySetter.None)
                     WriteGetterOrSetter(writer, GsKind.Setter);
             }
 

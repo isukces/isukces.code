@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using iSukces.Code.Interfaces;
 
@@ -44,7 +45,7 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     {
         EmitField             = false;
         OwnGetter             = expression;
-        IsPropertyReadOnly    = true;
+        SetterType            = PropertySetter.None;
         OwnGetterIsExpression = true;
         return this;
     }
@@ -57,9 +58,10 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
 
     public CodeLines GetSetterLines()
     {
-        var tmp = string.IsNullOrEmpty(OwnSetter)
-            ? new CodeLines(new[] { $"{PropertyFieldName} = value" }, true)
-            : new CodeLines(OwnSetter.Split('\r', '\n'), OwnSetterIsExpression);
+        var setter = OwnSetter;
+        var tmp = string.IsNullOrEmpty(setter)
+            ? new CodeLines([$"{PropertyFieldName} = value"], true)
+            : new CodeLines(setter.Split('\r', '\n'), OwnSetterIsExpression);
         return tmp;
     }
 
@@ -69,9 +71,9 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     /// <returns>Tekstowa reprezentacja obiektu</returns>
     public override string ToString() => string.Format("property {0} {1}", Name, Type.Modern);
 
-    public CsProperty WithIsPropertyReadOnly(bool isPropertyReadOnly = true)
+    public CsProperty WithIsPropertyReadOnly()
     {
-        IsPropertyReadOnly = isPropertyReadOnly;
+        SetterType = PropertySetter.None;
         return this;
     }
 
@@ -115,7 +117,15 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
 
     /// <summary>
     /// </summary>
-    public bool IsPropertyReadOnly { get; set; }
+    [Obsolete("use SetterType instead", true)]
+    public bool IsPropertyReadOnly {
+        get => SetterType==PropertySetter.None;
+        set => SetterType = value
+            ? PropertySetter.None
+            : PropertySetter.Set;
+    }
+
+    public PropertySetter SetterType { get; set; } = PropertySetter.Set;
 
     /// <summary>
     /// </summary>
@@ -177,3 +187,9 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     public CsProperty WithAttribute<T>() => this.WithAttribute(Owner, typeof(T));
 }
 
+public enum PropertySetter
+{
+    None,
+    Set,
+    Init
+}

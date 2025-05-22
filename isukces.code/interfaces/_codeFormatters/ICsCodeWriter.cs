@@ -183,8 +183,7 @@ public static class CsCodeWriterExtensions
             writer.WriteLine("*/");
         }
     }
-
-
+    
     public static T WriteIndent<T>(this T self)
         where T : ICodeWriter
     {
@@ -213,8 +212,7 @@ public static class CsCodeWriterExtensions
         else
             writer.WriteLine(header).IncIndent().WriteLine(expression).DecIndent();
     }
-
-
+    
     public static void WriteLambda(this ICsCodeWriter writer, string header, IReadOnlyList<string> expression,
         int maxLineLength)
     {
@@ -240,11 +238,11 @@ public static class CsCodeWriterExtensions
         writer.DecIndent();
     }
 
-    public static T WriteMultiLineSummary<T>(this T src, IReadOnlyList<string> lines, bool skipIfEmpty = false)
+    public static T WriteMultiLineSummary<T>(this T src, IReadOnlyList<string>? lines, bool skipIfEmpty = false)
         where T : ICsCodeWriter
 
     {
-        lines = lines ?? XArray.Empty<string>();
+        lines ??= [];
         if (lines.Count == 0 && skipIfEmpty)
             return src;
         src.WriteLine("/// <summary>");

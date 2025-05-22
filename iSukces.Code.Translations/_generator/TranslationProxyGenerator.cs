@@ -40,7 +40,7 @@ namespace iSukces.Code.Translations
                     if (!dict.PropertyExists(propName))
                         dict.Register(createRequest.Key, propName);
                     var p = csClass.AddProperty(propName, CsType.String);
-                    p.IsPropertyReadOnly    = true;
+                    p.SetterType            = PropertySetter.None;
                     p.EmitField             = false;
                     p.OwnGetterIsExpression = true;
                     p.OwnGetter             = holderInstance + "[" + createRequest.Key.CsEncode() + "]";
