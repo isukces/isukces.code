@@ -20,20 +20,13 @@ namespace iSukces.Code.Tests.EqualityGenerator
             return StringComparer.OrdinalIgnoreCase.Equals(Name, other.Name);
         }
 
-        public override int GetHashCode()
-        {
-            return IsEmpty ? 0 : HashCode;
-        }
+        public override int GetHashCode() => IsEmpty ? 0 : HashCode;
 
-        public static bool operator ==(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)
-        {
-            return Equals(left, right);
-        }
+        public static bool operator ==(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right) => 
+            Equals(left, right);
 
-        public static bool operator !=(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right)
-        {
-            return !Equals(left, right);
-        }
+        public static bool operator !=(TestStructWithSpecialHashCodeField left, TestStructWithSpecialHashCodeField right) => 
+            !Equals(left, right);
 
     }
 }

@@ -183,6 +183,8 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
 
     public Visibilities Visibility { get; set; } = Visibilities.Public;
     
+    public bool IsRequired { get; set; }
+    
     
     public CsProperty WithAttribute<T>() => this.WithAttribute(Owner, typeof(T));
 }

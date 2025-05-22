@@ -44,11 +44,11 @@ using iSukces.Code.Tests;";
             cl.AddProperty<List<int>>("C");
             cl.AddProperty<System.Globalization.Calendar>("D");
             cl.AddProperty<List<string>>("Sl");
+            cl.AddProperty<string>("RequiredProperty").IsRequired = true;
         }
 
         var code = file.GetCode().Trim();
-        const string expected = @"
-// ReSharper disable All
+        const string expected = @"// ReSharper disable All
 using iSukces.Code;
 using gene = System.Collections.Generic;
 
@@ -70,8 +70,9 @@ public class SomeClass
 
     public TStringList Sl { get; set; }
 
-}
-";
+    public required string RequiredProperty { get; set; }
+
+}";
         Assert.Equal(expected.Trim(), code);
     }
 }

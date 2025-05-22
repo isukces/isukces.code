@@ -31,15 +31,11 @@ namespace iSukces.Code.Tests.EqualityGenerator
                 }
             }
 
-            public static bool operator ==(ClassWithEnumProperties2 left, ClassWithEnumProperties2 right)
-            {
-                return Equals(left, right);
-            }
+            public static bool operator ==(ClassWithEnumProperties2 left, ClassWithEnumProperties2 right) => 
+                Equals(left, right);
 
-            public static bool operator !=(ClassWithEnumProperties2 left, ClassWithEnumProperties2 right)
-            {
-                return !Equals(left, right);
-            }
+            public static bool operator !=(ClassWithEnumProperties2 left, ClassWithEnumProperties2 right) => 
+                !Equals(left, right);
 
         }
 

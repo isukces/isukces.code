@@ -37,15 +37,9 @@ namespace iSukces.Code.Tests.EqualityGenerator
                 }
             }
 
-            public static bool operator ==(ClassWithBools left, ClassWithBools right)
-            {
-                return Equals(left, right);
-            }
+            public static bool operator ==(ClassWithBools left, ClassWithBools right) => Equals(left, right);
 
-            public static bool operator !=(ClassWithBools left, ClassWithBools right)
-            {
-                return !Equals(left, right);
-            }
+            public static bool operator !=(ClassWithBools left, ClassWithBools right) => !Equals(left, right);
 
         }
 

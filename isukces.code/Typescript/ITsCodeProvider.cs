@@ -1,10 +1,8 @@
 using iSukces.Code.Interfaces;
 
-namespace iSukces.Code.Typescript
+namespace iSukces.Code.Typescript;
+
+public interface ITsCodeProvider
 {
-    public interface ITsCodeProvider
-    {
-        void WriteCodeTo(ITsCodeWriter writer);
-    }
-  
+    void WriteCodeTo(ITsCodeWriter writer);
 }

@@ -65,6 +65,8 @@ internal class PropertyWriter
         var list = new List<string>();
         if (!IsInterface && _property.Visibility != Visibilities.InterfaceDefault)
             list.Add(_property.Visibility.ToString().ToLower());
+        if (_property.IsRequired)
+            list.Add("required");
         if (_property.IsStatic)
             list.Add("static");
         if (!IsInterface)
