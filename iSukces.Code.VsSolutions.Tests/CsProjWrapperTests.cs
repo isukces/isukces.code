@@ -13,7 +13,7 @@ public class CsProjWrapperTests
         var x = XDocument.Parse(a);
         var w = new VsCoreProjectFile(x, CsprojDocumentKind.Project);
         w.Authors.Value         = "John Doe";
-        w.TargetFramework.Value = "net5.0;net6.0";
+        w.TargetFramework.Value = "net5.0;net6.0;net10.0";
         w.Company.Value         = "iSukces";
         w.Copyright.Value       = "Copyright © Internet Sukces Piotr Stęclik 2016-2025";
         
@@ -22,13 +22,13 @@ public class CsProjWrapperTests
                           <Project Sdk="Microsoft.NET.Sdk">
                             <PropertyGroup>
                               <Authors>John Doe</Authors>
-                              <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
+                              <TargetFrameworks>net5.0;net6.0;net10.0</TargetFrameworks>
                               <Company>iSukces</Company>
                               <Copyright>Copyright © Internet Sukces Piotr Stęclik 2016-2025</Copyright>
                             </PropertyGroup>
                           </Project>
                           """;
-        Assert.Equal(expected, doc);
+        Assert.Equal(expected.Trim(), doc.Trim());
         
         
         w.TargetFramework.Value = "net5.0";

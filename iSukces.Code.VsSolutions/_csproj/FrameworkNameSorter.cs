@@ -11,9 +11,9 @@ public struct FrameworkNameSorter : IComparable<FrameworkNameSorter>, IComparabl
         if (!m.Success)
             throw new ArgumentException("Invalid target framework " + s);
 
-        this.Prefix  = m.Groups[1].Value.ToLower();
-        this.Version = m.Groups[2].Value;
-        this.Suffix  = m.Groups[3].Value.ToLower();
+        Prefix  = m.Groups[1].Value.ToLower();
+        Version = m.Groups[2].Value;
+        Suffix  = m.Groups[3].Value.ToLower();
             
     }
 
@@ -22,7 +22,7 @@ public struct FrameworkNameSorter : IComparable<FrameworkNameSorter>, IComparabl
         get
         {
             // net48;net8.0;net9.0;netcoreapp3.1
-            if (Prefix == "net") return Version.Contains('.') ? 4 : 1;
+            if (Prefix == "net") return Version.Value.Contains('.') ? 4 : 1;
             if (Prefix == "netcoreapp")
                 return 2;
             if (Prefix == "netstandard")
@@ -34,7 +34,7 @@ public struct FrameworkNameSorter : IComparable<FrameworkNameSorter>, IComparabl
     {
         var a = Group.CompareTo(other.Group);
         if (a != 0) return a;
-        a = string.Compare(Version, other.Version, StringComparison.OrdinalIgnoreCase);
+        a = Version.CompareTo(other.Version);
         if (a != 0) return a;
         var b = string.Compare(Prefix, other.Prefix, StringComparison.OrdinalIgnoreCase);
         if (b != 0) return b;
@@ -49,12 +49,10 @@ public struct FrameworkNameSorter : IComparable<FrameworkNameSorter>, IComparabl
 
     public string Suffix { get; }
 
-    public string Version { get;  }
+    public FrameworkVersionNumber Version { get;  }
 
     public string Prefix { get; }
 
     const string SplitFilter = @"^([^\d]+)(\d[^-]+)(-.*)?";
     static Regex SplitRegex = new Regex(SplitFilter, RegexOptions.Multiline | RegexOptions.Compiled);
-        
 }
-
