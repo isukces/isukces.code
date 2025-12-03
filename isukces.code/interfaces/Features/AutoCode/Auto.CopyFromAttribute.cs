@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace iSukces.Code.Interfaces;
 
-public partial class Auto
+public static partial class Auto
 {
     [AttributeUsage(AttributeTargets.Class)]
+    [Conditional("AUTOCODE_ANNOTATIONS")]
     public class CopyFromAttribute : Attribute
     {
 
@@ -18,7 +20,7 @@ public partial class Auto
 
         public string CopyByReference
         {
-            get => _copyByReference;
+            get => _copyByReference ?? "";
             set
             {
                 _copyByReference     = value;
@@ -32,7 +34,7 @@ public partial class Auto
 
         public string Skip
         {
-            get => _skip;
+            get => _skip ?? "";
             set
             {
                 _skip     = value;
@@ -43,9 +45,9 @@ public partial class Auto
             }
         }
 
-        private string          _copyByReference;
-        private HashSet<string> _copyByReferenceHash;
-        private string          _skip;
-        private HashSet<string> _skipHash;
+        private string? _copyByReference;
+        private HashSet<string>? _copyByReferenceHash;
+        private string? _skip;
+        private HashSet<string>? _skipHash;
     }
 }

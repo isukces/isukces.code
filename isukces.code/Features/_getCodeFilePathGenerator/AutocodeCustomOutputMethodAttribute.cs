@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace iSukces.Code;
 
-[Conditional("DEBUG")]
+[Conditional("AUTOCODE_ANNOTATIONS")]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
 public sealed class AutocodeCustomOutputMethodAttribute : Attribute
 {

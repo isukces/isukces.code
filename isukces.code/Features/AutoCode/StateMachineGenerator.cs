@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using iSukces.Code.Interfaces;
@@ -8,6 +9,7 @@ namespace iSukces.Code.AutoCode;
 
 
 [AttributeUsage(AttributeTargets.Class)]
+[Conditional("AUTOCODE_ANNOTATIONS")]
 // ReSharper disable once ClassNeverInstantiated.Global
 public class StateMachineAttribute : Attribute
 {

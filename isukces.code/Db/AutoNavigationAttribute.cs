@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics;
 
 namespace iSukces.Code.Db;
 
+[Conditional("AUTOCODE_ANNOTATIONS")]
 public class AutoNavigationAttribute : Attribute
 {
     public AutoNavigationAttribute(string name, Type type, string? inverse = null)

@@ -1,15 +1,16 @@
 using System;
+using System.Diagnostics;
 
-namespace iSukces.Code.Interfaces
+namespace iSukces.Code.Interfaces;
+
+public static partial class Auto
 {
-    public partial class Auto
+    [AttributeUsage(AttributeTargets.Property)]
+    [Conditional("AUTOCODE_ANNOTATIONS")]
+    public sealed class CopyFromOrderAttribute : Attribute
     {
-        [AttributeUsage(AttributeTargets.Property)]
-        public sealed class CopyFromOrderAttribute : Attribute
-        {
-            public CopyFromOrderAttribute(int order) => Order = order;
+        public CopyFromOrderAttribute(int order) => Order = order;
 
-            public int Order { get; }
-        }
+        public int Order { get; }
     }
 }

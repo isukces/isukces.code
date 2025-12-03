@@ -1,26 +1,29 @@
 using System;
+using System.Diagnostics;
 
-namespace iSukces.Code.Interfaces
+namespace iSukces.Code.Interfaces;
+
+public static partial class Auto
 {
-    public partial class Auto
+    public class CopyBy
     {
-        public class CopyBy
+        [AttributeUsage(AttributeTargets.Property)]
+        [Conditional("AUTOCODE_ANNOTATIONS")]
+        public class ReferenceAttribute : Attribute
         {
-            [AttributeUsage(AttributeTargets.Property)]
-            public class ReferenceAttribute : Attribute
-            {
-            }
+        }
 
-            [AttributeUsage(AttributeTargets.Property)]
-            public class ValuesProcessorAttribute : Attribute
-            {
-            }
+        [AttributeUsage(AttributeTargets.Property)]
+        [Conditional("AUTOCODE_ANNOTATIONS")]
+        public class ValuesProcessorAttribute : Attribute
+        {
+        }
 
-            [AttributeUsage(AttributeTargets.Property)]
-            // ReSharper disable once MemberHidesStaticFromOuterClass
-            public class CloneableAttribute : Attribute
-            {
-            }
+        [AttributeUsage(AttributeTargets.Property)]
+        [Conditional("AUTOCODE_ANNOTATIONS")]
+        // ReSharper disable once MemberHidesStaticFromOuterClass
+        public class CloneableAttribute : Attribute
+        {
         }
     }
 }

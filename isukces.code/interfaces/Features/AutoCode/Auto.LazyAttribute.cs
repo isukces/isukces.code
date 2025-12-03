@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics;
 
 namespace iSukces.Code.Interfaces;
 
-public partial class Auto
+public static partial class Auto
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property)]
+    [Conditional("AUTOCODE_ANNOTATIONS")]
     public class LazyAttribute : Attribute
     {
         public LazyMemberType Target                     { get; set; } = LazyMemberType.Auto;

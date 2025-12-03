@@ -1,8 +1,10 @@
 using System;
+using System.Diagnostics;
 using iSukces.Code.Interfaces;
 
 namespace iSukces.Code;
 
+[Conditional("AUTOCODE_ANNOTATIONS")]
 public sealed class AutoSealedAttribute : Attribute
 {
     public AutoSealedAttribute(AutoSealedKind kind = AutoSealedKind.Generate)

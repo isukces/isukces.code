@@ -23,7 +23,7 @@ public static class CallerFilePathFixer
         h(null, e);
         return e.Path;
     }
-    
+
     /// <summary>
     /// Naprawia ścieżkę zapisu pliku dla prefixu /_/app/
     /// </summary>
@@ -43,7 +43,11 @@ public static class CallerFilePathFixer
 
     public sealed class ProcessSaveFileNameEventArgs : EventArgs
     {
+#if NET8_0_OR_GREATER
         public required string Path { get; set; }
+#else
+        public string? Path { get; set; }
+#endif
     }
 }
 

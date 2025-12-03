@@ -1,27 +1,19 @@
 using System;
+using System.Diagnostics;
 
-namespace iSukces.Code.Interfaces
+namespace iSukces.Code.Interfaces;
+
+[AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
+[Conditional("AUTOCODE_ANNOTATIONS")]
+public class AddInterfaceAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple=true)]
-    public class AddInterfaceAttribute : Attribute
+    public AddInterfaceAttribute(Type _interface)
     {
-        #region Constructors
-        public AddInterfaceAttribute(Type _interface)
-        {
-            Interface = _interface;
-        }
-        
-        #endregion
-
-        #region Properties
-
-        /// <summary>
-        /// interfejs implementowany przez klasę
-        /// </summary>
-        public Type Interface { get; set; }
-
-        #endregion
-
+        Interface = _interface;
     }
-}
 
+    /// <summary>
+    /// Interfejs implementowany przez klasę
+    /// </summary>
+    public Type Interface { get; set; }
+}

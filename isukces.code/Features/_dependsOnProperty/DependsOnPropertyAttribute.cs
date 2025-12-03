@@ -1,37 +1,37 @@
 using System;
+using System.Diagnostics;
 
-namespace iSukces.Code
+namespace iSukces.Code;
+
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
+[Conditional("AUTOCODE_ANNOTATIONS")]
+public class DependsOnPropertyAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property, AllowMultiple = true)]
-    public class DependsOnPropertyAttribute : Attribute
-    {
-        public DependsOnPropertyAttribute(params string[] propertyNames) { PropertyNames = propertyNames; }
+    public DependsOnPropertyAttribute(params string[] propertyNames) { PropertyNames = propertyNames; }
 
 
-        public string[]               PropertyNames { get; set; }
-        public DependsOnPropertyFlags Flags         { get; set; }
-    }
+    public string[]               PropertyNames { get; set; }
+    public DependsOnPropertyFlags Flags         { get; set; }
+}
 
-    [Flags]
-    public enum DependsOnPropertyFlags
-    {
-        None,
-        SkipCreatingConstants,
-        /// <summary>
-        /// When <see cref="DependsOnPropertyGenerator">Exclude property in GetDependentProperties method</see>
-        /// <see cref="DependsOnPropertyGeneratorFlags">DependsOnPropertyGeneratorF</see>.
-        /// <see cref="DependsOnPropertyGeneratorFlags.GetDependentProperties">GetDependentProperties</see>
-        /// </summary>
-        ExcludeFromGetDependentPropertiesMethod
-    }
+[Flags]
+public enum DependsOnPropertyFlags
+{
+    None,
+    SkipCreatingConstants,
+    /// <summary>
+    /// When <see cref="DependsOnPropertyGenerator">Exclude property in GetDependentProperties method</see>
+    /// <see cref="DependsOnPropertyGeneratorFlags">DependsOnPropertyGeneratorF</see>.
+    /// <see cref="DependsOnPropertyGeneratorFlags.GetDependentProperties">GetDependentProperties</see>
+    /// </summary>
+    ExcludeFromGetDependentPropertiesMethod
+}
 
 
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    public class DependsOnProperty2 : Attribute
-    {
-        
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
+[Conditional("AUTOCODE_ANNOTATIONS")]
+public class DependsOnProperty2 : Attribute
+{
+    public bool SkipCreatingConstants { get; set; }
 
-        public bool SkipCreatingConstants { get; set; }
-        
-    }
 }

@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics;
 
 namespace iSukces.Code.Interfaces;
 
-public partial class Auto
+public static partial class Auto
 {
     [AttributeUsage(AttributeTargets.Class)]
+    [Conditional("AUTOCODE_ANNOTATIONS")]
     public sealed class BuilderForTypeAttribute : Attribute
     {
         public BuilderForTypeAttribute(Type targetType, params string[] skipWithFor)
@@ -19,6 +21,7 @@ public partial class Auto
     }
         
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
+    [Conditional("AUTOCODE_ANNOTATIONS")]
     public sealed class BuilderForTypePropertyAttribute : Attribute
     {
         public BuilderForTypePropertyAttribute(string propertyName)

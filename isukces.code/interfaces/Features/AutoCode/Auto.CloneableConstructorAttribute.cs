@@ -1,13 +1,14 @@
 using System;
+using System.Diagnostics;
 
-namespace iSukces.Code.Interfaces
+namespace iSukces.Code.Interfaces;
+
+public static partial class Auto
 {
-    public partial class Auto
+    [AttributeUsage(AttributeTargets.Constructor)]
+    [Conditional("AUTOCODE_ANNOTATIONS")]
+    public class CloneableConstructorAttribute : Attribute
     {
-        [AttributeUsage(AttributeTargets.Constructor)]
-        public class CloneableConstructorAttribute : Attribute
-        {
             
-        }
     }
 }

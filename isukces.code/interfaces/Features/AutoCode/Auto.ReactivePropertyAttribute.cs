@@ -1,37 +1,19 @@
-
-#region using
-
 using System;
 
-#endregion
+namespace iSukces.Code.Interfaces;
 
-namespace iSukces.Code.Interfaces
+public static partial class Auto
 {
-    public partial class Auto
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class ReactivePropertyAttribute : PropertyAttributeBase
     {
-        #region Nested
-
-        [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-        public class ReactivePropertyAttribute : PropertyAttributeBase
+        public ReactivePropertyAttribute(string name, Type propertyType, string? description = null)
         {
-            #region Constructors
-
-            public ReactivePropertyAttribute(string name, Type propertyType, string? description = null)
-            {
-                Name = name;
-                PropertyType = propertyType;
-                Description = description;
-            }
-
-            #endregion
-
-            #region Properties
-
-            public Visibilities FieldVisibility { get; set; } = Visibilities.Private;
-
-            #endregion
+            Name         = name;
+            PropertyType = propertyType;
+            Description  = description;
         }
 
-        #endregion
+        public Visibilities FieldVisibility { get; set; } = Visibilities.Private;
     }
 }

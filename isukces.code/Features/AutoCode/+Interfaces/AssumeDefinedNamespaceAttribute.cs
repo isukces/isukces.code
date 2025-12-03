@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace iSukces.Code.AutoCode;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct | AttributeTargets.Interface)]
+[Conditional("AUTOCODE_ANNOTATIONS")]
 public sealed class AssumeDefinedNamespaceAttribute : Attribute
 {
     public static FileScopeNamespaceConfiguration? Get(Type type)

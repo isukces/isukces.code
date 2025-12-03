@@ -1,10 +1,9 @@
-namespace iSukces.Code.Interfaces
+namespace iSukces.Code.Interfaces;
+
+public static partial class Auto
 {
-    public partial class Auto
+    public enum LazyMemberType
     {
-        public enum LazyMemberType
-        {
-            Auto, Property, Method
-        }
+        Auto, Property, Method
     }
 }
