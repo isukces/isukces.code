@@ -42,8 +42,11 @@ public class XmlWrapper
         var el = Document.Root;
         if (el == null)
             throw new NullReferenceException("el");
-        var pathElements = path.Split('/').Select(PathElement.FromString).Where(a => a != null).ToArray();
-        foreach (PathElement? pathElement in pathElements)
+        PathElement[] pathElements = path.Split('/')
+            .Select(PathElement.FromString)
+            .Where(a => a != null)
+            .ToArray()!;
+        foreach (PathElement pathElement in pathElements)
         {
             var next = el.Element(pathElement.ElementName);
             if (next == null)

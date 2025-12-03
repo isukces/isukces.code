@@ -4,7 +4,7 @@
     <Copyright>Copyright © Internet Sukces Piotr Stęclik 2025</Copyright>
     <Authors>Internet Sukces Piotr Stęclik</Authors>
     <Company>Internet Sukces Piotr Stęclik</Company>
-    <LangVersion>13</LangVersion>
+    <LangVersion>14</LangVersion>
     <NoWarn>1701;1702;1591;CS0618_9999</NoWarn>
     <WarningsAsErrors>1574;xUnit2000;NU5125;CS0162;CS0169;CS1572;CS8618;CS0219;CS0168;CS8632</WarningsAsErrors>
   </PropertyGroup>

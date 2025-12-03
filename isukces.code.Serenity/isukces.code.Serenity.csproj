@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Product>iSukces.Code.Serenity</Product>
     <ProjectGuid>{2EB071BA-3139-4CA2-93CE-CE7C567A26F9}</ProjectGuid>
-    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net6.0;net8.0;net9.0</TargetFrameworks>
     <AssemblyVersion>1.23.1218.82</AssemblyVersion>
     <FileVersion>1.23.1218.82</FileVersion>
     <Version>1.23.1218.82</Version>
-    <LangVersion>13</LangVersion>
+    <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
     <UseWPF>false</UseWPF>
     <SignAssembly>true</SignAssembly>
