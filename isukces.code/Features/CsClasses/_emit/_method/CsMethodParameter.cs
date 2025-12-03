@@ -112,8 +112,6 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
             : $"{type} {Name}";
     }
 
-    #region Properties
-
     /// <summary>
     /// </summary>
     public string? ConstValue
@@ -160,8 +158,6 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
 
     public bool IsVolatile { get; set; }
 
-    #endregion
-
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
 
     /// <summary>
@@ -173,50 +169,7 @@ public class CsMethodParameter : IComparable, IAttributable, IAnnotableByUser
         set => _attributes = value ?? new List<ICsAttribute>();
     }
 
-    #region Fields
-
     private string? _constValue = string.Empty;
     private string? _description = string.Empty;
     private IList<ICsAttribute> _attributes = new List<ICsAttribute>();
-
-    #endregion
 }
-
-public static class CsMethodParameterExt
-{
-    public static T WithConstValue<T>(this T src, string constValue)
-        where T : CsMethodParameter
-    {
-        src.ConstValue = constValue;
-        return src;
-    }
-
-    public static T WithConstValueNull<T>(this T src)
-        where T : CsMethodParameter
-    {
-        src.ConstValue = "null";
-        return src;
-    }
-
-    public static T WithDescription<T>(this T src, string? description)
-        where T : CsMethodParameter
-    {
-        src.Description = description;
-        return src;
-    }
-
-    public static T WithIsReadOnly<T>(this T src, bool isReadOnly = true)
-        where T : CsMethodParameter
-    {
-        src.IsReadOnly = isReadOnly;
-        return src;
-    }
-
-    public static T WithIsVolatile<T>(this T src, bool isVolatile = true)
-        where T : CsMethodParameter
-    {
-        src.IsVolatile = isVolatile;
-        return src;
-    }
-}
-

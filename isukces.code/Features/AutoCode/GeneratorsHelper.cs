@@ -4,72 +4,108 @@ using System.Linq;
 using System.Reflection;
 using iSukces.Code.Interfaces;
 
-namespace iSukces.Code.AutoCode
+namespace iSukces.Code.AutoCode;
+
+public static class GeneratorsHelper
 {
-    public static class GeneratorsHelper
+    public static void AddInitCode(CsClass cl, string codeLine)
     {
-        public static void AddInitCode(CsClass cl, string codeLine)
-        {
-            var method = cl.Methods.FirstOrDefault(a => a.Name == AutoCodeInitMethodName);
+        var method = cl.Methods.FirstOrDefault(a => a.Name == AutoCodeInitMethodName);
 
-            if (method is null)
-                method = cl.AddMethod(AutoCodeInitMethodName, CsType.Void)
-                    .WithVisibility(Visibilities.Private);
+        if (method is null)
+            method = cl.AddMethod(AutoCodeInitMethodName, CsType.Void)
+                .WithVisibility(Visibilities.Private);
 
-            method.Body += "\r\n" + codeLine;
-        }
+        method.Body += "\r\n" + codeLine;
+    }
 
-        public static CsExpression CallMethod(string instance, string method, params string[] arguments)
-        {
-            var prefix = $"{instance}.{method}";
-            var code   = arguments.CommaJoin().Parentheses(prefix);
-            return (CsExpression)code;
-        }
+    public static CsExpression CallMethod(string instance, string method, params string[] arguments)
+    {
+        var prefix = $"{instance}.{method}";
+        var code   = arguments.CommaJoin().Parentheses(prefix);
+        return (CsExpression)code;
+    }
 
-        public static CsExpression CallMethod(string method, params CsExpression[] arguments)
-        {
-            var code = arguments.Select(a => a.Code)
-                .CommaJoin()
-                .Parentheses(method);
-            return (CsExpression)code;
-        }
+    public static CsExpression CallMethod(string method, params CsExpression[] arguments)
+    {
+        var code = arguments.Select(a => a.Code)
+            .CommaJoin()
+            .Parentheses(method);
+        return (CsExpression)code;
+    }
 
-        public static CsExpression CallMethod(string method, IArgumentsHolder holder)
-        {
-            var code   = holder.GetArguments().CommaJoin().Parentheses(method);
-            return (CsExpression)code;
-        }
+    public static CsExpression CallMethod(string method, IArgumentsHolder holder)
+    {
+        var code = holder.GetArguments().CommaJoin().Parentheses(method);
+        return (CsExpression)code;
+    }
 
-        public static CsExpression CallMethod(string instance, string method, IArgumentsHolder holder)
-        {
-            var prefix = instance + "." + method;
-            var code   = holder.GetArguments().CommaJoin().Parentheses(prefix);
-            return (CsExpression)code;
-        }
+    public static CsExpression CallMethod(string instance, string method, IArgumentsHolder holder)
+    {
+        var prefix = instance + "." + method;
+        var code   = holder.GetArguments().CommaJoin().Parentheses(prefix);
+        return (CsExpression)code;
+    }
 
-        public static MyStruct DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
-        {
-            var comparer     = typeof(Comparer<>).MakeGenericType(type);
-            var comparerName = resolver.GetTypeName(comparer).Declaration;
-            return new MyStruct("{0}.Compare", $"{comparerName}.Default");
-        }
+    public static MyStruct DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
+    {
+        var comparer     = typeof(Comparer<>).MakeGenericType(type);
+        var comparerName = resolver.GetTypeName(comparer).Declaration;
+        return new MyStruct("{0}.Compare", $"{comparerName}.Default");
+    }
 
-        public static string FieldName(string x) => "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
+    public static string FieldName(string x)
+    {
+        return "_" + x.Substring(0, 1).ToLower() + x.Substring(1);
+    }
 
 
-        public static Type GetMemberResultType(MemberInfo mi)
-        {
-            if (mi is null) throw new ArgumentNullException(nameof(mi));
-            if (mi is PropertyInfo pi)
-                return pi.PropertyType;
-            if (mi is FieldInfo fi)
-                return fi.FieldType;
-            if (mi is MethodInfo mb)
-                return mb.ReturnType;
-            throw new NotSupportedException(mi.GetType().ToString());
-        }
+    public static Type GetMemberResultType(MemberInfo mi)
+    {
+        if (mi is null) throw new ArgumentNullException(nameof(mi));
+        if (mi is PropertyInfo pi)
+            return pi.PropertyType;
+        if (mi is FieldInfo fi)
+            return fi.FieldType;
+        if (mi is MethodInfo mb)
+            return mb.ReturnType;
+        throw new NotSupportedException(mi.GetType().ToString());
+    }
 
-        public static CsType GetTypeName(this INamespaceContainer? container, Type? type)
+    public static string GetWriteMemeberName(PropertyInfo pi)
+    {
+        var props = pi.GetCustomAttribute<Auto.WriteMemberAttribute>();
+        return !string.IsNullOrEmpty(props?.Name) ? props.Name : pi.Name;
+    }
+
+    public static HashSet<T> MakeCopy<T>(IEnumerable<T>? source, IEnumerable<T>? append = null,
+        IEnumerable<T>? remove = null)
+    {
+        var s = new HashSet<T>();
+        if (source is not null)
+            foreach (var i in source)
+                s.Add(i);
+        if (append is not null)
+            foreach (var i in append)
+                s.Add(i);
+        if (remove is not null)
+            foreach (var i in remove)
+                s.Remove(i);
+        return s;
+    }
+
+    public const BindingFlags AllVisibility = BindingFlags.NonPublic | BindingFlags.Public;
+    public const BindingFlags AllInstance = BindingFlags.Instance | AllVisibility;
+    public const BindingFlags AllStatic = BindingFlags.Static | AllVisibility;
+    public const BindingFlags All = AllInstance | BindingFlags.Static;
+    public const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
+
+    public const string StringEmpty = "string.Empty";
+    public const string AutoCodeInitMethodName = "AutocodeInit";
+
+    extension(INamespaceContainer? container)
+    {
+        public CsType GetTypeName(Type? type)
         {
             //todo: Generic types
             if (type is null)
@@ -132,8 +168,8 @@ namespace iSukces.Code.AutoCode
             CsType result;
             switch (nsInfo.SearchResult)
             {
-                case NamespaceSearchResult.Empty: result  = new CsType(mainPart); break;
-                case NamespaceSearchResult.Found: result  = nsInfo.AddAlias(mainPart.Substring(typeNamespace.Length + 1)); break;
+                case NamespaceSearchResult.Empty: result    = new CsType(mainPart); break;
+                case NamespaceSearchResult.Found: result    = nsInfo.AddAlias(mainPart.Substring(typeNamespace.Length + 1)); break;
                 case NamespaceSearchResult.NotFound: result = new CsType(mainPart); break;
                 default: throw new ArgumentOutOfRangeException();
             }
@@ -141,60 +177,24 @@ namespace iSukces.Code.AutoCode
             result.GenericParamaters = generics;
             return result;
         }
+    }
 
-        public static string GetWriteMemeberName(PropertyInfo pi)
+    public readonly struct MyStruct
+    {
+        public MyStruct(string expressionTemplate, string? instance = null)
         {
-            var props = pi.GetCustomAttribute<Auto.WriteMemberAttribute>();
-            return !string.IsNullOrEmpty(props?.Name) ? props.Name : pi.Name;
+            Instance           = instance;
+            ExpressionTemplate = expressionTemplate;
         }
 
-        public static HashSet<T> MakeCopy<T>(IEnumerable<T>? source, IEnumerable<T>? append = null,
-            IEnumerable<T>? remove = null)
+        public string GetCode()
         {
-            var s = new HashSet<T>();
-            if (source is not null)
-                foreach (var i in source)
-                    s.Add(i);
-            if (append is not null)
-                foreach (var i in append)
-                    s.Add(i);
-            if (remove is not null)
-                foreach (var i in remove)
-                    s.Remove(i);
-            return s;
+            if (string.IsNullOrEmpty(Instance))
+                return ExpressionTemplate;
+            return string.Format(ExpressionTemplate, Instance);
         }
 
-        public struct MyStruct
-        {
-            public MyStruct(string expressionTemplate, string? instance = null)
-            {
-                Instance           = instance;
-                ExpressionTemplate = expressionTemplate;
-            }
-
-            public string GetCode()
-            {
-                if (string.IsNullOrEmpty(Instance))
-                    return ExpressionTemplate;
-                return string.Format(ExpressionTemplate, Instance);
-            }
-
-            public string Instance           { get; }
-            public string ExpressionTemplate { get; }
-        }
-
-        public const BindingFlags AllVisibility = BindingFlags.NonPublic | BindingFlags.Public;
-        public const BindingFlags AllInstance = BindingFlags.Instance | AllVisibility;
-        public const BindingFlags AllStatic = BindingFlags.Static | AllVisibility;
-        public const BindingFlags All = AllInstance | BindingFlags.Static;
-        public const BindingFlags PublicInstance = BindingFlags.Public | BindingFlags.Instance;
-
-        public const string StringEmpty = "string.Empty";
-        public const string AutoCodeInitMethodName = "AutocodeInit";
-
-        /*public static string TypeName<T>(this INamespaceContainer container)
-        {
-            return TypeName(container, typeof(T));
-        }*/
+        public string Instance           { get; }
+        public string ExpressionTemplate { get; }
     }
 }

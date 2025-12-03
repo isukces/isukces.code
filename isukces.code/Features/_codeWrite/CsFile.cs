@@ -179,7 +179,7 @@ public class CsFile : IClassOwner, INamespaceCollection, INamespaceOwner
 
     public void MakeCode(ICsCodeWriter writer, bool isEmbedded = false)
     {
-        if (Namespaces is null || Namespaces.Count == 0)
+        if (Namespaces.Count == 0)
             return;
         switch (Nullable)
         {

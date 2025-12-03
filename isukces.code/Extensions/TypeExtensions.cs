@@ -2,11 +2,13 @@ using System;
 using System.Reflection;
 using iSukces.Code.Interfaces;
 
-namespace iSukces.Code
+namespace iSukces.Code;
+
+public static class TypeExtensions
 {
-    public static class TypeExtensions
+    extension(Type type)
     {
-        public static CsNamespaceMemberKind GetNamespaceMemberKind(this Type type)
+        public CsNamespaceMemberKind GetNamespaceMemberKind()
         {
             if (type is null) throw new ArgumentNullException(nameof(type));
             var ti = type.GetTypeInfo();
@@ -17,26 +19,27 @@ namespace iSukces.Code
             return CsNamespaceMemberKind.Class;
         }
 
-        public static bool IsExplicityImplementation(this Type implementingType, Type interfaceType, string methodName)
+        public bool IsExplicityImplementation(Type interfaceType, string methodName)
         {
-            var map = implementingType.GetInterfaceMap(interfaceType);
+            var map = type.GetInterfaceMap(interfaceType);
             for (var index = map.InterfaceMethods.Length - 1; index >= 0; index--)
             {
                 var interfaceMethod = map.InterfaceMethods[index];
                 if (interfaceMethod.Name != methodName) continue;
                 var targetMethod = map.TargetMethods[index];
-                return targetMethod.Name.Contains(".");
+                return targetMethod.Name.Contains('.');
             }
 
             return true;
         }
 
-        public static bool IsExplicityImplementation<TInterface>(this Type implementingType, string methodName)
+        public bool IsExplicityImplementation<TInterface>(string methodName)
         {
-            return IsExplicityImplementation(implementingType, typeof(TInterface), methodName);
+            return IsExplicityImplementation(type, typeof(TInterface), methodName);
         }
 
-        public static bool IsNullableType(this Type type)
+
+        public bool IsNullableType()
         {
 #if COREFX
             var typeInfo = type.GetTypeInfo();
@@ -46,7 +49,7 @@ namespace iSukces.Code
             return typeInfo.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
-        public static Type StripNullable(this Type type)
+        public Type StripNullable()
         {
 #if COREFX
             var typeInfo = type.GetTypeInfo();
@@ -58,7 +61,7 @@ namespace iSukces.Code
             return type;
         }
 
-        public static Type StripNullable(this Type type, out bool wasNullable)
+        public Type StripNullable(out bool wasNullable)
         {
 #if COREFX
             var typeInfo = type.GetTypeInfo();

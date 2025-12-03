@@ -15,28 +15,31 @@ public interface ICommentable
 
 public static class CommentableEx
 {
-    public static void AddCommentLocation(this ICommentable self, string? prefix,
-        SourceCodeLocation x)
+    extension(ICommentable self)
     {
-        prefix += " " + x;
-        prefix =  prefix.Trim();
-        self.AddComment(prefix);
-    }
+        public void AddCommentLocation(string? prefix,
+            SourceCodeLocation x)
+        {
+            prefix += " " + x;
+            prefix =  prefix.Trim();
+            self.AddComment(prefix);
+        }
 
-    public static void AddCommentLocation(this ICommentable self, SourceCodeLocation x)
-    {
-        self.AddComment(x.ToString());
-    }
+        public void AddCommentLocation(SourceCodeLocation x)
+        {
+            self.AddComment(x.ToString());
+        }
 
-    public static void AddCommentLocation<T>(this ICommentable self, string? prefix = null,
-        [CallerMemberName] string? memberName = null,
-        [CallerFilePath] string? filePath = null,
-        [CallerLineNumber] int lineNumber = 0)
-    {
-        var m = SourceCodeLocation.Make<T>(
-            memberName,
-            filePath,
-            lineNumber);
-        AddCommentLocation(self, prefix, m);
+        public void AddCommentLocation<T>(string? prefix = null,
+            [CallerMemberName] string? memberName = null,
+            [CallerFilePath] string? filePath = null,
+            [CallerLineNumber] int lineNumber = 0)
+        {
+            var m = SourceCodeLocation.Make<T>(
+                memberName,
+                filePath,
+                lineNumber);
+            AddCommentLocation(self, prefix, m);
+        }
     }
 }

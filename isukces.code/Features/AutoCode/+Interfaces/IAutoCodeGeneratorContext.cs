@@ -28,31 +28,31 @@ public interface IFinalizableAutoCodeGeneratorContext : IAutoCodeGeneratorContex
 
 public static class AutoCodeGeneratorContextExtensions
 {
-    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext? self, Type type)
+    extension(IAutoCodeGeneratorContext self)
     {
-        if (self is null) throw new ArgumentNullException(nameof(self));
-        if (type is null)
-            throw new NullReferenceException(nameof(type));
-        return self.GetOrCreateClass(TypeProvider.FromType(type));
-    }
-    
-    public static CsClass GetOrCreateClass(this IAutoCodeGeneratorContext self, CsType typeName, CsNamespaceMemberKind kind)
-    {
-        return self.GetOrCreateClass(TypeProvider.FromTypeName(typeName, kind));
-    }
-}
-    
-public static class AutoCodeGeneratorContextExt
-{
-    public static void AddNamespace(this IAutoCodeGeneratorContext src, Type type)
-    {
-        var ns = type.Namespace;
-        if (!string.IsNullOrEmpty(ns))
-            src.AddNamespace(ns);
-    }
+        public CsClass GetOrCreateClass(CsType typeName, CsNamespaceMemberKind kind)
+        {
+            return self.GetOrCreateClass(TypeProvider.FromTypeName(typeName, kind));
+        }
 
-    public static void AddNamespace<T>(this IAutoCodeGeneratorContext src)
-    {
-        AddNamespace(src, typeof(T));
+        public void AddNamespace(Type type)
+        {
+            var ns = type.Namespace;
+            if (!string.IsNullOrEmpty(ns))
+                self.AddNamespace(ns);
+        }
+
+        public void AddNamespace<T>()
+        {
+            AddNamespace(self, typeof(T));
+        }
+
+        public CsClass GetOrCreateClass(Type type)
+        {
+            if (self is null) throw new ArgumentNullException(nameof(self));
+            if (type is null)
+                throw new NullReferenceException(nameof(type));
+            return self.GetOrCreateClass(TypeProvider.FromType(type));
+        }
     }
 }

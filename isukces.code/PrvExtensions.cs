@@ -5,56 +5,59 @@ namespace iSukces.Code;
 
 internal static class PrvExtensions
 {
-    public static TOut[] MapToArray<TIn, TOut>(this IReadOnlyList<TIn>? src, Func<TIn, TOut> map)
+    extension<TIn>(IReadOnlyList<TIn>? src)
     {
-        if (src is null || src.Count == 0) return XArray.Empty<TOut>();
-        var result = new TOut[src.Count];
-        // ReSharper disable once LoopCanBeConvertedToQuery
-        for (var i = 0; i < src.Count; i++)
+        public TOut[] MapToArray<TOut>(Func<TIn, TOut> map)
         {
-            var element = src[i];
-            var value   = map(element);
-            result[i] = value;
+            if (src is null || src.Count == 0) return XArray.Empty<TOut>();
+            var result = new TOut[src.Count];
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            for (var i = 0; i < src.Count; i++)
+            {
+                var element = src[i];
+                var value   = map(element);
+                result[i] = value;
+            }
+
+            return result;
         }
 
-        return result;
+        public IReadOnlyList<TIn> CreateNewWithFirstElement(TIn el)
+        {
+            if (src is null || src.Count == 0)
+                return [el];
+            var r = new List<TIn>(src.Count + 1) { el };
+            r.AddRange(src);
+            return r;
+        }
+
+        public IReadOnlyList<TIn> CreateNewWithLastElement(TIn el)
+        {
+            if (src is null || src.Count == 0)
+                return [el];
+            var r = new List<TIn>(src.Count + 1);
+            r.AddRange(src);
+            r.Add(el);
+            return r;
+        }
     }
 
-    public static IReadOnlyList<T> CreateNewWithFirstElement<T>(this IReadOnlyList<T>? els, T el)
+
+    public static string CommaJoin(this IEnumerable<string> texts)
     {
-        if (els is null || els.Count == 0)
-            return new[] {el};
-        var r = new List<T>(els.Count + 1) {el};
-        r.AddRange(els);
-        return r;
+        return string.Join(GlobalSettings.CommaSeparator, texts);
     }
-    public static IReadOnlyList<T> CreateNewWithLastElement<T>(this IReadOnlyList<T>? els, T el)
+
+    public static string CommaJoin<T>(this IEnumerable<T> objects)
     {
-        if (els is null || els.Count == 0)
-            return new[] {el};
-        var r = new List<T>(els.Count + 1);
-        r.AddRange(els);
-        r.Add(el);
-        return r;
+        return string.Join(GlobalSettings.CommaSeparator, objects);
     }
-    
-    
-    public static string CommaJoin(this IEnumerable<string> args)
+
+    extension(string text)
     {
-        return string.Join(GlobalSettings.CommaSeparator, args);
-    }    
-    [Obsolete("Use select string", true)]
-    public static string CommaJoin(this IEnumerable<CsType> args)
-    {
-        return string.Join(GlobalSettings.CommaSeparator, args);
-    }    
-    public static string CommaJoin<T>(this IEnumerable<T> strings)
-    {
-        return string.Join(GlobalSettings.CommaSeparator, strings);
+        public string Parentheses() => $"({text})";
+        public string Parentheses(string prefix) => $"{prefix}({text})";
+        public string TriangleBrackets() => $"<{text}>";
+        public string New(string prefix) => $"new {prefix}({text})";
     }
-    
-    public static string Parentheses(this string text) => $"({text})";
-    public static string Parentheses(this string text, string prefix) => $"{prefix}({text})";
-    public static string TriangleBrackets(this string text) => $"<{text}>";
-    public static string New(this string text, string prefix) => $"new {prefix}({text})";
 }
