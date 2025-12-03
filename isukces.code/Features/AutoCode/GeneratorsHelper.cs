@@ -47,11 +47,11 @@ public static class GeneratorsHelper
         return (CsExpression)code;
     }
 
-    public static MyStruct DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
+    public static CodeSnippet DefaultComparerMethodName(Type type, ITypeNameResolver resolver)
     {
         var comparer     = typeof(Comparer<>).MakeGenericType(type);
         var comparerName = resolver.GetTypeName(comparer).Declaration;
-        return new MyStruct("{0}.Compare", $"{comparerName}.Default");
+        return new CodeSnippet("{0}.Compare", $"{comparerName}.Default");
     }
 
     public static string FieldName(string x)
@@ -179,9 +179,9 @@ public static class GeneratorsHelper
         }
     }
 
-    public readonly struct MyStruct
+    public readonly struct CodeSnippet
     {
-        public MyStruct(string expressionTemplate, string? instance = null)
+        public CodeSnippet(string expressionTemplate, string? instance = null)
         {
             Instance           = instance;
             ExpressionTemplate = expressionTemplate;
