@@ -70,7 +70,7 @@ namespace iSukces.Code.Typescript
             writer.Open(header);
             if (!string.IsNullOrEmpty(Body))
             {
-                var b = Body.Replace("\r\n", "\n").Split('\n');
+                var b = Body.SplitToLines();
                 foreach (var line in b)
                     writer.WriteLine(line);
             }

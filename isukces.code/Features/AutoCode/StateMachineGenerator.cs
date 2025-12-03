@@ -291,7 +291,7 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
         public static IEnumerable<Item?> ParseScript1(string sript, HashSet<string>? commandsWithCustomActions)
         {
             commandsWithCustomActions ??= new HashSet<string>();
-            foreach (var i in sript.Split('\n'))
+            foreach (var i in sript.SplitToLines())
                 yield return ParseLine(i, commandsWithCustomActions);
         }
 

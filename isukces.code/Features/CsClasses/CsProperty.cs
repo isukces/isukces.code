@@ -52,19 +52,6 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
 
     public string GetComments() => _extraComment.ToString();
 
-    public CodeLines GetGetterLines() => string.IsNullOrEmpty(OwnGetter)
-        ? CodeLines.FromExpression(PropertyFieldName)
-        : new CodeLines(OwnGetter.Split('\r', '\n'), OwnGetterIsExpression);
-
-    public CodeLines GetSetterLines()
-    {
-        var setter = OwnSetter;
-        var tmp = string.IsNullOrEmpty(setter)
-            ? new CodeLines([$"{PropertyFieldName} = value"], true)
-            : new CodeLines(setter.Split('\r', '\n'), OwnSetterIsExpression);
-        return tmp;
-    }
-
     /// <summary>
     ///     Zwraca tekstową reprezentację obiektu
     /// </summary>
@@ -80,6 +67,11 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     public CsProperty WithMakeAutoImplementIfPossible(bool value = true)
     {
         MakeAutoImplementIfPossible = value;
+        return this;
+    }
+    public CsProperty WithBackingField(PropertyBackingFieldUsage value = PropertyBackingFieldUsage.UseIfPossible)
+    {
+        BackingField = value;
         return this;
     }
 
@@ -165,9 +157,10 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     /// </summary>
     public bool MakeAutoImplementIfPossible { get; set; }
 
-    public Visibilities? SetterVisibility { get; set; }
-    public Visibilities? GetterVisibility { get; set; }
-    public Visibilities  FieldVisibility  { get; set; } = Visibilities.Private;
+    public Visibilities?             SetterVisibility { get; set; }
+    public Visibilities?             GetterVisibility { get; set; }
+    public Visibilities              FieldVisibility  { get; set; } = Visibilities.Private;
+    public PropertyBackingFieldUsage BackingField     { get; set; } = PropertyBackingFieldUsage.DoNotUse;
 
 #if NET8_0_OR_GREATER
     public required CsClass Owner { get; init; }
@@ -194,4 +187,16 @@ public enum PropertySetter
     None,
     Set,
     Init
+}
+
+
+public enum PropertyBackingField
+{
+    NotSupported,
+}
+
+public enum PropertyBackingFieldUsage
+{
+    DoNotUse,
+    UseIfPossible,
 }

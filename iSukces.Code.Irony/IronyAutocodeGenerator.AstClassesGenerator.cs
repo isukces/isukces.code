@@ -201,7 +201,7 @@ namespace iSukces.Code.Irony
                     foreach (var i in alts)
                     {
                         var name = i.GetCode(_astClass.Owner);
-                        name = CSharpExtension.GetCamelTerminalName(name);
+                        name = name.GetCamelTerminalName();
                         l.Add(new CsEnumItem(name));
                     }
 

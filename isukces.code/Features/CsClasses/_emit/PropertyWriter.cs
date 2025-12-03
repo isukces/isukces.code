@@ -22,42 +22,43 @@ internal class PropertyWriter
         return v;
     }
 
-
     internal void EmitProperty(ICsCodeWriter writer, CodeEmitState state)
     {
         state.StartItem(writer, _property);
-        try
+        writer.WriteComment(_property);
+
+        var emitField = WriteProperty(writer);
+
+        if (emitField && !IsInterface && !UseBackField)
         {
-            writer.WriteComment(_property);
-
-            var emitField = WriteProperty(writer);
-
-            if (emitField && !IsInterface)
+            var fieldType = _property.FieldTypeOverride;
+            if (fieldType.IsVoid)
+                fieldType = _property.Type;
+            var f = new[]
             {
-                var fieldType = _property.FieldTypeOverride;
-                if (fieldType.IsVoid)
-                    fieldType = _property.Type;
-                var f = new[]
-                {
-                    _property.FieldVisibility.ToString().ToLower(),
-                    _property.IsStatic ? "static" : null,
-                    _property.IsReadOnly ? "readonly" : null,
-                    fieldType.AsString(_allowReferenceNullable),
-                    _property.PropertyFieldName,
-                    string.IsNullOrWhiteSpace(_property.ConstValue) ? null : $"= {_property.ConstValue}"
-                };
+                _property.FieldVisibility.ToString().ToLower(),
+                _property.IsStatic ? "static" : null,
+                _property.IsReadOnly ? "readonly" : null,
+                fieldType.AsString(_allowReferenceNullable),
+                _property.PropertyFieldName,
+                string.IsNullOrWhiteSpace(_property.ConstValue) ? null : $"= {_property.ConstValue}"
+            };
 
-                var code = string.Join(" ", f.Where(a => !string.IsNullOrWhiteSpace(a))) + ";";
-                writer.EmptyLine().WriteLine(code);
-            }
-        }
-        finally
-        {
-            // writer.CloseCompilerIf(_property);
+            var code = string.Join(" ", f.Where(a => !string.IsNullOrWhiteSpace(a))) + ";";
+            writer.EmptyLine().WriteLine(code);
         }
 
         state.WriteEmptyLine = true;
         // writer.EmptyLine();
+    }
+
+    private PropertyCodeLines GetGetterLines()
+    {
+        if (!string.IsNullOrEmpty(_property.OwnGetter))
+            return new PropertyCodeLines(_property.OwnGetter.SplitToLines(), _property.OwnGetterIsExpression);
+        if (UseBackField)
+            return PropertyCodeLines.AsWriteAsAutoProperty();
+        return new PropertyCodeLines(_property.PropertyFieldName, true);
     }
 
     private string GetPropertyHeader()
@@ -83,20 +84,47 @@ internal class PropertyWriter
         return header;
     }
 
+    private PropertyCodeLines GetSetterLines()
+    {
+        var useField = UseBackField;
+        var setter   = _property.OwnSetter;
+        if (!string.IsNullOrEmpty(setter))
+        {
+            var split = setter.Replace("\r\n", "\n").Trim().Split('\r', '\n');
+            if (_property.OwnSetterIsExpression && useField)
+            {
+                split[0] = "field = " + split[0];
+                return new PropertyCodeLines(split, _property.OwnSetterIsExpression);    
+            }
+            return new PropertyCodeLines(split, _property.OwnSetterIsExpression);
+        }
+
+        if (useField)
+            return new PropertyCodeLines("field = value", true)
+            {
+                WriteAsAutoProperty = true
+            };
+        return new PropertyCodeLines($"{_property.PropertyFieldName} = value", true);
+    }
+
+
     private void WriteGetterOrSetter(ICsCodeWriter writer, GsKind kind)
     {
         var isGetter = kind is GsKind.Getter;
-        var lines    = isGetter ? _property.GetGetterLines() : _property.GetSetterLines();
+        var lines    = isGetter ? GetGetterLines() : GetSetterLines();
         if (lines is null || lines.IsEmpty) return;
         var keyWord          = isGetter ? "get" : "set";
         var memberVisibility = isGetter ? _property.GetterVisibility : _property.SetterVisibility;
         keyWord = OptionalVisibility(memberVisibility) + keyWord;
-        if (lines.IsExpressionBody && _allowExpressionBodies)
+        if ((lines.IsExpressionBody || lines.WriteAsAutoProperty) && _allowExpressionBodies)
         {
-            if (lines.Lines.Count == 1)
-                lines.WriteExpressionLines(keyWord + " =>", true, writer);
-            else
+            if (lines.Lines.Count != 1)
                 throw new NotSupportedException("Multiline expression getter/setter");
+            if (lines.WriteAsAutoProperty)
+                writer.WriteLine(keyWord + ";");
+            else
+                lines.WriteExpressionLines(keyWord + " =>", true, writer);
+
             return;
         }
 
@@ -138,20 +166,22 @@ internal class PropertyWriter
                 gs = $"{{ {tmp}get; {OptionalVisibility(_property.SetterVisibility)}{keyword}; }}";
             }
 
-            var    c = header + " " + gs;
+            var c = header + " " + gs;
             if (!IsInterface && !string.IsNullOrEmpty(_property.ConstValue))
                 c += " = " + _property.ConstValue + ";";
             writer.WriteLine(c);
             return false;
         }
 
+        var emitField = _property.EmitField && !UseBackField;
+
         if (_allowExpressionBodies && _property.SetterType == PropertySetter.None)
         {
-            var lines = _property.GetGetterLines();
+            var lines = GetGetterLines();
             if (lines.IsExpressionBody)
             {
                 writer.WriteLambda(header, lines.GetExpression(), _csClass.Formatting.MaxLineLength, true);
-                return _property.EmitField;
+                return emitField;
             }
         }
 
@@ -164,15 +194,19 @@ internal class PropertyWriter
             }
 
             var append = "";
-            if (!IsInterface && !string.IsNullOrEmpty(_property.ConstValue) && !_property.EmitField)
+            if (!IsInterface && !string.IsNullOrEmpty(_property.ConstValue) && !emitField)
                 append = "= " + _property.ConstValue + ";";
+
             writer.Close(appendText: append);
         }
 
-        return _property.EmitField;
+        return emitField;
     }
 
     #region Properties
+
+    private bool UseBackField => (_csClass.Formatting.Flags & CodeFormattingFeatures.PropertyBackField) != 0
+                             && _property.BackingField == PropertyBackingFieldUsage.UseIfPossible;
 
     private bool IsInterface => _csClass.IsInterface;
 

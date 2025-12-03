@@ -130,25 +130,7 @@ public static class CsCodeWriterExtensions
             return self.SingleLineIf(condition, statement + ";");
         }
 
-        public void WriteComment(ICommentable? c)
-        {
-            var comment = c?.GetComments()?.Trim();
-            if (string.IsNullOrEmpty(comment))
-                return;
-            var lines = comment.Replace("\r\n", "\n").Split('\n');
-            if (lines.Length == 1)
-            {
-                self.WriteLine("// " + lines[0]);
-            }
-            else
-            {
-                self.WriteLine("/*");
-                foreach (var line in lines)
-                    self.WriteLine(line);
-                self.WriteLine("*/");
-            }
-        }
-
+      
         public void WriteLambda(string header, string expression, int maxLineLength,
             bool addSemiColon)
         {

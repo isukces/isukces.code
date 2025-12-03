@@ -63,17 +63,7 @@ public abstract class CodeWriter : ICodeWriter
     /// </summary>
     public ILangInfo LangInfo { get; }
 
-    public string[] Lines
-    {
-        get
-        {
-            var tmp = Code;
-            var l   = tmp.Split('\n');
-            for (var i = 0; i < l.Length; i++)
-                l[i] = l[i].Replace("\r", "");
-            return l;
-        }
-    }
+    public string[] Lines => Code.SplitToLines();
 
     /// <summary>
     ///     Czy trimować tekst

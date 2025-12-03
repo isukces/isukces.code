@@ -10,7 +10,7 @@ public interface IDescriptable
 public interface ICommentable
 {
     void   AddComment(string? x);
-    string GetComments();
+    string? GetComments();
 }
 
 public static class CommentableEx

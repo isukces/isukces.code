@@ -24,21 +24,8 @@ namespace iSukces.Code.Typescript
 
         protected void WriteCommonHeaderCode(ITsCodeWriter writer)
         {
-            if (!string.IsNullOrEmpty(CommentAbove))
-            {
-                var lines = CommentAbove.Replace("\r\n", "\n").Split('\n');
-                if (lines.Length == 1)
-                    writer.WriteLine("// " + lines[0]);
-                else
-                {
-                    writer.WriteLine("/*");
-                    foreach (var i in lines)
-                        writer.WriteLine(i);
-                    writer.WriteLine("*/");
-                }
-                    
-            } 
-                
+            writer.WriteComment(CommentAbove);
+
             Introduction?.WriteCodeTo(writer);
             if (Decorators is not null && Decorators.Any())
                 foreach (var i in Decorators)

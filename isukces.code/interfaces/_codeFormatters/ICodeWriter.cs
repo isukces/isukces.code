@@ -127,6 +127,40 @@ public static class CodeFormatterExt
             return writer;
         }
 
+        public void WriteComment(ICommentable? commentable)
+        {
+            var comment = commentable?.GetComments();
+            writer.WriteComment(comment);
+        }
+
+        public void WriteComment(string? comment)
+        {
+            if (string.IsNullOrEmpty(comment))
+                return;
+            var lines = comment.SplitToLines();
+            writer.WriteComment(lines);
+        }
+
+        public void WriteComment(string[] lines)
+        {
+            switch (lines.Length)
+            {
+                case 0:
+                    return;
+                case 1:
+                    writer.WriteLine("// " + lines[0]);
+                    break;
+                default:
+                {
+                    writer.WriteLine("/*");
+                    foreach (var line in lines)
+                        writer.WriteLine(line);
+                    writer.WriteLine("*/");
+                    break;
+                }
+            }
+        }
+
         public T WriteLine()
         {
             writer.Append("\r\n");
@@ -160,6 +194,31 @@ public static class CodeFormatterExt
             foreach (var line in texts)
                 WriteLine(writer, line);
             return writer;
+        }
+
+
+        public void WriteCommentEx(ICommentable? c)
+        {
+            var comment = c?.GetComments()?.Trim();
+            if (string.IsNullOrEmpty(comment))
+                return;
+            var lines = comment.SplitToLines();
+            switch (lines.Length)
+            {
+                case 0:
+                    return;
+                case 1:
+                    writer.WriteLine("// " + lines[0]);
+                    break;
+                default:
+                {
+                    writer.WriteLine("/*");
+                    foreach (var line in lines)
+                        writer.WriteLine(line);
+                    writer.WriteLine("#1#");
+                    break;
+                }
+            }
         }
     }
 }

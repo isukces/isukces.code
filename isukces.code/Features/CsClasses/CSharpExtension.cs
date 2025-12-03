@@ -1,15 +1,18 @@
+using System.Collections.Generic;
 using System.Text;
 using System.Xml.Linq;
 
-namespace iSukces.Code
+namespace iSukces.Code;
+
+public static class CSharpExtension
 {
-    public static class CSharpExtension
+    extension(string text)
     {
-        public static string GetCamelTerminalName(string name)
+        public string GetCamelTerminalName()
         {
             var s       = new StringBuilder();
             var toUpper = true;
-            foreach (var i in name)
+            foreach (var i in text)
             {
                 if (i == '_')
                 {
@@ -24,14 +27,24 @@ namespace iSukces.Code
             return s.ToString();
         }
 
-        public static string PropertyBackingFieldName(this string propertyName) => "_" + propertyName.FirstLower();
+        public string PropertyBackingFieldName() => "_" + text.FirstLower();
 
-        public static string XmlEncode(this string x)
+        public string XmlEncode()
         {
-            var e = new XElement("A", x);
-            x = e.ToString();
-            x = x.Substring(3, x.Length - 7);
-            return x;
+            var e = new XElement("A", text);
+            text = e.ToString();
+            text = text.Substring(3, text.Length - 7);
+            return text;
+        }
+
+        public string[] SplitToLines()
+        {
+            var lines = text.Replace("\r\n", "\n")
+                .Trim()
+                .Split('\n');
+            if (lines.Length == 1 && lines[0].Trim().Length == 0)
+                return [];
+            return lines;
         }
     }
 }

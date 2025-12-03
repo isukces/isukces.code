@@ -17,7 +17,7 @@ namespace iSukces.Code.Typescript
             var lines = Text.Trim().SplitToLines();
             if (CompactRender)
             {
-                for (int index = 0, lastIdx = lines.Count - 1; index <= lastIdx; index++)
+                for (int index = 0, lastIdx = lines.Length - 1; index <= lastIdx; index++)
                 {
                     var line = lines[index].Replace("*/", "* /");
                     if (index == 0)

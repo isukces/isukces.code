@@ -13,9 +13,9 @@ public class CodeLines
     }
 
 
-    private CodeLines(IReadOnlyList<string>? lines, bool isExpressionBody, bool filter)
+    protected CodeLines(IReadOnlyList<string>? lines, bool isExpressionBody, bool filterEmptyLines)
     {
-        if (filter)
+        if (filterEmptyLines)
         {
             Lines = FilterEmpty(lines);
         }
@@ -38,7 +38,7 @@ public class CodeLines
 
     public static CodeLines FromExpression(string expression)
     {
-        return new CodeLines(new[] { expression }, true, false);
+        return new CodeLines([expression], true, false);
     }
 
     public static CodeLines Parse(string? body, bool methodIsExpressionBody)
@@ -68,25 +68,13 @@ public class CodeLines
 
     public IReadOnlyList<string> GetExpressionLines(string? firstLinePrefix, bool addSemiColon)
     {
-        var e = GetExpression().Split('\n');
+        var e = GetExpression().SplitToLines();
         if (!string.IsNullOrEmpty(firstLinePrefix))
             e[0] = firstLinePrefix + " " + e[0];
         if (addSemiColon)
-            e[e.Length - 1] += ";";
+            e[^1] += ";";
         return e;
     }
-
-    /*
-    public CodeLines MakeReturnNoExpressionBody()
-    {
-        if (!IsExpressionBody || IsEmpty)
-            return this;
-
-        var a = Lines.ToArray();
-        a[0] = $"return {a[0].TrimEnd(' ', ';')};";
-        return new CodeLines(IsExpressionBody, a);
-    }
-    */
 
     public override string ToString()
     {
