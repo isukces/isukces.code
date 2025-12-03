@@ -43,10 +43,10 @@
     <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="iSukces.Reflection" Version="1.25.323.7" />
-    <PackageReference Include="iSukces.Translation" Version="1.24.1201.14" />
-    <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="iSukces.Reflection" Version="1.25.1104.10" />
+    <PackageReference Include="iSukces.Translation" Version="1.25.709.15" />
+    <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="_requests\TranslationTextSourceRequest.cs">
