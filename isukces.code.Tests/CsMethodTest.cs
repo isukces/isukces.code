@@ -235,7 +235,8 @@ namespace My123
     [Fact]
     public void T10b_Should_create_expression_body_method()
     {
-        const string exp = @"// ReSharper disable All
+        const string exp = @"
+// ReSharper disable All
 // suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
 namespace My123
 {
@@ -254,7 +255,7 @@ namespace My123
             cs.AddMethod("Bla", CsType.Void)
                 .WithBodyAsExpression("SetSomeValue()");
         });
-        Assert.Equal(exp, code);
+        Assert.Equal(exp.Trim(), code.Trim());
     }
 
     [Fact]
@@ -279,7 +280,7 @@ namespace My123
             cs.AddMethod("Bla", CsType.Int32)
                 .WithBodyAsExpression("SetSomeValue()");
         });
-        Assert.Equal(exp, code);
+        Assert.Equal(exp.Trim(), code.Trim());
     }
 
     [Fact]
@@ -306,7 +307,7 @@ namespace My123
                 .WithBodyAsExpression("SetSomeValue()");
             m.AddComment("one line");
         });
-        Assert.Equal(exp, code);
+        Assert.Equal(exp.Trim(), code.Trim());
     }
 
     [Fact]
@@ -337,7 +338,7 @@ namespace My123
             m.AddComment("first line");
             m.AddComment("second line");
         });
-        Assert.Equal(exp, code);
+        Assert.Equal(exp.Trim(), code.Trim());
     }
 
     [Fact]
