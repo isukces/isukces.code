@@ -1,0 +1,31 @@
+var projects = new[]
+{
+    "iSukces.Code",
+    "iSukces.Code.VsSolutions",
+    "iSukces.Code.Translations"
+};
+
+string text = "";
+foreach (var projectName in projects)
+{
+    MakeMessage("Processing project: " + projectName);
+    var builder = new ProjectBuilder
+    {
+        ProjectName  = projectName,
+      	SolutionName = "isukces.code",
+       	SolutionDir  = ConfigDir
+    };
+    
+    var version = builder.UpdateVersionCore();
+    
+    if (text=="")
+       text = "NUGET RELEASE ";
+    else
+       text += ", ";
+   
+    text += projectName + " " + version;  
+}
+
+
+Console.WriteLine(text);
+Console.WriteLine("--FINISHED--");
