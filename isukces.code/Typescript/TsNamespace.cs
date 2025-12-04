@@ -25,7 +25,6 @@ namespace iSukces.Code.Typescript
             return c;
         }
 
-        [Pure]
         public string GetTypeName(AbstractType type)
         {
             return type.Namespace == Name ? type.Name : type.FullName;

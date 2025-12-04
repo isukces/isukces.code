@@ -193,8 +193,6 @@ public struct CsType
         return AsString(allowReferenceNullable);
     }
 
-    [Pure]
-    [JetBrains.Annotations.Pure]
     public CsType MakeArray(int arrayRank = 1, bool referenceNullable = false)
     {
         var cnt    = ArrayRanks.Count;
@@ -300,8 +298,6 @@ public struct CsType
         }
     }
 
-    [Pure]
-    [JetBrains.Annotations.Pure]
     public string TypeOf()
     {
         return $"typeof({Declaration})";
@@ -335,8 +331,6 @@ public struct CsType
         return this;
     }
 
-    [Pure]
-    [JetBrains.Annotations.Pure]
     public CsType WithReferenceNullable()
     {
         var copy = this with
