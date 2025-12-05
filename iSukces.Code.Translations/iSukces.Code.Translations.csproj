@@ -43,7 +43,6 @@
     <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="iSukces.Reflection" Version="1.25.1204.11" />
     <PackageReference Include="iSukces.Translation" Version="1.25.1203.16" />
     <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

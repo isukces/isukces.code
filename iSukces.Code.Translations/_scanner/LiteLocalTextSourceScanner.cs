@@ -4,9 +4,7 @@ using System.Linq;
 using System.Reflection;
 using iSukces.Code.AutoCode;
 using iSukces.Code.Ui.DataGrid;
-using iSukces.Reflection;
 using iSukces.Translation;
-using JetBrains.Annotations;
 
 namespace iSukces.Code.Translations
 {
