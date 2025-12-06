@@ -255,14 +255,14 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
 #endif
                         .GetGenericArguments()[0]);
                 writer.Indent++;
-                AddRange(writer, wm, "source." + pi.Name);
+                AddRange(writer, wm, "source." + pi.Name, true);
                 writer.Indent--;
                 writer.WriteLine("}");
             }
             else
             {
                 writer.WriteLine("{0}.Clear();", wm);
-                AddRange(writer, wm, "source." + pi.Name);
+                AddRange(writer, wm, "source." + pi.Name, true);
             }
 
             return;
@@ -325,8 +325,13 @@ public class CopyFromGenerator : Generators.SingleClassGenerator, IAutoCodeGener
         return p;
     }
 
-    private void AddRange(ICsCodeWriter writer, string target, string source)
+    private void AddRange(ICsCodeWriter writer, string target, string source, bool shortForm = false)
     {
+        if (shortForm)
+        {
+            writer.WriteLine("{0}.AddRange({1});", target, source);
+            return;
+        }
         var listExtension = Configuration?.ListExtension;
         if (listExtension is null)
             throw new NotImplementedException("Configuration.ListExtension is null");
