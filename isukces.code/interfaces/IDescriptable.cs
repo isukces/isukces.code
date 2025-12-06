@@ -1,3 +1,4 @@
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace iSukces.Code.Interfaces;
@@ -25,9 +26,24 @@ public static class CommentableEx
             self.AddComment(prefix);
         }
 
-        public void AddCommentLocation(SourceCodeLocation x)
+        public void AddComment(SourceCodeLocation location, bool skipLineNumbers = false, string prefix = "created: ")
         {
-            self.AddComment(x.ToString());
+            if (skipLineNumbers)
+                location = location.WithNoLineNumber();
+            var txt = GetText(location);
+            self.AddComment("created: " + txt);
+            return;
+
+            static string GetText(SourceCodeLocation location)
+            {
+                var txt = location.ToString();
+                if (string.IsNullOrEmpty(location.FilePath)) return txt;
+                var fi = new FileInfo(location.FilePath);
+                var fn = fi.Name;
+                fn  = fn[..^fi.Extension.Length];
+                txt = fn + "." + txt;
+                return txt;
+            }
         }
 
         public void AddCommentLocation<T>(string? prefix = null,

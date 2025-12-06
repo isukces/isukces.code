@@ -14,7 +14,7 @@ public struct SourceCodeLocation
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static string? Join(string sep, string? x, string? y)
+    private static string Join(string sep, string? x, string? y)
     {
         x = x?.Trim();
         y = y?.Trim();
@@ -29,14 +29,18 @@ public struct SourceCodeLocation
         [CallerMemberName] string? memberName = null,
         [CallerFilePath] string? filePath = null,
         [CallerLineNumber] int lineNumber = 0
-    ) =>
-        new SourceCodeLocation(lineNumber, memberName, filePath);
+    )
+    {
+        return new SourceCodeLocation(lineNumber, memberName, filePath);
+    }
 
     public static SourceCodeLocation Make<T>(
         [CallerMemberName] string? memberName = null,
         [CallerFilePath] string? filePath = null,
-        [CallerLineNumber] int lineNumber = 0) =>
-        Make(memberName, filePath, lineNumber).WithGeneratorClass(typeof(T));
+        [CallerLineNumber] int lineNumber = 0)
+    {
+        return Make(memberName, filePath, lineNumber).WithGeneratorClass(typeof(T));
+    }
 
     public override string? ToString()
     {
@@ -56,12 +60,16 @@ public struct SourceCodeLocation
         return this;
     }
 
-    #region Properties
+    public SourceCodeLocation WithNoLineNumber()
+    {
+        return new SourceCodeLocation(0, MemberName, FilePath)
+        {
+            GeneratorClassName = GeneratorClassName
+        };
+    }
 
     public string? FilePath           { get; }
     public string? MemberName         { get; }
     public int     LineNumber         { get; }
     public string? GeneratorClassName { get; private set; }
-
-    #endregion
 }
