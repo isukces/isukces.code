@@ -100,7 +100,7 @@ namespace iSukces.Code.AutoCode
                 _class = context.GetOrCreateClass(type);
                 if (_attEq is not null)
                 {
-                    var eqType = typeof(IAutoEquatable<>).MakeGenericType(type);
+                    var eqType = GetAutoEquatableAttribute(type);
                     _class.ImplementedInterfaces.Add(_class.GetTypeName(eqType));
                 }
 
@@ -148,7 +148,13 @@ namespace iSukces.Code.AutoCode
 
                 implementer.CreateCode();
                 _attEq = null;
-                _class = null;
+                _class = null!;
+            }
+
+            protected virtual Type GetAutoEquatableAttribute(Type type)
+            {
+                var eqType = typeof(IAutoEquatable<>).MakeGenericType(type);
+                return eqType;
             }
 
             protected virtual IEqualityGeneratorPropertyInfo CreatePropertyInfo(PropertyOrFieldInfo prop)
