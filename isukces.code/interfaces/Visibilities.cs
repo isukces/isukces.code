@@ -13,7 +13,7 @@ namespace iSukces.Code.Interfaces
 
     public static class VisibilitiesExtensions
     {
-        public static string ToCsCode(this Visibilities visibility)
+        public static string? ToCsCode(this Visibilities visibility)
         {
             switch (visibility)
             {

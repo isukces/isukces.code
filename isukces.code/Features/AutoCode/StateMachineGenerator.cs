@@ -7,7 +7,6 @@ using iSukces.Code.Interfaces;
 
 namespace iSukces.Code.AutoCode;
 
-
 [AttributeUsage(AttributeTargets.Class)]
 [Conditional("AUTOCODE_ANNOTATIONS")]
 // ReSharper disable once ClassNeverInstantiated.Global
@@ -21,21 +20,28 @@ public class StateMachineAttribute : Attribute
 
     public string Script     { get; }
     public string BeginState { get; }
-    
-    /// <summary>
-    /// Call method after exexuting command
-    /// </summary>
-    public string[]? CommandsWithCustomActions { get; set; } 
-}
 
+    /// <summary>
+    ///     Call method after exexuting command
+    /// </summary>
+    public string[]? CommandsWithCustomActions { get; set; }
+}
 
 public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachineAttribute>
 {
+    private static void AddEnumsAndFlags(CsClass cl, Graph graph)
+    {
+        // === enums and flags
+        AddEnumState(cl, graph);
+        AddFlags(cl, "MachineMove", graph.Items.Select(a => a.Name));
+        AddFlags(cl, "PossibleState", graph.States);
+    }
+
     private static void AddEnumState(CsClass cl, Graph graph)
     {
-        var en = new CsEnum("State")
+        var en = new CsEnum(State)
         {
-            UnderlyingType = (CsType)"byte"
+            UnderlyingType = CsType.Byte
         };
         foreach (var i in graph.States)
             en.Items.Add(new CsEnumItem(i));
@@ -56,12 +62,123 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
 
         en.UnderlyingType = value switch
         {
-            <= 0xFF   => (CsType)"byte",
-            <= 0xFFFF => (CsType)"ushort",
-            _         => (CsType)"uint"
+            <= 0xFF => CsType.Byte,
+            <= 0xFFFF => CsType.Ushort,
+            _ => CsType.UInt
         };
 
         cl.AddEnum(en);
+    }
+
+    private ICollection<CsProperty> AddProperties(CsClass cl, Graph graph,
+        out CsProperty currentStateProperty)
+    {
+        // === state property
+        currentStateProperty = cl.AddProperty(CurrentState, (CsType)State);
+        currentStateProperty.WithOwnSetterAsExpression("UpdateStates(value, false)");
+        // === enable property
+        var w = new CsCodeWriter()
+            .SingleLineIf("field == value", "return;")
+            .WriteLine("RunInternal(() => { field = value; });");
+        //.WriteLine("field, value;")
+        //.Close("});");
+
+        w.WriteLine($"OnPropertyChanged(nameof({IsEnabled}));");
+        w.WriteLine(InalidateRequerySuggested);
+        cl.AddProperty(IsEnabled, CsType.Bool)
+            .WithMakeAutoImplementIfPossible()
+            .WithBackingField()
+            .WithOwnSetter(w.Code)
+            .ConstValue = "true";
+
+
+
+        var list = new List<CsProperty>(graph.Items.Count);
+        foreach (var i in graph.Items)
+        {
+            string condition;
+            if (i.FromState.Count == 0)
+                condition = IsEnabled;
+            else if (i.FromState.Count == 1)
+            {
+                var one = i.FromState[0];
+                condition = $"{IsEnabled} && {CurrentState} == State.{one}";
+            }
+            else
+            {
+                condition = string.Join(" or ", i.FromState.Select(a => $"State.{a}"));
+                condition = $"{IsEnabled} && {CurrentState} is {condition}";
+            }
+
+            // var condition = string.Join(" || ", Conditions(i));
+            var property = cl.AddProperty(i.Name + "CanExecute", CsType.Bool)
+                .WithNoEmitField()
+                .WithOwnGetterAsExpression(condition)
+                .WithIsPropertyReadOnly();
+            list.Add(property);
+        }
+
+        return list;
+    }
+
+    public string InalidateRequerySuggested { get; set; } = "XCommandManager.InvalidateRequerySuggested();";
+
+
+    private static void AddRunInternal(CsClass cl, ICollection<CsProperty> cp)
+    {
+        var     code   = new CsCodeWriter();
+        Action? flushX = null;
+
+        var         left             = cp.Count;
+        var         thisVariableLeft = cp.Count;
+        MaskIntType t                = null!;
+
+        var variable   = "";
+        var variableNr = 0;
+
+        ulong mask = 1;
+        var variabled = new List<string>();
+        foreach (var p in cp)
+        {
+            if (string.IsNullOrEmpty(variable))
+            {
+                t        = MaskIntType.Create(Math.Max(17, left));
+                variable = variableNr > 0 ? $"saved{variableNr}" : "saved";
+                variableNr++;
+                mask             =  1;
+                thisVariableLeft =  t.Bits - 1;
+                left             -= thisVariableLeft;
+                variabled.Add(variable);
+            }
+
+            var mask1 = t.ConvertToString(mask);
+            if (mask == 1)
+                code.WriteLine($"var {variable} = {p.Name} ? {t.ConvertToString(1)} : {t.ConvertToString(0)};");
+            else
+                code.SingleLineIf(p.Name, $"{variable} |= {mask1};");
+
+            var condition = t.GetAnd(variable, mask);
+            condition = $"({condition}) ^ {p.Name}";
+            flushX += () =>
+            {
+                code.SingleLineIf(condition,
+                    $"OnPropertyChanged(nameof({p.Name}));");
+            };
+            mask += mask;
+            if (--thisVariableLeft == 0)
+                variable = "";
+        }
+
+        code.WriteLine("action();");
+        flushX?.Invoke();
+        /*{
+            var variables = variabled.Select(q => q + " > 0");
+            var b         = string.Join(" || ", variables);
+            code.WriteLine("return " + b + ";");
+        }*/
+        cl.AddMethod("RunInternal", CsType.Void)
+            .WithBody(code)
+            .WithParameter("action", (CsType)"Action");
     }
 
     private static void CreateExecuteMethod(Item i, CsClass cl)
@@ -84,68 +201,48 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
 
     protected override void GenerateInternal()
     {
-        Action? flush = null;
-        var    graph = Graph.ParseScript(Attribute.Script, Attribute.CommandsWithCustomActions);
-        var    cl    = Class;
+        var graph = Graph.ParseScript(Attribute.Script, Attribute.CommandsWithCustomActions);
+        var cl    = Class;
         cl.AddComment("Created by " + GetType().FullName);
+        var canProperties = AddProperties(cl, graph, out var currentStateProperty);
+        AddRunInternal(cl, canProperties);
+        AddEnumsAndFlags(cl, graph);
 
-        var iniCode    = new CsCodeWriter();
-        var updateCode = new CsCodeWriter();
 
-        // === enums and flags
-        AddEnumState(cl, graph);
-        AddFlags(cl, "MachineMove", graph.Items.Select(a => a.Name));
-        AddFlags(cl, "PossibleState", graph.States);
-
-        // === state property
-        var currentStateProperty = cl.AddProperty(CurrentState, (CsType)State);
-        currentStateProperty.WithOwnSetterAsExpression("UpdateStates(value, false)");
-
-        updateCode.WriteLine("if (newValue == " + currentStateProperty.PropertyFieldName + " && !initialChange) return;");
-
-        iniCode.WriteLine("UpdateStates(State." + Attribute.BeginState + ", true);");
+        var     currentStateField = currentStateProperty.PropertyFieldName;
+        var     updateCode   = new CsCodeWriter();
+        var     initCode     = new CsCodeWriter();
+        Action? flush        = null;
+        updateCode.SingleLineIf($"newValue == {currentStateField} && !initialChange",
+            "return;");
+        updateCode.Open("RunInternal(() =>");
+        initCode.WriteLine("UpdateStates(State." + Attribute.BeginState + ", true);");
         foreach (var i in graph.Items)
         {
             var canExecute = i.Name + "CanExecute";
-            var condition  = string.Join(" || ", i.FromState.Select(a => $"{CurrentState} == {State}.{a}"));
-            var variable   = $"save{canExecute}";
-
-            var property = cl.AddProperty(canExecute, (CsType)"bool")
-                .WithNoEmitField()
-                .WithOwnGetterAsExpression(condition)
-                .WithIsPropertyReadOnly();
-            AddSetAndNotify(property);
-            updateCode.WriteLine($"var {variable} = {canExecute};");
-            flush += () =>
+            switch (i.StepType)
             {
-                updateCode
-                    .SingleLineIf($"{variable} != {property.Name}",
-                        $"OnPropertyChanged(nameof({property.Name}));");
-            };
-            if (i.StepType == ItemType.Command)
-            {
-                var p = cl.AddProperty($"{i.Name}Command", (CsType)"ICommand")
-                    .WithNoEmitField()
-                    .WithMakeAutoImplementIfPossible();
-                p.SetterVisibility = Visibilities.Private;
+                case ItemType.Command:
+                    var p = cl.AddProperty($"{i.Name}Command", (CsType)"ICommand")
+                        .WithNoEmitField()
+                        .WithMakeAutoImplementIfPossible();
+                    p.SetterVisibility = Visibilities.Private;
 
-                iniCode.Open($"{p.Name} = new ActionUiCommand(_ =>");
-                {
-                    iniCode.WriteLine("// " + i.ExecuteDescription);
-                    iniCode.SingleLineIf($"!{canExecute}", "return;");
+                    initCode.Open($"{p.Name} = new ActionUiCommand(_ =>");
+                    initCode.WriteLine("// " + i.ExecuteDescription);
+                    initCode.SingleLineIf($"!{canExecute}", "return;");
                     if (i.CustomAction)
-                        iniCode.WriteLine(i.Name + "CommandExecuting();");
-                    iniCode.WriteLine($"{CurrentState} = {State}.{i.ToState};");
-                }
-                iniCode.Close($"}}, _ => {canExecute});");
-            }
-            else if (i.StepType == ItemType.Method)
-            {
-                CreateExecuteMethod(i, cl);
+                        initCode.WriteLine(i.Name + "CommandExecuting();");
+                    initCode.WriteLine($"{CurrentState} = {State}.{i.ToState};");
+                    initCode.Close($"}}, _ => {canExecute});");
+                    break;
+                case ItemType.Method:
+                    CreateExecuteMethod(i, cl);
+                    break;
             }
         }
 
-        updateCode.WriteLine($"{currentStateProperty.PropertyFieldName} = newValue;");
+        updateCode.WriteLine($"{currentStateField} = newValue;");
 
         var movesAllowed = cl.AddProperty("MovesAllowed", (CsType)"MachineMove");
         SetAutoImplement(movesAllowed);
@@ -161,20 +258,27 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
         updateCode.WriteLine("StateChanged();");
         updateCode.SingleLineIf("initialChange", "return;");
 
-        flush?.Invoke();
-        updateCode.WriteLine($"OnPropertyChanged(nameof({currentStateProperty.Name}));");
-        cl.AddMethod("InitStateMachine", CsType.Void).WithBody(iniCode);
-        var m = cl.AddMethod("UpdateStates", CsType.Void)
-            .WithVisibility(Visibilities.Private)
-            .WithBody(updateCode);
-        m.AddParam("newValue", (CsType)"State");
-        m.AddParam("initialChange", (CsType)"bool");
+        flush.Invoke();
 
-        void AddSetAndNotify(CsProperty prop, Visibilities visibility = Visibilities.Private)
+        updateCode.WriteLine($"OnPropertyChanged(nameof({CurrentState}));");
+        updateCode.WriteLine(InalidateRequerySuggested);
+
+        updateCode.Close("});");
+        // updateCode.SingleLineIf("changed", InalidateRequerySuggested);
         {
-            prop.WithOwnSetterAsExpression($"SetAndNotify(ref {prop.PropertyFieldName}, value)");
-            prop.SetterVisibility = visibility;
+            cl.AddMethod("InitStateMachine", CsType.Void)
+                .WithBody(initCode);
+
         }
+        {
+            var m = cl.AddMethod("UpdateStates", CsType.Void)
+                .WithVisibility(Visibilities.Private)
+                .WithBody(updateCode);
+
+            m.AddParam("newValue", (CsType)"State");
+            m.AddParam("initialChange", CsType.Bool);
+        }
+        return;
 
         void SetAutoImplement(CsProperty prop)
         {
@@ -184,12 +288,9 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
         }
     }
 
-    #region Fields
-
-    private const string State = "State";
-    private const string CurrentState = "CurrentState";
-
-    #endregion
+    private const string State = nameof(State);
+    private const string CurrentState = nameof(CurrentState);
+    private const string IsEnabled = nameof(IsEnabled);
 
     private sealed class Wrapper
     {
@@ -204,7 +305,7 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
         {
             _code.WriteLine($"// update {_prop.Name} property");
             _code.WriteLine($"var {_variableName} = {_prop.Name};");
-            _code.Open(_prop.Name + " = CurrentState switch");
+            _code.Open($"{_prop.Name} = {CurrentState} switch");
             foreach (var i in dictionary)
             {
                 var values = string.Join(" | ", i.Value.Select(a => $"{enumType}.{a}"));
@@ -220,13 +321,9 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
             };
         }
 
-        #region Fields
-
         private readonly CsProperty _prop;
         private readonly CsCodeWriter _code;
         private readonly string _variableName;
-
-        #endregion
     }
 
     private sealed class Graph
@@ -297,27 +394,22 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
                 yield return ParseLine(i, commandsWithCustomActions);
         }
 
-        #region Properties
-
         public IReadOnlyDictionary<string, HashSet<string>> MovesAllowed      { get; }
         public IReadOnlyDictionary<string, HashSet<string>> PossibleNextState { get; }
 
         public   IReadOnlyList<string> States { get; }
         internal IReadOnlyList<Item>   Items  { get; }
 
-        #endregion
-
-        #region Fields
-
         private const string SplitFilter = @"(.*)->\s*([^\s]+)\s*([^\s]+)\s*([^\s]+)";
         private static readonly Regex SplitRegex = new Regex(SplitFilter, RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-        #endregion
     }
 
     private sealed class Item
     {
-        public override string ToString() => $"{string.Join(",", FromState)} -> {ToState} {StepType} {Name}";
+        public override string ToString()
+        {
+            return $"{string.Join(",", FromState)} -> {ToState} {StepType} {Name}";
+        }
 
         public IReadOnlyList<string> FromState { get; init; }
         public string                ToState   { get; init; }
@@ -335,4 +427,3 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
         Method, Command
     }
 }
-

@@ -79,7 +79,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
                 if (lines.Length > 1)
                     writer.Indent--;
-                state.WriteEmptyLine = true;// writer.EmptyLine();
+                state.WriteEmptyLine = true; // writer.EmptyLine();
             }
         }
         finally
@@ -103,7 +103,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             writer.WriteLine("/// " + line.XmlEncode());
         writer.WriteLine("/// </summary>");
     }
-    
+
     public CsMethod AddBinaryOperator(string operatorName, CsType returnType)
     {
         var m = AddMethod(operatorName, returnType)
@@ -169,7 +169,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         // public event EventHandler<ConversionCtx.ResolveSeparateLinesEventArgs> ResolveSeparateLines;
         var type = this.GetTypeName<T>();
         type = type.ToReferenceNullableIfPossible(typeof(T));
-        var ev   = new CsEvent(name, type, description);
+        var ev = new CsEvent(name, type, description);
         _events.Add(ev);
         return ev;
     }
@@ -197,7 +197,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         m.Kind = MethodKind.Finalizer;
         return m;
     }
-    
+
     public CsMethod AddMethod(string name, Type? type, string? description = null)
         => AddMethod(name, type is null ? default : GetTypeName(type), description);
 
@@ -413,7 +413,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         if (all.Count == 0) return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
 
-        CodeEmitState state= new();
+        CodeEmitState state = new();
         addEmptyLineBeforeRegion = w.WriteMethodAction(writer, all, "Fields",
             field =>
             {
@@ -471,7 +471,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     private bool Emit_properties(ICsCodeWriter writer, bool addEmptyLineBeforeRegion)
     {
         var w = new CsClassWriter(this);
-        if (_properties.Count == 0) 
+        if (_properties.Count == 0)
             return addEmptyLineBeforeRegion;
         writer.EmptyLine(!addEmptyLineBeforeRegion);
         CodeEmitState state = new();
@@ -517,7 +517,7 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsClass GetOrCreateNested(CsType typeName)
         => GetOrCreateNested(typeName, out _);
-    
+
     public CsClass GetOrCreateNested(CsType typeName, out bool isCreatedNew)
     {
         var existing = _nestedClasses
@@ -593,10 +593,10 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
             writer.IncIndent();
         }
 
-        var def = string.Join(" ", DefAttributes());
+        var def     = string.Join(" ", DefAttributes());
         var hasBody = true;
         {
-            var types = new HashSet<CsType>();
+            var types             = new HashSet<CsType>();
             var baseAndInterfaces = new List<CsType>();
             if (!BaseClass.IsVoid)
             {
@@ -696,10 +696,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         return this;
     }
 
-    #region Properties
-
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Global
-    public static CodeFormatting DefaultCodeFormatting { get; set; } = new(CodeFormattingFeatures.MakeAutoImplementIfPossible, 100);
+    public static CodeFormatting DefaultCodeFormatting { get; set; } = new(CodeFormattingFeatures.Cs14, 120);
 
     public IClassOwner? Owner { get; set; }
 
@@ -783,12 +781,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
 
     public CsPrimaryConstructor? PrimaryConstructor { get; set; }
 
-    #endregion
-
     public IDictionary<string, object> UserAnnotations { get; } = new Dictionary<string, object>();
     public IReadOnlyList<CsEnum>       Enums           { get; } = new List<CsEnum>();
-
-    #region Fields
 
     private readonly StringBuilder _extraComment = new();
 
@@ -804,8 +798,6 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
     private readonly List<CsEvent> _events = new();
     private List<CsProperty> _properties = new();
     private List<CsClassField> _fields = new();
-
-    #endregion
 }
 
 public enum ClassEmitStyle

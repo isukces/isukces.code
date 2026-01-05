@@ -393,6 +393,10 @@ public struct CsType
 
     public static readonly CsType ObjectNullable = new("object", NullableKind.ReferenceNullable);
 
+    public static readonly CsType Byte = new("byte");
+    public static readonly CsType Ushort = new("ushort");
+    public static readonly CsType UInt = new("uint");
+    
     public static readonly CsType Bool = new("bool");
 
     public static readonly CsType BoolNullable = new("bool", NullableKind.ValueNullable);

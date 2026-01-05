@@ -14,3 +14,4 @@ obj
 solution-doctor.bat
 samples/.idea/
 build-debug.bat
+hotCopy.bat

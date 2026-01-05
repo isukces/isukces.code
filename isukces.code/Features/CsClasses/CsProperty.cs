@@ -123,17 +123,17 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     /// </summary>
     public string OwnGetter
     {
-        get => _ownGetter;
-        set => _ownGetter = value?.Trim() ?? string.Empty;
-    }
+        get;
+        set => field = value?.Trim() ?? string.Empty;
+    } = string.Empty;
 
     /// <summary>
     /// </summary>
     public string OwnSetter
     {
-        get => _ownSetter;
-        set => _ownSetter = value?.Trim() ?? string.Empty;
-    }
+        get;
+        set => field = value?.Trim() ?? string.Empty;
+    } = string.Empty;
 
     public bool OwnGetterIsExpression { get; set; }
     public bool OwnSetterIsExpression { get; set; }
@@ -171,8 +171,6 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     public string? CompilerDirective { get; set; }
 
     private readonly StringBuilder _extraComment = new StringBuilder();
-    private string _ownGetter = string.Empty;
-    private string _ownSetter = string.Empty;
 
     public Visibilities Visibility { get; set; } = Visibilities.Public;
     
