@@ -13,7 +13,7 @@ public enum EqualityOperators
 
 public class KeyImplementer
 {
-    private const string HasValue = "_hasValue";
+    private const string HasValueFieldName = "_hasValue";
 
     public override string ToString()
     {
@@ -23,6 +23,8 @@ public class KeyImplementer
     public KeyImplementer(CsClass cl, CsType primitive)
     {
         _cl                   = cl;
+        if ((cl.Formatting.Flags & CodeFormattingFeatures.PropertyBackField) != 0)
+            BackingField = PropertyBackingFieldRequest.UseIfPossible;
         _primitive            = cl.Reduce(primitive);
         Equality              = new BaseEqualityFeatureImplementer(cl);
         _primitiveDeclaration = primitive.Declaration;
@@ -183,9 +185,7 @@ public class KeyImplementer
         if (string.IsNullOrEmpty(expression))
         {
             if (Special == SpecialType.String)
-            {
                 expression = "string.IsNullOrEmpty(Value)";
-            }
             else
             {
                 if (string.IsNullOrWhiteSpace(EmptyExpression))
@@ -197,8 +197,8 @@ public class KeyImplementer
             }
         }
 
-        if (SupportsSetValue)
-            expression = $"!{HasValue} || {expression}";
+        if (AddHasValueField)
+            expression = $"!{HasValueFieldName} || {expression}";
         var p = _cl.AddProperty("IsEmpty", CsType.Bool)
             .WithOwnGetterAsExpression(expression)
             .WithNoEmitField()
@@ -251,35 +251,43 @@ public class KeyImplementer
 
     public CsProperty ValueProperty()
     {
+        var propertyField = ValuePropertyField;
+        if (BackingField != PropertyBackingFieldRequest.DoNotUse)
+            propertyField = "field";
         var p = _cl.AddProperty("Value", _primitive)
             .WithIsPropertyReadOnly();
-        if (SupportsSetValue)
+        p.BackingField = BackingField; 
+        if (AddHasValueField)
         {
             if (string.IsNullOrEmpty(EmptyExpression))
                 throw new Exception("EmptyExpression is empty");
             if (Special == SpecialType.String)
                 p.WithOwnGetterAsExpression(
-                    $"{HasValue} ? ({ValuePropertyField} ?? {EmptyExpression}) : {EmptyExpression}");
+                    $"{HasValueFieldName} ? ({propertyField} ?? {EmptyExpression}) : {EmptyExpression}");
             else
-                p.WithOwnGetterAsExpression($"{HasValue} ? {ValuePropertyField} : {EmptyExpression}");
+                p.WithOwnGetterAsExpression($"{HasValueFieldName} ? {propertyField} : {EmptyExpression}");
             p.IsReadOnly = true;
-            _cl.AddField(HasValue, CsType.Bool).WithIsReadOnly();
+            _cl.AddField(HasValueFieldName, CsType.Bool).WithIsReadOnly();
         }
         else
         {
             if (Special == SpecialType.String)
-                p.WithOwnGetterAsExpression($"{ValuePropertyField} ?? {EmptyExpression}");
+                p.WithOwnGetterAsExpression($"{propertyField} ?? {EmptyExpression}");
             else
                 p.WithMakeAutoImplementIfPossible();
         }
 
-        p.EmitField = HasValuePropertyField;    
+        p.EmitField = EmitValuePropertyField;    
         if (Special == SpecialType.String)
             p.FieldTypeOverride = CsType.StringNullable;
         return p;
     }
 
-    private bool HasValuePropertyField => SupportsSetValue || Special == SpecialType.String;
+    public PropertyBackingFieldRequest BackingField { get; set; }
+
+    private bool EmitValuePropertyField =>
+        Special == SpecialType.String
+        || BackingField != PropertyBackingFieldRequest.DoNotUse;
 
     public CsMethod IsZero()
     {
@@ -344,7 +352,7 @@ public class KeyImplementer
         {
             var t    = _cl.Name;
             var body = t.New($"value.Value {op} 1");
-            if (SupportsEmpty)
+            if (AddIsEmptyProperty)
                 body = $"value.IsEmpty ? value : {body}";
             Operator(t, t, op + op).WithBodyAsExpression(body);
         }
@@ -399,19 +407,20 @@ public class KeyImplementer
     public CsMethod Constructor()
     {
         var w      = new CsCodeWriter();
-        var target = HasValuePropertyField ? ValuePropertyField : "Value";
+        //var target = EmitValuePropertyField ? ValuePropertyField : "Value";
+        //var target = "Value";
         if (Special == SpecialType.String)
         {
             w.WriteLine("value = value?.Trim();");
-            w.WriteLine($"{target} = string.IsNullOrEmpty(value) ? null : value;");
+            w.WriteLine("_value = string.IsNullOrEmpty(value) ? null : value;");
         }
         else
         {
-            w.WriteLine($"{target} = value;");
+            w.WriteLine("Value = value;");
         }
 
-        if (SupportsSetValue)
-            w.WriteLine($"{HasValue} = true;");
+        if (AddHasValueField)
+            w.WriteLine($"{HasValueFieldName} = true;");
 
         var m = _cl.AddConstructor().WithBody(w);
         if (Special == SpecialType.String)
@@ -507,27 +516,6 @@ public class KeyImplementer
                 };
             }
             return factory("left.Value", "right.Value", oper);
-
-            /*
-            if (this.EqualsExpressionFactory is not null)
-                return this.EqualsExpressionFactory("left.Value", "right.Value", equal);
-            string expression;
-            if (Special == SpecialType.String)
-            {
-               EqualMethods.StringOrdinal()
-                    var a = "left.Value.Equals(right.Value)";
-                if (equal)
-                    expression = a;
-                else
-                    expression = $"!{a}";
-            }
-            else
-            {
-                expression = equal ? "left.Value == right.Value" : "left.Value != right.Value";
-            }
-            */
-
-            // return expression;
         }
     }
 
@@ -557,12 +545,20 @@ public class KeyImplementer
 
     public string? EmptyExpression { get; init; }
 #if NET8_0_OR_GREATER
-    public required bool SupportsEmpty    { get; init; }
-    public required bool SupportsSetValue { get; init; }
+    public required bool AddIsEmptyProperty { get; init; }
+    public required bool AddHasValueField   { get; init; }
 #else
-    public bool SupportsEmpty    { get; init; }
-    public bool SupportsSetValue { get; init; }
+    public bool AddIsEmptyProperty { get; init; }
+    public bool AddHasValueField   { get; init; }
 #endif
+
+    /*
+    [Obsolete("Use " + nameof(AddHasValueField) + " instead", true)]
+    public bool SupportsSetValue { get; set; }
+
+    [Obsolete("Use " + nameof(AddIsEmptyProperty) + " instead", true)]
+    public bool SupportsEmpty { get; init; }
+    */
 
 
     public readonly struct AsMethodCreationInfo : IComparable<AsMethodCreationInfo>, IComparable
@@ -605,12 +601,8 @@ public class KeyImplementer
             return CompareTo(info);
         }
 
-        #region Properties
-
         public string StructType  { get; }
         public CsType WrappedType { get; }
-
-        #endregion
     }
 
     public KeyImplementer WithStringOrdinalIgnoreCase()

@@ -107,8 +107,11 @@ public abstract partial class Generators
                         .WithNoEmitField();
                     var v = $"{propertyTypeName.Declaration}.{enumName}";
                     prop1.WithOwnGetterAsExpression($"({info.PropertyName} & {v}) != 0");
-                    prop1.WithOwnSetterAsExpression(
-                        $"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};");
+
+
+                    prop1.OwnSetter             = $"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};";
+                    prop1.OwnSetterIsExpression = true; //!prop1.EffectiveBackingField;
+                    
                     // metoda
                     if (!info.SkipWithMethod)
                         AddWithMethod(propName, typeof(bool), false);

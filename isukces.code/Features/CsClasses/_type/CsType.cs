@@ -7,7 +7,6 @@ using iSukces.Code.Interfaces;
 namespace iSukces.Code;
 
 public struct CsType
-// public class CsType
     : IEquatable<CsType>, IComparable<CsType>, IComparable
 {
     public CsType(string? namespaceOrAlias, string? type)
@@ -201,7 +200,7 @@ public struct CsType
         var clone = (CsType)MemberwiseClone();
         if (cnt == 0)
         {
-            clone._arrayRanks = new[] { append };
+            clone._arrayRanks = [append];
             return clone;
         }
 
@@ -315,19 +314,19 @@ public struct CsType
 
     public CsType WithGenericParameter(CsType genericParameter)
     {
-        _genericParamaters = new[] { genericParameter };
+        _genericParamaters = [genericParameter];
         return this;
     }
 
     public CsType WithGenericParameters(CsType genericParameter1, CsType genericParameter2)
     {
-        _genericParamaters = new[] { genericParameter1, genericParameter2 };
+        _genericParamaters = [genericParameter1, genericParameter2];
         return this;
     }
 
     public CsType WithGenericParameters(string genericParameter1, string genericParameter2)
     {
-        _genericParamaters = new[] { (CsType)genericParameter1, (CsType)genericParameter2 };
+        _genericParamaters = [(CsType)genericParameter1, (CsType)genericParameter2];
         return this;
     }
 
@@ -350,7 +349,7 @@ public struct CsType
 
     public IReadOnlyList<CsType> GenericParamaters
     {
-        readonly get => _genericParamaters ?? Array.Empty<CsType>();
+        readonly get => _genericParamaters ?? [];
         set => _genericParamaters = value;
     }
 
@@ -358,7 +357,7 @@ public struct CsType
 
     public IReadOnlyList<Rank> ArrayRanks
     {
-        readonly get => _arrayRanks ?? Array.Empty<Rank>();
+        readonly get => _arrayRanks ?? [];
         set => _arrayRanks = value;
     }
 
@@ -394,7 +393,9 @@ public struct CsType
     public static readonly CsType ObjectNullable = new("object", NullableKind.ReferenceNullable);
 
     public static readonly CsType Byte = new("byte");
+    
     public static readonly CsType Ushort = new("ushort");
+    
     public static readonly CsType UInt = new("uint");
     
     public static readonly CsType Bool = new("bool");

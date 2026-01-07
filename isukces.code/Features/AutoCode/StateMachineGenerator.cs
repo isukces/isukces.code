@@ -74,7 +74,8 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
         out CsProperty currentStateProperty)
     {
         // === state property
-        currentStateProperty = cl.AddProperty(CurrentState, (CsType)State);
+        currentStateProperty              = cl.AddProperty(CurrentState, (CsType)State);
+        currentStateProperty.BackingField = PropertyBackingFieldRequest.DoNotUse;
         currentStateProperty.WithOwnSetterAsExpression("UpdateStates(value, false)");
         // === enable property
         var w = new CsCodeWriter()

@@ -91,11 +91,6 @@ internal class PropertyWriter
         if (!string.IsNullOrEmpty(setter))
         {
             var split = setter.Replace("\r\n", "\n").Trim().Split('\r', '\n');
-            if (_property.OwnSetterIsExpression && useField)
-            {
-                split[0] = "field = " + split[0];
-                return new PropertyCodeLines(split, _property.OwnSetterIsExpression);    
-            }
             return new PropertyCodeLines(split, _property.OwnSetterIsExpression);
         }
 
@@ -203,23 +198,13 @@ internal class PropertyWriter
         return emitField;
     }
 
-    #region Properties
-
-    private bool UseBackField => (_csClass.Formatting.Flags & CodeFormattingFeatures.PropertyBackField) != 0
-                             && _property.BackingField == PropertyBackingFieldUsage.UseIfPossible;
-
+    private bool UseBackField => _property.EffectiveBackingField; 
     private bool IsInterface => _csClass.IsInterface;
-
-    #endregion
-
-    #region Fields
 
     private readonly CsClass _csClass;
     private readonly CsProperty _property;
     private readonly bool _allowExpressionBodies;
     private readonly bool _allowReferenceNullable;
-
-    #endregion
 
     private enum GsKind
     {

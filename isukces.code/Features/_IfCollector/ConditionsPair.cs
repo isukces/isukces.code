@@ -27,16 +27,21 @@ public sealed class ConditionsPair
         if (!string.IsNullOrEmpty(variableName))
             variableName = " " + variableName;
         var condition = $"{variable} is {type}{variableName}";
-        if ((CsClass.DefaultCodeFormatting.Flags & CodeFormattingFeatures.IsNotNull) != 0)
+        if (HasNotNullFeature)
             return new ConditionsPair(condition, $"{variable} is not {type}{variableName}");
         if (!string.IsNullOrEmpty(variableName))
             throw new NotSupportedException();
         return new ConditionsPair(condition, $"!({condition})");
     }
 
+    private static bool HasNotNullFeature => (CsClass.DefaultCodeFormatting.Flags & CodeFormattingFeatures.IsNotNull) != 0;
+
     public static ConditionsPair FromIsNull(string variable)
     {
-        return new ConditionsPair($"{variable} is null");
+        var inversed = HasNotNullFeature
+            ? $"{variable} is not null"
+            : null;
+        return new ConditionsPair($"{variable} is null", inversed);
     }
 
     public static implicit operator ConditionsPair(bool x)
