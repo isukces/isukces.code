@@ -234,6 +234,8 @@ public class CsClass : ClassMemberBase, IClassOwner, IConditional, ITypeNameReso
         {
             Owner = this
         };
+        if ((Formatting.Flags & CodeFormattingFeatures.PropertyBackField) != 0)
+            property.BackingField = PropertyBackingFieldRequest.UseIfPossible;
         if (propertyName.Contains('.'))
         {
             property.Visibility = Visibilities.InterfaceDefault;
