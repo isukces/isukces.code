@@ -13,7 +13,6 @@ public class ClassCreationTests
     {
         var c     = new CsFile();
         var type  = TypeProvider.FromType(typeof(ParentGeneric<>.Nested));
-        var cache = new Dictionary<TypeProvider, CsClass>();
         c.GetOrCreateClass(type);
         var code = c.GetCode();
         Assert.Equal(@"// ReSharper disable All
