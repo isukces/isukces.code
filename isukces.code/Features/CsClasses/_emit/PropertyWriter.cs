@@ -90,6 +90,11 @@ internal class PropertyWriter
         var setter   = _property.OwnSetter;
         if (!string.IsNullOrEmpty(setter))
         {
+            if (useField && _property.OwnSetterIsExpression)
+            {
+                if (!setter.StartsWith("field = ", StringComparison.Ordinal))
+                    setter = "field = " + setter;
+            }
             var split = setter.Replace("\r\n", "\n").Trim().Split('\r', '\n');
             return new PropertyCodeLines(split, _property.OwnSetterIsExpression);
         }

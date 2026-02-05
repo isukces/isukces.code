@@ -17,8 +17,8 @@ public class KeyImplementerTests
         cl.Formatting = new CodeFormatting(CodeFormattingFeatures.Cs12, 120);
         var main = new KeyImplementer(cl, CsType.String)
         {
-            SupportsEmpty    = false,
-            SupportsSetValue = false
+            AddIsEmptyProperty = false,
+            AddHasValueField = false
         }.WithStringOrdinalIgnoreCase();
         
         main.Constructor();

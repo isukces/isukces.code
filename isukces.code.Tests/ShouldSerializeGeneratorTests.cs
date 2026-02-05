@@ -22,10 +22,7 @@ namespace iSukces.Code.Tests
     {
         partial class T1
         {
-            public bool ShouldSerializeE()
-            {
-                return E != SomeEnum.None;
-            }
+            public bool ShouldSerializeE() => E != SomeEnum.None;
 
         }
 

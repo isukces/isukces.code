@@ -83,8 +83,8 @@ namespace My123
     {
         public int Prop
         {
-            get { return GetValue(); }
-            set { CallMethod(value); }
+            get => GetValue();
+            set => field = CallMethod(value);
         } = 1;
 
     }
@@ -248,9 +248,10 @@ namespace My123
         void Finish(string expected)
         {
             _testOutputHelper.WriteLine("======");
-            _testOutputHelper.WriteLine(w.GetCodeTrim());
+            var actual = w.GetCodeTrim();
+            _testOutputHelper.WriteLine(actual);
             _testOutputHelper.WriteLine("======");
-            Assert.Equal(expected.Trim(), w.GetCodeTrim());
+            Assert.Equal(expected.Trim(), actual);
         }
     }
 

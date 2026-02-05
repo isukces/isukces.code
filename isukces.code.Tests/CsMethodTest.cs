@@ -242,10 +242,7 @@ namespace My123
 {
     public class MyClass
     {
-        public void Bla()
-        {
-            SetSomeValue();
-        }
+        public void Bla() => SetSomeValue();
 
     }
 }
@@ -267,10 +264,7 @@ namespace My123
 {
     public class MyClass
     {
-        public int Bla()
-        {
-            return SetSomeValue();
-        }
+        public int Bla() => SetSomeValue();
 
     }
 }
@@ -293,10 +287,7 @@ namespace My123
     public class MyClass
     {
         // one line
-        public int Bla()
-        {
-            return SetSomeValue();
-        }
+        public int Bla() => SetSomeValue();
 
     }
 }
@@ -323,10 +314,7 @@ namespace My123
         first line
         second line
         */
-        public int Bla()
-        {
-            return SetSomeValue();
-        }
+        public int Bla() => SetSomeValue();
 
     }
 }
@@ -377,10 +365,7 @@ namespace My123
 {
     public class MyClass
     {
-        partial void Bla()
-        {
-            SetSomeValue();
-        }
+        partial void Bla() => SetSomeValue();
 
     }
 }
@@ -409,10 +394,7 @@ namespace My123
     {
 #pragma warning disable CS8618
 #pragma warning enable CS8617
-        public void Bla()
-        {
-            SetSomeValue();
-        }
+        public void Bla() => SetSomeValue();
 #pragma warning restore CS8617, CS8618
 
     }

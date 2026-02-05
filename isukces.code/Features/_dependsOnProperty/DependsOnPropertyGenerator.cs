@@ -51,16 +51,6 @@ public class DependsOnPropertyGenerator : Generators.SingleClassGenerator
 
         var infoByMasterPropertyName = new Dictionary<string, Info>();
 
-        void ScanDeep(string key, HashSet<string> scanned, List<string> sink)
-        {
-            if (!scanned.Add(key))
-                return;
-            if (!slavesForMaster.TryGetValue(key, out var list)) return;
-            sink.AddRange(list);
-            foreach (var ii in list)
-                ScanDeep(ii, scanned, sink);
-        }
-
         var constNamesByValue = new Dictionary<string, string>();
         foreach (var i in slavesForMaster)
         {
@@ -86,15 +76,6 @@ public class DependsOnPropertyGenerator : Generators.SingleClassGenerator
             }
         }
 
-        bool IsMasterProperty(string propertyName)
-        {
-            foreach (var i in slavesForMaster.Values)
-                if (i.Contains(propertyName))
-                    return false;
-
-            return true;
-        }
-
         foreach (var i in flags)
             if ((i.Value & DependsOnPropertyFlags.ExcludeFromGetDependentPropertiesMethod) != 0)
                 if (IsMasterProperty(i.Key))
@@ -108,6 +89,26 @@ public class DependsOnPropertyGenerator : Generators.SingleClassGenerator
         CreateAdditionalCode(infoByMasterPropertyName);
         if ((Flags & DependsOnPropertyGeneratorFlags.GetDependentProperties) != 0)
             MakeGetDependentProperties(infoByMasterPropertyName, flags);
+        return;
+
+        bool IsMasterProperty(string propertyName)
+        {
+            foreach (var i in slavesForMaster.Values)
+                if (i.Contains(propertyName))
+                    return false;
+
+            return true;
+        }
+
+        void ScanDeep(string key, HashSet<string> scanned, List<string> sink)
+        {
+            if (!scanned.Add(key))
+                return;
+            if (!slavesForMaster.TryGetValue(key, out var list)) return;
+            sink.AddRange(list);
+            foreach (var ii in list)
+                ScanDeep(ii, scanned, sink);
+        }
     }
 
     protected virtual string GetConstName(string propertyName)

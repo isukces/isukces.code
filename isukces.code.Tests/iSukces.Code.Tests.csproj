@@ -18,6 +18,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <DocumentationFile>bin\Debug\iSukces.Code.Tests.xml</DocumentationFile>
+    <DefineConstants>TRACE;AUTOCODE_ANNOTATIONS</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>TRACE;AUTOCODE_ANNOTATIONS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\iSukces.Code.VsSolutions\iSukces.Code.VsSolutions.csproj" />

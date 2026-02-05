@@ -37,10 +37,7 @@ public class CsTests
         cl.MakeCode(w);
         var expected = @"public struct Src1
 {
-    public static Result operator *(Src1 left, Src2 right)
-    {
-        return new Result(left.Value * right.Value);
-    }
+    public static Result operator *(Src1 left, Src2 right) => new Result(left.Value * right.Value);
 
 }
 ";

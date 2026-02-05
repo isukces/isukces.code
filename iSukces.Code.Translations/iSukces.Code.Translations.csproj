@@ -3,9 +3,9 @@
   <PropertyGroup>
     <ProjectGuid>{85B775A5-450D-47A6-9E21-8213B95CFD3B}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0;net10.0</TargetFrameworks>
-    <AssemblyVersion>1.25.1204.4</AssemblyVersion>
-    <FileVersion>1.25.1204.4</FileVersion>
-    <Version>1.25.1204.4</Version>
+    <AssemblyVersion>1.26.205.5</AssemblyVersion>
+    <FileVersion>1.26.205.5</FileVersion>
+    <Version>1.26.205.5</Version>
     <LangVersion>14</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -43,7 +43,7 @@
     <ProjectReference Include="..\isukces.code\iSukces.Code.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="iSukces.Translation" Version="1.25.1203.16" />
+    <PackageReference Include="iSukces.Translation" Version="1.26.204.17" />
     <PackageReference Include="JetBrains.Annotations" Version="2025.2.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
