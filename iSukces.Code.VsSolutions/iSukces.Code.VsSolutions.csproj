@@ -6,9 +6,9 @@
     <ProjectGuid>{5E891D4F-3E95-487F-8AC5-3EFEC19BE6A0}</ProjectGuid>
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <RootNamespace>iSukces.Code.VsSolutions</RootNamespace>
-    <AssemblyVersion>1.26.205.23</AssemblyVersion>
-    <FileVersion>1.26.205.23</FileVersion>
-    <Version>1.26.205.23</Version>
+    <AssemblyVersion>1.26.208.24</AssemblyVersion>
+    <FileVersion>1.26.208.24</FileVersion>
+    <Version>1.26.208.24</Version>
     <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
     <SignAssembly>true</SignAssembly>

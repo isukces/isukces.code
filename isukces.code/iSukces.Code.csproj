@@ -4,9 +4,9 @@
     <Product>iSukces.Code</Product>
     <ProjectGuid>{6C33E666-9D42-4CEB-8FB1-5D547A19676D}</ProjectGuid>
     <TargetFrameworks>net6.0;net8.0;net9.0;net10.0</TargetFrameworks>
-    <AssemblyVersion>1.26.205.225</AssemblyVersion>
-    <FileVersion>1.26.205.225</FileVersion>
-    <Version>1.26.205.225</Version>
+    <AssemblyVersion>1.26.208.226</AssemblyVersion>
+    <FileVersion>1.26.208.226</FileVersion>
+    <Version>1.26.208.226</Version>
     <AssemblyFileVersion>1.25.113.220</AssemblyFileVersion>
     <LangVersion>14</LangVersion>
     <Nullable>enable</Nullable>
