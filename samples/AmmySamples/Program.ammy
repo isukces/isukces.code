@@ -1,5 +1,0 @@
-// -----===== autocode begin =====-----
-using AmmySamples
-
-mixin Program_SampleMixing() for Sample { Name: "Piotr" }
-// -----===== autocode end =====-----

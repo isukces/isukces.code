@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{02561C7E-1CFE-4C42-B09F-ADB1E46BD963}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmmySamples", "samples\AmmySamples\AmmySamples.csproj", "{7876BF5A-3E57-49D9-A381-80E8B5385CA6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EqualityGeneratorSample", "samples\EqualityGeneratorSample\EqualityGeneratorSample.csproj", "{D3E4331C-25E0-4929-A3DE-C8E6570BA894}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.AppWithCSharpCodeEmbedding", "samples\Sample.AppWithCSharpCodeEmbedding\Sample.AppWithCSharpCodeEmbedding.csproj", "{6741AC96-2F04-4842-BE39-4999FDD11415}"
@@ -30,15 +28,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7876BF5A-3E57-49D9-A381-80E8B5385CA6} = {02561C7E-1CFE-4C42-B09F-ADB1E46BD963}
 		{D3E4331C-25E0-4929-A3DE-C8E6570BA894} = {02561C7E-1CFE-4C42-B09F-ADB1E46BD963}
 		{6741AC96-2F04-4842-BE39-4999FDD11415} = {02561C7E-1CFE-4C42-B09F-ADB1E46BD963}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7876BF5A-3E57-49D9-A381-80E8B5385CA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7876BF5A-3E57-49D9-A381-80E8B5385CA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7876BF5A-3E57-49D9-A381-80E8B5385CA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7876BF5A-3E57-49D9-A381-80E8B5385CA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D3E4331C-25E0-4929-A3DE-C8E6570BA894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3E4331C-25E0-4929-A3DE-C8E6570BA894}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3E4331C-25E0-4929-A3DE-C8E6570BA894}.Release|Any CPU.ActiveCfg = Release|Any CPU
