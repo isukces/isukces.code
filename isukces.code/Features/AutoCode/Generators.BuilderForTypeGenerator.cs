@@ -106,12 +106,11 @@ public abstract partial class Generators
                     var prop1 = _class.AddProperty(propName, CsType.Bool)
                         .WithNoEmitField();
                     var v = $"{propertyTypeName.Declaration}.{enumName}";
-                    prop1.WithOwnGetterAsExpression($"({info.PropertyName} & {v}) != 0");
+                    prop1.WithOwnGetterAsExpressionBody($"({info.PropertyName} & {v}) != 0");
 
-
-                    prop1.OwnSetter             = $"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};";
-                    prop1.OwnSetterIsExpression = true; //!prop1.EffectiveBackingField;
-                    
+                    var code = $"{info.PropertyName} = value ? {info.PropertyName} | {v} : {info.PropertyName} & ~{v};";
+                    prop1.WithOwnSetterAsExpressionBody(code);
+                    //prop1.OwnSetter?.AsExpressionBody();
                     // metoda
                     if (!info.SkipWithMethod)
                         AddWithMethod(propName, typeof(bool), false);

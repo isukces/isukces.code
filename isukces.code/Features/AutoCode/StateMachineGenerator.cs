@@ -76,7 +76,7 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
         // === state property
         currentStateProperty              = cl.AddProperty(CurrentState, (CsType)State);
         currentStateProperty.BackingField = PropertyBackingFieldRequest.DoNotUse;
-        currentStateProperty.WithOwnSetterAsExpression("UpdateStates(value, false)");
+        currentStateProperty.WithOwnSetterAsExpressionBody("UpdateStates(value, false)");
         // === enable property
         var w = new CsCodeWriter()
             .SingleLineIf("field == value", "return;")
@@ -114,7 +114,7 @@ public class StateMachineGenerator : Generators.SingleClassGenerator<StateMachin
             // var condition = string.Join(" || ", Conditions(i));
             var property = cl.AddProperty(i.Name + "CanExecute", CsType.Bool)
                 .WithNoEmitField()
-                .WithOwnGetterAsExpression(condition)
+                .WithOwnGetterAsExpressionBody(condition)
                 .WithIsPropertyReadOnly();
             list.Add(property);
         }

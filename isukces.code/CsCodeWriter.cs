@@ -24,12 +24,19 @@ public class CsCodeWriter : CodeWriter, ICsCodeWriter
         return code;
     }
 
-    public static CsCodeWriter Create<T>([CallerLineNumber] int lineNumber = 0,
+    public static CsCodeWriter Create<T>(
+        bool skipLineNumber = false,
+        [CallerLineNumber] int lineNumber = 0,
         [CallerMemberName] string? memberName = null, [CallerFilePath] string? filePath = null
-    ) =>
-        Create(new SourceCodeLocation(lineNumber, memberName, filePath)
-            .WithGeneratorClass(typeof(T)));
-        
+    )
+    {
+        if (skipLineNumber)
+            lineNumber = 0;
+        var sourceCodeLocation = new SourceCodeLocation(lineNumber, memberName, filePath)
+            .WithGeneratorClass(typeof(T));
+        return Create(sourceCodeLocation);
+    }
+
     public static CsCodeWriter Create(Type generatorClass, [CallerLineNumber] int lineNumber = 0,
         [CallerMemberName] string? memberName = null, [CallerFilePath] string? filePath = null
     ) =>

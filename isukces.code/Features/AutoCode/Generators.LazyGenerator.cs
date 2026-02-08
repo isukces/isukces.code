@@ -304,7 +304,7 @@ public partial class Generators
                 prop.IsStatic   = mi.IsMemberStatic();
                 prop.SetterType = PropertySetter.None;
                 prop.EmitField  = false;
-                prop.OwnGetter  = code;
+                prop.OwnGetter  = (PropertyGetterCode?)code;
             }
             else
                 Class.AddMethod(baseName, resultType)

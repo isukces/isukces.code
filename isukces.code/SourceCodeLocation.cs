@@ -26,20 +26,24 @@ public struct SourceCodeLocation
     }
 
     public static SourceCodeLocation Make(
+        bool skipLineNumber = false,
         [CallerMemberName] string? memberName = null,
         [CallerFilePath] string? filePath = null,
         [CallerLineNumber] int lineNumber = 0
     )
     {
+        if (skipLineNumber)
+            lineNumber = 0;
         return new SourceCodeLocation(lineNumber, memberName, filePath);
     }
 
     public static SourceCodeLocation Make<T>(
+        bool skipLineNumber = true,
         [CallerMemberName] string? memberName = null,
         [CallerFilePath] string? filePath = null,
         [CallerLineNumber] int lineNumber = 0)
     {
-        return Make(memberName, filePath, lineNumber).WithGeneratorClass(typeof(T));
+        return Make(skipLineNumber, memberName, filePath, lineNumber).WithGeneratorClass(typeof(T));
     }
 
     public override string? ToString()

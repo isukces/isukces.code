@@ -12,8 +12,8 @@ namespace iSukces.Code.AutoCode
                 var p = csClass.AddProperty(attribute.Name, attribute.PropertyType);
                 p.Description   = attribute.Description;
                 p.EmitField     = true;
-                p.WithOwnGetterAsExpression(p.PropertyFieldName);
-                p.WithOwnSetterAsExpression($"this.RaiseAndSetIfChanged(ref {p.PropertyFieldName}, value)");
+                p.WithOwnGetterAsExpressionBody(p.PropertyFieldName);
+                p.WithOwnSetterAsExpressionBody($"this.RaiseAndSetIfChanged(ref {p.PropertyFieldName}, value)");
 
                 p.SetterVisibility = attribute.SetterVisibility;
                 p.GetterVisibility = attribute.GetterVisibility;

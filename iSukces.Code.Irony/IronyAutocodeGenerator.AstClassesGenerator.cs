@@ -192,8 +192,7 @@ namespace iSukces.Code.Irony
                 csProp.SetterVisibility = Visibilities.Private;
 
                 csProp.SetterType            = PropertySetter.None;
-                csProp.OwnGetterIsExpression = true;
-                csProp.OwnGetter             = "ChildNodes[0]";
+                csProp.WithOwnGetterAsValue("ChildNodes[0]");
                 if (alts.Length > 1)
                 {
                     var l = new List<CsEnumItem>();
@@ -329,12 +328,11 @@ namespace iSukces.Code.Irony
                     csProp.SetterVisibility = Visibilities.Private;
                     csProp.Description      = "Index = " + i.AstIndex;
                     var propType = csProp.Type.AsString(_astClass.AllowReferenceNullable());
-                    var code = string.Format("({0})ChildNodes[{1}];",
+                    var code = string.Format("({0})ChildNodes[{1}]",
                         propType,
                         i.AstIndex.ToString(CultureInfo.InvariantCulture));
                     csProp.SetterType            = PropertySetter.None;
-                    csProp.OwnGetter             = code;
-                    csProp.OwnGetterIsExpression = true;
+                    csProp.WithOwnGetterAsValue(code);
 
                     var input = new GetEvaluateExpressionInput(
                         new CsExpression(csProp.Name),

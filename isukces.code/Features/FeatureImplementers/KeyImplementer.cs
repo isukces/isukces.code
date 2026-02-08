@@ -200,7 +200,7 @@ public class KeyImplementer
         if (AddHasValueField)
             expression = $"!{HasValueFieldName} || {expression}";
         var p = _cl.AddProperty("IsEmpty", CsType.Bool)
-            .WithOwnGetterAsExpression(expression)
+            .WithOwnGetterAsExpressionBody(expression)
             .WithNoEmitField()
             .WithIsPropertyReadOnly();
         if (addAttribute)
@@ -262,17 +262,17 @@ public class KeyImplementer
             if (string.IsNullOrEmpty(EmptyExpression))
                 throw new Exception("EmptyExpression is empty");
             if (Special == SpecialType.String)
-                p.WithOwnGetterAsExpression(
+                p.WithOwnGetterAsExpressionBody(
                     $"{HasValueFieldName} ? ({propertyField} ?? {EmptyExpression}) : {EmptyExpression}");
             else
-                p.WithOwnGetterAsExpression($"{HasValueFieldName} ? {propertyField} : {EmptyExpression}");
+                p.WithOwnGetterAsExpressionBody($"{HasValueFieldName} ? {propertyField} : {EmptyExpression}");
             p.IsReadOnly = true;
             _cl.AddField(HasValueFieldName, CsType.Bool).WithIsReadOnly();
         }
         else
         {
             if (Special == SpecialType.String)
-                p.WithOwnGetterAsExpression($"{propertyField} ?? {EmptyExpression}");
+                p.WithOwnGetterAsExpressionBody($"{propertyField} ?? {EmptyExpression}");
             else
                 p.WithMakeAutoImplementIfPossible();
         }
@@ -296,19 +296,17 @@ public class KeyImplementer
 
     public CsProperty ZeroProperty()
     {
-        var p = _cl.AddProperty("Zero", _cl.Name);
-        p.IsStatic              = true;
-        p.EmitField             = false;
-        p.SetterType            = PropertySetter.None;
-        p.OwnGetter             = _cl.Name.New("0");
-        p.OwnGetterIsExpression = true;
+        var p = _cl
+            .AddProperty("Zero", _cl.Name)
+            .WithStatic()
+            .AsCalculatedFromExpression(_cl.Name.New("0"));
         return p;
     }
 
     public CsProperty HasValueProperty(string expression)
     {
         var p = _cl.AddProperty("HasValue", CsType.Bool)
-            .WithOwnGetterAsExpression(expression)
+            .WithOwnGetterAsExpressionBody(expression)
             .WithNoEmitField()
             .WithIsPropertyReadOnly();
         return p;
@@ -327,7 +325,7 @@ public class KeyImplementer
             .WithStatic()
             .WithNoEmitField()
             .WithIsPropertyReadOnly()
-            .WithOwnGetterAsExpression(expression);
+            .WithOwnGetterAsExpressionBody(expression);
         return p;
     }
 
@@ -415,9 +413,7 @@ public class KeyImplementer
             w.WriteLine("_value = string.IsNullOrEmpty(value) ? null : value;");
         }
         else
-        {
             w.WriteLine("Value = value;");
-        }
 
         if (AddHasValueField)
             w.WriteLine($"{HasValueFieldName} = true;");

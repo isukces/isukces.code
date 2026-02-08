@@ -68,8 +68,8 @@ namespace My123
         var code = CsMethodTest.TestCode(cs =>
         {
             cs.AddProperty<int>("Prop")
-                .WithOwnGetterAsExpression("GetValue()")
-                .WithOwnSetterAsExpression("CallMethod(value)")
+                .WithOwnGetterAsExpressionBody("GetValue()")
+                .WithOwnSetterAsExpressionBody("CallMethod(value)")
                 .WithNoEmitField()
                 .WithConstValue("1");
         });
@@ -84,7 +84,39 @@ namespace My123
         public int Prop
         {
             get => GetValue();
-            set => field = CallMethod(value);
+            set => CallMethod(value);
+        } = 1;
+
+    }
+}
+";
+        Assert.Equal(exp.Trim(), code.Trim());
+    }
+
+
+    [Fact]
+    public void T03a_Should_create_property_with_preprocess()
+    {
+        var code = CsMethodTest.TestCode(cs =>
+        {
+            cs.AddProperty<int>("Prop")
+                .WithOwnGetterAsExpressionBody("GetValue()")
+                .WithOwnSetterFromValue("Preprocess(value)")
+                .WithNoEmitField()
+                .WithConstValue("1");
+        });
+
+        const string exp = @"
+// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
+namespace My123
+{
+    public class MyClass
+    {
+        public int Prop
+        {
+            get => GetValue();
+            set => field = Preprocess(value);
         } = 1;
 
     }
@@ -146,7 +178,7 @@ namespace My123
             case 1:
             {
 
-                p.WithOwnSetterAsExpression("value?.Trim() ?? string.Empty");
+                p.WithOwnSetterFromValue("value?.Trim() ?? string.Empty");
 
                 cl.MakeCode(w, new CodeEmitConfig
                 {
@@ -170,7 +202,7 @@ namespace My123
             case 2:
             {
                 {
-                    p.WithOwnSetterAsExpression("value?.Trim() ?? string.Empty");
+                    p.WithOwnSetterFromValue("value?.Trim() ?? string.Empty");
                     p.ConstValue = "12".CsEncode();
                     cl.MakeCode(w);
                     const string expected = """
@@ -191,7 +223,7 @@ namespace My123
             case 3:
             {
                 {
-                    p.WithOwnGetterAsExpression("field?.Trim() ?? string.Empty");
+                    p.WithOwnGetterAsExpressionBody("field?.Trim() ?? string.Empty");
                     p.ConstValue = "12".CsEncode();
                     cl.MakeCode(w);
                     const string expected = """
@@ -212,12 +244,13 @@ namespace My123
             case 4:
             {
                 {
-                    p.OwnGetter  = """
-                                   var tmp = field?.Trim() ?? string.Empty;
-                                   if (tmp.Length > 100)
-                                       return tmp.Substring(0, 97) + "...";
-                                   return tmp;
-                                   """;
+                    var getterCode = """
+                                     var tmp = field?.Trim() ?? string.Empty;
+                                     if (tmp.Length > 100)
+                                         return tmp.Substring(0, 97) + "...";
+                                     return tmp;
+                                     """;
+                    p.OwnGetter  = (PropertyGetterCode?)getterCode;
                     p.ConstValue = "12".CsEncode();
                     cl.MakeCode(w);
                     const string expected = """

@@ -56,7 +56,7 @@ public class CsTests
 
         var p = cl.AddProperty("A", CsType.Int32);
         p.MakeAutoImplementIfPossible = true;
-        p.OwnGetter                   = "return 123;";
+        p.OwnGetter                   = (PropertyGetterCode?)"return 123;";
         //p.ConstValue = "12";
         // odwrotny
 

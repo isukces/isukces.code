@@ -46,16 +46,19 @@ public static class CommentableEx
             }
         }
 
-        public void AddCommentLocation<T>(string? prefix = null,
+        public void AddCommentLocation<T>(
+            string? prefix = null,
+            bool skipLineNumber = true,
             [CallerMemberName] string? memberName = null,
             [CallerFilePath] string? filePath = null,
             [CallerLineNumber] int lineNumber = 0)
         {
             var m = SourceCodeLocation.Make<T>(
+                skipLineNumber,
                 memberName,
                 filePath,
                 lineNumber);
-            AddCommentLocation(self, prefix, m);
+            self.AddCommentLocation(prefix, m);
         }
     }
 }

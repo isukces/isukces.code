@@ -54,8 +54,19 @@ internal class PropertyWriter
 
     private PropertyCodeLines GetGetterLines()
     {
-        if (!string.IsNullOrEmpty(_property.OwnGetter))
-            return new PropertyCodeLines(_property.OwnGetter.SplitToLines(), _property.OwnGetterIsExpression);
+        var getter  = _property.OwnGetter;
+        var code = getter?.Code;
+        if (!string.IsNullOrEmpty(code))
+        {
+            var isExpressionBody= getter!.Kind == PropertyMetodKind.ExpressionBody;
+            if (getter.Kind == PropertyMetodKind.Value)
+            {
+                code += ";";
+                isExpressionBody   = true;
+            }
+            return new PropertyCodeLines(code.SplitToLines(), isExpressionBody);
+        }
+
         if (UseBackField)
             return PropertyCodeLines.AsWriteAsAutoProperty();
         return new PropertyCodeLines(_property.PropertyFieldName, true);
@@ -87,16 +98,25 @@ internal class PropertyWriter
     private PropertyCodeLines GetSetterLines()
     {
         var useField = UseBackField;
-        var setter   = _property.OwnSetter;
-        if (!string.IsNullOrEmpty(setter))
+        var setter1  = _property.OwnSetter;
+        var setter   = setter1?.Code;
+        if (!string.IsNullOrEmpty(setter1?.Code))
         {
-            if (useField && _property.OwnSetterIsExpression)
+            
+            var kind             = setter1.Kind;
+            var isExpressionBody = kind == PropertyMetodKind.ExpressionBody;
+            if (useField)
             {
-                if (!setter.StartsWith("field = ", StringComparison.Ordinal))
-                    setter = "field = " + setter;
+                if (kind == PropertyMetodKind.Value)
+                {
+                    //if (!setter.StartsWith("field = ", StringComparison.Ordinal))
+                    setter           = $"field = {setter}";
+                    isExpressionBody = _allowExpressionBodies;
+                }
             }
+
             var split = setter.Replace("\r\n", "\n").Trim().Split('\r', '\n');
-            return new PropertyCodeLines(split, _property.OwnSetterIsExpression);
+            return new PropertyCodeLines(split, isExpressionBody);
         }
 
         if (useField)
@@ -153,8 +173,8 @@ internal class PropertyWriter
         CsClass.WriteSummary(writer, _property.Description);
         writer.WriteAttributes(_property.Attributes);
 
-        if (IsInterface || _property.MakeAutoImplementIfPossible && string.IsNullOrEmpty(_property.OwnSetter) &&
-            string.IsNullOrEmpty(_property.OwnGetter))
+        if (IsInterface || _property.MakeAutoImplementIfPossible && string.IsNullOrEmpty(_property.OwnSetter?.Code) &&
+            string.IsNullOrEmpty(_property.OwnGetter?.Code))
         {
             string gs;
             var    tmp = OptionalVisibility(_property.GetterVisibility);

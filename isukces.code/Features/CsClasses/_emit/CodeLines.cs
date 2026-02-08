@@ -110,15 +110,11 @@ public class CodeLines
             writer.Indent--;
     }
 
-    #region properties
-
     public bool IsEmpty => Lines.Count == 0;
 
     public IReadOnlyList<string> Lines { get; }
 
     public bool IsExpressionBody { get; set; }
     public int  LinesCount       => Lines.Count;
-
-    #endregion
 }
 

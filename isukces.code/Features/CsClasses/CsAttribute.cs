@@ -101,7 +101,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
         return WithArgument("", value);
     }
 
-    public CsAttribute WithArgument(string name, object value)
+    public CsAttribute WithArgument(string? name, object value)
     {
         var sValue = Encode(value);
         return WithArgumentCode(name, sValue);
@@ -112,7 +112,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
         return WithArgumentCode("", valueCode);
     }
 
-    public CsAttribute WithArgumentCode(string name, string valueCode)
+    public CsAttribute WithArgumentCode(string? name, string valueCode)
     {
         name = (name ?? "").Trim();
         _list.Add(new KeyValuePair<string, string>(name, valueCode));
@@ -125,7 +125,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
     {
         get
         {
-            if (_list is null || _list.Count == 0)
+            if (_list.Count == 0)
                 return Name;
                 
             return _list.Select(KeyValuePairToString)
@@ -136,7 +136,7 @@ public class CsAttribute : ClassMemberBase, ICsAttribute
 
     private static readonly int AttributeSuffixLength = AttributeSuffix.Length;
 
-    private readonly List<KeyValuePair<string, string>> _list = new List<KeyValuePair<string, string>>();
+    private readonly List<KeyValuePair<string, string>> _list = [];
 
     private const string AttributeSuffix = "Attribute";
 }

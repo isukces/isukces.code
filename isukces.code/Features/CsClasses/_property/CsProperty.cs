@@ -43,11 +43,9 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
 
     public CsProperty AsCalculatedFromExpression(string expression)
     {
-        EmitField             = false;
-        OwnGetter             = expression;
-        SetterType            = PropertySetter.None;
-        OwnGetterIsExpression = true;
-        return this;
+        EmitField  = false;
+        SetterType = PropertySetter.None;
+        return WithOwnGetterAsValue(expression);
     }
 
     public string GetComments()
@@ -88,39 +86,72 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
         return this;
     }
 
-    public CsProperty WithOwnGetter(string ownGetter)
+    public CsProperty WithOwnGetter(string? ownGetter)
     {
-        OwnGetter = ownGetter;
+        OwnGetter = (PropertyGetterCode?)ownGetter;
         return this;
     }
 
+    
+    [Obsolete("use WithOwnGetterAsExpressionBody instead", true)]
     public CsProperty WithOwnGetterAsExpression(string ownGetter)
     {
-        OwnGetter             = ownGetter;
-        OwnGetterIsExpression = true;
+        return this;
+    }
+
+    public CsProperty WithOwnGetterAsExpressionBody(string ownGetter)
+    {
+        OwnGetter = PropertyGetterCode.ExpressionBody(ownGetter);
+        return this;
+    }
+    public CsProperty WithOwnGetterAsValue(string ownGetter)
+    {
+        OwnGetter = PropertyGetterCode.Value(ownGetter);
         return this;
     }
 
     public CsProperty WithOwnSetter(string ownSetter)
     {
-        OwnSetter = ownSetter;
+        OwnSetter = new PropertySetterCode(ownSetter, PropertyMetodKind.Body);
         return this;
     }
 
+    [Obsolete("use WithOwnSetterAsExpressionBody instead", true)]
     public CsProperty WithOwnSetterAsExpression(string ownSetter)
     {
-        OwnSetter             = ownSetter;
-        OwnSetterIsExpression = true;
+        throw new NotSupportedException();
+    }
+
+    public CsProperty WithOwnSetterAsExpressionBody(string ownSetter)
+    {
+        OwnSetter = new PropertySetterCode(ownSetter, PropertyMetodKind.ExpressionBody);
         return this;
     }
+
+    [Obsolete("use WithOwnSetterFromValue instead", true)]
     public CsProperty WithOwnSetterAsExpressionFromValue(string expressionToSet)
     {
-        var setVariable = EffectiveBackingField
+        /*var setVariable = EffectiveBackingField
             ? "field"
             : PropertyFieldName;
-        
+
         OwnSetter             = $"{setVariable} = {expressionToSet};";
         OwnSetterIsExpression = true;
+        return this;*/
+
+        OwnSetter = new PropertySetterCode(expressionToSet, PropertyMetodKind.Value);
+        return this;
+    }
+
+    public CsProperty WithOwnSetterFromValue(string expressionToSet)
+    {
+        OwnSetter = new PropertySetterCode(expressionToSet, PropertyMetodKind.Value);
+        return this;
+    }
+
+    public CsProperty WithOwnGetterFromValue(string expressionToSet)
+    {
+        OwnGetter = new PropertyGetterCode(expressionToSet, PropertyMetodKind.Value);
         return this;
     }
 
@@ -137,27 +168,21 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
 
     public PropertySetter SetterType { get; set; } = PropertySetter.Set;
 
-    /// <summary>
-    /// </summary>
-    public string OwnGetter
-    {
-        get;
-        set => field = value?.Trim() ?? string.Empty;
-    } = string.Empty;
 
-    /// <summary>
-    /// </summary>
-    public string OwnSetter
-    {
-        get;
-        set => field = value?.Trim() ?? string.Empty;
-    } = string.Empty;
+    public PropertyGetterCode? OwnGetter { get; set; }
 
+    public PropertySetterCode? OwnSetter { get; set; }
+
+    [Obsolete("use OwnGetter.Kind instead", true)]
     public bool OwnGetterIsExpression { get; set; }
+
+
+    [Obsolete("use OwnSetter.Kind instead", true)]
     public bool OwnSetterIsExpression { get; set; }
 
+
     /// <summary>
-    ///     nazwa zmiennej dla własności; własność jest tylko do odczytu.
+    ///     Nazwa zmiennej dla własności; własność jest tylko do odczytu.
     /// </summary>
     public string PropertyFieldName => Name.PropertyBackingFieldName();
 
@@ -175,15 +200,18 @@ public class CsProperty : CsMethodParameter, ICsClassMember, ICommentable, IClas
     /// </summary>
     public bool MakeAutoImplementIfPossible { get; set; }
 
-    public Visibilities?               SetterVisibility { get; set; }
-    public Visibilities?               GetterVisibility { get; set; }
-    public Visibilities                FieldVisibility  { get; set; }
+    public Visibilities? SetterVisibility { get; set; }
+    public Visibilities? GetterVisibility { get; set; }
+
+    public Visibilities FieldVisibility { get; set; }
         = Visibilities.Private;
-    public PropertyBackingFieldRequest BackingField     { get; set; }
+
+    public PropertyBackingFieldRequest BackingField { get; set; }
         = PropertyBackingFieldRequest.DoNotUse;
 
     public string PropertyFieldNameOrFieldKeyword
         => EffectiveBackingField ? "field" : PropertyFieldName;
+
     public bool EffectiveBackingField
     {
         get
