@@ -164,7 +164,7 @@ namespace My123
     [InlineData(4)]
     public void T05_Should_Create_auto_property_with_back_field(int testNumber)
     {
-        var w  = new CsCodeWriter();
+        var w = new CsCodeWriter();
         var cl = new CsClass((CsType)("TestClass" + testNumber))
         {
             Formatting = new CodeFormatting(CodeFormattingFeatures.Cs14, 120)
@@ -177,7 +177,6 @@ namespace My123
         {
             case 1:
             {
-
                 p.WithOwnSetterFromValue("value?.Trim() ?? string.Empty");
 
                 cl.MakeCode(w, new CodeEmitConfig
@@ -234,7 +233,7 @@ namespace My123
                                                     get => field?.Trim() ?? string.Empty;
                                                     set;
                                                 } = "12";
-                                            
+
                                             }
                                             """;
                     Finish(expected);
@@ -267,7 +266,7 @@ namespace My123
                                                     }
                                                     set;
                                                 } = "12";
-                                            
+
                                             }
                                             """;
                     Finish(expected);
@@ -288,8 +287,40 @@ namespace My123
         }
     }
 
+    [Fact]
+    public void T06_Should_create_setter_as_value()
+    {
+        var code = CsMethodTest.TestCode(cs =>
+        {
+            var p = cs.AddProperty<int>("Prop");
+            p.BackingField = PropertyBackingFieldRequest.DoNotUse;
+            p.WithOwnSetterFromValue("Math.Abs(value)");
+        });
+
+        const string exp = @"
+// ReSharper disable All
+// suggestion: File scope namespace is possible, use [AssumeDefinedNamespace]
+namespace My123
+{
+    public class MyClass
+    {
+        public int Prop
+        {
+            get => _prop;
+            set => _prop = Math.Abs(value);
+        }
+
+        private int _prop;
+
+    }
+}
+
+";
+        Assert.Equal(exp.Trim(), code.Trim());
+    }
+
     private readonly ITestOutputHelper _testOutputHelper;
-    
+
     public class TestClass3
     {
         public string A

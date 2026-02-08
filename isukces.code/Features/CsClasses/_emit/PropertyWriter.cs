@@ -98,24 +98,21 @@ internal class PropertyWriter
     private PropertyCodeLines GetSetterLines()
     {
         var useField = UseBackField;
-        var setter1  = _property.OwnSetter;
-        var setter   = setter1?.Code;
-        if (!string.IsNullOrEmpty(setter1?.Code))
+        var setter  = _property.OwnSetter;
+        var setterCode   = setter?.Code;
+        if (!string.IsNullOrEmpty(setterCode))
         {
             
-            var kind             = setter1.Kind;
+            var kind             = setter!.Kind;
             var isExpressionBody = kind == PropertyMetodKind.ExpressionBody;
-            if (useField)
+            if (kind == PropertyMetodKind.Value)
             {
-                if (kind == PropertyMetodKind.Value)
-                {
-                    //if (!setter.StartsWith("field = ", StringComparison.Ordinal))
-                    setter           = $"field = {setter}";
-                    isExpressionBody = _allowExpressionBodies;
-                }
+                var target = useField ? "field" : _property.PropertyFieldName;
+                setterCode           = $"{target} = {setterCode}";
+                isExpressionBody = _allowExpressionBodies;
             }
 
-            var split = setter.Replace("\r\n", "\n").Trim().Split('\r', '\n');
+            var split = setterCode.Replace("\r\n", "\n").Trim().Split('\r', '\n');
             return new PropertyCodeLines(split, isExpressionBody);
         }
 
